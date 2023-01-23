@@ -73,6 +73,7 @@ workflows:
       - name: Publish to pub.dev
         script: |
           echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/credentials.json"
+          cd packages/ednet_cms
           flutter pub publish --dry-run
           flutter pub publish -f
     # This workflow should trigger when a new pull request opens or updates.
