@@ -63,9 +63,6 @@ workflows:
             exit 1
           fi
 
-      - name: Run Coverage
-        script: melos run coverage
-
 
   publish_cms:
     name: Publish pub.dev
@@ -118,5 +115,5 @@ workflows:
       - name: Publish to pub.dev
         script: |
           echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/credentials.json"
-          melos run publish publish_cms_to_pub_dry
-          melos run publish publish_cms_to_pub
+          melos run publish_cms_to_pub_dry
+          melos run publish_cms_to_pub
