@@ -27,3 +27,11 @@ scripts:
   test:
     run: melos exec --dir-exists=test -- "flutter test"
     description: Run `flutter test` in all packages
+
+  publish_cms_to_pub_dry:
+    run: melos exec --scope="ednet_cms" -- "dart pub publish --dry-run"
+    description: Publish ednet_cms to pub.dev
+
+  publish_cms_to_pub:
+    run: melos exec --scope="ednet_cms" -- "dart pub publish"
+    description: Publish ednet_cms to pub.dev
