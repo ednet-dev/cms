@@ -1,6 +1,6 @@
 workflows:
-  ci:
-    name: CI
+  endet_one_app_ci:
+    name: EDNetOne CI
     cache:
       cache_paths:
         - "$HOME/Library/Caches/CocoaPods\t"
@@ -64,8 +64,8 @@ workflows:
           fi
 
 
-  publish_cms:
-    name: Publish pub.dev
+  endet_cms_pub_ci:
+    name: EDNetCMS Pub CI
     cache:
       cache_paths:
         - "$FLUTTER_ROOT/.pub-cache\t"
