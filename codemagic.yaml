@@ -114,6 +114,6 @@ workflows:
 
       - name: Publish to pub.dev
         script: |
-          echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/credentials.json"
+          echo $PUB_DEV_CREDENTIALS | base64 --decode > "$FLUTTER_ROOT/.pub-cache/credentials.json"
           melos run publish_cms_to_pub_dry
           melos run publish_cms_to_pub
