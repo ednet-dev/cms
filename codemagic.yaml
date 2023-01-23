@@ -116,6 +116,9 @@ workflows:
         script: |
           melos run test
 
+      - name: Run Coverage
+        script: melos run coverage
+
       - name: Publish to pub.dev
         script: |
           echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/credentials.json"
