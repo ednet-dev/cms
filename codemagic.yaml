@@ -68,7 +68,7 @@ workflows:
 
 
   publish_cms:
-    name: PublishCMS
+    name: Publish pub.dev
     cache:
       cache_paths:
         - "$FLUTTER_ROOT/.pub-cache\t"
@@ -81,6 +81,20 @@ workflows:
       groups:
         - ednet_dev
 
+    # This workflow should trigger when a new pull request opens or updates.
+    triggering:
+      events:
+        - pull_request
+    when:
+      changeset:
+        includes:
+          # Only run the CI when a file in one of the following directories
+          # changed.
+          - "packages/**"
+          - "codemagic.yaml"
+        excludes:
+          # Don't run the CI when only .md files changed.
+          - "**/*.md"
     scripts:
       - name: Add Dart SDK to PATH
         script: |
@@ -107,19 +121,3 @@ workflows:
           echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/credentials.json"
           melos run publish publish_cms_to_pub_dry
           melos run publish publish_cms_to_pub
-
-    # This workflow should trigger when a new pull request opens or updates.
-    triggering:
-      events:
-        - pull_request
-    when:
-      changeset:
-        includes:
-          # Only run the CI when a file in one of the following directories
-          # changed.
-          - "packages/**"
-          - "codemagic.yaml"
-        excludes:
-          # Don't run the CI when only .md files changed.
-          - "**/*.md"
-
