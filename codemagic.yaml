@@ -66,8 +66,9 @@ workflows:
     environment:
       # Using the latest Flutter version.
       flutter: stable
-      vars:
-        PUB_DEV_CREDENTIALS
+      groups:
+        - ednet_dev
+
     scripts:
       - name: Publish to pub.dev
         script: |
