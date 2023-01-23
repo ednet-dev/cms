@@ -51,5 +51,5 @@ scripts:
     description: Publish ednet_cms to pub.dev test
 
   publish_cms_to_pub:
-    run: melos exec --scope="ednet_cms" -- "dart pub publish --no-dry-run"
+    run: melos exec --scope="ednet_cms" -- "dart pub publish"
     description: Publish ednet_cms to pub.dev
