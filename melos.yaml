@@ -24,18 +24,32 @@ scripts:
     run: melos exec -- "flutter format . --set-exit-if-changed"
     description: Run `flutter format .` in all packages
 
-  test:
-    run: melos exec --dir-exists=test -- "flutter test"
-    description: Run `flutter test` in all packages
+  test:flutter:select:
+    run: melos exec --dir-exists="test" --fail-fast -- flutter test --no-pub --coverage
+    description: Run Flutter tests for a specific package in this project.
+    select-package:
+      flutter: true
+      dir-exists: test
 
-  coverage:
-    run: melos exec --dir-exists=test -- "flutter test --coverage"
-    description: Run `flutter test --coverage` in all packages
+  test:flutter:
+    run: melos run test:flutter:select --no-select
+    description: Run all Flutter tests in this project.
+    select-package:
+      flutter: true
+      dir-exists: test
+
+  test:dart:
+    run: melos exec --dir-exists="test" --no-private --fail-fast -- dart test --coverage="coverage"
+    description: Run Dart tests for a specific package in this project.
+
+
+  test:
+    run: melos run test:dart && melos run test:flutter --no-select
 
   publish_cms_to_pub_dry:
     run: melos exec --scope="ednet_cms" -- "dart pub publish --dry-run"
-    description: Publish ednet_cms to pub.dev
+    description: Publish ednet_cms to pub.dev test
 
   publish_cms_to_pub:
-    run: melos exec --scope="ednet_cms" -- "dart pub publish"
+    run: melos exec --scope="ednet_cms" -- "dart pub publish --no-dry-run"
     description: Publish ednet_cms to pub.dev

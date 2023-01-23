@@ -46,7 +46,7 @@ workflows:
 
       - name: Run Tests
         script: |
-          melos run test
+          melos run test:flutter
           
           # Upload results of failed golden tests if test command failed.
           if [ $? -ne 0 ]; then
@@ -113,11 +113,7 @@ workflows:
         script: melos run format
 
       - name: Run Tests
-        script: |
-          melos run test
-
-      - name: Run Coverage
-        script: melos run coverage
+        script: melos run test:dart
 
       - name: Publish to pub.dev
         script: |
