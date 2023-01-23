@@ -1,5 +1,5 @@
 import 'package:ednet_cms/ednet_cms.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('That Content have vale of correct type, be that ', () {
