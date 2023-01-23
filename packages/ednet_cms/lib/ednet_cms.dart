@@ -1,7 +1,30 @@
 library ednet_cms;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
+/// Basic Content abstraction
+abstract class Content<T> {
+  T get value;
+}
+
+abstract class TextContent implements Content<String> {}
+
+class Text implements TextContent {
+  @override
+  final String value;
+
+  const Text(this.value);
+}
+
+class Number implements Content<num> {
+  @override
+  final num value;
+
+  const Number(this.value);
+}
+
+/// again Date and
+class Date implements Content<DateTime> {
+  @override
+  final DateTime value;
+
+  const Date(this.value);
 }
