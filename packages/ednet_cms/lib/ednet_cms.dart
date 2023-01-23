@@ -21,7 +21,6 @@ class Number implements Content<num> {
   const Number(this.value);
 }
 
-
 /// again Date and
 class Date implements Content<DateTime> {
   @override
