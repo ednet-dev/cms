@@ -1,3 +1,5 @@
+[![Codemagic build status](https://api.codemagic.io/apps/63ce7b5ab80ead4e2c0f4735/ci/status_badge.svg)](https://codemagic.io/apps/<app-id>/<workflow-id>/latest_build)
+
 # EDNet.dev
 CMS implementation in Dart and Flutter
 
