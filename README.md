@@ -124,7 +124,3 @@ We will use Spiral Development and it evolutionary nature as described:
 ### 6.0.0 Blockchain
 
 ### 7.0.0 Quantum Computing
-
-# License
-This project is licensed under the JSON License - see the LICENSE.md file for details
-
