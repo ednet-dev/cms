@@ -131,8 +131,12 @@ workflows:
           melos run publish_cms_to_pub_dry
           echo "LOG after dry: $FLUTTER_ROOT/.pub-cache/credentials.json"
           cat $FLUTTER_ROOT/.pub-cache/credentials.json
+          echo "$XDG_CONFIG_HOME"
           echo $XDG_CONFIG_HOME
+          echo "$HOME"
           echo $HOME
+          echo "$CM_BUILD_DIR"
           echo $CM_BUILD_DIR
+          echo "$CM_ARTIFACT_LINKS"
           echo $CM_ARTIFACT_LINKS
           melos run publish_cms_to_pub
