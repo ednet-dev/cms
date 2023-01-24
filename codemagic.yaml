@@ -26,7 +26,7 @@ workflows:
     # This workflow should trigger when a new pull request opens or updates.
     triggering:
       branch_patterns:
-        - main
+          - main
       events:
         - pull_request
     scripts:
@@ -108,11 +108,11 @@ workflows:
       #- name: Run Analyze
       #  script: melos run analyze
 
-#      - name: Run Format
-#        script: melos run format
-#
-#      - name: Run Tests
-#        script: melos run test:dart
+      #      - name: Run Format
+      #        script: melos run format
+      #
+      #      - name: Run Tests
+      #        script: melos run test:dart
 
       - name: Publish to pub.dev
         script: |
