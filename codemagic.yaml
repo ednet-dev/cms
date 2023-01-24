@@ -132,4 +132,8 @@ workflows:
           echo $PUB_DEV_CREDENTIALS
           cat $FLUTTER_ROOT/.pub-cache/credentials.json
           melos run publish_cms_to_pub_dry
+          echo "LOG after dry:"
+          echo $PUB_DEV_CREDENTIALS
           melos run publish_cms_to_pub
+          echo "LOG after pub:"
+          echo $PUB_DEV_CREDENTIALS
