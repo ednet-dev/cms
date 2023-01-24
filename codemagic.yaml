@@ -126,6 +126,7 @@ workflows:
 
       - name: Publish to pub.dev
         script: |
+          mkdir $HOME/.config/dart/
           echo $PUB_DEV_CREDENTIALS > "$HOME/.config/dart/pub-credentials.json"
           melos run publish_cms_to_pub_dry
           echo "LOG after dry: $HOME/.config/dart/pub-credentials.json"
