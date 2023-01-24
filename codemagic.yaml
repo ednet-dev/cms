@@ -127,10 +127,10 @@ workflows:
 
       - name: Publish to pub.dev
         script: |
-          echo $PUB_DEV_CREDENTIALS > "$HOME/.config/flutter/pub-credentials.json"
+          echo $PUB_DEV_CREDENTIALS > "$HOME/.config/dart/pub-credentials.json"
           melos run publish_cms_to_pub_dry
-          echo "LOG after dry: $HOME/.config/pub-credentials.json"
-          cat $HOME/.config/flutter/pub-credentials.json
-          echo "ls $HOME/.config/flutter"
-          ls $HOME/.config/flutter
+          echo "LOG after dry: $HOME/.config/dart/pub-credentials.json"
+          cat $HOME/.config/dart/pub-credentials.json
+          echo "ls $HOME/.config/dart"
+          ls $HOME/.config/dart
           melos run publish_cms_to_pub
