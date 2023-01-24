@@ -139,4 +139,7 @@ workflows:
           echo $CM_BUILD_DIR
           echo "CM_ARTIFACT_LINKS"
           echo $CM_ARTIFACT_LINKS
+          ll $HOME/.config/
+          ll $HOME/.config/pub
+          ll $HOME/.config/dart
           melos run publish_cms_to_pub
