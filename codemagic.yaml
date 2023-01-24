@@ -25,6 +25,8 @@ workflows:
           - "**/*.md"
     # This workflow should trigger when a new pull request opens or updates.
     triggering:
+      branch_patterns:
+        - main
       events:
         - pull_request
     scripts:
