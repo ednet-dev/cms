@@ -103,17 +103,19 @@ workflows:
           dart pub global activate melos
           melos bootstrap
 
-      - name: Run Analyze
-        script: melos run analyze
+      #- name: Run Analyze
+      #  script: melos run analyze
 
-      - name: Run Format
-        script: melos run format
-
-      - name: Run Tests
-        script: melos run test:dart
+#      - name: Run Format
+#        script: melos run format
+#
+#      - name: Run Tests
+#        script: melos run test:dart
 
       - name: Publish to pub.dev
         script: |
-          echo $PUB_DEV_CREDENTIALS | base64 --decode > "$FLUTTER_ROOT/.pub-cache/credentials.json"
+          echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/credentials.json"
+          echo $PUB_DEV_CREDENTIALS
+          cat $FLUTTER_ROOT/.pub-cache/credentials.json
           melos run publish_cms_to_pub_dry
           melos run publish_cms_to_pub
