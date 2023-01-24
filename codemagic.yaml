@@ -71,9 +71,6 @@ workflows:
 
   endet_cms_pub_ci:
     name: EDNetCMS Pub CI
-    cache:
-      cache_paths:
-        - "$FLUTTER_ROOT/.pub-cache\t"
     instance_type: mac_mini_m1
     # Setting the timeout for a build to 15 minutes.
     max_build_duration: 15
@@ -126,11 +123,13 @@ workflows:
 
       - name: Publish to pub.dev
         script: |
-          mkdir $HOME/.config/dart/
-          echo $PUB_DEV_CREDENTIALS > "$HOME/.config/dart/pub-credentials.json"
+          mkdir $XDG_CONFIG_HOME/dart/
+          echo $PUB_DEV_CREDENTIALS > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
           melos run publish_cms_to_pub_dry
-          echo "LOG after dry: $HOME/.config/dart/pub-credentials.json"
-          cat $HOME/.config/dart/pub-credentials.json
-          echo "ls $HOME/.config/dart"
-          ls $HOME/.config/dart
+          echo "LOG after dry: HOME/.config/dart/pub-credentials.json"
+          cat $XDG_CONFIG_HOME/dart/pub-credentials.json
+          echo "ls HOME/.config/dart"
+          ls $XDG_CONFIG_HOME/dart
+          echo "XDG_CONFIG_HOME"
+          echo "$XDG_CONFIG_HOME"
           melos run publish_cms_to_pub
