@@ -127,28 +127,10 @@ workflows:
 
       - name: Publish to pub.dev
         script: |
-          echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/pub-credentials.json"
+          echo $PUB_DEV_CREDENTIALS > "$HOME/.config/pub-credentials.json"
           melos run publish_cms_to_pub_dry
-          echo "LOG after dry: $FLUTTER_ROOT/.pub-cache/credentials.json"
-          cat $FLUTTER_ROOT/.pub-cache/pub-credentials.json
-          echo "XDG_CONFIG_HOME"
-          echo $XDG_CONFIG_HOME
-          echo "HOME"
-          echo $HOME
-          echo "CM_BUILD_DIR"
-          echo $CM_BUILD_DIR
-          echo "$FLUTTER_ROOT"
-          echo $FLUTTER_ROOT
-          echo "$FLUTTER_ROOT/.pub-cache/:"
-          ls $FLUTTER_ROOT/.pub-cache/
-          echo "$FLUTTER_ROOT/.pub-cache/bin:"
-          ls $FLUTTER_ROOT/.pub-cache/bin
-          echo"mkdir $HOME/.config"
-          mkdir $HOME/.config
-          echo"mkdir $FLUTTER_ROOT/.config"
-          mkdir $FLUTTER_ROOT/.config
-          mkdir $FLUTTER_ROOT/dart
-          echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.config/dart/old-credentials.json"
-          echo "old-credentials.json:"
-          "$FLUTTER_ROOT/.config/dart/old-credentials.json"
+          echo "LOG after dry: $HOME/.config/pub-credentials.json"
+          cat $HOME/.config/pub-credentials.json
+          echo "ls $HOME/.config/"
+          ls $HOME/.config/
           melos run publish_cms_to_pub
