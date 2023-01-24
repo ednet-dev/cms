@@ -26,9 +26,9 @@ workflows:
     # This workflow should trigger when a new pull request opens or updates.
     triggering:
       branch_patterns:
-          - pattern: 'main'
-            include: true
-            source: false
+        - pattern: 'main'
+          include: true
+          source: false
       events:
         - pull_request
 
@@ -89,9 +89,9 @@ workflows:
       events:
         - pull_request
       branch_patterns:
-          - pattern: 'main'
-            include: true
-            source: false
+        - pattern: 'main'
+          include: true
+          source: false
 
       cancel_previous_builds: true
 
@@ -139,7 +139,10 @@ workflows:
           echo $CM_BUILD_DIR
           echo "CM_ARTIFACT_LINKS"
           echo $CM_ARTIFACT_LINKS
-          ll $HOME/.config/
-          ll $HOME/.config/pub
-          ll $HOME/.config/dart
+          echo ".config:"
+          ls $HOME/.config/
+          echo ".config/pub:"
+          ls $HOME/.config/pub
+          echo ".config/dart:"
+          ls $HOME/.config/dart
           melos run publish_cms_to_pub
