@@ -139,9 +139,15 @@ workflows:
           echo $CM_BUILD_DIR
           echo "$FLUTTER_ROOT"
           echo $FLUTTER_ROOT
-          echo ".config:"
-          ls $FLUTTER_ROOT/.config
-          mkdir -p $FLUTTER_ROOT/.config/dart
+          echo "$FLUTTER_ROOT/.pub-cache/:"
+          ls $FLUTTER_ROOT/.pub-cache/
+          echo "$FLUTTER_ROOT/.pub-cache/bin:"
+          ls $FLUTTER_ROOT/.pub-cache/bin
+          echo"mkdir $HOME/.config"
+          mkdir $HOME/.config
+          echo"mkdir $FLUTTER_ROOT/.config"
+          mkdir $FLUTTER_ROOT/.config
+          mkdir $FLUTTER_ROOT/dart
           echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.config/dart/old-credentials.json"
           echo "old-credentials.json:"
           "$FLUTTER_ROOT/.config/dart/old-credentials.json"
