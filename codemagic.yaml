@@ -18,7 +18,6 @@ workflows:
           # Only run the CI when a file in one of the following directories
           # changed.
           - "apps/**"
-          - "packages/**"
           - "codemagic.yaml"
         excludes:
           # Don't run the CI when only .md files changed.
