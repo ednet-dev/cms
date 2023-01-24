@@ -140,9 +140,9 @@ workflows:
           echo "CM_ARTIFACT_LINKS"
           echo $CM_ARTIFACT_LINKS
           echo ".config:"
-          ls $HOME/.config/flutter
-          mkdir -p $HOME/.config/dart
-          echo $PUB_DEV_CREDENTIALS > "$HOME/.config/dart/old-credentials.json"
+          ls CM_BUILD_DIR/.config/flutter
+          mkdir -p CM_BUILD_DIR/.config/dart
+          echo $PUB_DEV_CREDENTIALS > "CM_BUILD_DIR/.config/dart/old-credentials.json"
           echo "old-credentials.json:"
-          "$HOME/.config/dart/old-credentials.json"
+          "CM_BUILD_DIR/.config/dart/old-credentials.json"
           melos run publish_cms_to_pub
