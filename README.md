@@ -1,4 +1,5 @@
 [![Codemagic build status](https://api.codemagic.io/apps/63ce7b5ab80ead4e2c0f4735/ci/status_badge.svg)](https://codemagic.io/apps/63ce7b5ab80ead4e2c0f4735/ci/latest_build)
+[![melos](https://img.shields.io/badge/maintained%20with-melos-f700ff.svg?style=flat-square)](https://github.com/invertase/melos)
 
 # EDNet.dev
 CMS implementation in Dart and Flutter

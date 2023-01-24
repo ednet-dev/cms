@@ -1,6 +1,11 @@
 workflows:
-  ci:
-    name: CI
+  endet_one_app_ci:
+    name: EDNetOne CI
+    cache:
+      cache_paths:
+        - "$HOME/Library/Caches/CocoaPods\t"
+        - "$HOME/.gradle/caches\t"
+        - "$FLUTTER_ROOT/.pub-cache\t"
     instance_type: mac_mini_m1
     # Setting the timeout for a build to 15 minutes.
     max_build_duration: 15
@@ -20,6 +25,8 @@ workflows:
           - "**/*.md"
     # This workflow should trigger when a new pull request opens or updates.
     triggering:
+      branch_patterns:
+          - main
       events:
         - pull_request
     scripts:
@@ -41,7 +48,7 @@ workflows:
 
       - name: Run Tests
         script: |
-          melos run test
+          melos run test:flutter
           
           # Upload results of failed golden tests if test command failed.
           if [ $? -ne 0 ]; then
@@ -58,22 +65,21 @@ workflows:
             exit 1
           fi
 
-  publish_cms:
-    name: PublishCMS
+
+  endet_cms_pub_ci:
+    name: EDNetCMS Pub CI
+    cache:
+      cache_paths:
+        - "$FLUTTER_ROOT/.pub-cache\t"
     instance_type: mac_mini_m1
     # Setting the timeout for a build to 15 minutes.
     max_build_duration: 15
     environment:
       # Using the latest Flutter version.
       flutter: stable
-      vars:
-        PUB_DEV_CREDENTIALS
-    scripts:
-      - name: Publish to pub.dev
-        script: |
-          echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/credentials.json"
-          flutter pub publish --dry-run
-          flutter pub publish -f
+      groups:
+        - ednet_dev
+
     # This workflow should trigger when a new pull request opens or updates.
     triggering:
       events:
@@ -88,3 +94,31 @@ workflows:
         excludes:
           # Don't run the CI when only .md files changed.
           - "**/*.md"
+    scripts:
+      - name: Add Dart SDK to PATH
+        script: |
+          echo PATH="$PATH":"$FLUTTER_ROOT/.pub-cache/bin" >> $CM_ENV
+          echo PATH="$PATH":"$FLUTTER_ROOT/bin" >> $CM_ENV
+
+      - name: Melos Bootstrap
+        script: |
+          dart pub global activate melos
+          melos bootstrap
+
+      #- name: Run Analyze
+      #  script: melos run analyze
+
+      #      - name: Run Format
+      #        script: melos run format
+      #
+      #      - name: Run Tests
+      #        script: melos run test:dart
+
+      - name: Publish to pub.dev
+        script: |
+          echo $PUB_DEV_CREDENTIALS > "$FLUTTER_ROOT/.pub-cache/credentials.json"
+          echo "LOG:"
+          echo $PUB_DEV_CREDENTIALS
+          cat $FLUTTER_ROOT/.pub-cache/credentials.json
+          melos run publish_cms_to_pub_dry
+          melos run publish_cms_to_pub
