@@ -1,6 +1,6 @@
 library ednet_cms;
 
-/// Basic Content abstraction
+/// Basic Content abstraction to rule them all
 abstract class Content<T> {
   T get value;
 }
