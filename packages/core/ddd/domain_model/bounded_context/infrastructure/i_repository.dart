@@ -64,12 +64,10 @@ class User extends Entity {
   });
 }
 
-
 class Contains {
   final String value;
 
   Contains(this.value);
-
 }
 
 class Operand<T> {
@@ -78,8 +76,9 @@ class Operand<T> {
 
   const Operand(this.left, this.right);
 
-  bool operator ==(Operand other) {
-    if (other is instance Operand) {
+  @override
+  bool operator ==(Object other) {
+    if (other is Operand) {
       return left == other.left && right == other.right;
     }
     return false;
@@ -89,7 +88,7 @@ class Operand<T> {
 class IsEqual extends Operand<String> {
   final String value;
 
-  IsEqual(this.value);
+  IsEqual(this.value) : super(value, value);
 
   bool operator ==(Object other) {
     if (other is IsEqual) {
@@ -98,7 +97,6 @@ class IsEqual extends Operand<String> {
     return false;
   }
 }
-
 
 class Sort {
   final List<SortAttribute> attributes;
@@ -121,51 +119,51 @@ class SortAttribute<T> {
   });
 }
 
-
-void moin() {
-  final u = User(name: "Patrik svejzi");
-
-
-  const userFilter = Filter(
-    [
-      On(
-            (user) => IsEqual(user.name, filterUserName),
-      ),
-      On(
-            (user) => Contains(user.name, filterUserName),
-      ),
-      On(
-            (user) => StartsWith(user.name, filterUserName),
-      ),
-    ],
-  );
-
-  const userSort = Sort<User>(
-    [
-      On(
-            (user) =>
-            SortAttribute(
-              value: user.name,
-              direction: Sort.acz,
-            ),
-      ),
-    ],
-  )
-
-  const query = Query(
-    criteria: Criteria(
-      filter: userFilter,
-      sort: Sort(
-        [
-              (user) =>
-              SortAttribute<String>(
-                value: user.name,
-                direction: Sort.asc,
-              ),
-        ],
-      ),
-    ),
-  );
-
-  const results = await userRepository.find(query);
-}
+//
+// void moin() {
+//   final u = User(name: "Patrik svejzi");
+//
+//
+//   const userFilter = Filter(
+//     [
+//       On(
+//             (user) => IsEqual(user.name, filterUserName),
+//       ),
+//       On(
+//             (user) => Contains(user.name, filterUserName),
+//       ),
+//       On(
+//             (user) => StartsWith(user.name, filterUserName),
+//       ),
+//     ],
+//   );
+//
+//   const userSort = Sort<User>(
+//     [
+//       On(
+//             (user) =>
+//             SortAttribute(
+//               value: user.name,
+//               direction: Sort.acz,
+//             ),
+//       ),
+//     ],
+//   )
+//
+//   const query = Query(
+//     criteria: Criteria(
+//       filter: userFilter,
+//       sort: Sort(
+//         [
+//               (user) =>
+//               SortAttribute<String>(
+//                 value: user.name,
+//                 direction: Sort.asc,
+//               ),
+//         ],
+//       ),
+//     ),
+//   );
+//
+//   const results = await userRepository.find(query);
+// }
