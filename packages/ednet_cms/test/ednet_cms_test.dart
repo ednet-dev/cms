@@ -2,6 +2,7 @@ import 'package:ednet_cms/ednet_cms.dart';
 import 'package:test/test.dart';
 
 void main() {
+  // Content have a value
   group('That Content have vale of correct type, be that ', () {
     test('Text', () {
       const name = Text('EDNetCMS');
