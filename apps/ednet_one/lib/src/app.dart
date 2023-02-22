@@ -1,9 +1,9 @@
+import 'package:ednet_one/src/domains/domains_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'cms_graph_page/cms_graph_page_details_view.dart';
-import 'cms_graph_page/cms_graph_page_list_view.dart';
+import 'domains/cms_graph_page_details_view.dart';
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the
           // background.
-          restorationScopeId: 'app',
+          restorationScopeId: 'ednet_one',
 
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
@@ -69,8 +69,8 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
-                  case CmsGraphPageListView.routeName:
-                    return const CmsGraphPageListView();
+                  case DomainsView.routeName:
+                    return const DomainsView();
                   case CmsGraphPageDetailsView.routeName:
                     return const CmsGraphPageDetailsView();
                   case SettingsView.routeName:
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
                     return const SampleItemListView();
 
                   default:
-                    return const CmsGraphPageListView();
+                    return const DomainsView();
                 }
               },
             );

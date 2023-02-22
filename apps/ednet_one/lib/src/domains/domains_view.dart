@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../settings/settings_view.dart';
-import 'cms_graph_page.dart';
+import 'domain_page.dart';
 import 'cms_graph_page_details_view.dart';
 
-/// Displays a list of GraphPages.
-class CmsGraphPageListView extends StatelessWidget {
-  const CmsGraphPageListView({
+/// Displays a list of integrated domain models.
+class DomainsView extends StatelessWidget {
+  const DomainsView({
     super.key,
-    this.items = const [CmsGraphPage(1), CmsGraphPage(2), CmsGraphPage(3)],
+    this.items = const [DomainPage(1), DomainPage(2), DomainPage(3)],
   });
 
   static const routeName = '/';
 
-  final List<CmsGraphPage> items;
+  final List<DomainPage> items;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CMS Graph Pages'),
+        title: const Text('Domains'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -43,13 +43,13 @@ class CmsGraphPageListView extends StatelessWidget {
         // Providing a restorationId allows the ListView to restore the
         // scroll position when a user leaves and returns to the app after it
         // has been killed while running in the background.
-        restorationId: 'graphListView',
+        restorationId: 'ednetDomainsListView',
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
 
           return ListTile(
-            title: Text('CMS GraphPage ${item.id}'),
+            title: Text('${item.id}'),
             leading: const CircleAvatar(
               // Display the Flutter Logo image asset.
               foregroundImage: AssetImage('assets/images/flutter_logo.png'),

@@ -7,7 +7,7 @@ import '../cms_graph/model/mock.dart';
 class CmsGraphPageDetailsView extends StatelessWidget {
   const CmsGraphPageDetailsView({super.key});
 
-  static const routeName = '/cms_graph_page';
+  static const routeName = '/domains';
 
   @override
   Widget build(BuildContext context) {
