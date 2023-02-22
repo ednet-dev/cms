@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
                   case DomainsView.routeName:
-                    return const DomainsView();
+                    return DomainsView();
 
                   ///domains
                   case DirectDemocracyDetailsView.routeName:
@@ -97,7 +97,7 @@ class MyApp extends StatelessWidget {
                     return const SampleItemListView();
 
                   default:
-                    return const DomainsView();
+                    return DomainsView();
                 }
               },
             );

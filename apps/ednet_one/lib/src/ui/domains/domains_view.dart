@@ -1,3 +1,5 @@
+import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/src/domain/project_management/project_management.dart';
 import 'package:ednet_one/src/ui/domains/direct_democracy_details_view.dart';
 import 'package:ednet_one/src/ui/domains/legislation_details_view.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,9 @@ import 'social_network_details_view.dart';
 
 /// Displays a list of integrated domain models.
 class DomainsView extends StatelessWidget {
-  const DomainsView({
+  final Domains domains = createDomainModels();
+
+  DomainsView({
     super.key,
     this.items = const [
       DomainPage(
