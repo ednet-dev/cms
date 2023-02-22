@@ -1,17 +1,17 @@
-import 'package:ednet_one/src/domains/direct_democracy_details_view.dart';
-import 'package:ednet_one/src/domains/domains_view.dart';
-import 'package:ednet_one/src/domains/legislation_details_view.dart';
-import 'package:ednet_one/src/domains/project_management_details_view.dart';
-import 'package:ednet_one/src/domains/social_network_details_view.dart';
+import 'package:ednet_one/src/ui/domains/direct_democracy_details_view.dart';
+import 'package:ednet_one/src/ui/domains/domains_view.dart';
+import 'package:ednet_one/src/ui/domains/legislation_details_view.dart';
+import 'package:ednet_one/src/ui/domains/project_management_details_view.dart';
+import 'package:ednet_one/src/ui/domains/social_network_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'domains/cms_graph_page_details_view.dart';
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
-import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
+import 'ui/domains/cms_graph_page_details_view.dart';
+import 'ui/sample_feature/sample_item_details_view.dart';
+import 'ui/sample_feature/sample_item_list_view.dart';
+import 'ui/settings/settings_controller.dart';
+import 'ui/settings/settings_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {

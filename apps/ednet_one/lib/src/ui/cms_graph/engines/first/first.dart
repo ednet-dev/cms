@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:ednet_one/src/cms_graph/model/edge.dart';
-import 'package:ednet_one/src/cms_graph/model/node.dart';
+import 'package:ednet_one/src/ui/cms_graph/model/edge.dart';
+import 'package:ednet_one/src/ui/cms_graph/model/node.dart';
 import 'package:flutter/material.dart';
 
 class CMSCanvas extends StatelessWidget {

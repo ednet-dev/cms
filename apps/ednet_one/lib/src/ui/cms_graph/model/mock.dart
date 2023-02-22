@@ -1,6 +1,7 @@
-import 'package:ednet_one/src/cms_graph/model/edge.dart';
-import 'package:ednet_one/src/cms_graph/model/node.dart';
 import 'package:flutter/material.dart';
+
+import 'edge.dart';
+import 'node.dart';
 
 final List<Node> nodesMock = [
   Node(

@@ -1,5 +1,5 @@
-import 'package:ednet_one/src/domains/direct_democracy_details_view.dart';
-import 'package:ednet_one/src/domains/legislation_details_view.dart';
+import 'package:ednet_one/src/ui/domains/direct_democracy_details_view.dart';
+import 'package:ednet_one/src/ui/domains/legislation_details_view.dart';
 import 'package:flutter/material.dart';
 
 import '../settings/settings_view.dart';
