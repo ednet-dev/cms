@@ -1,14 +1,25 @@
+import 'package:ednet_one/src/domains/direct_democracy_details_view.dart';
+import 'package:ednet_one/src/domains/legislation_details_view.dart';
 import 'package:flutter/material.dart';
 
 import '../settings/settings_view.dart';
 import 'domain_page.dart';
 import 'cms_graph_page_details_view.dart';
+import 'project_management_details_view.dart';
+import 'social_network_details_view.dart';
 
 /// Displays a list of integrated domain models.
 class DomainsView extends StatelessWidget {
   const DomainsView({
     super.key,
-    this.items = const [DomainPage(1), DomainPage(2), DomainPage(3)],
+    this.items = const [
+      DomainPage(
+          1, ProjectManagementDetailsView.routeName, 'Project management'),
+      DomainPage(2, DirectDemocracyDetailsView.routeName, 'Democracy'),
+      DomainPage(3, SocialNetworkDetailsView.routeName, 'Social network'),
+      DomainPage(4, LegislationDetailsView.routeName, 'Legislation'),
+      DomainPage(5, CmsGraphPageDetailsView.routeName, 'CMS graph'),
+    ],
   });
 
   static const routeName = '/';
@@ -49,21 +60,20 @@ class DomainsView extends StatelessWidget {
           final item = items[index];
 
           return ListTile(
-            title: Text('${item.id}'),
-            leading: const CircleAvatar(
-              // Display the Flutter Logo image asset.
-              foregroundImage: AssetImage('assets/images/flutter_logo.png'),
-            ),
-            onTap: () {
-              // Navigate to the details page. If the user leaves and returns to
-              // the app after it has been killed while running in the
-              // background, the navigation stack is restored.
-              Navigator.restorablePushNamed(
-                context,
-                CmsGraphPageDetailsView.routeName,
-              );
-            }
-          );
+              title: Text(item.domain),
+              leading: const CircleAvatar(
+                // Display the Flutter Logo image asset.
+                foregroundImage: AssetImage('assets/images/flutter_logo.png'),
+              ),
+              onTap: () {
+                // Navigate to the details page. If the user leaves and returns to
+                // the app after it has been killed while running in the
+                // background, the navigation stack is restored.
+                Navigator.restorablePushNamed(
+                  context,
+                  item.routeName,
+                );
+              });
         },
       ),
     );

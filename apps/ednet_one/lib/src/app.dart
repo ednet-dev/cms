@@ -1,4 +1,8 @@
+import 'package:ednet_one/src/domains/direct_democracy_details_view.dart';
 import 'package:ednet_one/src/domains/domains_view.dart';
+import 'package:ednet_one/src/domains/legislation_details_view.dart';
+import 'package:ednet_one/src/domains/project_management_details_view.dart';
+import 'package:ednet_one/src/domains/social_network_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -71,8 +75,20 @@ class MyApp extends StatelessWidget {
                 switch (routeSettings.name) {
                   case DomainsView.routeName:
                     return const DomainsView();
+
+                  ///domains
+                  case DirectDemocracyDetailsView.routeName:
+                    return const DirectDemocracyDetailsView();
+                  case LegislationDetailsView.routeName:
+                    return const LegislationDetailsView();
+                  case ProjectManagementDetailsView.routeName:
+                    return const ProjectManagementDetailsView();
+                  case SocialNetworkDetailsView.routeName:
+                    return const SocialNetworkDetailsView();
                   case CmsGraphPageDetailsView.routeName:
                     return const CmsGraphPageDetailsView();
+
+                  /// system
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
                   case SampleItemDetailsView.routeName:
