@@ -97,8 +97,12 @@ Domains createDomainModels() {
 Domains populateDomainModels(Domains domains) {
   /// Domains
   final dd = domains.getDomain('DirectDemocracy');
-  
+
   return domains;
 }
 
-final domainModel = createDomainModels();
+void main() {
+  final domainModel = createDomainModels();
+
+  print(domainModel.toString());
+}
