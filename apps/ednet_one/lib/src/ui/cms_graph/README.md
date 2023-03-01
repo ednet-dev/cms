@@ -1,5 +1,5 @@
 # Current state
-![img.png](../../../../../packages/ednet_cms_graph/img.png)
+![img.png](img.png)
 
 # Content managed system Graph render
 For any given Content managed system, this package will render the graph of the content and its relations within system ond endless movable Canvas.

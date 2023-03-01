@@ -122,34 +122,34 @@ class Proposal extends Entity<Proposal> {
       getAttribute(votesAgainstAttribute).setValue(votesAgainst);
 }
 
-class TravelModels extends DomainModels {
-
-  TravelModels(Domain domain) : super(domain) {
-    add(fromJsonToImpressionsEntries());
-  }
-
-  ImpressionsEntries fromJsonToImpressionsEntries() {
-    return new ImpressionsEntries(fromJsonToModel(
-        travelImpressionsModelJson,
-        domain,
-        TravelRepo.travelImpressionsModelCode));
-  }
-
-}
-
-
-class DDRepo extends CoreRepository {
-  static const categoryQuestionDomainCode = "CategoryQuestion";
-  static const categoryQuestionLinkModelCode = "Link";
-
-  DDRepo({String code: "CategoryQuestionRepo"}) : super(code) {
-    _initCategoryQuestionDomain();
-  }
-
-  _initCategoryQuestionDomain() {
-    var categoryQuestionDomain = Domain(categoryQuestionDomainCode);
-    domains.add(categoryQuestionDomain);
-    add(CategoryQuestionModels(categoryQuestionDomain));
-  }
-
-}
+// class TravelModels extends DomainModels {
+//
+//   TravelModels(Domain domain) : super(domain) {
+//     add(fromJsonToImpressionsEntries());
+//   }
+//
+//   ImpressionsEntries fromJsonToImpressionsEntries() {
+//     return new ImpressionsEntries(fromJsonToModel(
+//         travelImpressionsModelJson,
+//         domain,
+//         TravelRepo.travelImpressionsModelCode));
+//   }
+//
+// }
+//
+//
+// class DDRepo extends CoreRepository {
+//   static const categoryQuestionDomainCode = "CategoryQuestion";
+//   static const categoryQuestionLinkModelCode = "Link";
+//
+//   DDRepo({String code: "CategoryQuestionRepo"}) : super(code) {
+//     _initCategoryQuestionDomain();
+//   }
+//
+//   _initCategoryQuestionDomain() {
+//     var categoryQuestionDomain = Domain(categoryQuestionDomainCode);
+//     domains.add(categoryQuestionDomain);
+//     add(CategoryQuestionModels(categoryQuestionDomain));
+//   }
+//
+// }
