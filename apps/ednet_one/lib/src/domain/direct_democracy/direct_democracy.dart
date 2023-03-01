@@ -138,7 +138,7 @@ class TravelModels extends DomainModels {
 }
 
 
-class DDRepo extends Repository {
+class DDRepo extends CoreRepository {
   static const categoryQuestionDomainCode = "CategoryQuestion";
   static const categoryQuestionLinkModelCode = "Link";
 
