@@ -1,0 +1,33 @@
+name: ednetcore_tasks
+author: Your Name
+homepage: http://ondart.me/
+version: 0.0.1
+description: ednetcore_tasks application that uses ednet_core for its model.
+environment:
+  sdk: '>=1.10.0 <2.0.0'
+dependencies:
+  browser: '>=0.10.0 <0.11.0'
+  ednet_core: '>=2.0.0 <3.0.0'
+  ednet_core_default_app: '>=2.0.0 <3.0.0'
+
+dependencies:
+  browser: '>=0.10.0 <0.11.0'
+  ednet_core:
+    git: 'https://github.com/ednet-dev/ednet_core.git'
+  ednet_core_default_app:
+    git: 'https://github.com/ednet-dev/ednet_core_default_app.git'
+
+dependencies:
+  browser: '>=0.10.0 <0.11.0'
+  ednet_core:
+    path: 'C:\Users\ridjanod.FSA-RIDJANOD-2\dart\model\ednet_core'
+  ednet_core_default_app:
+    path: 'C:\Users\ridjanod.FSA-RIDJANOD-2\dart\model\ednet_core_default_app'
+
+dependencies:
+  browser: any
+  ednet_core:
+    path: /home/dzenanr/dart/model/ednet_core
+  ednet_core_default_app:
+    path: /home/dzenanr/dart/model/ednet_core_default_app
+  
