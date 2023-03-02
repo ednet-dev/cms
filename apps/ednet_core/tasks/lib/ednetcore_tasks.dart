@@ -1,5 +1,5 @@
-// lib/ednetcore_tasks.dart
-/*
+    // lib/ednetcore_tasks.dart
+    /*
 http://opensource.org/licenses/
 
 http://en.wikipedia.org/wiki/BSD_license
@@ -31,32 +31,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-library ednetcore_tasks;
 
-import "package:ednet_core/ednet_core.dart";
+    library ednetcore_tasks;
 
-part "repository.dart";
+    import "package:ednet_core/ednet_core.dart";
 
-part "gen/ednetcore/i_domain_models.dart";
-
-part "gen/ednetcore/tasks/model_entries.dart";
-
-part "ednetcore/domain.dart";
-
-part "ednetcore/tasks/model.dart";
-
-part "ednetcore/tasks/json/data.dart";
-
-part "ednetcore/tasks/json/model.dart";
-
+    part "repository.dart";
+    part "gen/ednetcore/i_domain_models.dart";
+    part "gen/ednetcore/tasks/model_entries.dart";
+    part "ednetcore/domain.dart";
+    part "ednetcore/tasks/model.dart";
+    part "ednetcore/tasks/json/data.dart";
+    part "ednetcore/tasks/json/model.dart";
+    
 part "ednetcore/tasks/employees.dart";
+
 
 part "ednetcore/tasks/projects.dart";
 
+
 part "ednetcore/tasks/tasks.dart";
 
+    
 part "gen/ednetcore/tasks/employees.dart";
+
 
 part "gen/ednetcore/tasks/projects.dart";
 
+
 part "gen/ednetcore/tasks/tasks.dart";
+
+    
+  

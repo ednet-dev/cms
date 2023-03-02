@@ -113,7 +113,7 @@ void testEdnetcoreTasksEmployees(
       var employee = 
           employees.singleWhereAttributeId("email", randomEmployee.email); 
       expect(employee, isNotNull); 
-      expect(employee.email, equals(randomEmployee.email)); 
+      expect(employee!.email, equals(randomEmployee.email));
     }); 
  
     test("Find employee by required attribute", () { 
@@ -152,9 +152,9 @@ void testEdnetcoreTasksEmployees(
       var employeesCount = employees.length; 
  
       var employee = Employee(employees.concept); 
-      employee.email = 'sun'; 
-      employee.lastName = 'hospital'; 
-      employee.firstName = 'test'; 
+      employee.email = 'effort'; 
+      employee.lastName = 'objective'; 
+      employee.firstName = 'room'; 
       var added = selectedEmployees.add(employee); 
       expect(added, isTrue); 
       expect(employees.length, equals(++employeesCount)); 
@@ -207,7 +207,7 @@ void testEdnetcoreTasksEmployees(
       copiedEmployees.forEach((e) => 
         expect(e, equals(employees.singleWhereOid(e.oid)))); 
       copiedEmployees.forEach((e) => 
-        expect(e, isNot(same(employees.singleWhereId(e.id as IId<Employee>))))); 
+        expect(e, isNot(same(employees.singleWhereId(e.id!)))));
  
       //copiedEmployees.display(title: "Copy employees"); 
     }); 
@@ -230,7 +230,7 @@ void testEdnetcoreTasksEmployees(
       var randomEmployee = employees.random(); 
       var beforeUpdate = randomEmployee.email; 
       try { 
-        randomEmployee.email = 'chemist'; 
+        randomEmployee.email = 'edition'; 
       } on UpdateException catch (e) { 
         expect(randomEmployee.email, equals(beforeUpdate)); 
       } 
@@ -239,7 +239,7 @@ void testEdnetcoreTasksEmployees(
     test("Update employee id without try", () { 
       var randomEmployee = employees.random(); 
       var beforeUpdateValue = randomEmployee.email; 
-      expect(() => randomEmployee.email = 'sun', throws); 
+      expect(() => randomEmployee.email = 'consulting', throws); 
       expect(randomEmployee.email, equals(beforeUpdateValue)); 
     }); 
  
@@ -249,15 +249,15 @@ void testEdnetcoreTasksEmployees(
       var attribute = randomEmployee.concept.attributes.singleWhereCode("email"); 
       expect(attribute?.update, isFalse); 
       attribute?.update = true; 
-      afterUpdateEntity.email = 'call'; 
-      expect(afterUpdateEntity.email, equals('call')); 
+      afterUpdateEntity.email = 'left'; 
+      expect(afterUpdateEntity.email, equals('left')); 
       attribute?.update = false; 
       var updated = employees.update(randomEmployee, afterUpdateEntity); 
       expect(updated, isTrue); 
  
-      var entity = employees.singleWhereAttributeId("email", 'call'); 
+      var entity = employees.singleWhereAttributeId("email", 'left'); 
       expect(entity, isNotNull); 
-      expect(entity.email, equals('call')); 
+      expect(entity!.email, equals('left'));
  
       //employees.display("After update employee id"); 
     }); 
@@ -265,8 +265,8 @@ void testEdnetcoreTasksEmployees(
     test("Update employee non id attribute with failure", () { 
       var randomEmployee = employees.random(); 
       var afterUpdateEntity = randomEmployee.copy(); 
-      afterUpdateEntity.lastName = 'tension'; 
-      expect(afterUpdateEntity.lastName, equals('tension')); 
+      afterUpdateEntity.lastName = 'tag'; 
+      expect(afterUpdateEntity.lastName, equals('tag')); 
       // employees.update can only be used if oid, code or id is set. 
       expect(() => employees.update(randomEmployee, afterUpdateEntity), throws); 
     }); 
@@ -303,9 +303,9 @@ void testEdnetcoreTasksEmployees(
     test("employee action undo and redo", () { 
       var employeeCount = employees.length; 
       var employee = Employee(employees.concept); 
-        employee.email = 'executive'; 
-      employee.lastName = 'life'; 
-      employee.firstName = 'video'; 
+        employee.email = 'paper'; 
+      employee.lastName = 'abstract'; 
+      employee.firstName = 'corner'; 
       employees.add(employee); 
       expect(employees.length, equals(++employeeCount)); 
       employees.remove(employee); 
@@ -325,9 +325,9 @@ void testEdnetcoreTasksEmployees(
     test("employee session undo and redo", () { 
       var employeeCount = employees.length; 
       var employee = Employee(employees.concept); 
-        employee.email = 'wave'; 
-      employee.lastName = 'output'; 
-      employee.firstName = 'sun'; 
+        employee.email = 'head'; 
+      employee.lastName = 'beans'; 
+      employee.firstName = 'cup'; 
       employees.add(employee); 
       expect(employees.length, equals(++employeeCount)); 
       employees.remove(employee); 
@@ -346,7 +346,7 @@ void testEdnetcoreTasksEmployees(
  
     test("Employee update undo and redo", () { 
       var employee = employees.random(); 
-      var action = SetAttributeCommand(session, employee, "lastName", 'understanding'); 
+      var action = SetAttributeCommand(session, employee, "lastName", 'economy'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -447,9 +447,9 @@ void testEdnetcoreTasksEmployees(
  
       ednetcoreDomain.startCommandReaction(reaction); 
       var employee = Employee(employees.concept); 
-        employee.email = 'concern'; 
-      employee.lastName = 'sailing'; 
-      employee.firstName = 'country'; 
+        employee.email = 'right'; 
+      employee.lastName = 'photo'; 
+      employee.firstName = 'school'; 
       employees.add(employee); 
       expect(employees.length, equals(++employeeCount)); 
       employees.remove(employee); 
@@ -462,7 +462,7 @@ void testEdnetcoreTasksEmployees(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, employee, "lastName", 'fish'); 
+        session, employee, "lastName", 'sand'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       ednetcoreDomain.cancelCommandReaction(reaction); 
