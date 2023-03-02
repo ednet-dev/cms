@@ -26,7 +26,7 @@ void testEdnetcoreTasksProjects(
       tasksModel.clear(); 
       expect(tasksModel.isEmpty, isTrue); 
       expect(projects.isEmpty, isTrue); 
-      expect(projects.exceptions.isEmpty, isTrue);
+      expect(projects.exceptions.isEmpty, isTrue); 
     }); 
  
     test("From model to JSON", () { 
@@ -81,9 +81,9 @@ void testEdnetcoreTasksProjects(
       var added = projects.add(project); 
       expect(added, isFalse); 
       expect(projects.length, equals(projectCount)); 
-      expect(projects.exceptions.length, greaterThan(0));
+      expect(projects.exceptions.length, greaterThan(0)); 
  
-      projects.exceptions.display(title: "Add project unique error");
+      projects.exceptions.display(title: "Add project unique error"); 
     }); 
  
     test("Not found project by oid", () { 
@@ -104,7 +104,7 @@ void testEdnetcoreTasksProjects(
       var project = 
           projects.singleWhereAttributeId("name", randomProject.name); 
       expect(project, isNotNull); 
-      expect(project!.name, equals(randomProject.name));
+      expect(project!.name, equals(randomProject.name)); 
     }); 
  
     test("Find project by required attribute", () { 
@@ -143,8 +143,8 @@ void testEdnetcoreTasksProjects(
       var projectsCount = projects.length; 
  
       var project = Project(projects.concept); 
-      project.name = 'knowledge'; 
-      project.description = 'computer'; 
+      project.name = 'message'; 
+      project.description = 'bird'; 
       var added = selectedProjects.add(project); 
       expect(added, isTrue); 
       expect(projects.length, equals(++projectsCount)); 
@@ -197,7 +197,7 @@ void testEdnetcoreTasksProjects(
       copiedProjects.forEach((e) => 
         expect(e, equals(projects.singleWhereOid(e.oid)))); 
       copiedProjects.forEach((e) => 
-        expect(e, isNot(same(projects.singleWhereId(e.id!)))));
+        expect(e, isNot(same(projects.singleWhereId(e.id!))))); 
  
       //copiedProjects.display(title: "Copy projects"); 
     }); 
@@ -220,7 +220,7 @@ void testEdnetcoreTasksProjects(
       var randomProject = projects.random(); 
       var beforeUpdate = randomProject.name; 
       try { 
-        randomProject.name = 'sailing'; 
+        randomProject.name = 'finger'; 
       } on UpdateException catch (e) { 
         expect(randomProject.name, equals(beforeUpdate)); 
       } 
@@ -229,7 +229,7 @@ void testEdnetcoreTasksProjects(
     test("Update project id without try", () { 
       var randomProject = projects.random(); 
       var beforeUpdateValue = randomProject.name; 
-      expect(() => randomProject.name = 'hot', throws); 
+      expect(() => randomProject.name = 'finger', throws); 
       expect(randomProject.name, equals(beforeUpdateValue)); 
     }); 
  
@@ -239,15 +239,15 @@ void testEdnetcoreTasksProjects(
       var attribute = randomProject.concept.attributes.singleWhereCode("name"); 
       expect(attribute?.update, isFalse); 
       attribute?.update = true; 
-      afterUpdateEntity.name = 'highway'; 
-      expect(afterUpdateEntity.name, equals('highway')); 
+      afterUpdateEntity.name = 'down'; 
+      expect(afterUpdateEntity.name, equals('down')); 
       attribute?.update = false; 
       var updated = projects.update(randomProject, afterUpdateEntity); 
       expect(updated, isTrue); 
  
-      var entity = projects.singleWhereAttributeId("name", 'highway'); 
+      var entity = projects.singleWhereAttributeId("name", 'down'); 
       expect(entity, isNotNull); 
-      expect(entity!.name, equals('highway'));
+      expect(entity!.name, equals('down')); 
  
       //projects.display("After update project id"); 
     }); 
@@ -255,8 +255,8 @@ void testEdnetcoreTasksProjects(
     test("Update project non id attribute with failure", () { 
       var randomProject = projects.random(); 
       var afterUpdateEntity = randomProject.copy(); 
-      afterUpdateEntity.description = 'cardboard'; 
-      expect(afterUpdateEntity.description, equals('cardboard')); 
+      afterUpdateEntity.description = 'craving'; 
+      expect(afterUpdateEntity.description, equals('craving')); 
       // projects.update can only be used if oid, code or id is set. 
       expect(() => projects.update(randomProject, afterUpdateEntity), throws); 
     }); 
@@ -292,8 +292,8 @@ void testEdnetcoreTasksProjects(
     test("project action undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        project.name = 'yellow'; 
-      project.description = 'top'; 
+        project.name = 'water'; 
+      project.description = 'cream'; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -313,8 +313,8 @@ void testEdnetcoreTasksProjects(
     test("project session undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        project.name = 'darts'; 
-      project.description = 'highway'; 
+        project.name = 'school'; 
+      project.description = 'professor'; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -333,7 +333,7 @@ void testEdnetcoreTasksProjects(
  
     test("Project update undo and redo", () { 
       var project = projects.random(); 
-      var action = SetAttributeCommand(session, project, "description", 'economy'); 
+      var action = SetAttributeCommand(session, project, "description", 'taxi'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -434,8 +434,8 @@ void testEdnetcoreTasksProjects(
  
       ednetcoreDomain.startCommandReaction(reaction); 
       var project = Project(projects.concept); 
-        project.name = 'tape'; 
-      project.description = 'water'; 
+        project.name = 'money'; 
+      project.description = 'coffee'; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -448,7 +448,7 @@ void testEdnetcoreTasksProjects(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, project, "description", 'consciousness'); 
+        session, project, "description", 'right'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       ednetcoreDomain.cancelCommandReaction(reaction); 
