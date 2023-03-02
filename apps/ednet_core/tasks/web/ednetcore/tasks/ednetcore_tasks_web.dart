@@ -1,22 +1,24 @@
  
 // web/ednetcore/tasks/ednetcore_tasks_web.dart 
  
-import "dart:html"; 
+
+import "package:ednet_core/ednet_core.dart"; 
  
-import "package:ednet_default_app/ednet_default_app.dart"; 
+import "package:ednet_core_default_app/ednet_core_default_app.dart"; 
 import "package:ednetcore_tasks/ednetcore_tasks.dart"; 
  
 void initData(CoreRepository repository) { 
-   var ednetcoreDomain = repository.getDomainModels("Ednetcore"); 
-   var tasksModel = ednetcoreDomain.getModelEntries("Tasks"); 
-   tasksModel.init(); 
-   //tasksModel.display(); 
+   EdnetcoreDomain? ednetcoreDomain = repository.getDomainModels("Ednetcore") as EdnetcoreDomain?; 
+   TasksModel? tasksModel = ednetcoreDomain?.getModelEntries("Tasks") as TasksModel?; 
+   tasksModel?.init(); 
+   tasksModel?.display(); 
 } 
  
 void showData(CoreRepository repository) { 
-   var mainView = View(document, "main"); 
-   mainView.repo = repository; 
-   new RepoMainSection(mainView); 
+   // var mainView = View(document, "main"); 
+   // mainView.repo = repository; 
+   // new RepoMainSection(mainView); 
+   print("not implemented"); 
 } 
  
 void main() { 

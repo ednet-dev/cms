@@ -1,7 +1,5 @@
- 
-// lib/ednetcore_tasks_app.dart 
- 
-/*
+  // lib/ednetcore_tasks_app.dart
+  /*
 http://opensource.org/licenses/
 
 http://en.wikipedia.org/wiki/BSD_license
@@ -32,17 +30,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
- 
- 
-library ednetcore_tasks_app; 
- 
-/* 
-import "dart:html"; 
-import "dart:math"; 
- 
-import "package:ednet_core/ednet_core.dart"; 
-import "package:ednet_default_app/ednet_default_app.dart"; 
- 
-import "package:ednetcore_tasks/ednetcore_tasks.dart"; 
-*/ 
- 
+
+
+  library ednetcore_tasks_app;
+
+  /* 
+  import "dart:flutter";
+  import "dart:math";
+  
+
+  import "package:ednet_core/ednet_core.dart";
+  import "package:ednet_core_default_app/ednet_core_default_app.dart";
+  import "package:ednetcore_tasks/ednetcore_tasks.dart";
+  */
+

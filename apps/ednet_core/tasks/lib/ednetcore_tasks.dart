@@ -1,6 +1,4 @@
- 
-// lib/ednetcore_tasks.dart 
- 
+// lib/ednetcore_tasks.dart
 /*
 http://opensource.org/licenses/
 
@@ -32,28 +30,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
- 
- 
-library ednetcore_tasks; 
- 
-//import "dart:convert"; 
-//import "dart:math"; 
- 
-import "package:ednet_core/ednet_core.dart"; 
- 
-part "repository.dart"; 
- 
-part "gen/ednetcore/i_domain_models.dart"; 
-part "gen/ednetcore/tasks/model_entries.dart"; 
-part "gen/ednetcore/tasks/employees.dart"; 
-part "gen/ednetcore/tasks/projects.dart"; 
-part "gen/ednetcore/tasks/tasks.dart"; 
- 
-part "ednetcore/domain.dart"; 
-part "ednetcore/tasks/model.dart"; 
-part "ednetcore/tasks/employees.dart"; 
-part "ednetcore/tasks/projects.dart"; 
-part "ednetcore/tasks/tasks.dart"; 
-part "ednetcore/tasks/json/data.dart"; 
-part "ednetcore/tasks/json/model.dart"; 
- 
+
+library ednetcore_tasks;
+
+import "package:ednet_core/ednet_core.dart";
+
+part "repository.dart";
+
+part "gen/ednetcore/i_domain_models.dart";
+
+part "gen/ednetcore/tasks/model_entries.dart";
+
+part "ednetcore/domain.dart";
+
+part "ednetcore/tasks/model.dart";
+
+part "ednetcore/tasks/json/data.dart";
+
+part "ednetcore/tasks/json/model.dart";
+
+part "ednetcore/tasks/employees.dart";
+
+part "ednetcore/tasks/projects.dart";
+
+part "ednetcore/tasks/tasks.dart";
+
+part "gen/ednetcore/tasks/employees.dart";
+
+part "gen/ednetcore/tasks/projects.dart";
+
+part "gen/ednetcore/tasks/tasks.dart";
