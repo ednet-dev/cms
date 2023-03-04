@@ -4,7 +4,7 @@ part of ednetcore_tasks;
  
 class Project extends ProjectGen { 
  
-  Project(Concept concept) : super(concept); 
+  Project(Concept concept) : super(concept!); 
  
   // added after code gen - begin 
  
@@ -14,7 +14,7 @@ class Project extends ProjectGen {
  
 class Projects extends ProjectsGen { 
  
-  Projects(Concept concept) : super(concept); 
+  Projects(Concept concept) : super(concept!); 
  
   // added after code gen - begin 
  

@@ -4,7 +4,7 @@ part of ednetcore_tasks;
  
 abstract class TaskGen extends Entity<Task> { 
  
-  TaskGen(Concept concept) { 
+  TaskGen(Concept concept) {
     this.concept = concept; 
   } 
  
@@ -23,19 +23,19 @@ abstract class TaskGen extends Entity<Task> {
   String get description => getAttribute("description"); 
   void set description(String a) { setAttribute("description", a); } 
   
-  Task newEntity() => Task(concept); 
-  Tasks newEntities() => Tasks(concept); 
+  Task newEntity() => Task(concept!);
+  Tasks newEntities() => Tasks(concept!);
   
 } 
  
 abstract class TasksGen extends Entities<Task> { 
  
-  TasksGen(Concept concept) { 
+  TasksGen(Concept concept) {
     this.concept = concept; 
   } 
  
-  Tasks newEntities() => Tasks(concept); 
-  Task newEntity() => Task(concept); 
+  Tasks newEntities() => Tasks(concept!);
+  Task newEntity() => Task(concept!);
   
 } 
  

@@ -4,7 +4,7 @@ part of ednetcore_tasks;
  
 class Employee extends EmployeeGen { 
  
-  Employee(Concept concept) : super(concept); 
+  Employee(Concept concept) : super(concept!); 
  
   // added after code gen - begin 
  
@@ -14,7 +14,7 @@ class Employee extends EmployeeGen {
  
 class Employees extends EmployeesGen { 
  
-  Employees(Concept concept) : super(concept); 
+  Employees(Concept concept) : super(concept!); 
  
   // added after code gen - begin 
  

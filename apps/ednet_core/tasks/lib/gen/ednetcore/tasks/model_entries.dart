@@ -10,9 +10,9 @@ class TasksEntries extends ModelEntries {
     var entries = Map<String, Entities>(); 
     var concept; 
     concept = model.concepts.singleWhereCode("Employee"); 
-    entries["Employee"] = Employees(concept); 
+    entries["Employee"] = Employees(concept!); 
     concept = model.concepts.singleWhereCode("Project"); 
-    entries["Project"] = Projects(concept); 
+    entries["Project"] = Projects(concept!); 
     return entries; 
   } 
  
@@ -21,14 +21,14 @@ class TasksEntries extends ModelEntries {
     if (concept == null) { 
       throw ConceptError("${conceptCode} concept does not exist.") ; 
     } 
-    if (concept.code == "Employee") { 
-      return Employees(concept); 
+    if (concept.code == "Employee") {
+      return Employees(concept!); 
     } 
-    if (concept.code == "Project") { 
-      return Projects(concept); 
+    if (concept.code == "Project") {
+      return Projects(concept!); 
     } 
-    if (concept.code == "Task") { 
-      return Tasks(concept); 
+    if (concept.code == "Task") {
+      return Tasks(concept!); 
     } 
     return null; 
   } 
@@ -38,14 +38,14 @@ class TasksEntries extends ModelEntries {
     if (concept == null) { 
       throw ConceptError("${conceptCode} concept does not exist.") ; 
     } 
-    if (concept.code == "Employee") { 
-      return Employee(concept); 
+    if (concept.code == "Employee") {
+      return Employee(concept!); 
     } 
-    if (concept.code == "Project") { 
-      return Project(concept); 
+    if (concept.code == "Project") {
+      return Project(concept!); 
     } 
-    if (concept.code == "Task") { 
-      return Task(concept); 
+    if (concept.code == "Task") {
+      return Task(concept!); 
     } 
     return null; 
   } 

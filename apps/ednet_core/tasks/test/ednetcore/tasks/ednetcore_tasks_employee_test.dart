@@ -68,7 +68,7 @@ void testEdnetcoreTasksEmployees(EdnetcoreDomain ednetcoreDomain,
     });
 
     test("Add employee required error", () {
-      var employeeConcept = employees.concept;
+      var employeeConcept = employees.concept!;
       var employeeCount = employees.length;
       var employee = Employee(employeeConcept);
       var added = employees.add(employee);
@@ -81,7 +81,7 @@ void testEdnetcoreTasksEmployees(EdnetcoreDomain ednetcoreDomain,
     });
 
     test("Add employee unique error", () {
-      var employeeConcept = employees.concept;
+      var employeeConcept = employees.concept!;
       var employeeCount = employees.length;
       var employee = Employee(employeeConcept);
       var randomEmployee = employees.random();
@@ -150,7 +150,7 @@ void testEdnetcoreTasksEmployees(EdnetcoreDomain ednetcoreDomain,
       expect(selectedEmployees.source?.isEmpty, isFalse);
       var employeesCount = employees.length;
 
-      var employee = Employee(employees.concept);
+      var employee = Employee(employees.concept!);
       employee.email = 'east';
       employee.lastName = 'paper';
       employee.firstName = 'chairman';
@@ -302,7 +302,7 @@ void testEdnetcoreTasksEmployees(EdnetcoreDomain ednetcoreDomain,
 
     test("employee action undo and redo", () {
       var employeeCount = employees.length;
-      var employee = Employee(employees.concept);
+      var employee = Employee(employees.concept!);
       employee.email = 'policeman';
       employee.lastName = 'music';
       employee.firstName = 'web';
@@ -324,7 +324,7 @@ void testEdnetcoreTasksEmployees(EdnetcoreDomain ednetcoreDomain,
 
     test("employee session undo and redo", () {
       var employeeCount = employees.length;
-      var employee = Employee(employees.concept);
+      var employee = Employee(employees.concept!);
       employee.email = 'undo';
       employee.lastName = 'job';
       employee.firstName = 'wheat';
@@ -446,7 +446,7 @@ void testEdnetcoreTasksEmployees(EdnetcoreDomain ednetcoreDomain,
       expect(reaction, isNotNull);
 
       ednetcoreDomain.startCommandReaction(reaction);
-      var employee = Employee(employees.concept);
+      var employee = Employee(employees.concept!);
       employee.email = 'smog';
       employee.lastName = 'word';
       employee.firstName = 'house';

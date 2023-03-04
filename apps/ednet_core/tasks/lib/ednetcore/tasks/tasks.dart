@@ -4,7 +4,7 @@ part of ednetcore_tasks;
  
 class Task extends TaskGen { 
  
-  Task(Concept concept) : super(concept); 
+  Task(Concept concept) : super(concept!); 
  
   // added after code gen - begin 
  
@@ -14,7 +14,7 @@ class Task extends TaskGen {
  
 class Tasks extends TasksGen { 
  
-  Tasks(Concept concept) : super(concept); 
+  Tasks(Concept concept) : super(concept!); 
  
   // added after code gen - begin 
  

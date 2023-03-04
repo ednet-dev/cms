@@ -6,7 +6,7 @@ abstract class EmployeeGen extends Entity<Employee> {
  
   EmployeeGen(Concept concept) { 
     this.concept = concept; 
-    Concept? taskConcept = concept.model.concepts.singleWhereCode("Task"); 
+    Concept? taskConcept = concept.model.concepts.singleWhereCode("Task");
     assert(taskConcept!= null); 
     setChild("tasks", Tasks(taskConcept!)); 
   } 
@@ -22,8 +22,8 @@ abstract class EmployeeGen extends Entity<Employee> {
   
   Tasks get tasks => getChild("tasks") as Tasks; 
   
-  Employee newEntity() => Employee(concept); 
-  Employees newEntities() => Employees(concept); 
+  Employee newEntity() => Employee(concept!); 
+  Employees newEntities() => Employees(concept!); 
   
 } 
  
@@ -33,8 +33,8 @@ abstract class EmployeesGen extends Entities<Employee> {
     this.concept = concept; 
   } 
  
-  Employees newEntities() => Employees(concept); 
-  Employee newEntity() => Employee(concept); 
+  Employees newEntities() => Employees(concept!); 
+  Employee newEntity() => Employee(concept!); 
   
 } 
  

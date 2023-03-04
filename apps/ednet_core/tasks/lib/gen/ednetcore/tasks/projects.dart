@@ -6,7 +6,7 @@ abstract class ProjectGen extends Entity<Project> {
  
   ProjectGen(Concept concept) { 
     this.concept = concept; 
-    Concept? taskConcept = concept.model.concepts.singleWhereCode("Task"); 
+    Concept? taskConcept = concept.model.concepts.singleWhereCode("Task");
     assert(taskConcept!= null); 
     setChild("tasks", Tasks(taskConcept!)); 
   } 
@@ -19,8 +19,8 @@ abstract class ProjectGen extends Entity<Project> {
   
   Tasks get tasks => getChild("tasks") as Tasks; 
   
-  Project newEntity() => Project(concept); 
-  Projects newEntities() => Projects(concept); 
+  Project newEntity() => Project(concept!); 
+  Projects newEntities() => Projects(concept!); 
   
 } 
  
@@ -30,8 +30,8 @@ abstract class ProjectsGen extends Entities<Project> {
     this.concept = concept; 
   } 
  
-  Projects newEntities() => Projects(concept); 
-  Project newEntity() => Project(concept); 
+  Projects newEntities() => Projects(concept!); 
+  Project newEntity() => Project(concept!); 
   
 } 
  
