@@ -9,7 +9,7 @@ var ednetcoreTasksModelJson = r'''
 {
     "width":990,
     "height":580,
-    "boxes":[
+    "concepts":[
         {
             "name":"Employee",
             "entry":true,
@@ -17,7 +17,7 @@ var ednetcoreTasksModelJson = r'''
             "y":43,
             "width":80,
             "height":80,
-            "items":[
+            "attributes":[
                 {
                     "sequence":10,
                     "name":"email",
@@ -54,7 +54,7 @@ var ednetcoreTasksModelJson = r'''
             "y":43,
             "width":80,
             "height":80,
-            "items":[
+            "attributes":[
                 {
                     "sequence":10,
                     "name":"name",
@@ -82,7 +82,7 @@ var ednetcoreTasksModelJson = r'''
             "y":223,
             "width":80,
             "height":60,
-            "items":[
+            "attributes":[
                 {
                     "sequence":10,
                     "name":"description",
@@ -95,34 +95,34 @@ var ednetcoreTasksModelJson = r'''
             ]
         }
     ],
-    "lines":[
+    "relations":[
         {
-            "box1Name":"Project",
-            "box2Name":"Task",
+            "from":"Project",
+            "to":"Task",
             "category":"relationship",
             "internal":true,
-            "box1box2Name":"tasks",
-            "box1box2Min":"0",
-            "box1box2Max":"N",
-            "box1box2Id":false,
-            "box2box1Name":"project",
-            "box2box1Min":"1",
-            "box2box1Max":"1",
-            "box2box1Id":true
+            "fromToName":"tasks",
+            "fromToMin":"0",
+            "fromToMax":"N",
+            "fromToId":false,
+            "toFromName":"project",
+            "toFromMin":"1",
+            "toFromMax":"1",
+            "toFromId":true
         },
         {
-            "box1Name":"Employee",
-            "box2Name":"Task",
+            "from":"Employee",
+            "to":"Task",
             "category":"relationship",
             "internal":true,
-            "box1box2Name":"tasks",
-            "box1box2Min":"0",
-            "box1box2Max":"N",
-            "box1box2Id":false,
-            "box2box1Name":"employee",
-            "box2box1Min":"1",
-            "box2box1Max":"1",
-            "box2box1Id":true
+            "fromToName":"tasks",
+            "fromToMin":"0",
+            "fromToMax":"N",
+            "fromToId":false,
+            "toFromName":"employee",
+            "toFromMin":"1",
+            "toFromMax":"1",
+            "toFromId":true
         }
     ]
 }
