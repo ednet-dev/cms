@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the createModelData function from the ednet_net library, for the Dart programming language.">
+  <title>createModelData function - ednet_net library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../ednet_net/ednet_net-library.html">ednet_net</a></li>
+    <li class="self-crumb">createModelData function</li>
+  </ol>
+  <div class="self-name">createModelData</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">createModelData</span> function 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="../ednet_core/ModelEntries-class.html">ModelEntries</a></span>
+<span class="name ">createModelData</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="createModelData-param-model"><span class="type-annotation"><a href="../ednet_core/Model-class.html">Model</a></span> <span class="parameter-name">model</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">ModelEntries createModelData(Model model) {
+  var entries = new ModelEntries(model);
+  Entities users = entries.getEntry(&#39;User&#39;);
+  assert(users.length == 0);
+
+  Entity user1 = new Entity&lt;Concept&gt;();
+  user1.concept = users.concept;
+  user1.setAttribute(&#39;email&#39;, &#39;user1@example.com&#39;);
+  user1.setAttribute(&#39;name&#39;, &#39;User One&#39;);
+  user1.setAttribute(&#39;password&#39;, &#39;password1&#39;);
+&#47;&#47; ...
+
+  Entities proposals = entries.getEntry(&#39;Proposal&#39;);
+  assert(proposals.length == 0);
+
+  Entity proposal1 = new Entity&lt;Concept&gt;();
+  proposal1.concept = proposals.concept;
+  proposal1.setAttribute(&#39;id&#39;, 1);
+  proposal1.setAttribute(&#39;title&#39;, &#39;Proposal One&#39;);
+  proposal1.setAttribute(&#39;description&#39;, &#39;Description of Proposal One&#39;);
+  proposal1.setParent(&#39;user&#39;, user1);
+&#47;&#47; ...
+
+  Entities votes = entries.getEntry(&#39;Vote&#39;);
+  assert(votes.length == 0);
+
+  Entity vote1 = new Entity&lt;Concept&gt;();
+  vote1.concept = votes.concept;
+  vote1.setAttribute(&#39;id&#39;, 1);
+  vote1.setAttribute(&#39;title&#39;, &#39;Vote One&#39;);
+  vote1.setAttribute(&#39;description&#39;, &#39;Description of Vote One&#39;);
+  vote1.setParent(&#39;user&#39;, user1);
+  &#47;&#47;...
+
+  Entities comments = entries.getEntry(&#39;Comment&#39;);
+  assert(comments.length == 0);
+
+  Entity comment1 = new Entity&lt;Concept&gt;();
+  comment1.concept = comments.concept;
+  comment1.setAttribute(&#39;id&#39;, 1);
+
+  Entity comment2 = new Entity&lt;Concept&gt;();
+  comment2.concept = comments.concept;
+  comment2.setAttribute(&#39;id&#39;, 2);
+
+  Entity comment3 = new Entity&lt;Concept&gt;();
+  comment3.concept = comments.concept;
+  comment3.setAttribute(&#39;id&#39;, 3);
+
+  Entity comment4 = new Entity&lt;Concept&gt;();
+  comment4.concept = comments.concept;
+  comment4.setAttribute(&#39;id&#39;, 4);
+
+  return entries;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">ednet_core</a></li>
+  <li><a href="../ednet_net/ednet_net-library.html">ednet_net</a></li>
+  <li class="self-crumb">createModelData function</li>
+</ol>
+
+
+    <h5>ednet_net library</h5>
+    <ol>
+      <li class="section-title"><a href="../ednet_net/ednet_net-library.html#classes">Classes</a></li>
+        <li><a href="../ednet_net/UserConcept-class.html">UserConcept</a></li>
+
+
+
+
+
+      <li class="section-title"><a href="../ednet_net/ednet_net-library.html#functions">Functions</a></li>
+        <li><a href="../ednet_net/createDomainModel.html">createDomainModel</a></li>
+        <li><a href="../ednet_net/createModelData.html">createModelData</a></li>
+        <li><a href="../ednet_net/main.html">main</a></li>
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    ednet_core
+      0.0.1+1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
