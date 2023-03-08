@@ -17,8 +17,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  ednet_core:
-    path: ../../packages/core
+  ednet_core: ^0.0.1+2
 
 dev_dependencies:
   flutter_test:
