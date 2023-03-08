@@ -71,7 +71,6 @@ discussion and deploy it on the platform of our choosing.
 
 ```yaml
 concepts:
-
   - name: User
     entry: true
     attributes:
@@ -111,33 +110,39 @@ concepts:
         name: iso
 
 relations:
-
   - from: Address
-    to: Country
     fromToName: country
-    fromToMin: 1
-    fromToMax: 1
+    to: Country
     toFromName: addresses
-    toFromMin: 0
-    toFromMax: N
+    id:
+      from: false
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+
+    toFromCardinality:
+      min: 0
+      max: N
     category: relationship
     internal: false
-    fromToId: false
-    toFromId: false
 
   - from: User
-    to: Company
     fromToName: company
-    fromToMin: 1
-    fromToMax: 1
+    to: Company
     toFromName: employees
-    toFromMin: 0
-    toFromMax: N
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+
+    toFromCardinality:
+      min: 0
+      max: N
     category: relationship
     internal: false
-    fromToId: true
-    toFromId: false
-
 ```
 
 ## Project Ambition:
@@ -153,7 +158,6 @@ ECMA Script transpilation and hooking publishing to npmjs for web development
 Backend use case specifics and examples of usage EDNetCore as domain model framework for custom backend with dart or
 nodejs and integration with existing ecosystem of popular technologies missing domain model opinion as Remix and
 similar.
-
 
 One domain model framework integrating backend and frontend implementation at the end generating optionally different
 levels of the architecture for the integration.
