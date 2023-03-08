@@ -139,7 +139,6 @@ var uriList = [
 'http://fr.openclassrooms.com/',
 'http://pathbrite.com/blog/design-thinking-in-the-classroom/',
 'http://www.theguardian.com/higher-education-network/blog/2013/oct/21/open-access-myths-peter-suber-harvard',
-'https://geekli.st/dzenanr',
 'http://www.6yka.com/novost/45866/28-najintrigantnijih-gradova-svijeta',
 'http://www.houzz.com/photos',
 'http://miss-cranky-pants.quora.com/Tip-From-Life-Hacks',
