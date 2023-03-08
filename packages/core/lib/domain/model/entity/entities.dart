@@ -834,8 +834,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     if (_concept == null) {
       throw new ConceptException('Entities.update: concept is not defined.');
     }
-    final id1 = beforeEntity.id;
-    final id2 = afterEntity.id;
     if (beforeEntity.oid == afterEntity.oid &&
         beforeEntity.code == afterEntity.code &&
         beforeEntity.id == afterEntity.id) {

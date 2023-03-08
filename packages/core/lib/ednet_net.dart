@@ -124,7 +124,7 @@ ModelEntries createModelData(Model model) {
   assert(users.length == 0);
 
   Entity user1 = new Entity<Concept>();
-  user1.concept = users.concept!;
+  user1.concept = users.concept;
   user1.setAttribute('email', 'user1@example.com');
   user1.setAttribute('name', 'User One');
   user1.setAttribute('password', 'password1');
@@ -134,7 +134,7 @@ ModelEntries createModelData(Model model) {
   assert(proposals.length == 0);
 
   Entity proposal1 = new Entity<Concept>();
-  proposal1.concept = proposals.concept!;
+  proposal1.concept = proposals.concept;
   proposal1.setAttribute('id', 1);
   proposal1.setAttribute('title', 'Proposal One');
   proposal1.setAttribute('description', 'Description of Proposal One');
@@ -145,7 +145,7 @@ ModelEntries createModelData(Model model) {
   assert(votes.length == 0);
 
   Entity vote1 = new Entity<Concept>();
-  vote1.concept = votes.concept!;
+  vote1.concept = votes.concept;
   vote1.setAttribute('id', 1);
   vote1.setAttribute('title', 'Vote One');
   vote1.setAttribute('description', 'Description of Vote One');
@@ -156,27 +156,22 @@ ModelEntries createModelData(Model model) {
   assert(comments.length == 0);
 
   Entity comment1 = new Entity<Concept>();
-  comment1.concept = comments.concept!;
+  comment1.concept = comments.concept;
   comment1.setAttribute('id', 1);
 
   Entity comment2 = new Entity<Concept>();
-  comment2.concept = comments.concept!;
+  comment2.concept = comments.concept;
   comment2.setAttribute('id', 2);
 
   Entity comment3 = new Entity<Concept>();
-  comment3.concept = comments.concept!;
+  comment3.concept = comments.concept;
   comment3.setAttribute('id', 3);
 
   Entity comment4 = new Entity<Concept>();
-  comment4.concept = comments.concept!;
+  comment4.concept = comments.concept;
   comment4.setAttribute('id', 4);
 
   return entries;
 }
 
-void main() {
-  Model model = createDomainModel();
-  ModelEntries entries = createModelData(model);
-
-  print('ojha');
-}
+void main() {}

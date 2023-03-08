@@ -463,9 +463,6 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     for (Parent parent in _concept!.parents.whereType<Parent>()) {
       if (parent.identifier) {
-        final pId = parent.id;
-        final pOiId = parent.oid;
-        final pCode = parent.code;
 
         var beforeUpdate = parent.update;
         parent.update = true;

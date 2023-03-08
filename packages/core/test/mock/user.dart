@@ -1,5 +1,3 @@
-import 'package:ednet_core/ednet_core.dart';
-
 // class User extends Entity {
 //   @override
 //   List<EntityCommand> commands;

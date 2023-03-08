@@ -36,7 +36,10 @@ class ValidationExceptions implements IValidationExceptions {
   }
 
   /// Displays (prints) a title, then exceptions.
-  void display({String title: 'Entities', bool withOid: true}) {
+  void display({
+    String title = 'Entities',
+    bool withOid = true,
+  }) {
     if (title == 'Entities') {
       title = 'Errors';
     }

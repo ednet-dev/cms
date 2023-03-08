@@ -1,7 +1,5 @@
 library repository;
 
-import '../model.dart';
-
 part 'repository/destructive/destructive_repository.dart';
 
 part 'repository/interfaces/repository.dart';

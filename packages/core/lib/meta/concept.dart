@@ -79,7 +79,7 @@ class Concept extends Entity<Concept> {
       if (identical(this, concept!)) {
         return true;
       } else {
-        if (concept == null) {
+        if ((concept as dynamic) == null) {
           return false;
         } else {
           return equals(concept);

@@ -33,7 +33,7 @@ abstract class IBasicCommand implements ICommand {
   @override
   toString() => 'command: $name; state: $state -- description: $description';
 
-  display({String title: 'BasicCommand'}) {
+  display({String title = 'BasicCommand'}) {
     print('');
     print('======================================');
     print('$title                                ');

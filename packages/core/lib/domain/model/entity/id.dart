@@ -67,9 +67,6 @@ class Id implements IId<Id> {
         final refA = _referenceMap[p.code!];
         final refB = id.getReference(p.code!);
         if (refA != refB) {
-          final pOiId = p.oid;
-          final pId = p.id;
-          final pCode = p.code;
           return false;
         }
       }
@@ -138,7 +135,7 @@ class Id implements IId<Id> {
       if (identical(this, id)) {
         return true;
       } else {
-        if (this == null || id == null) {
+        if ((this as dynamic) == null || (id as dynamic) == null) {
           return false;
         } else {
           return equals(id);
