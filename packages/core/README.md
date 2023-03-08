@@ -1,6 +1,6 @@
 ### DISCLAIMER: Not production ready, very volatile API! But with locked versions one can already develop full-blown domain models.
 
-# Init **EDNet Core** v0.0.1+1
+# Init **EDNet Core** v0.0.1+2
 
 Credentials:
 - Based on [Dartling](https://github.com/dzenanr/dartling)
@@ -9,7 +9,7 @@ Credentials:
 # Collaboration:
 Start your collaboration by visiting and taking participation in [RFC](https://github.com/ednet-dev/cms/pull/6)
 
-## 0.0.1+1 RFC state
+## 0.0.1+2 RFC state
 
 # Proposal for Collaboration on EDNetCore: A Meta Framework for Rapid Definition of Domain Models
 
