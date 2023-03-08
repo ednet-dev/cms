@@ -1,7 +1,7 @@
 name: ednet_one
 description: Semantic Web Client
 
-homepage: http/ednet.one
+homepage: http/context.one
 
   # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
