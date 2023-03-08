@@ -1,11 +1,17 @@
+import 'package:ednet_one/src/ui/domains/direct_democracy_details_view.dart';
+import 'package:ednet_one/src/ui/domains/domains_view.dart';
+import 'package:ednet_one/src/ui/domains/legislation_details_view.dart';
+import 'package:ednet_one/src/ui/domains/project_management_details_view.dart';
+import 'package:ednet_one/src/ui/domains/social_network_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
-import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
+import 'ui/domains/cms_graph_page_details_view.dart';
+import 'ui/sample_feature/sample_item_details_view.dart';
+import 'ui/sample_feature/sample_item_list_view.dart';
+import 'ui/settings/settings_controller.dart';
+import 'ui/settings/settings_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -30,7 +36,7 @@ class MyApp extends StatelessWidget {
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the
           // background.
-          restorationScopeId: 'app',
+          restorationScopeId: 'ednet_one',
 
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
@@ -67,13 +73,31 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
+                  case DomainsView.routeName:
+                    return DomainsView();
+
+                  ///domains
+                  case DirectDemocracyDetailsView.routeName:
+                    return const DirectDemocracyDetailsView();
+                  case LegislationDetailsView.routeName:
+                    return const LegislationDetailsView();
+                  case ProjectManagementDetailsView.routeName:
+                    return const ProjectManagementDetailsView();
+                  case SocialNetworkDetailsView.routeName:
+                    return const SocialNetworkDetailsView();
+                  case CmsGraphPageDetailsView.routeName:
+                    return const CmsGraphPageDetailsView();
+
+                  /// system
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
                   case SampleItemDetailsView.routeName:
                     return const SampleItemDetailsView();
                   case SampleItemListView.routeName:
-                  default:
                     return const SampleItemListView();
+
+                  default:
+                    return DomainsView();
                 }
               },
             );
