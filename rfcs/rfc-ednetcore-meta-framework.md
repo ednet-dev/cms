@@ -22,50 +22,10 @@ to democratize the no-code approach by empowering developers to focus on what ma
 
 ## Framework Description:
 
-EDNetCore is a meta framework for rapid definition of domain models and is an abstraction on top of DDD and
-EventStorming, implementing their semantic and lingo. It enables the encapsulation of reusable parts of implementation
-for generic repositories and UI default renderings. In combination with other open-source initiatives, EDNetCore can
-generate almost everything infrastructural and have default Flutter material interpreter app for multi-platform
-deployment or default React material interpreter app optimized for web deployment of EDNetCore domain models.
-
-```dart
-import 'package:ednet_core/ednet_core.dart';
-
-/// Entities and Value objects
-class Vote extends Entity<Vote> {}
-
-class Votes extends Entities<Vote> {}
-
-class Initiative extends Entity<Initiative> {}
-
-class Citizen extends Entity<Citizen> {}
-
-class Proposal extends Entity<Proposal> {}
-
-class Address extends ValueObject<Address> {}
-// ...
-
-/// Commands
-class VoteForProposalCommand extends IEntitiesCommand {}
-
-class VoteAgainstProposalCommand extends IEntitiesCommand {}
-
-class CommentProposalCommand extends IEntitiesCommand {}
-// ... 
-
-/// Side effects as Command reactions  - Events
-class ProposalCommentedReaction implements ICommandReaction {}
-// ...
-
-/// Events
-class VotedForProposalEvent extends IEntitiesEvent {}
-
-class VotedAgainstProposalEvent extends IEntitiesEvent {}
-// ...
-```
-
-EDNetDsl is used to describe any domain model, and EDNetCMS interprets it on various platforms using appropriate default
-model interpreters. By only manipulating a YAML file of user stories high-level concepts and their basic relationships,
+### EDNetDSL
+is used to describe any domain model.
+EDNetCMS interprets it on various platforms using appropriate default model interpreters, 
+by only manipulating a YAML file of user stories high-level concepts and their basic relationships,
 as not more complex as a basic ER diagram, we can generate an entire well-structured, evolveable MVP of domain model in
 discussion and deploy it on the platform of our choosing.
 
@@ -145,6 +105,49 @@ relations:
     internal: false
 ```
 
+### EDNetCore
+is an instance implementation of EDNetDSL meta framework for rapid definition of domain models and is an abstraction on top of DDD and
+EventStorming, implementing their semantic and lingo. It enables the encapsulation of reusable parts of implementation
+for generic repositories and UI default renderings. In combination with other open-source initiatives, EDNetCore can
+generate almost everything infrastructural and have default Flutter material interpreter app for multi-platform
+deployment or default React material interpreter app optimized for web deployment of EDNetCore domain models.
+
+```dart
+import 'package:ednet_core/ednet_core.dart';
+
+/// Entities and Value objects
+class Vote extends Entity<Vote> {}
+
+class Votes extends Entities<Vote> {}
+
+class Initiative extends Entity<Initiative> {}
+
+class Citizen extends Entity<Citizen> {}
+
+class Proposal extends Entity<Proposal> {}
+
+class Address extends ValueObject<Address> {}
+// ...
+
+/// Commands
+class VoteForProposalCommand extends IEntitiesCommand {}
+
+class VoteAgainstProposalCommand extends IEntitiesCommand {}
+
+class CommentProposalCommand extends IEntitiesCommand {}
+// ... 
+
+/// Side effects as Command reactions  - Events
+class ProposalCommentedReaction implements ICommandReaction {}
+// ...
+
+/// Events
+class VotedForProposalEvent extends IEntitiesEvent {}
+
+class VotedAgainstProposalEvent extends IEntitiesEvent {}
+// ...
+```
+
 ## Project Ambition:
 
 The project's ambition is not small, and there is a job to be done across all levels of seniority. There are amounts of
@@ -173,6 +176,8 @@ DBPedia for generic interpretation or at least building of library of highly con
 public semantic models. Or, in plain language - we can and shall use public knowledge dbs and their ontologies to model
 all that there is, or to spark a life in our structured knowledge so that we persist our custom interactions of our
 custom contexts.
+
+EaaS, Everything as a service, we have to pay special attention to deployment capabilities and support all major cloud providers in unified way
 
 ## Conclusion:
 
