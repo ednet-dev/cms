@@ -1,0 +1,983 @@
+@startuml
+set namespaceSeparator ::
+
+class "ednet_core::configuration::yaml_source.dart::YamlSource" {
+  +String localPath
+  +String remoteUrl
+  +Future<String> getYamlPath()
+}
+
+class "ednet_core::domain::infrastructure::graph::edge_direction.dart::EdgeDirection" {
+  +int index
+  {static} +List<EdgeDirection> values
+  {static} +EdgeDirection LeftToRight
+  {static} +EdgeDirection RightToLeft
+}
+
+"ednet_core::domain::infrastructure::graph::edge_direction.dart::EdgeDirection" o-- "ednet_core::domain::infrastructure::graph::edge_direction.dart::EdgeDirection"
+"dart::core::Enum" <|-- "ednet_core::domain::infrastructure::graph::edge_direction.dart::EdgeDirection"
+
+class "ednet_core::domain::infrastructure::graph::edge_type.dart::EdgeType" {
+  +int index
+  {static} +List<EdgeType> values
+  {static} +EdgeType Directed
+  {static} +EdgeType Undirected
+}
+
+"ednet_core::domain::infrastructure::graph::edge_type.dart::EdgeType" o-- "ednet_core::domain::infrastructure::graph::edge_type.dart::EdgeType"
+"dart::core::Enum" <|-- "ednet_core::domain::infrastructure::graph::edge_type.dart::EdgeType"
+
+class "ednet_core::domain::infrastructure::graph::node_type.dart::NodeType" {
+  +String name
+  {static} +NodeType Event
+  {static} +NodeType Command
+  {static} +NodeType AggregateRoot
+  {static} +NodeType Role
+}
+
+"ednet_core::domain::infrastructure::graph::node_type.dart::NodeType" o-- "ednet_core::domain::infrastructure::graph::node_type.dart::NodeType"
+
+abstract class "ednet_core::ednet_core.dart::IDomainModels" {
+  +Domain domain
+  +void add()
+  +Model? getModel()
+  +IModelEntries? getModelEntries()
+  +IDomainSession newSession()
+}
+
+"ednet_core::ednet_core.dart::IDomainModels" o-- "ednet_core::ednet_core.dart::Domain"
+"ednet_core::ednet_core.dart::ISourceOfCommandReaction" <|-- "ednet_core::ednet_core.dart::IDomainModels"
+
+class "ednet_core::ednet_core.dart::DomainModels" {
+  -Domain _domain
+  -Map<String, ModelEntries> _modelEntriesMap
+  -List<ICommandReaction> _actionReactions
+  +Domain domain
+  +void addModelEntries()
+  +Model? getModel()
+  +ModelEntries? getModelEntries()
+  +DomainSession newSession()
+  +void startCommandReaction()
+  +void cancelCommandReaction()
+  +void add()
+  +void notifyCommandReactions()
+}
+
+"ednet_core::ednet_core.dart::DomainModels" o-- "ednet_core::ednet_core.dart::Domain"
+"ednet_core::ednet_core.dart::IDomainModels" <|-- "ednet_core::ednet_core.dart::DomainModels"
+
+abstract class "ednet_core::ednet_core.dart::IDomainSession" {
+  +IDomainModels domainModels
+  +IPast past
+}
+
+"ednet_core::ednet_core.dart::IDomainSession" o-- "ednet_core::ednet_core.dart::IDomainModels"
+"ednet_core::ednet_core.dart::IDomainSession" o-- "ednet_core::ednet_core.dart::IPast"
+
+class "ednet_core::ednet_core.dart::DomainSession" {
+  -DomainModels _domainModels
+  -Past _past
+  +DomainModels domainModels
+  +Past past
+}
+
+"ednet_core::ednet_core.dart::DomainSession" o-- "ednet_core::ednet_core.dart::DomainModels"
+"ednet_core::ednet_core.dart::DomainSession" o-- "ednet_core::ednet_core.dart::Past"
+"ednet_core::ednet_core.dart::IDomainSession" <|-- "ednet_core::ednet_core.dart::DomainSession"
+
+abstract class "ednet_core::ednet_core.dart::IRepository" {
+  +Domains domains
+  +void add()
+  +IDomainModels getDomainModels()
+  +void gen()
+}
+
+"ednet_core::ednet_core.dart::IRepository" o-- "ednet_core::ednet_core.dart::Domains"
+
+class "ednet_core::ednet_core.dart::Repository" {
+  +String code
+  -Domains _domains
+  -Map<String, DomainModels> _domainModelsMap
+  +Domains domains
+  +void add()
+  +DomainModels getDomainModels()
+  +void gen()
+  +void title()
+  +void subTitle()
+}
+
+"ednet_core::ednet_core.dart::Repository" o-- "ednet_core::ednet_core.dart::Domains"
+
+class "ednet_core::ednet_core.dart::AddCommand" {
+}
+
+"ednet_core::ednet_core.dart::IEntitiesCommand" <|-- "ednet_core::ednet_core.dart::AddCommand"
+
+abstract class "ednet_core::ednet_core.dart::IBasicCommand" {
+  +String name
+  +String category
+  +String state
+  +String? description
+  +DomainSession session
+  +bool partOfTransaction
+  +bool started
+  +bool done
+  +bool undone
+  +bool redone
+  +bool doIt()
+  +bool undo()
+  +bool redo()
+  +String toString()
+  +dynamic display()
+}
+
+"ednet_core::ednet_core.dart::IBasicCommand" o-- "ednet_core::ednet_core.dart::DomainSession"
+"ednet_core::ednet_core.dart::ICommand" <|-- "ednet_core::ednet_core.dart::IBasicCommand"
+
+abstract class "ednet_core::ednet_core.dart::IEntityCommand" {
+  +Entity<Entity<dynamic>> entity
+  +String property
+  +Object? before
+  +Object after
+  +bool doIt()
+  +bool undo()
+  +bool redo()
+  +String toString()
+}
+
+"ednet_core::ednet_core.dart::IEntityCommand" o-- "ednet_core::ednet_core.dart::Entity<Entity<dynamic>>"
+"ednet_core::ednet_core.dart::IBasicCommand" <|-- "ednet_core::ednet_core.dart::IEntityCommand"
+
+abstract class "ednet_core::ednet_core.dart::IEntitiesCommand" {
+  +Entities<Entity<dynamic>> entities
+  +Entity<Entity<dynamic>> entity
+  +bool doIt()
+  +bool undo()
+  +bool redo()
+}
+
+"ednet_core::ednet_core.dart::IEntitiesCommand" o-- "ednet_core::ednet_core.dart::Entities<Entity<dynamic>>"
+"ednet_core::ednet_core.dart::IEntitiesCommand" o-- "ednet_core::ednet_core.dart::Entity<Entity<dynamic>>"
+"ednet_core::ednet_core.dart::IBasicCommand" <|-- "ednet_core::ednet_core.dart::IEntitiesCommand"
+
+abstract class "ednet_core::ednet_core.dart::ICommand" {
+  +bool done
+  +bool undone
+  +bool redone
+  +bool doIt()
+  +bool undo()
+  +bool redo()
+}
+
+abstract class "ednet_core::ednet_core.dart::ITransaction" {
+  +IPast past
+  +void add()
+}
+
+"ednet_core::ednet_core.dart::ITransaction" o-- "ednet_core::ednet_core.dart::IPast"
+"ednet_core::ednet_core.dart::ICommand" <|-- "ednet_core::ednet_core.dart::ITransaction"
+
+class "ednet_core::ednet_core.dart::RemoveCommand" {
+}
+
+"ednet_core::ednet_core.dart::IEntitiesCommand" <|-- "ednet_core::ednet_core.dart::RemoveCommand"
+
+class "ednet_core::ednet_core.dart::SetAttributeCommand" {
+}
+
+"ednet_core::ednet_core.dart::IEntityCommand" <|-- "ednet_core::ednet_core.dart::SetAttributeCommand"
+
+class "ednet_core::ednet_core.dart::SetChildCommand" {
+}
+
+"ednet_core::ednet_core.dart::IEntityCommand" <|-- "ednet_core::ednet_core.dart::SetChildCommand"
+
+class "ednet_core::ednet_core.dart::SetParentCommand" {
+}
+
+"ednet_core::ednet_core.dart::IEntityCommand" <|-- "ednet_core::ednet_core.dart::SetParentCommand"
+
+class "ednet_core::ednet_core.dart::Transaction" {
+  -Past _commands
+  +Past past
+  +void add()
+  +bool doIt()
+  +bool undo()
+  +bool redo()
+}
+
+"ednet_core::ednet_core.dart::Transaction" o-- "ednet_core::ednet_core.dart::Past"
+"ednet_core::ednet_core.dart::IBasicCommand" <|-- "ednet_core::ednet_core.dart::Transaction"
+"ednet_core::ednet_core.dart::ITransaction" <|-- "ednet_core::ednet_core.dart::Transaction"
+
+class "ednet_core::ednet_core.dart::Past" {
+  +int cursor
+  +List<IBasicCommand> commands
+  +List<IPastCommand> pastReactions
+  +bool empty
+  +bool undoLimit
+  +bool redoLimit
+  +void add()
+  -void _removeRightOfCursor()
+  -void _notifyUndoRedo()
+  -void _moveCursorForward()
+  -void _moveCursorBackward()
+  +void clear()
+  +bool doIt()
+  +bool undo()
+  +bool redo()
+  +bool doAll()
+  +bool undoAll()
+  +bool redoAll()
+  +void startPastReaction()
+  +void cancelPastReaction()
+  +void notifyCannotUndo()
+  +void notifyCanUndo()
+  +void notifyCanRedo()
+  +void notifyCannotRedo()
+  +void display()
+}
+
+"ednet_core::ednet_core.dart::IPast" <|-- "ednet_core::ednet_core.dart::Past"
+
+abstract class "ednet_core::ednet_core.dart::IPastCommand" {
+  +void reactCannotUndo()
+  +void reactCanUndo()
+  +void reactCanRedo()
+  +void reactCannotRedo()
+}
+
+abstract class "ednet_core::ednet_core.dart::ICommandReaction" {
+  +void react()
+}
+
+abstract class "ednet_core::ednet_core.dart::IPast" {
+  +List<ICommand> commands
+  +bool empty
+  +bool undoLimit
+  +bool redoLimit
+  +void add()
+  +void clear()
+  +bool doIt()
+  +bool undo()
+  +bool redo()
+}
+
+"ednet_core::ednet_core.dart::ISourceOfPastReaction" <|-- "ednet_core::ednet_core.dart::IPast"
+
+abstract class "ednet_core::ednet_core.dart::ISourceOfCommandReaction" {
+  +void startCommandReaction()
+  +void cancelCommandReaction()
+  +void notifyCommandReactions()
+}
+
+abstract class "ednet_core::ednet_core.dart::ISourceOfPastReaction" {
+  +void startPastReaction()
+  +void cancelPastReaction()
+  +void notifyCannotUndo()
+  +void notifyCanUndo()
+  +void notifyCanRedo()
+  +void notifyCannotRedo()
+}
+
+class "ednet_core::ednet_core.dart::Entities" {
+  -Concept _concept
+  -List<E> _entityList
+  -Map<int, E> _oidEntityMap
+  -Map<String, E> _codeEntityMap
+  -Map<String, E> _idEntityMap
+  +ValidationExceptions exceptions
+  +Entities<E>? source
+  +String minc
+  +String maxc
+  +bool pre
+  +bool post
+  +bool propagateToSource
+  +Random randomGen
+  +Concept concept
+  +E first
+  +bool isEmpty
+  +bool isNotEmpty
+  +Iterator<E> iterator
+  +E last
+  +int length
+  +int count
+  +E single
+  +List<E> internalList
+  +Entities<E> newEntities()
+  +Entity<E> newEntity()
+  +bool any()
+  +bool contains()
+  +E elementAt()
+  +E at()
+  +bool every()
+  +Iterable<T> expand()
+  +E firstWhere()
+  +T fold()
+  +void forEach()
+  +String join()
+  +E lastWhere()
+  +Iterable<T> map()
+  +E reduce()
+  +E singleWhere()
+  +Iterable<E> skip()
+  +Iterable<E> skipWhile()
+  +Iterable<E> take()
+  +Iterable<E> takeWhile()
+  +List<E> toList()
+  +Set<E> toSet()
+  +Iterable<E> where()
+  +E firstWhereAttribute()
+  +E random()
+  +E? singleWhereOid()
+  +Entity<Entity<dynamic>>? internalSingle()
+  +Entities<Entity<dynamic>>? internalChild()
+  +E singleWhereCode()
+  +E singleWhereId()
+  +E singleWhereAttributeId()
+  +Entities<E> copy()
+  +Entities<E> order()
+  +Entities<E> selectWhere()
+  +Entities<E> selectWhereAttribute()
+  +Entities<E> selectWhereParent()
+  +Entities<E> skipFirst()
+  +Entities<E> skipFirstWhile()
+  +Entities<E> takeFirst()
+  +Entities<E> takeFirstWhile()
+  +String toJson()
+  +List<Map<String, Object>> toJsonList()
+  +void fromJson()
+  +void fromJsonList()
+  +String toString()
+  +void clear()
+  +void sort()
+  +bool preAdd()
+  +bool add()
+  +bool postAdd()
+  +bool preRemove()
+  +bool remove()
+  +bool postRemove()
+  +bool update()
+  +bool addFrom()
+  +bool removeFrom()
+  +bool setAttributesFrom()
+  +void display()
+  +void displayOidMap()
+  +void displayCodeMap()
+  +void displayIdMap()
+  +Iterable<E> followedBy()
+  +Iterable<T> whereType()
+  +void integrate()
+  +void integrateAdd()
+  +void integrateRemove()
+  +void integrateSet()
+  +Iterable<T> cast()
+}
+
+"ednet_core::ednet_core.dart::Entities" o-- "ednet_core::ednet_core.dart::Concept"
+"ednet_core::ednet_core.dart::Entities" o-- "ednet_core::ednet_core.dart::ValidationExceptions"
+"ednet_core::ednet_core.dart::Entities" o-- "ednet_core::ednet_core.dart::Entities<E>"
+"ednet_core::ednet_core.dart::Entities" o-- "dart::math::Random"
+"ednet_core::ednet_core.dart::IEntities" <|-- "ednet_core::ednet_core.dart::Entities"
+
+class "ednet_core::ednet_core.dart::Entity" {
+  -Concept _concept
+  -Oid _oid
+  -String? _code
+  -DateTime? _whenAdded
+  -DateTime? _whenSet
+  -DateTime? _whenRemoved
+  +IValidationExceptions exceptions
+  -Map<String, Object?> _attributeMap
+  -Map<String, Reference> _referenceMap
+  -Map<String, Entity<E>?> _parentMap
+  -Map<String, Entities<E>> _childMap
+  -Map<String, Entities<E>> _internalChildMap
+  +bool pre
+  +bool post
+  +Concept concept
+  +Oid oid
+  +Id? id
+  +String code
+  +DateTime? whenAdded
+  +DateTime? whenSet
+  +DateTime? whenRemoved
+  +String codeFirstLetterLower
+  +String codeFirstLetterUpper
+  +String codeLowerUnderscore
+  +String codeLowerSpace
+  +String codePlural
+  +String codePluralFirstLetterLower
+  +String codePluralFirstLetterUpper
+  +String codePluralLowerUnderscore
+  +String codePluralFirstLetterUpperSpace
+  +int hashCode
+  +Entity<E> newEntity()
+  +Entities<E> newEntities()
+  +bool preSetAttribute()
+  +Object? getAttribute()
+  +bool setAttribute()
+  +bool postSetAttribute()
+  +String getStringFromAttribute()
+  +String? getStringOrNullFromAttribute()
+  +bool setStringToAttribute()
+  +Reference? getReference()
+  +void setReference()
+  +Entity<E>? getParent()
+  +Entities<Entity<dynamic>> getInternalChild()
+  +Entities<Entity<dynamic>>? getChild()
+  +bool setAttributesFrom()
+  +E copy()
+  +bool equals()
+  +bool ==()
+  +bool equalContent()
+  +int compareTo()
+  +int compareAttributes()
+  +String toString()
+  +void displayToString()
+  +void display()
+  +String toJson()
+  +Map<String, Object> toJsonMap()
+  +void fromJson()
+  +void fromJsonMap()
+  -void _neighborsFromJsonMap()
+  +bool setChild()
+  +bool setParent()
+}
+
+"ednet_core::ednet_core.dart::Entity" o-- "ednet_core::ednet_core.dart::Concept"
+"ednet_core::ednet_core.dart::Entity" o-- "ednet_core::ednet_core.dart::Oid"
+"ednet_core::ednet_core.dart::Entity" o-- "ednet_core::ednet_core.dart::IValidationExceptions"
+"ednet_core::ednet_core.dart::Entity" o-- "ednet_core::ednet_core.dart::Id"
+"ednet_core::ednet_core.dart::IEntity" <|-- "ednet_core::ednet_core.dart::Entity"
+
+abstract class "ednet_core::ednet_core.dart::IEntity" {
+  +DateTime? whenAdded
+  +DateTime? whenSet
+  +DateTime? whenRemoved
+  +Concept concept
+  +IValidationExceptions exceptions
+  +Oid oid
+  +IId<dynamic>? id
+  +String? code
+  +Object? getAttribute()
+  +bool preSetAttribute()
+  +bool setAttribute()
+  +bool postSetAttribute()
+  +String getStringFromAttribute()
+  +String? getStringOrNullFromAttribute()
+  +bool setStringToAttribute()
+  +IEntity<IEntity<dynamic>>? getParent()
+  +bool setParent()
+  +IEntities<IEntity<dynamic>>? getChild()
+  +bool setChild()
+  +E copy()
+  +String toJson()
+  +void fromJson()
+}
+
+"ednet_core::ednet_core.dart::IEntity" o-- "ednet_core::ednet_core.dart::Concept"
+"ednet_core::ednet_core.dart::IEntity" o-- "ednet_core::ednet_core.dart::IValidationExceptions"
+"ednet_core::ednet_core.dart::IEntity" o-- "ednet_core::ednet_core.dart::Oid"
+"ednet_core::ednet_core.dart::IEntity" o-- "ednet_core::ednet_core.dart::IId<dynamic>"
+"dart::core::Comparable" <|-- "ednet_core::ednet_core.dart::IEntity"
+
+class "ednet_core::ednet_core.dart::Id" {
+  -Concept _concept
+  -Map<String, Reference?> _referenceMap
+  -Map<String, Object?> _attributeMap
+  +Concept concept
+  +int referenceLength
+  +int attributeLength
+  +int length
+  +int hashCode
+  +Reference? getReference()
+  +void setReference()
+  +void setParent()
+  +Object? getAttribute()
+  +void setAttribute()
+  +bool equalParents()
+  +bool equalAttributes()
+  +bool equals()
+  +bool ==()
+  +int compareParents()
+  +int compareAttributes()
+  +int compareTo()
+  -String _dropEnd()
+  +String toString()
+  +void display()
+}
+
+"ednet_core::ednet_core.dart::Id" o-- "ednet_core::ednet_core.dart::Concept"
+"ednet_core::ednet_core.dart::IId" <|-- "ednet_core::ednet_core.dart::Id"
+
+abstract class "ednet_core::ednet_core.dart::IId" {
+  +Concept concept
+  +int referenceLength
+  +int attributeLength
+  +int length
+  +Reference? getReference()
+  +void setReference()
+  +Object? getAttribute()
+  +void setAttribute()
+}
+
+"ednet_core::ednet_core.dart::IId" o-- "ednet_core::ednet_core.dart::Concept"
+"dart::core::Comparable" <|-- "ednet_core::ednet_core.dart::IId"
+
+abstract class "ednet_core::ednet_core.dart::IEntities" {
+  +Concept concept
+  +IValidationExceptions exceptions
+  +IEntities<E>? source
+  +E firstWhereAttribute()
+  +E random()
+  +E? singleWhereOid()
+  +IEntity<IEntity<dynamic>>? internalSingle()
+  +E singleWhereCode()
+  +E singleWhereId()
+  +E singleWhereAttributeId()
+  +IEntities<E> copy()
+  +IEntities<E> order()
+  +IEntities<E> selectWhere()
+  +IEntities<E> selectWhereAttribute()
+  +IEntities<E> selectWhereParent()
+  +IEntities<E> skipFirst()
+  +IEntities<E> skipFirstWhile()
+  +IEntities<E> takeFirst()
+  +IEntities<E> takeFirstWhile()
+  +IEntities<IEntity<dynamic>>? internalChild()
+  +void clear()
+  +void sort()
+  +bool preAdd()
+  +bool add()
+  +bool postAdd()
+  +bool preRemove()
+  +bool remove()
+  +bool postRemove()
+  +String toJson()
+  +void fromJson()
+  +void integrate()
+  +void integrateAdd()
+  +void integrateSet()
+  +void integrateRemove()
+}
+
+"ednet_core::ednet_core.dart::IEntities" o-- "ednet_core::ednet_core.dart::Concept"
+"ednet_core::ednet_core.dart::IEntities" o-- "ednet_core::ednet_core.dart::IValidationExceptions"
+"ednet_core::ednet_core.dart::IEntities" o-- "ednet_core::ednet_core.dart::IEntities<E>"
+"dart::core::Iterable" <|-- "ednet_core::ednet_core.dart::IEntities"
+
+abstract class "ednet_core::ednet_core.dart::IModelEntries" {
+  +Model model
+  +bool isEmpty
+  +Concept getConcept()
+  +IEntities<IEntity<dynamic>> getEntry()
+  +IEntity<IEntity<dynamic>>? single()
+  +IEntity<IEntity<dynamic>>? internalSingle()
+  +IEntities<IEntity<dynamic>>? internalChild()
+  +void clear()
+  +String fromEntryToJson()
+  +void fromJsonToEntry()
+  +void populateEntryReferences()
+  +String toJson()
+  +void fromJson()
+}
+
+"ednet_core::ednet_core.dart::IModelEntries" o-- "ednet_core::ednet_core.dart::Model"
+
+class "ednet_core::ednet_core.dart::ModelEntries" {
+  -Model _model
+  -Map<String, Entities<Entity<dynamic>>> _entryEntitiesMap
+  +Model model
+  +bool isEmpty
+  +Map<String, Entities<Entity<dynamic>>> newEntries()
+  +Entity<Entity<dynamic>> newEntity()
+  +Concept getConcept()
+  +Entities<Entity<dynamic>> getEntry()
+  +Entity<Entity<dynamic>>? single()
+  +Entity<Entity<dynamic>>? internalSingle()
+  +Entities<Entity<dynamic>>? internalChild()
+  +void clear()
+  +String fromEntryToJson()
+  +Map<String, Object> fromEntryToMap()
+  +void fromJsonToEntry()
+  +void fromMapToEntry()
+  +void populateEntityReferences()
+  +void populateEntryReferencesFromJsonMap()
+  +void populateEntryReferences()
+  +String toJson()
+  +Map<String, Object> toJsonMap()
+  +void fromJson()
+  +void fromJsonMap()
+  +void populateReferences()
+  +void display()
+  +void displayEntryJson()
+  +void displayJson()
+}
+
+"ednet_core::ednet_core.dart::ModelEntries" o-- "ednet_core::ednet_core.dart::Model"
+"ednet_core::ednet_core.dart::IModelEntries" <|-- "ednet_core::ednet_core.dart::ModelEntries"
+
+class "ednet_core::ednet_core.dart::Oid" {
+  {static} -int _increment
+  -int _timeStamp
+  +int timeStamp
+  +int hashCode
+  +bool equals()
+  +bool ==()
+  +int compareTo()
+  +String toString()
+}
+
+"dart::core::Comparable" <|-- "ednet_core::ednet_core.dart::Oid"
+
+class "ednet_core::ednet_core.dart::Reference" {
+  +String parentOidString
+  +String parentConceptCode
+  +String entryConceptCode
+  +Oid oid
+  +String toString()
+}
+
+"ednet_core::ednet_core.dart::Reference" o-- "ednet_core::ednet_core.dart::Oid"
+
+class "ednet_core::ednet_core.dart::Attributes" {
+  +List<Attribute> toList()
+}
+
+"ednet_core::ednet_core.dart::Entities" <|-- "ednet_core::ednet_core.dart::Attributes"
+
+class "ednet_core::ednet_core.dart::Attribute" {
+  +bool guid
+  +dynamic init
+  +int? increment
+  +int? sequence
+  -bool _derive
+  +int length
+  -AttributeType? _type
+  +bool required
+  +AttributeType? type
+  +bool derive
+}
+
+"ednet_core::ednet_core.dart::Attribute" o-- "ednet_core::ednet_core.dart::AttributeType"
+"ednet_core::ednet_core.dart::Property" <|-- "ednet_core::ednet_core.dart::Attribute"
+
+class "ednet_core::ednet_core.dart::Children" {
+  +int externalCount
+}
+
+"ednet_core::ednet_core.dart::Entities" <|-- "ednet_core::ednet_core.dart::Children"
+
+class "ednet_core::ednet_core.dart::Child" {
+  +bool navigate
+}
+
+"ednet_core::ednet_core.dart::Neighbor" <|-- "ednet_core::ednet_core.dart::Child"
+
+class "ednet_core::ednet_core.dart::Concepts" {
+}
+
+"ednet_core::ednet_core.dart::Entities" <|-- "ednet_core::ednet_core.dart::Concepts"
+
+class "ednet_core::ednet_core.dart::Concept" {
+  +bool entry
+  +bool abstract
+  +String min
+  +String max
+  +bool updateOid
+  +bool updateCode
+  +bool updateWhen
+  +bool add
+  +bool remove
+  +String description
+  -String? _codes
+  -String? _codesFirstLetterLower
+  -String? _codesLowerUnderscore
+  +String? label
+  +String? labels
+  +Model model
+  +Attributes attributes
+  +Parents parents
+  +Children children
+  +Parents sourceParents
+  +Children sourceChildren
+  +String? code
+  +int hashCode
+  +String codes
+  +String codesFirstLetterLower
+  +String codesLowerUnderscore
+  +List<Attribute> requiredAttributes
+  +List<Attribute> identifierAttributes
+  +List<Attribute> nonIdentifierAttributes
+  +List<Attribute> incrementAttributes
+  +List<Attribute> nonIncrementAttributes
+  +List<Attribute> essentialAttributes
+  +List<Parent> externalParents
+  +List<Parent> externalRequiredParents
+  +List<Child> internalChildren
+  +List<Property> singleValueProperties
+  +bool hasTwinParent
+  +bool hasReflexiveParent
+  +bool hasTwinChild
+  +bool hasReflexiveChild
+  +bool hasId
+  +bool hasAttributeId
+  +bool hasParentId
+  +Id id
+  +Concept entryConcept
+  +String entryConceptThisConceptInternalPath
+  +List<String> childCodeInternalPaths
+  +bool equals()
+  +bool ==()
+  +Attribute? getAttribute()
+  +Parent? getDestinationParent()
+  +Child? getDestinationChild()
+  +Parent? getSourceParent()
+  +Child? getSourceChild()
+  +bool isAttributeSensitive()
+  +bool isParentSensitive()
+  +bool isChildSensitive()
+  +bool isPropertySensitive()
+}
+
+"ednet_core::ednet_core.dart::Concept" o-- "ednet_core::ednet_core.dart::Model"
+"ednet_core::ednet_core.dart::Concept" o-- "ednet_core::ednet_core.dart::Attributes"
+"ednet_core::ednet_core.dart::Concept" o-- "ednet_core::ednet_core.dart::Parents"
+"ednet_core::ednet_core.dart::Concept" o-- "ednet_core::ednet_core.dart::Children"
+"ednet_core::ednet_core.dart::Concept" o-- "ednet_core::ednet_core.dart::Id"
+"ednet_core::ednet_core.dart::Concept" o-- "ednet_core::ednet_core.dart::Concept"
+"ednet_core::ednet_core.dart::Entity" <|-- "ednet_core::ednet_core.dart::Concept"
+
+class "ednet_core::ednet_core.dart::Domains" {
+  +Domain? getDomain()
+}
+
+"ednet_core::ednet_core.dart::Entities" <|-- "ednet_core::ednet_core.dart::Domains"
+
+class "ednet_core::ednet_core.dart::Domain" {
+  +String description
+  +Domain domain
+  +Domains domains
+  +AttributeTypes types
+  +Models models
+  +Domain? getDomain()
+  +Model? getModel()
+  +AttributeType? getType()
+}
+
+"ednet_core::ednet_core.dart::Domain" o-- "ednet_core::ednet_core.dart::Domain"
+"ednet_core::ednet_core.dart::Domain" o-- "ednet_core::ednet_core.dart::Domains"
+"ednet_core::ednet_core.dart::Domain" o-- "ednet_core::ednet_core.dart::AttributeTypes"
+"ednet_core::ednet_core.dart::Domain" o-- "ednet_core::ednet_core.dart::Models"
+"ednet_core::ednet_core.dart::Entity" <|-- "ednet_core::ednet_core.dart::Domain"
+
+class "ednet_core::ednet_core.dart::Models" {
+}
+
+"ednet_core::ednet_core.dart::Entities" <|-- "ednet_core::ednet_core.dart::Models"
+
+class "ednet_core::ednet_core.dart::Model" {
+  +String? author
+  +String? description
+  +Domain domain
+  +Concepts concepts
+  +List<Concept> entryConcepts
+  +List<Concept> orderedEntryConcepts
+  +int entryConceptCount
+  +int orderedEntryConceptCount
+  +int conceptCount
+  +Concept? getEntryConcept()
+  +Concept getConcept()
+}
+
+"ednet_core::ednet_core.dart::Model" o-- "ednet_core::ednet_core.dart::Domain"
+"ednet_core::ednet_core.dart::Model" o-- "ednet_core::ednet_core.dart::Concepts"
+"ednet_core::ednet_core.dart::Entity" <|-- "ednet_core::ednet_core.dart::Model"
+
+abstract class "ednet_core::ednet_core.dart::Neighbor" {
+  +bool internal
+  +bool inheritance
+  +bool reflexive
+  +bool twin
+  +Neighbor? opposite
+  +Concept destinationConcept
+  +bool external
+}
+
+"ednet_core::ednet_core.dart::Neighbor" o-- "ednet_core::ednet_core.dart::Neighbor"
+"ednet_core::ednet_core.dart::Neighbor" o-- "ednet_core::ednet_core.dart::Concept"
+"ednet_core::ednet_core.dart::Property" <|-- "ednet_core::ednet_core.dart::Neighbor"
+
+class "ednet_core::ednet_core.dart::Parents" {
+  +int externalCount
+}
+
+"ednet_core::ednet_core.dart::Entities" <|-- "ednet_core::ednet_core.dart::Parents"
+
+class "ednet_core::ednet_core.dart::Parent" {
+  +bool absorb
+}
+
+"ednet_core::ednet_core.dart::Neighbor" <|-- "ednet_core::ednet_core.dart::Parent"
+
+abstract class "ednet_core::ednet_core.dart::Property" {
+  +String minc
+  +String maxc
+  -bool _id
+  +bool essential
+  +bool update
+  +bool sensitive
+  +String? label
+  +Concept sourceConcept
+  +String? code
+  +bool maxMany
+  +bool identifier
+  +bool required
+}
+
+"ednet_core::ednet_core.dart::Property" o-- "ednet_core::ednet_core.dart::Concept"
+"ednet_core::ednet_core.dart::Entity" <|-- "ednet_core::ednet_core.dart::Property"
+
+class "ednet_core::ednet_core.dart::AttributeTypes" {
+}
+
+"ednet_core::ednet_core.dart::Entities" <|-- "ednet_core::ednet_core.dart::AttributeTypes"
+
+class "ednet_core::ednet_core.dart::AttributeType" {
+  +String base
+  +int length
+  +Domain domain
+  +bool isEmail()
+  +dynamic validate()
+  +int compare()
+}
+
+"ednet_core::ednet_core.dart::AttributeType" o-- "ednet_core::ednet_core.dart::Domain"
+"ednet_core::ednet_core.dart::Entity" <|-- "ednet_core::ednet_core.dart::AttributeType"
+
+class "ednet_core::ednet_core.dart::DartBasicType" {
+  +int index
+  {static} +List<DartBasicType> values
+  {static} +DartBasicType bool
+  {static} +DartBasicType int
+  {static} +DartBasicType double
+  {static} +DartBasicType string
+  {static} +DartBasicType list
+  {static} +DartBasicType map
+  {static} +DartBasicType set
+  {static} +DartBasicType dynamic
+}
+
+"ednet_core::ednet_core.dart::DartBasicType" o-- "ednet_core::ednet_core.dart::DartBasicType"
+"dart::core::Enum" <|-- "ednet_core::ednet_core.dart::DartBasicType"
+
+abstract class "ednet_core::ednet_core.dart::Serializable" {
+  +Map<String, dynamic> toJson()
+  {static} +dynamic fromJson()
+}
+
+class "ednet_core::ednet_core.dart::EDNetException" {
+  +String message
+  +String toString()
+}
+
+"dart::core::Exception" <|-- "ednet_core::ednet_core.dart::EDNetException"
+
+class "ednet_core::ednet_core.dart::CommandException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::CommandException"
+
+class "ednet_core::ednet_core.dart::AddException" {
+}
+
+"ednet_core::ednet_core.dart::CommandException" <|-- "ednet_core::ednet_core.dart::AddException"
+
+class "ednet_core::ednet_core.dart::CodeException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::CodeException"
+
+class "ednet_core::ednet_core.dart::ConceptException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::ConceptException"
+
+class "ednet_core::ednet_core.dart::IdException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::IdException"
+
+class "ednet_core::ednet_core.dart::JsonException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::JsonException"
+
+class "ednet_core::ednet_core.dart::OidException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::OidException"
+
+class "ednet_core::ednet_core.dart::OrderException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::OrderException"
+
+class "ednet_core::ednet_core.dart::ParentException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::ParentException"
+
+class "ednet_core::ednet_core.dart::RemoveException" {
+}
+
+"ednet_core::ednet_core.dart::CommandException" <|-- "ednet_core::ednet_core.dart::RemoveException"
+
+class "ednet_core::ednet_core.dart::TypeException" {
+}
+
+"ednet_core::ednet_core.dart::EDNetException" <|-- "ednet_core::ednet_core.dart::TypeException"
+
+class "ednet_core::ednet_core.dart::UpdateException" {
+}
+
+"ednet_core::ednet_core.dart::CommandException" <|-- "ednet_core::ednet_core.dart::UpdateException"
+
+abstract class "ednet_core::ednet_core.dart::IValidationExceptions" {
+  +int length
+  +void add()
+  +void clear()
+  +List<ValidationException> toList()
+}
+
+class "ednet_core::ednet_core.dart::ValidationException" {
+  +String category
+  +String message
+  +String toString()
+  +dynamic display()
+}
+
+"dart::core::Exception" <|-- "ednet_core::ednet_core.dart::ValidationException"
+
+class "ednet_core::ednet_core.dart::ValidationExceptions" {
+  -List<ValidationException> _exceptionList
+  +int length
+  +bool isEmpty
+  +Iterator<ValidationException> iterator
+  +void add()
+  +void clear()
+  +List<ValidationException> toList()
+  +String toString()
+  +void display()
+}
+
+"ednet_core::ednet_core.dart::IValidationExceptions" <|-- "ednet_core::ednet_core.dart::ValidationExceptions"
+
+abstract class "ednet_core::ednet_core.dart::AggregateRoot" {
+}
+
+"ednet_core::ednet_core.dart::Entity" <|-- "ednet_core::ednet_core.dart::AggregateRoot"
+
+
+@enduml
