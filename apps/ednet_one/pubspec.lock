@@ -92,7 +92,7 @@ packages:
   ednet_core:
     dependency: "direct main"
     description:
-      path: "../../packages/ednet_core"
+      path: "../../packages/core"
       relative: true
     source: path
     version: "0.0.1"

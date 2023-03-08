@@ -1,0 +1,129 @@
+{
+  "type": "object",
+  "properties": {
+    "boundedContexts": {
+      "type": "array",
+      "attributes": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "aggregates": {
+            "type": "array",
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "entities": {
+                  "type": "array",
+                  "attributes": {
+                    "type": "string"
+                  }
+                },
+                "valueObjects": {
+                  "type": "array",
+                  "attributes": {
+                    "type": "string"
+                  }
+                },
+                "repositories": {
+                  "type": "array",
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "commands": {
+                  "type": "array",
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "input": {
+                        "type": "object"
+                      },
+                      "output": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "events": {
+                  "type": "array",
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "payload": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "policies": {
+                  "type": "array",
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "applicationServices": {
+            "type": "array",
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "operations": {
+                  "type": "array",
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "input": {
+                        "type": "object"
+                      },
+                      "output": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

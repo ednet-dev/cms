@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Schema for a JSON execution of EDNetCoreDSL",
+  "definitions": {
+    "attribute": {
+      "description": "Attribute definition",
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "description": "The order in which the attribute appears in the UI",
+          "type": "integer"
+        },
+        "category": {
+          "description": "The category of the attribute (e.g. identifier, required, attribute)",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the attribute",
+          "type": "string"
+        },
+        "type": {
+          "description": "The data type of the attribute (e.g. String, bool)",
+          "type": "string"
+        },
+        "init": {
+          "description": "The initial value of the attribute",
+          "type": "string"
+        },
+        "essential": {
+          "description": "Whether this attribute is required",
+          "type": "boolean"
+        },
+        "sensitive": {
+          "description": "Whether this attribute contains sensitive information",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "sequence",
+        "category",
+        "name",
+        "type",
+        "essential",
+        "sensitive"
+      ]
+    },
+    "box": {
+      "description": "Concept definition",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The name of the Concept",
+          "type": "string"
+        },
+        "entry": {
+          "description": "Whether this is the entry Concept (Aggregate root) for the model",
+          "type": "boolean"
+        },
+        "x": {
+          "description": "The x-coordinate of the top-left corner of the canvas artifact",
+          "type": "integer"
+        },
+        "y": {
+          "description": "The y-coordinate of the top-left corner of the canvas artifact",
+          "type": "integer"
+        },
+        "width": {
+          "description": "The width of the canvas artifact",
+          "type": "integer"
+        },
+        "height": {
+          "description": "The height of the canvas artifact",
+          "type": "integer"
+        },
+        "attributes": {
+          "description": "An array of attributes defining the Concept",
+          "type": "array",
+          "attributes": {
+            "$ref": "#/definitions/attribute"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "entry",
+        "x",
+        "y",
+        "width",
+        "height",
+        "attributes"
+      ]
+    },
+    "relationship": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "description": "The name of the first Concept in the relationship.",
+          "type": "string"
+        },
+        "to": {
+          "description": "The name of the second Concept in the relationship.",
+          "type": "string"
+        },
+        "fromToName": {
+          "description": "The name of the relationship.",
+          "type": "string"
+        },
+        "fromToMin": {
+          "description": "The minimum number of instances of the second Concept in the relationship.",
+          "type": "string"
+        },
+        "fromToMax": {
+          "description": "The maximum number of instances of the second Concept in the relationship.",
+          "type": "string"
+        },
+        "toFromName": {
+          "description": "The name of the inverse relationship.",
+          "type": "string"
+        },
+        "toFromMin": {
+          "description": "The minimum number of instances of the first Concept in the inverse relationship.",
+          "type": "string"
+        },
+        "toFromMax": {
+          "description": "The maximum number of instances of the first Concept in the inverse relationship.",
+          "type": "string"
+        },
+        "category": {
+          "description": "The \"category\" field in model.json files can take on different values depending on the type of relationship being defined between concepts. The most commonly used value is \"relationship\", which indicates a standard relationship between concepts. Another value is \"twin\", which indicates a special type of relationship where two concepts are related to each other in a symmetrical manner. \"Reflexive\" indicates a relationship where a concept has a relationship with itself, and \"inheritance\" indicates a relationship where a child concept inherits properties from a parent concept.",
+          "type": "string"
+        },
+        "internal": {
+          "description": "Indicates whether the relationship is internal to the Concept, i.e., whether it is used for implementation purposes only and have no public API beside what Parent Concept provides.",
+          "type": "boolean"
+        },
+        "fromToId": {
+          "description": "Whether the relationship involves an identifier from the second Concept.",
+          "type": "boolean"
+        },
+        "toFromId": {
+          "description": "Whether the inverse relationship involves an identifier from the first Concept.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "fromToName",
+        "fromToMin",
+        "fromToMax",
+        "toFromName",
+        "toFromMin",
+        "toFromMax",
+        "category",
+        "internal",
+        "fromToId",
+        "toFromId"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "width": {
+      "description": "The width of the canvas",
+      "type": "integer"
+    },
+    "relations": {
+      "description": "An array of relationships between Concepts",
+      "type": "array",
+      "attributes": {
+        "$ref": "#/definitions/relationship"
+      }
+    },
+    "height": {
+      "description": "The height of the canvas",
+      "type": "integer"
+    },
+    "concepts": {
+      "description": "Array of EDNetCore Concepts",
+      "type": "array",
+      "attributes": {
+        "$ref": "#/definitions/box"
+      }
+    }
+  },
+  "required": [
+    "width",
+    "relations",
+    "height",
+    "concepts"
+  ]
+}

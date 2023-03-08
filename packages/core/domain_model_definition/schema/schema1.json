@@ -1,0 +1,113 @@
+{
+  "type": "object",
+  "properties": {
+    "contexts": {
+      "type": "array",
+      "attributes": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "depends_on": {
+            "type": "array",
+            "attributes": {
+              "type": "string"
+            }
+          },
+          "aggregates": {
+            "type": "array",
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "attributes": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^.+$": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "boolean"
+                      ]
+                    }
+                  }
+                },
+                "commands": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^.+$": {
+                      "type": "object",
+                    }
+                  }
+                },
+                "intention": {
+                  "type": "string"
+                },
+                "policy": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "expectation": {
+                      "type": "string"
+                    },
+                    "enforcement": {
+                      "type": "string"
+                    },
+                    "conditions": {
+                      "type": "object",
+                      "patternProperties": {
+                        "^.+$": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "value"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "events": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^.+$": {
+                      "type": "object",
+                      "payload": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
