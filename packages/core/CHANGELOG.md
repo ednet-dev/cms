@@ -2,8 +2,11 @@
 
 based on [Semantic Versioning](http://semver.org/)
 
-0.1.0 2023-03-08
+**0.1.0** 2023-03-08
 + refactor to modern Dart
+  + all Api suffixes of interfaces to IName
+  + ConceptEntity -> Entity
+  + nullability functional unstable solution
 + reset version
 
 ## Legacy
@@ -16,8 +19,8 @@ based on [Semantic Versioning](http://semver.org/)
 *2.0.3* 2015-05-15
 
 + rename errors.dart into exceptions.dart in lib/domain/model/error
-+ before: class DartlingError extends Error
-+ now: class DartlingException implements Exception
++ before: class EDNetCoreError extends Error
++ now: class EDNetCoreException implements Exception
 + rename other classes in exceptions.dart
 
 *2.0.3* 2015-05-04
@@ -42,7 +45,7 @@ based on [Semantic Versioning](http://semver.org/)
 *2.0.1* 2015-04-25
 
 + add null check in the Id.compareAttributes method in lib/model/id.dart
-+ prepare dartling to use one day mixins in ConceptGen classes, e.g.,
++ prepare ednet_core to use one day mixins in ConceptGen classes, e.g.,
   abstract class ProjectGen extends Object with ConceptEntity<Project> {
   abstract class ProjectsGen extends Object with Entities<Project> {
 + update ConceptEntity and Entities in lib/domain/model/entity.dart and entities.dart:
@@ -55,7 +58,7 @@ based on [Semantic Versioning](http://semver.org/)
 + use new test package
 + update pubspec.yaml: from dev_dependencies to dependencies for test
 + update import in the test folder
-+ update lib/gen/dartling_test.dart
++ update lib/gen/ednet_core_test.dart
 
 *2.0.0* 2014-10-03 (Pub)
 
