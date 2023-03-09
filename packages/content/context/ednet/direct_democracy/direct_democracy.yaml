@@ -195,3 +195,133 @@ concepts:
       - name: DateSubmitted
         type: DateTime
 
+relations:
+  - from: Citizen
+    fromToName: belongsTo
+    to: Country
+    toFromName: hasCitizen
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 0
+      max: 1
+    toFromCardinality:
+      min: 0
+      max: N
+  - from: Proposal
+    fromToName: proposedBy
+    to: Citizen
+    toFromName: hasProposed
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+    toFromCardinality:
+      min: 0
+      max: N
+  - from: Proposal
+    fromToName: relatesTo
+    to: Law
+    toFromName: relatedProposal
+    id:
+      from: true
+      to: true
+    fromToCardinality:
+      min: 1
+      max: N
+    toFromCardinality:
+      min: 1
+      max: N
+  - from: Vote
+    fromToName: castBy
+    to: Citizen
+    toFromName: hasCast
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+    toFromCardinality:
+      min: 0
+      max: N
+  - from: Comment
+    fromToName: postedBy
+    to: Citizen
+    toFromName: hasPosted
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+    toFromCardinality:
+      min: 0
+      max: N
+  - from: Law
+    fromToName: enactedBy
+    to: Government
+    toFromName: hasEnacted
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+    toFromCardinality:
+      min: 0
+      max: N
+  - from: Law
+    fromToName: proposedBy
+    to: Citizen
+    toFromName: hasProposed
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 0
+      max: N
+    toFromCardinality:
+      min: 1
+      max: N
+  - from: Law
+    fromToName: proposedBy
+    to: Government
+    toFromName: hasProposed
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 0
+      max: N
+    toFromCardinality:
+      min: 1
+      max: N
+  - from: Organization
+    fromToName: belongsTo
+    to: Country
+    toFromName: hasOrganization
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 0
+      max: N
+    toFromCardinality:
+      min: 0
+      max: N
+  - from: Government
+    fromToName: belongsTo
+    to: Country
+    toFromName: hasGovernment
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+    toFromCardinality:
+

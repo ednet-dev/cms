@@ -93,7 +93,6 @@ relations:
     fromToCardinality:
       min: 1
       max: 1
-
     toFromCardinality:
       min: 0
       max: N
