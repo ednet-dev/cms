@@ -1,0 +1,197 @@
+concepts:
+  - name: Citizen
+    attributes:
+
+      - name: Name
+        type: String
+        description: The citizen's name
+      - name: Email
+        type: String
+        description: The citizen's email address
+      - name: Password
+        type: String
+        description: The citizen's password for accessing the platform
+      - name: DateJoined
+        type: DateTime
+        description: The date the citizen joined the platform
+      - name: Verified
+        type: bool
+        description: Indicates whether the citizen's account has been verified
+
+  - name: Moderator
+    attributes:
+
+      - name: Name
+        type: String
+        description: The moderator's name
+      - name: Email
+        type: String
+        description: The moderator's email address
+      - name: Password
+        type: String
+        description: The moderator's password for accessing the platform
+      - name: DateJoined
+        type: DateTime
+        description: The date the moderator joined the platform
+      - name: Verified
+        type: bool
+        description: Indicates whether the moderator's account has been verified
+
+  - name: Representative
+    attributes:
+
+      - name: Name
+        type: String
+        description: The representative's name
+      - name: Email
+        type: String
+        description: The representative's email address
+      - name: Password
+        type: String
+        description: The representative's password for accessing the platform
+      - name: DateJoined
+        type: DateTime
+        description: The date the representative joined the platform
+      - name: Verified
+        type: bool
+        description: Indicates whether the representative's account has been verified
+
+  - name: Proposal
+    attributes:
+
+      - name: Title
+        type: String
+        description: The title of the proposal
+      - name: Description
+        type: String
+        description: A description of the proposal
+      - name: AuthorID
+        type: Integer
+        description: The ID of the citizen who submitted the proposal
+      - name: DateSubmitted
+        type: DateTime
+        description: The date the proposal was submitted
+      - name: DateModified
+        type: DateTime
+        description: The date the proposal was last modified
+      - name: Status
+        type: String
+        description: The current status of the proposal (e.g. open for discussion, closed for voting, enacted)
+
+  - name: Vote
+    attributes:
+
+      - name: ProposalID
+        type: Integer
+        description: The ID of the proposal being voted on
+      - name: CitizenID
+        type: Integer
+        description: The ID of the citizen casting the vote
+      - name: Value
+        type: Integer
+        description: The value of the vote (e.g. 1 for yes, -1 for no, 0 for abstain)
+
+  - name: Comment
+    attributes:
+
+      - name: Proposal
+        type: Integer
+        description: The ID of the proposal the comment is related to
+      - name: CitizenID
+        type: Integer
+        description: The ID of the citizen who left the comment
+      - name: Text
+        type: String
+        description: The content of the comment
+      - name: DatePosted
+        type: DateTime
+        description: The date the comment was posted
+
+  - name: Law
+    attributes:
+
+      - name: Title
+        type: String
+        description: The title of the law
+      - name: Description
+        type: String
+        description: A description of the law
+      - name: AuthorID
+        type: Integer
+        description: The ID of the citizen or government representative who proposed the law
+      - name: DateEnacted
+        type: DateTime
+        description: The date the law was enacted
+      - name: DateModified
+        type: DateTime
+        description: The date the law was last modified
+
+  - name: Organization
+    attributes:
+
+      - name: Name
+        type: String
+        description: The name of the organization
+      - name: Description
+        type: String
+        description: A description of the organization
+      - name: DateJoined
+        type: DateTime
+        description: The date the organization joined the platform
+      - name: Verified
+        type: bool
+        description: Indicates whether the organization's account has been verified
+
+  - name: Government
+    attributes:
+
+      - name: Name
+        type: String
+        description: The name of the government entity
+      - name: Email
+        type: String
+        description: The government entity's email address
+      - name: Password
+        type: String
+        description: The government entity's password for accessing the platform
+      - name: DateJoined
+        type: DateTime
+        description: The date the government entity joined the platform
+      - name: Verified
+        type: bool
+        description: Indicates whether the government entity's account has been verified
+
+  - name: NonGovernment
+    attributes:
+
+      - name: Name
+        type: String
+        description: The name of the non-government entity
+      - name: Email
+        type: String
+        description: The non-government entity's email address
+      - name: Password
+        type: String
+        description: The non-government entity's password for accessing the platform
+      - name: DateJoined
+        type: DateTime
+        description: The date the non-government entity joined the platform
+      - name: Verified
+        type: bool
+        description: Indicates whether the non-government entity's account has been verified
+
+  - name: CompanyLegislation
+    attributes:
+
+      - name: Title
+        type: String
+        description: The title of the legislation
+      - name: Description
+        type: String
+        description: A description of the legislation
+      - name: AuthorID
+        type: Integer
+        description: The ID of the citizen, government representative, or non-government entity who proposed the legislation
+      - name: DateSubmitted
+        type: DateTime
+
