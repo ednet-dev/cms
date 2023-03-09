@@ -1,0 +1,95 @@
+concepts:
+  - name: CloudPlatform
+    description: The domain model for cloud platforms and their roles/principals.
+    children:
+      - name: Role
+        children:
+          - name: Administrator
+          - name: Creator
+          - name: User
+          - name: PolicyAdministrator
+          - name: RoleAdministrator
+          - name: RoleViewer
+          - name: Owner
+          - name: AccountAdministrator
+          - name: AccountCreator
+          - name: AccountUser
+          - name: NetworkAdmin
+          - name: SecurityAdmin
+          - name: SharedVPCAdmin
+          - name: Viewer
+          - name: FirebaseAdmin
+          - name: FolderAdmin
+          - name: FolderCreator
+          - name: FolderIAMAdmin
+          - name: FolderViewer
+          - name: KubernetesEngineViewer
+          - name: LoggingAdmin
+          - name: LogsConfigurationWriter
+          - name: MonitoringAdmin
+          - name: PrivateLogsViewer
+          - name: ProjectBillingManager
+          - name: ProjectCreator
+          - name: SecurityCenterAdmin
+          - name: SecurityReviewer
+          - name: ServiceAccountAdmin
+          - name: SupportAccountAdministrator
+        relations:
+          - from: Role
+            fromToName: CloudPlatform
+            to: CloudPlatform
+            toFromName: Roles
+            id:
+              from: false
+              to: false
+            fromToCardinality:
+              min: 0
+              max: N
+            toFromCardinality:
+              min: 1
+              max: 1
+      - name: Principal
+        children:
+          - name: User
+          - name: Group
+          - name: Role
+        relations:
+          - from: User
+            fromToName: CloudPlatform
+            to: CloudPlatform
+            toFromName: Users
+            id:
+              from: false
+              to: false
+            fromToCardinality:
+              min: 0
+              max: N
+            toFromCardinality:
+              min: 1
+              max: 1
+          - from: Group
+            fromToName: CloudPlatform
+            to: CloudPlatform
+            toFromName: Groups
+            id:
+              from: false
+              to: false
+            fromToCardinality:
+              min: 0
+              max: N
+            toFromCardinality:
+              min: 1
+              max: 1
+          - from: Role
+            fromToName: CloudPlatform
+            to: CloudPlatform
+            toFromName: Roles
+            id:
+              from: false
+              to: false
+            fromToCardinality:
+              min: 0
+              max: N
+            toFromCardinality:
+              min: 1
+              max: 1
