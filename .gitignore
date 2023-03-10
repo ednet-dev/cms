@@ -1,3 +1,5 @@
 .idea/
 melos_ednetdev.iml
 **/*.iml
+.dart_tool
+pubspec_overrides.yaml

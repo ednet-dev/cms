@@ -18,7 +18,7 @@ packages:
     source: hosted
     version: "5.7.1"
   args:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: args
       sha256: "4cab82a83ffef80b262ddedf47a0a8e56ee6fbf7fe21e6e768b02792034dd440"
@@ -79,22 +79,21 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1+2"
+    version: "0.0.1+6"
   ednet_code_generation:
     dependency: "direct main"
     description:
       path: "../../ednet_code_generation"
       relative: true
     source: path
-    version: "0.0.1+3"
+    version: "0.0.1+6"
   ednet_core:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: ednet_core
-      sha256: "4379947cea77e0f2f854b771b4f6d0642b6bad92310e3ad49e6961570d0e7a2b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1+2"
+      path: "../../core"
+      relative: true
+    source: path
+    version: "0.0.1+6"
   file:
     dependency: transitive
     description:
@@ -352,7 +351,7 @@ packages:
     source: hosted
     version: "11.2.0"
   watcher:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: watcher
       sha256: "6a7f46926b01ce81bfc339da6a7f20afbe7733eff9846f6d6a5466aa4c6667c0"
