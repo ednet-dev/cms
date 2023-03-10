@@ -6,6 +6,7 @@ The yaml representation of a model designed with EDNetCoreDSL must be copied in
 the model.json file in the project directory.
 
 Run bin/ednet_core_gen.dart Dart script:
+
 for single json model.json
 --genall projectpath domain model
 or
