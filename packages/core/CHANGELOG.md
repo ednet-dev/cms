@@ -1,3 +1,7 @@
+## 0.0.1+8
+
+ - **FIX**: ednet_core bug.
+
 ## 0.0.1+7
  
  - Bump "ednet_core" to `0.0.1+7`.  

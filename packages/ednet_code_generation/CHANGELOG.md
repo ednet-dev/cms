@@ -1,3 +1,7 @@
+## 0.0.2
+
+ - **FEAT**(ednet_code_generation): feature.
+
 ## 0.0.1+7 
 + Debug Github CI/CD
  
