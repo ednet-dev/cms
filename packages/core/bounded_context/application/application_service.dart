@@ -1,3 +1,1 @@
-abstract class IApplicationService {
-
-}
+abstract class IApplicationService {}

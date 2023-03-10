@@ -11,4 +11,3 @@ abstract class IDomainModels implements ISourceOfCommandReaction {
 
   IDomainSession newSession();
 }
-

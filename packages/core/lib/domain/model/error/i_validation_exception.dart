@@ -1,4 +1,5 @@
 part of ednet_core;
+
 abstract class IValidationExceptions {
   int get length;
 

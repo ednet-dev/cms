@@ -19,8 +19,6 @@ void main(List<String> arguments) {
 
   // provider oid 1678027117481, id null, code provider
 
-
-
   // if (File(outputPath).existsSync()) {
   //   var contents = File(outputPath).readAsStringSync();
   //   model = json.decode(contents);

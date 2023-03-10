@@ -1,6 +1,6 @@
 part of ednet_core;
 
-abstract class IId<T> implements Comparable<T>{
+abstract class IId<T> implements Comparable<T> {
   Concept get concept;
 
   int get referenceLength;

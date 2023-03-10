@@ -164,4 +164,3 @@ void genDoc(String path) {
   File github = genFile('${gitPath}/github.txt');
   genGithub(github);
 }
-

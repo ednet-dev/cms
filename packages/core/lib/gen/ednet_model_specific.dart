@@ -10,7 +10,7 @@ String genModel(Model model, String library) {
   sc = '${sc}part of ${library}; \n';
   sc = '${sc} \n';
   sc = '${sc}// lib/${domain.codeLowerUnderscore}/'
-       '${model.codeLowerUnderscore}/model.dart \n';
+      '${model.codeLowerUnderscore}/model.dart \n';
   sc = '${sc} \n';
   sc = '${sc}class ${model.code}Model extends ${model.code}Entries { \n';
   sc = '${sc} \n';
@@ -19,13 +19,14 @@ String genModel(Model model, String library) {
   for (Concept entryConcept in model.entryConcepts) {
     sc = '${sc}  void fromJsonTo${entryConcept.code}Entry() { \n';
     sc = '${sc}    fromJsonToEntry(${domain.codeFirstLetterLower}${model.code}'
-         '${entryConcept.code}Entry); \n';
+        '${entryConcept.code}Entry); \n';
     sc = '${sc}  } \n';
     sc = '${sc} \n';
   }
-  
+
   sc = '${sc}  void fromJsonToModel() { \n';
-  sc = '${sc}    fromJson(${domain.codeFirstLetterLower}${model.code}Model); \n';
+  sc =
+      '${sc}    fromJson(${domain.codeFirstLetterLower}${model.code}Model); \n';
   sc = '${sc}  } \n';
   sc = '${sc} \n';
 
@@ -46,21 +47,16 @@ String genModel(Model model, String library) {
     var entitiesCreated = createInitEntryEntitiesRandomly(entryConcept);
     sc = '${sc}${entitiesCreated}';
     sc = '${sc}  } \n';
-    sc = '${sc} \n'; 
-  }  
+    sc = '${sc} \n';
+  }
 
   sc = '${sc}  // added after code gen - begin \n';
   sc = '${sc} \n';
-  sc = '${sc}  // added after code gen - end \n';  
+  sc = '${sc}  // added after code gen - end \n';
   sc = '${sc} \n';
-  
+
   sc = '${sc}} \n';
   sc = '${sc} \n';
-  
+
   return sc;
 }
-
-
-
-
-

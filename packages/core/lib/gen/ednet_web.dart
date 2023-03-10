@@ -5,23 +5,24 @@ String genEDNetWeb(Model model) {
 
   var sc = ' \n';
   sc = '${sc}// web/${domain.codeLowerUnderscore}/${model.codeLowerUnderscore}/'
-       '${domain.codeLowerUnderscore}_${model.codeLowerUnderscore}_web.dart \n';
+      '${domain.codeLowerUnderscore}_${model.codeLowerUnderscore}_web.dart \n';
   sc = '${sc} \n';
 
   sc = '$sc\nimport "package:ednet_core/ednet_core.dart"; \n';
   sc = '${sc} \n';
-  sc = '${sc}import "package:ednet_core_default_app/ednet_core_default_app.dart"; \n';
+  sc =
+      '${sc}import "package:ednet_core_default_app/ednet_core_default_app.dart"; \n';
   sc = '${sc}import "package:${domain.codeLowerUnderscore}_'
-       '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'
-       '${model.codeLowerUnderscore}.dart"; \n';
+      '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'
+      '${model.codeLowerUnderscore}.dart"; \n';
   sc = '${sc} \n';
 
   sc = '${sc}void initData(CoreRepository repository) { \n';
   sc = '${sc}   ${domain.code}Domain? ${domain.codeFirstLetterLower}Domain = '
-       'repository.getDomainModels("${domain.code}") as ${domain.code}Domain?; \n';
+      'repository.getDomainModels("${domain.code}") as ${domain.code}Domain?; \n';
   sc = '${sc}   ${model.code}Model? ${model.codeFirstLetterLower}Model = '
-       '${domain.codeFirstLetterLower}Domain?.'
-       'getModelEntries("${model.code}") as ${model.code}Model?; \n';
+      '${domain.codeFirstLetterLower}Domain?.'
+      'getModelEntries("${model.code}") as ${model.code}Model?; \n';
   sc = '${sc}   ${model.codeFirstLetterLower}Model?.init(); \n';
   sc = '${sc}   ${model.codeFirstLetterLower}Model?.display(); \n';
   sc = '${sc}} \n';

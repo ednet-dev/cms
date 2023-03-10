@@ -1,7 +1,6 @@
 part of ednet_core;
 
 abstract class ISourceOfPastReaction {
-
   void startPastReaction(IPastCommand reaction);
   void cancelPastReaction(IPastCommand reaction);
 
@@ -9,5 +8,4 @@ abstract class ISourceOfPastReaction {
   void notifyCanUndo();
   void notifyCanRedo();
   void notifyCannotRedo();
-
 }

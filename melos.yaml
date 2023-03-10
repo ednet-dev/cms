@@ -1,7 +1,9 @@
 name: EDNetDev
 packages:
   - "apps/*"
-  - "packages/*"
+  - "packages/core"
+  - "packages/ednet_code_generation"
+  - "packages/ednet_cms"
 
 # Recommended option for projects with Dart 2.17.0 or greater.
 #

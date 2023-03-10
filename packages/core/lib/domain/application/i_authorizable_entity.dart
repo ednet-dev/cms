@@ -36,6 +36,4 @@ class DenyAllPolicy<U> extends IPolicy<U> {
   bool allows(ICommand action, U user) => false;
 }
 
-extension Mrkvica on IEntity {
-
-}
+extension Mrkvica on IEntity {}

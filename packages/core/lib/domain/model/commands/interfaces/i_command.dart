@@ -13,4 +13,3 @@ abstract class ICommand {
 
   bool redo();
 }
-

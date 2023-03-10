@@ -27,7 +27,8 @@ String genConceptGen(Concept concept, String library) {
         sc = '$sc    Concept ${destinationConcept.codeFirstLetterLower}'
             'Concept = concept.model.concepts.singleWhereCode('
             '"${destinationConcept.code}") as Concept; \n';
-        sc = '$sc    assert(${destinationConcept.codeFirstLetterLower}Concept != null); \n';
+        sc =
+            '$sc    assert(${destinationConcept.codeFirstLetterLower}Concept != null); \n';
       }
       sc = '$sc    setChild("${child.code}", ${destinationConcept.codes}('
           '${destinationConcept.codeFirstLetterLower}Concept)); \n';

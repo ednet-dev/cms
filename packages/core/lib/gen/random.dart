@@ -14,7 +14,7 @@ String createTestEntryEntitiesRandomly(Concept entryConcept, model) {
   var sc = '';
   for (var i = 1; i < ENTRY_ENTITIES_COUNT + 1; i++) {
     var entitiesCreated =
-        createTestEntryEntityRandomly(entryConcept, suffix: i, model:model);
+        createTestEntryEntityRandomly(entryConcept, suffix: i, model: model);
     sc = '$sc$entitiesCreated';
   }
   return sc;
@@ -114,8 +114,7 @@ String createTestEntryEntityRandomly(Concept entryConcept,
   for (Parent externalRequiredParent in entryConcept.externalRequiredParents) {
     var parent = externalRequiredParent.code!;
     var parent2 = externalRequiredParent.codeFirstLetterUpper;
-    var parents =
-        externalRequiredParent.destinationConcept;
+    var parents = externalRequiredParent.destinationConcept;
     sc =
         '$sc    var $entryEntity$parent2 = ${model.codeFirstLetterLower}Model.${allParents(parents, '')}.random(); \n';
     sc = '$sc    $entryEntity.$parent = $entryEntity$parent2; \n';

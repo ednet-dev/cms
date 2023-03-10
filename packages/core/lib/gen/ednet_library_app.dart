@@ -23,7 +23,8 @@ String genEDNetLibraryApp(Model model) {
   final String domainCodeLowerUnderscore = domain.code!.toLowerCase();
   final String modelCodeLowerUnderscore = model.code!.toLowerCase();
 
-  return ednetLibraryAppTemplate.replaceAllMapped(RegExp('{{([A-Za-z]+)}}'), (match) {
+  return ednetLibraryAppTemplate.replaceAllMapped(RegExp('{{([A-Za-z]+)}}'),
+      (match) {
     switch (match.group(1)) {
       case 'license':
         return license;

@@ -4,7 +4,8 @@ abstract class IEntitiesCommand extends IBasicCommand {
   Entities entities;
   Entity entity;
 
-  IEntitiesCommand(String name, DomainSession session, this.entities, this.entity)
+  IEntitiesCommand(
+      String name, DomainSession session, this.entities, this.entity)
       : super(name, session);
 
   @override

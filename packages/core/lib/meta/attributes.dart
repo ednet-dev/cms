@@ -10,4 +10,3 @@ class Attributes extends Entities<Property> {
     return attributeList;
   }
 }
-

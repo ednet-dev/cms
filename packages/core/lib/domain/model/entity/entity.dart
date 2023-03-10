@@ -463,7 +463,6 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     for (Parent parent in _concept!.parents.whereType<Parent>()) {
       if (parent.identifier) {
-
         var beforeUpdate = parent.update;
         parent.update = true;
         entity.setParent(parent.code!, _parentMap[parent.code!]);

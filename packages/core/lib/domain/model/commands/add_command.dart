@@ -6,4 +6,3 @@ class AddCommand extends IEntitiesCommand {
     category = 'entity';
   }
 }
-
