@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`ednet_cms` - `v0.0.3-dev.0`](#ednet_cms---v003-dev0)
+
+---
+
+#### `ednet_cms` - `v0.0.3-dev.0`
+
+ - **FEAT**(ednet_cms): init CmsBuilder.
+
+
+## 2023-03-10
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`ednet_cms` - `v0.0.2`](#ednet_cms---v002)
  - [`ednet_code_generation` - `v0.0.2`](#ednet_code_generation---v002)
  - [`ednet_core` - `v0.0.1+8`](#ednet_core---v0018)
