@@ -12,5 +12,5 @@ dependencies:
   test: ^1.22.0
   yaml: ^3.1.1
 
-  ednet_core: ^0.0.1+2
+  ednet_core: ^0.0.1+4
 
