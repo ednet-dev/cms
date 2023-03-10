@@ -19,10 +19,12 @@ jobs:
     with:
       working-directory: packages/core
   gen:
+    needs: core
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
     with:
       working-directory: packages/ednet_code_generation
   cms:
+    needs: [core, gen]
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
     with:
       working-directory: packages/ednet_cms
