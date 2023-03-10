@@ -1,0 +1,295 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "concepts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/concept"
+      }
+    }
+  },
+  "definitions": {
+    "concept": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "entry": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sequence": {
+                "type": "string",
+                "description": "The UI sequence of the attribute"
+              },
+              "priority": {
+                "type": "string",
+                "description": "Content attention priority of the attribute in this role"
+              },
+              "name": {
+                "type": "string",
+                "description": "The name of the attribute"
+              }
+            }
+          }
+        }
+      },
+      "description": "Some description of the concept",
+      "children": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/concept"
+        }
+      },
+      "commands": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              }
+            },
+            "policies": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "attributes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "type"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "subscriptions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "event": {
+              "type": "string"
+            },
+            "dependencies": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "concept": {
+                    "type": "string"
+                  },
+                  "fromConcept": {
+                    "type": "string"
+                  },
+                  "fromToRelation": {
+                    "type": "string"
+                  },
+                  "toConcept": {
+                    "type": "string"
+                  },
+                  "toFromRelation": {
+                    "type": "string"
+                  },
+                  "policy": {
+                    "type": "string"
+                  }
+                },
+                "oneOf": [
+                  {
+                    "required": [
+                      "concept",
+                      "policy"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "name",
+            "event"
+          ]
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/concept"
+          }
+        }
+      },
+      "relations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+          }
+        }
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "from": {
+            "description": "Whether the relationship involves an identifier from the second Concept.",
+            "type": "boolean"
+          },
+          "to": {
+            "description": "Whether the inverse relationship involves an identifier from the first Concept.",
+            "type": "boolean"
+          }
+        },
+        "from": {
+          "description": "The name of the first Concept in the relationship.",
+          "type": "string"
+        },
+        "fromToName": {
+          "description": "The name of the relationship.",
+          "type": "string"
+        },
+        "cardinality": {
+          "fromTo": {
+            "min": {
+              "description": "The minimum number of instances of the second Concept in the relationship.",
+              "type": "string"
+            },
+            "max": {
+              "description": "The maximum number of instances of the second Concept in the relationship.",
+              "type": "string"
+            }
+          },
+          "toFrom": {
+            "min": {
+              "description": "The minimum number of instances of the first Concept in the inverse relationship.",
+              "type": "string"
+            },
+            "max": {
+              "description": "The maximum number of instances of the first Concept in the inverse relationship.",
+              "type": "string"
+            }
+          }
+        },
+        "to": {
+          "description": "The name of the second Concept in the relationship.",
+          "type": "string"
+        },
+        "toFromName": {
+          "description": "The name of the inverse relationship.",
+          "type": "string"
+        },
+        "category": {
+          "description": "The \"category\" field in model.json files can take on different values depending on the type of relationship being defined between concepts. The most commonly used value is \"relationship\", which indicates a standard relationship between concepts. Another value is \"twin\", which indicates a special type of relationship where two concepts are related to each other in a symmetrical manner. \"Reflexive\" indicates a relationship where a concept has a relationship with itself, and \"inheritance\" indicates a relationship where a child concept inherits properties from a parent concept.",
+          "type": "string"
+        },
+        "internal": {
+          "description": "Indicates whether the relationship is internal to the Concept, i.e., whether it is used for implementation purposes only and have no public API beside what Parent Concept provides.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "fromToName",
+        "fromToMin",
+        "fromToMax",
+        "toFromName",
+        "toFromMin",
+        "toFromMax",
+        "category",
+        "internal",
+        "fromToId",
+        "toFromId"
+      ]
+    }
+  }
+}

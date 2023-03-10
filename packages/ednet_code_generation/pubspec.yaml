@@ -1,0 +1,16 @@
+name: ednet_code_generation
+version: 0.0.1+4
+description: Generate a new EDNetCore project.
+
+homepage: https://github.com/ednet-dev/cms/packages/ednet_code_generation
+documentation: https://github.com/ednet-dev/cms/packages/ednet_code_generation
+
+environment:
+  sdk: '>=2.18.6 <3.0.0'
+
+dependencies:
+  test: ^1.22.0
+  yaml: ^3.1.1
+
+  ednet_core: ^0.0.1+4
+

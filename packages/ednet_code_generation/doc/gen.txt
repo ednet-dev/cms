@@ -1,0 +1,50 @@
+Launch arguments
+
+https://github.com/ednet-dev/ednet_core_gen
+
+Social Blogging
+
+Create the dart/social_blogging folder (domain: social; model: blogging).
+
+Create the empty model.json file in the folder.
+
+Design the blogging model in Model Concepts and generate its JSON version.
+
+Copy the JSON representation from Model Concepts and paste it into the 
+model.json file.
+
+Open ednet_core_gen in IDE.
+
+In the Run menu open Manage Launches.
+
+Remove existing launches.
+
+Select bin/ednet_core_gen.dart.
+
+Click on the right mouse button then Run bin/ednet_core_gen.dart.
+
+ednet_core_gen.dart console message:
+arguments are not entered properly in Run/Manage Launches of IDE
+
+In the Run menu open Manage Launches.
+
+Select the ednet_core_gen.dart command-line launch.
+
+In the Script arguments enter the following four arguments:
+
+--genall C:\dart\model\social_blogging social blogging
+--genall C:\Users\johns.FSA-johns-2\dart\apps\social_blogging\spirals\social_blogging_00 social blogging
+
+--genall /home/johns/dart/model/social_blogging social blogging
+
+where the four arguments are:
+--genall projectpath domain model
+
+Click on the Run button to generate the project.
+
+---
+If the model changes, update the json representation of the model. 
+Regenerate only the lib/gen directory, where the generated code must not be 
+edited by a programmer:
+
+--gengen projectpath domain model

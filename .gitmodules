@@ -1,3 +1,3 @@
-[submodule "packages/ednet_core_gen"]
-	path = packages/ednet_core_gen
-	url = git@github.com:ednet-dev/ednet_core_gen.git
+[submodule "packages/ednet_code_generation"]
+	path = packages/ednet_code_generation
+	url = git@github.com:ednet-dev/ednet_code_generation.git
