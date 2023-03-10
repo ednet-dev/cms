@@ -1,23 +1,24 @@
-## Version history of [EDNetCoreGen](https://github.com/ednet-dev/core_generation)
-
-based on [Semantic Versioning](http://semver.org/)
-
-**0.0.1+6** 2023-03-10
+## 0.0.1+7 
 + Debug Github CI/CD
  
-**0.0.1+5** 2023-03-10
+## 0.0.1+6 
++ Debug Github CI/CD
+ 
+## 0.0.1+5 
 + Tag based GitHub Actions publishing of core, gen and cms
 
-**0.0.1+4** 2023-03-10
+## 0.0.1+4 
 + streamline and lock versioning of ednet_core, ednet_code_generation and ednet_cms to v0.
 
-**0.0.1+3** 2023-05-01
+## 0.0.1+3 
 + refactor to modern Dart
 + integrate in ednet cms monorepo
 + reset version
 
-## Legacy
-
+## 0.0.1+2
++ initial 
+## 0.0.1+1
+Legacy
 *2.0.2* 2015-05-01
 
 + add void where missing

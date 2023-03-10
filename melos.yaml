@@ -1,7 +1,7 @@
 name: EDNetDev
 packages:
-  - "apps/**"
-  - "packages/**"
+  - "apps/*"
+  - "packages/*"
 
 # Recommended option for projects with Dart 2.17.0 or greater.
 #

@@ -1,32 +1,35 @@
 ## 0.0.1+7
+ 
+ - Bump "ednet_core" to `0.0.1+7`.  
 
- - Bump "ednet_core" to `0.0.1+7`.
+## 0.0.1+6
 
-## Version history of [EDNetCore](https://github.com/ednet-dev/cms/packages/core)
-
-based on [Semantic Versioning](http://semver.org/)
-
-**0.0.1+6** 2023-03-10
 + Debug Github CI/CD
 
-**0.0.1+5** 2023-03-10
+## 0.0.1+5
+
 + Tag based GitHub Actions publishing of core, gen and cms
 
-**0.0.1+4** 2023-03-10
+## 0.0.1+4
+
 + streamline and lock versioning of ednet_core, ednet_code_generation and ednet_cms to v0.
 
-**0.0.1+3** 2023-03-08
+## 0.0.1+3
+
   + EDNetDSL JSON schema for JSON and YAML dialects
   + example yaml domain model 
 
-**0.0.1+2** 2023-03-08
+## 0.0.1+2
+
 + refactor to modern Dart
   + all Api suffixes of interfaces to IName
   + ConceptEntity -> Entity
   + nullability functional unstable solution
 + reset version
 
-## Legacy
+## 0.0.1+1
+
+Legacy
 
 *2.0.3* 2015-05-19
 
