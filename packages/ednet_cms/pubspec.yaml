@@ -17,3 +17,9 @@ dev_dependencies:
   test: 1.22.0
   flutter_lints: ^2.0.1
 
+# executables
+bin:
+  build:
+    script: bin/build_ednet_cms.dart
+    # Add any additional arguments here
+
