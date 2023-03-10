@@ -23,7 +23,6 @@ Before we continue we shall define context in which we are going to analyze doma
 
 - **Digital product limitations**: The limitations of a digital product should also be considered when designing the content management system. For example, the types of media that can be handled by the system and the way that the content is stored and retrieved.
 
-
 ## Categorization
 Following basic principles, we can make initial categorization of Content-Sensory-Context landscape (There will be a lot of silly examples necessary to demonstrate idea):
 
