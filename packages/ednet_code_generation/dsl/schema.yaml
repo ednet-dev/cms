@@ -1,0 +1,119 @@
+$schema: http://json-schema.org/draft-07/schema#
+description: Schema for a YAML execution of EDNetCoreDSL
+definitions:
+  attribute:
+    description: Attribute definition, attributes are e.g. basic building blocks of ValueTypes
+    type: object
+    properties:
+      sequence:
+        description: The order in which the attribute appears in the UI
+        type: integer
+      category:
+        description: The category of the attribute (e.g. guid, identifier, required, attribute)
+        type: string
+      name:
+        description: The name of the attribute
+        type: string
+      type:
+        description: The data type of the attribute (e.g. String, bool), Domain supported types
+        type: string
+      init:
+        description: The initial value of the attribute (increment, empty or else)
+        type: string
+      essential:
+        description: Whether this attribute is required
+        type: boolean
+      sensitive:
+        description: Whether this attribute contains sensitive information
+        type: boolean
+    required: [ sequence, name, type ]
+  concept:
+    description: Concept definition
+    type: object
+    properties:
+      name:
+        description: The name of the Concept
+        type: string
+      entry:
+        description: Whether this is the entry Concept (Aggregate root) for the model
+        type: boolean
+      canvas:
+        description: canvas position of element for rendering purposes
+        x:
+          description: The x-coordinate of the top-left corner of the canvas artifact
+          type: integer
+        y:
+          description: The y-coordinate of the top-left corner of the canvas artifact
+          type: integer
+        width:
+          description: The width of the canvas artifact
+          type: integer
+        height:
+          description: The height of the canvas artifact
+          type: integer
+      attributes:
+        description: An array of attributes defining the Concept
+        type: array
+        items:
+          $ref: "#/definitions/attribute"
+    required: [ name ]
+  relation:
+    type: object
+    properties:
+      from:
+        description: The name of the first Concept in the relationship.
+        type: string
+      to:
+        description: The name of the second Concept in the relationship.
+        type: string
+      fromToName:
+        description: Name how first concept interprets second concept
+        type: string
+      fromToMin:
+        description: The minimum number of instances of the second Concept in the relationship.
+        type: string
+      fromToMax:
+        description: The maximum number of instances of the second Concept in the relationship.
+        type: string
+      toFromName:
+        description: The name of the inverse relationship, how second concepts interpret the first concept
+        type: string
+      toFromMin:
+        description: The minimum number of instances of the first Concept in the inverse relationship.
+        type: string
+      toFromMax:
+        description: The maximum number of instances of the first Concept in the inverse relationship.
+        type: string
+      category:
+        description: The "category" field can take on different values depending on the type of relationship being defined between concepts. The most commonly used value is "rel", which indicates a standard relationship between concepts. Another value is "twin", which indicates a special type of relationship where two concepts are related to each other in a symmetrical manner. "Reflexive" indicates a relationship where a concept has a relationship with itself, and "inheritance" indicates a relationship where a child concept inherits properties from a parent concept.
+        type: string
+      internal:
+        description: Indicates whether the relationship is internal to the Concept, i.e., whether it is used for implementation purposes only and have no public API beside what Parent Concept provides.
+        type: boolean
+      fromToId:
+        description: Whether the relationship involves an identifier from the second Concept.
+        type: boolean
+      toFromId:
+        description: Whether the inverse relationship involves an identifier from the first Concept.
+        type: boolean
+    required: [ from, to, fromToName, fromToMin, fromToMax, toFromName, toFromMin, toFromMax, category, internal, fromToId, toFromId ]
+type: object
+properties:
+  width:
+    description: The width of the canvas
+    type: integer
+  relations:
+    description: An array of relationships between Concepts
+    type: array
+    items:
+      $ref: "#/definitions/relation"
+  height:
+    description: The height of the canvas
+    type: integer
+  concepts:
+    description: Array of EDNetCore Concepts
+    type: array
+    items:
+      $ref: "#/definitions/concept"
+required: [ relations, concepts ]
+

@@ -7,7 +7,11 @@ environment:
   sdk: '>=2.18.6 <3.0.0'
 
 dependencies:
+#  ednet_code_generation: ^0.0.1+3
+  ednet_code_generation:
+    path: ../ednet_code_generation
   ednet_core: ^0.0.1+2
+  watcher: ^1.0.2
 
 dev_dependencies:
   test: 1.22.0
