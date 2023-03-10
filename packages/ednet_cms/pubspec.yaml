@@ -1,14 +1,14 @@
 name: ednet_cms
 description: Semantic CMS tools
-version: 0.0.1+5
+version: 0.0.1+6
 homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_cms
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
 
 dependencies:
-  ednet_code_generation: ^0.0.1+4
-  ednet_core: ^0.0.1+4
+  ednet_code_generation: ^0.0.1+6
+  ednet_core: ^0.0.1+6
   watcher: ^1.0.2
   args: ^2.4.0
 

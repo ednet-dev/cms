@@ -1,6 +1,10 @@
 ## Version history of [EDNetCoreGen](https://github.com/ednet-dev/core_generation)
 
 based on [Semantic Versioning](http://semver.org/)
+
+**0.0.1+6** 2023-03-10
++ Debug Github CI/CD
+ 
 **0.0.1+5** 2023-03-10
 + Tag based GitHub Actions publishing of core, gen and cms
 
