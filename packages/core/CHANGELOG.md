@@ -6,6 +6,7 @@ based on [Semantic Versioning](http://semver.org/)
 + streamline and lock versioning of ednet_core, ednet_code_generation and ednet_cms to v0.
 
 **0.0.1+3** 2023-03-08
+  + EDNetDSL JSON schema for JSON and YAML dialects
   + example yaml domain model 
 
 **0.0.1+2** 2023-03-08
