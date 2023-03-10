@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   ednet_code_generation: ^0.0.1+6
-  ednet_core: ^0.0.1+6
+  ednet_core: ^0.0.1+7
   watcher: ^1.0.2
   args: ^2.4.0
 

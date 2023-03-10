@@ -1,3 +1,7 @@
+## 0.0.1+7
+
+ - Bump "ednet_core" to `0.0.1+7`.
+
 ## Version history of [EDNetCore](https://github.com/ednet-dev/cms/packages/core)
 
 based on [Semantic Versioning](http://semver.org/)
