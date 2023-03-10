@@ -1,8 +1,10 @@
+domain: example
 concepts:
   - name: Platform
     description: The domain model for digital platforms and their roles/principals.
     children:
       - name: Country
+      - name: Group
       - name: Organisation
       - name: Company
       - name: Student
@@ -101,7 +103,7 @@ relations:
   - from: Country
     fromToName: organisations
     to: Organization
-    toFromName: Users
+    toFromName: countries
     id:
       from: false
       to: false
@@ -109,10 +111,10 @@ relations:
       min: 0
       max: N
     toFromCardinality:
-      min: 1
-      max: 1
+      min: 0
+      max: N
   - from: Group
-    fromToName: CloudPlatform
+    fromToName: Platform
     to: CloudPlatform
     toFromName: Groups
     id:

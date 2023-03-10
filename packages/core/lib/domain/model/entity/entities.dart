@@ -27,7 +27,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return entities;
   }
 
-  set concept(Concept? concept) {
+  set concept(Concept concept) {
     _concept = concept;
     pre = true;
     post = true;
