@@ -95,7 +95,7 @@ packages:
       path: "../../packages/core"
       relative: true
     source: path
-    version: "0.0.1+7"
+    version: "0.0.1+8"
   fake_async:
     dependency: transitive
     description:
