@@ -51,24 +51,26 @@ void main(List<String> args) async {
   print('Building $name domain model...');
 // --genall inputPath outputPath domainName models.join(' ')
   print('Current working directory: ${Directory.current.path}');
-  final resultLL = await Process.run('ls', ['-alF']);
+  // final resultLL = await Process.run('ls', ['-alF']);
   final dartExecutable = Platform.resolvedExecutable;
-
-  final resultLd = await Process.run(
-    dartExecutable,
-    [
-      'pub',
-      'global',
-      'run',
-      'ednet_code_generation',
-    ],
-    // workingDirectory: Directory.current.path,
-    // runInShell: true,
-  );
+  //
+  // final resultLd = await Process.run(
+  //   dartExecutable,
+  //   [
+  //     'pub',
+  //     'global',
+  //     'run',
+  //     'ednet_code_generation',
+  //   ],
+  //   // workingDirectory: Directory.current.path,
+  //   // runInShell: true,
+  // );
 
   final result = await Process.run(
       dartExecutable,
       [
+        'pub',
+        'global',
         'run',
         'ednet_code_generation',
         '--genall',
