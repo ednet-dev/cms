@@ -1,7 +1,9 @@
 targets:
   $default:
     builders:
-      ednet_cms:
+      ednet_cms|cmsBuilder:
+        generate_for:
+          - content/*.yaml
         enabled: true
       ednet_cms|contentWatcherBuilder:
         enabled: false
