@@ -1,3 +1,8 @@
+## 0.0.3
+
+ - **FEAT**(ednet_code_generation): EDNetCodeGenerator invoked from 3rd party package.
+ - **FEAT**(ednet_code_generation): refactor package from command line only and init EDNetCodeGenerator for programmatically generated domain models.
+
 ## 0.0.2
 
  - **FEAT**(ednet_code_generation): feature.

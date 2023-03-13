@@ -1,3 +1,10 @@
+## 0.0.3-dev.1
+
+ - **PERF**(ednet_cms): generate only for content/*.yaml.
+ - **FEAT**(ednet_cms): ContentWatcherBuilder for more performant way of building the cms.
+ - **FEAT**(ednet_cms): example.yaml -> example.ednet.yaml.
+ - **FEAT**(ednet_cms): invoke EDNetCodeGenerator with build_runner targeting client.
+
 ## 0.0.3-dev.0
 
  - **FEAT**(ednet_cms): init CmsBuilder.

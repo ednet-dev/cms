@@ -1,6 +1,6 @@
 name: ednet_cms
 description: Semantic CMS tools
-version: 0.0.3-dev.0
+version: 0.0.3-dev.1
 homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_cms
 
 environment:
@@ -19,7 +19,6 @@ dev_dependencies:
   test: 1.22.0
   flutter_lints: ^2.0.1
   build_runner: ^2.3.3
+  build_web_compilers: ^3.2.7
 
-# executables
-executables:
-  ednet_cms:
+
