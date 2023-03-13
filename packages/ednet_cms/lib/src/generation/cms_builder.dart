@@ -3,12 +3,12 @@ part of ednet_cms;
 class CmsBuilder implements Builder {
   @override
   Map<String, List<String>> get buildExtensions => {
-        '.yaml': ['_cms.g.dart'],
+        '.ednet.yaml': ['_cms.g.dart'],
       };
 
   @override
   Future<void> build(BuildStep buildStep) async {
-    if (!buildStep.inputId.path.endsWith('.ednet.yaml')) {
+    if (buildStep.inputId.path.endsWith('.ednet.yaml')) {
       EDNetCodeGenerator.generate(
         sourceDir: buildStep.inputId.path,
         targetDir: 'ha ha',

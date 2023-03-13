@@ -2,21 +2,27 @@ targets:
   $default:
     builders:
       ednet_cms|cmsBuilder:
-        generate_for:
-          - content/*.yaml
-        enabled: true
+        enabled: false
+
+  initialize:
+    builders:
       ednet_cms|contentWatcherBuilder:
         enabled: false
+
 
 builders:
   ednet_cms|cmsBuilder:
     import: "package:ednet_cms/ednet_cms.dart"
-    builder_factories: ["cmsBuilder"]
+    builder_factories: [ "cmsBuilder" ]
+    auto_apply: dependents
+    build_to: source
     build_extensions:
-      ".yaml": ["_cms.g.dart"]
+      ".ednet.yaml": [ "_cms.g.dart" ]
 
   ednet_cms|contentWatcherBuilder:
     import: "package:ednet_cms/ednet_cms.dart"
-    builder_factories: ["contentWatcherBuilder"]
+    auto_apply: none
+    build_to: source
+    builder_factories: [ "contentWatcherBuilder" ]
     build_extensions:
-      ".ednet.yaml": ["_ednet.g.dart"]
+      ".ednet.yaml": [ "_ednet.g.dart" ]
