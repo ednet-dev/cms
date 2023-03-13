@@ -6,10 +6,10 @@ targets:
 
 builders:
   ednet_cms:
-    import: "package:ednet_cms/integrations/build.dart"
+    import: 'package:ednet_cms/ednet_cms.dart'
     builder_factories: [ "cmsBuilder" ]
     build_extensions:
       '.dart': [ "_cms.g.dart" ]
       '.yaml': [ "_cms.g.yaml" ]
     build_to: source
-    auto_apply: root_package
+    auto_apply: dependents

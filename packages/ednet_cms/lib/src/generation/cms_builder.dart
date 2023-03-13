@@ -1,7 +1,4 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:build/build.dart';
+part of ednet_cms;
 
 class CmsBuilder implements Builder {
   @override
@@ -13,6 +10,12 @@ class CmsBuilder implements Builder {
   @override
   Future<void> build(BuildStep buildStep) async {
     if (!buildStep.inputId.path.endsWith('.ednet.yaml')) {
+      EDNetCodeGenerator.generate(
+        sourceDir: buildStep.inputId.path,
+        targetDir: 'ha ha',
+        domainName: ' buildStep.domainName',
+        models: ' buildStep.models',
+      );
       return;
     }
     // Check if content directory exists
