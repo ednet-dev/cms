@@ -1,5 +1,11 @@
 part of ednet_code_generation;
 
+class EDNetCodeGenerator {
+  static generate({sourceDir, targetDir, domainName, models}) {
+    print([sourceDir, targetDir, domainName, models]);
+  }
+}
+
 String firstLetterToUpper(String text) {
   return '${text[0].toUpperCase()}${text.substring(1)}';
 }
@@ -294,7 +300,7 @@ void gen(String gen,
         model: model,
       );
       if (outputDir != null) {
-        genLib(gen, outputDir!);
+        genLib(gen, outputDir);
       } else {
         throw new ArgumentError(
             'outputDir is required when calling --gengen with dir, domain, and model arguments');
