@@ -3,8 +3,7 @@ part of ednet_cms;
 class CmsBuilder implements Builder {
   @override
   Map<String, List<String>> get buildExtensions => {
-        '.dart': ['_cms.g.dart'],
-        '.yaml': ['_cms.g.yaml'],
+        '.yaml': ['_cms.g.dart'],
       };
 
   @override
@@ -23,8 +22,8 @@ class CmsBuilder implements Builder {
     if (!await contentDir.exists()) {
       // Create content directory
       await contentDir.create();
-      // Create example.yaml file
-      final file = await File('content/example.yaml').create();
+      // Create example.ednet.yaml file
+      final file = await File('content/example.ednet.yaml').create();
       await file.writeAsString('example content');
     } else {
       // List all files in the content directory
@@ -44,12 +43,12 @@ class CmsBuilder implements Builder {
     //   await buildStep.digest(AssetId(buildStep.inputId.package, 'content/'));
     // }
     //
-    // // Check if the "example.yaml" file exists in the "content" directory.
-    // final exampleId = AssetId(buildStep.inputId.package, 'content/example.yaml');
+    // // Check if the "example.ednet.yaml" file exists in the "content" directory.
+    // final exampleId = AssetId(buildStep.inputId.package, 'content/example.ednet.yaml');
     // if (!(await buildStep.canRead(exampleId))) {
-    //   // If the "example.yaml" file does not exist, copy it from the root directory of ednet_cms.
+    //   // If the "example.ednet.yaml" file does not exist, copy it from the root directory of ednet_cms.
     //   // final ednetCmsRootDir = Directory(p.absolute(p.dirname(p.fromUri(Platform.script)), '..'));
-    //   final ednetCmsExampleId = AssetId('ednet_cms', 'example.yaml');
+    //   final ednetCmsExampleId = AssetId('ednet_cms', 'example.ednet.yaml');
     //   final contents = await buildStep.readAsString(ednetCmsExampleId);
     //   await buildStep.writeAsString(exampleId, contents);
     // }
@@ -62,7 +61,7 @@ class CmsBuilder implements Builder {
     //   }
     // } else {
     //   await contentDir.create(recursive: true);
-    //   final exampleFile = File('${contentDir.path}/example.yaml');
+    //   final exampleFile = File('${contentDir.path}/example.ednet.yaml');
     //   await exampleFile.writeAsString('example');
     // }
   }
