@@ -1,4 +1,4 @@
-part of ednet_core_gen;
+part of ednet_code_generation;
 
 void genDomainModelWeb(File file) {
   addText(file, genEDNetWeb(ednetCoreModel));
