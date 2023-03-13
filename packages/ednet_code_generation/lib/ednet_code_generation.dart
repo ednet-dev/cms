@@ -16,7 +16,7 @@ part 'src/web_gen.dart';
 
 late String libraryName;
 late String domainName;
-late String outputDir;
+String? outputDir;
 late String modelName;
 
 late CoreRepository ednetCoreRepository;
@@ -24,4 +24,4 @@ late Domain ednetCoreDomain;
 late Model ednetCoreModel;
 
 String? modelJson;
-late String yamlString;
+String? yamlString;

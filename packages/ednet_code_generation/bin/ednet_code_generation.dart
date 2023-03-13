@@ -13,13 +13,13 @@ void main(List<String> args) {
     outputDir = args[2];
     domainName = domainName.toLowerCase();
     if (domainName == 'domain') {
-      throw new EDNetException('domain cannot be the domain name');
+      throw EDNetException('domain cannot be the domain name');
     }
 
     for (var i = 4; i < args.length; i++) {
       modelName = args[i].toLowerCase();
       if (modelName == 'model') {
-        throw new EDNetException('model cannot be the model name');
+        throw EDNetException('model cannot be the model name');
       }
       libraryName = '${domainName}_${modelName}';
       displayYaml(domain: domainName, model: modelName, dir: args[1]);
@@ -28,7 +28,7 @@ void main(List<String> args) {
         domain: domainName,
         model: modelName,
       ); // project path as argument
-      genProject(args[0], outputDir);
+      genProject(args[0], outputDir!);
     }
   } else if (args.length == 4 &&
       (args[0] == '--genall' || args[0] == '--gengen')) {
@@ -37,13 +37,13 @@ void main(List<String> args) {
     domainName = domainName.toLowerCase();
     modelName = modelName.toLowerCase();
     if (domainName == modelName) {
-      throw new EDNetException('domain and model names must be different');
+      throw EDNetException('domain and model names must be different');
     }
     if (domainName == 'domain') {
-      throw new EDNetException('domain cannot be the domain name');
+      throw EDNetException('domain cannot be the domain name');
     }
     if (modelName == 'model') {
-      throw new EDNetException('model cannot be the model name');
+      throw EDNetException('model cannot be the model name');
     }
     libraryName = '${domainName}_${modelName}';
     createDomainModel(args[1]); // project path as argument
