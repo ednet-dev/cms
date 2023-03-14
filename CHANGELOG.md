@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-03-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`ednet_cms` - `v0.0.3-dev.2`](#ednet_cms---v003-dev2)
+
+---
+
+#### `ednet_cms` - `v0.0.3-dev.2`
+
+ - **FIX**(ednet_cms): correct syntax for executables in pubspec.yaml.
+ - **FEAT**(ednet_cms): build or watch domain model with 'dart run ednet_cms:build' or 'dart run ednet_cms:watch'.
+
+
 ## 2023-03-13
 
 ### Changes

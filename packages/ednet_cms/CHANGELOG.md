@@ -1,3 +1,8 @@
+## 0.0.3-dev.2
+
+ - **FIX**(ednet_cms): correct syntax for executables in pubspec.yaml.
+ - **FEAT**(ednet_cms): build or watch domain model with 'dart run ednet_cms:build' or 'dart run ednet_cms:watch'.
+
 ## 0.0.3-dev.1
 
  - **PERF**(ednet_cms): generate only for content/*.yaml.
