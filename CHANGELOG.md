@@ -15,6 +15,32 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`ednet_cms` - `v0.0.3-dev.3`](#ednet_cms---v003-dev3)
+ - [`ednet_code_generation` - `v0.0.3+1`](#ednet_code_generation---v0031)
+
+---
+
+#### `ednet_cms` - `v0.0.3-dev.3`
+
+ - **FIX**: pub dependencies instead of local absolute path.
+
+#### `ednet_code_generation` - `v0.0.3+1`
+
+ - **FIX**: pub dependencies instead of local absolute path.
+
+
+## 2023-03-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`ednet_cms` - `v0.0.3-dev.2`](#ednet_cms---v003-dev2)
 
 ---

@@ -1,3 +1,7 @@
+## 0.0.3-dev.3
+
+ - **FIX**: pub dependencies instead of local absolute path.
+
 ## 0.0.3-dev.2
 
  - **FIX**(ednet_cms): correct syntax for executables in pubspec.yaml.

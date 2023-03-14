@@ -1,3 +1,7 @@
+## 0.0.3+1
+
+ - **FIX**: pub dependencies instead of local absolute path.
+
 ## 0.0.3
 
  - **FEAT**(ednet_code_generation): EDNetCodeGenerator invoked from 3rd party package.
