@@ -24,7 +24,5 @@ dev_dependencies:
 
 executables:
   build:
-    path: bin/build.dart
   watch:
-    path: bin/watch.dart
 
