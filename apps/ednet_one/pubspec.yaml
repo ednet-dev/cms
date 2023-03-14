@@ -17,8 +17,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  ednet_core: ^0.0.1+8
-
+  ednet_core: ^0.0.1+9
 dev_dependencies:
   flutter_test:
     sdk: flutter

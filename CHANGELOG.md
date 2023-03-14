@@ -3,6 +3,105 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-03-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`ednet_cms` - `v0.0.3-dev.3`](#ednet_cms---v003-dev3)
+ - [`ednet_code_generation` - `v0.0.3+1`](#ednet_code_generation---v0031)
+
+---
+
+#### `ednet_cms` - `v0.0.3-dev.3`
+
+ - **FIX**: pub dependencies instead of local absolute path.
+
+#### `ednet_code_generation` - `v0.0.3+1`
+
+ - **FIX**: pub dependencies instead of local absolute path.
+
+
+## 2023-03-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`ednet_cms` - `v0.0.3-dev.2`](#ednet_cms---v003-dev2)
+
+---
+
+#### `ednet_cms` - `v0.0.3-dev.2`
+
+ - **FIX**(ednet_cms): correct syntax for executables in pubspec.yaml.
+ - **FEAT**(ednet_cms): build or watch domain model with 'dart run ednet_cms:build' or 'dart run ednet_cms:watch'.
+
+
+## 2023-03-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`ednet_cms` - `v0.0.3-dev.1`](#ednet_cms---v003-dev1)
+ - [`ednet_code_generation` - `v0.0.3`](#ednet_code_generation---v003)
+
+---
+
+#### `ednet_cms` - `v0.0.3-dev.1`
+
+ - **PERF**(ednet_cms): generate only for content/*.yaml.
+ - **FEAT**(ednet_cms): ContentWatcherBuilder for more performant way of building the cms.
+ - **FEAT**(ednet_cms): example.yaml -> example.ednet.yaml.
+ - **FEAT**(ednet_cms): invoke EDNetCodeGenerator with build_runner targeting client.
+
+#### `ednet_code_generation` - `v0.0.3`
+
+ - **FEAT**(ednet_code_generation): EDNetCodeGenerator invoked from 3rd party package.
+ - **FEAT**(ednet_code_generation): refactor package from command line only and init EDNetCodeGenerator for programmatically generated domain models.
+
+
+## 2023-03-10
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`ednet_cms` - `v0.0.3-dev.0`](#ednet_cms---v003-dev0)
+
+---
+
+#### `ednet_cms` - `v0.0.3-dev.0`
+
+ - **FEAT**(ednet_cms): init CmsBuilder.
+
+
 ## 2023-03-10
 
 ### Changes

@@ -1,30 +1,13 @@
 library ednet_cms;
 
-/// Basic Content abstraction to rule them all
-abstract class Content<T> {
-  T get value;
-}
+import 'package:build/build.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:glob/glob.dart';
+import 'package:ednet_code_generation/ednet_code_generation.dart';
 
-abstract class TextContent implements Content<String> {}
+part 'src/integrations/build.dart';
 
-class Text implements TextContent {
-  @override
-  final String value;
+part 'src/generation/cms_builder.dart';
 
-  const Text(this.value);
-}
-
-class Number implements Content<num> {
-  @override
-  final num value;
-
-  const Number(this.value);
-}
-
-/// again Date and
-class Date implements Content<DateTime> {
-  @override
-  final DateTime value;
-
-  const Date(this.value);
-}
+part 'src/generation/content_watcher_builder.dart';
