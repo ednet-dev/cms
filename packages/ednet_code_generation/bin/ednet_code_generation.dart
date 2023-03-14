@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:ednet_core/ednet_core.dart';
 
 import '../lib/ednet_code_generation.dart';

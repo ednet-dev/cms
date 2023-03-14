@@ -5,7 +5,7 @@ void genDomainModelWeb(File file) {
 }
 
 void genDomainModelWebHtml(File file) {
-  var text = '''
+  final text = '''
 <!DOCTYPE html>
 
 <html>
@@ -80,7 +80,7 @@ void genDomainModelWebHtml(File file) {
 }
 
 void genLayout(File file) {
-  var text = '''
+  const text = '''
 /* layout.css */
 
 /* ===[ begin ]=== */
@@ -116,7 +116,7 @@ void genLayout(File file) {
 }
 
 void genLayout2(File file) {
-  var text = '''
+  const text = '''
 /* layout2c.css */
 
 /* ===[ begin ]=== */
@@ -147,7 +147,7 @@ void genLayout2(File file) {
 }
 
 void genLink(File file) {
-  var text = '''
+  const text = '''
 /* link.css */
 
 /* ===[ begin ]=== */
@@ -195,7 +195,7 @@ void genLink(File file) {
 }
 
 void genList(File file) {
-  var text = '''
+  const text = '''
 /* list.css */
 
 /* ===[ begin ]=== */
@@ -239,7 +239,7 @@ void genList(File file) {
 }
 
 void genMenu(File file) {
-  var text = '''
+  const text = '''
 /* menu.css */
 
 /* ===[ begin ]=== */
@@ -340,7 +340,7 @@ void genMenu(File file) {
 }
 
 void genPage(File file) {
-  var text = '''
+  const text = '''
 /* page.css */
 
 /* ===[ begin ]=== */
@@ -389,7 +389,7 @@ void genPage(File file) {
 }
 
 void genTable(File file) {
-  var text = '''
+  const text = '''
 /* table.css */
 
 /* ===[ begin ]=== */
@@ -442,50 +442,50 @@ void genTable(File file) {
 }
 
 void genWeb(String path) {
-  var webPath = '${path}/web';
+  final webPath = '${path}/web';
   genDir(webPath);
 
-  var cssPath = '${webPath}/css';
+  final cssPath = '${webPath}/css';
   genDir(cssPath);
 
-  var cssImgPath = '${cssPath}/img';
+  final cssImgPath = '${cssPath}/img';
   genDir(cssImgPath);
 
-  var imgPath = '${webPath}/img';
+  final imgPath = '${webPath}/img';
   genDir(imgPath);
 
-  var domainPath = '${webPath}/${domainName}';
+  final domainPath = '${webPath}/${domainName}';
   genDir(domainPath);
 
-  var modelPath = '${domainPath}/${modelName}';
+  final modelPath = '${domainPath}/${modelName}';
   genDir(modelPath);
-  File domainModelWeb =
+  final domainModelWeb =
       genFile('${modelPath}/${domainName}_${modelName}_web.dart');
   genDomainModelWeb(domainModelWeb);
-  File domainModelWebHtml =
+  final domainModelWebHtml =
       genFile('${modelPath}/${domainName}_${modelName}_web.html');
   genDomainModelWebHtml(domainModelWebHtml);
 
-  var modelCssPath = '${modelPath}/css';
+  final modelCssPath = '${modelPath}/css';
   genDir(modelCssPath);
-  File layout = genFile('${modelCssPath}/layout.css');
+  final layout = genFile('${modelCssPath}/layout.css');
   genLayout(layout);
-  File layout2 = genFile('${modelCssPath}/layout2.css');
+  final layout2 = genFile('${modelCssPath}/layout2.css');
   genLayout2(layout2);
-  File link = genFile('${modelCssPath}/link.css');
+  final link = genFile('${modelCssPath}/link.css');
   genLink(link);
-  File list = genFile('${modelCssPath}/list.css');
+  final list = genFile('${modelCssPath}/list.css');
   genList(list);
-  File menu = genFile('${modelCssPath}/menu.css');
+  final menu = genFile('${modelCssPath}/menu.css');
   genMenu(menu);
-  File page = genFile('${modelCssPath}/page.css');
+  final page = genFile('${modelCssPath}/page.css');
   genPage(page);
-  File table = genFile('${modelCssPath}/table.css');
+  final table = genFile('${modelCssPath}/table.css');
   genTable(table);
 
-  var modelCssImgPath = '${modelCssPath}/img';
+  final modelCssImgPath = '${modelCssPath}/img';
   genDir(modelCssImgPath);
 
-  var modelImgPath = '${modelPath}/img';
+  final modelImgPath = '${modelPath}/img';
   genDir(modelImgPath);
 }

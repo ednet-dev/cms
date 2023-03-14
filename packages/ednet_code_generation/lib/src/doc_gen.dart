@@ -1,7 +1,7 @@
 part of ednet_code_generation;
 
 void genPubspecTxt(File file) {
-  var text = '''
+  final text = '''
 name: ${domainName}_${modelName}
 author: Your Name
 homepage: http://ondart.me/
@@ -37,7 +37,7 @@ dependencies:
 }
 
 void genGithub(File file) {
-  var text = '''
+  final text = '''
 github.txt for ${domainName}_${modelName}
 
 GitHub, Git
@@ -153,14 +153,14 @@ git push --tags
 }
 
 void genDoc(String path) {
-  var docPath = '${path}/doc';
+  final docPath = '${path}/doc';
   genDir(docPath);
-  File pubspec = genFile('${docPath}/pubspec.txt');
+  final pubspec = genFile('${docPath}/pubspec.txt');
   genPubspecTxt(pubspec);
-  var specificChangesPath = '${docPath}/specific_changes';
+  final specificChangesPath = '${docPath}/specific_changes';
   genDir(specificChangesPath);
-  var gitPath = '${docPath}/git';
+  final gitPath = '${docPath}/git';
   genDir(gitPath);
-  File github = genFile('${gitPath}/github.txt');
+  final github = genFile('${gitPath}/github.txt');
   genGithub(github);
 }
