@@ -10,19 +10,19 @@ void genDomainModelTest(File file, Concept entryConcept) {
 }
 
 void genTest(String path, Model ednetCoreModel) {
-  var testPath = '${path}/test';
+  final testPath = '${path}/test';
   genDir(testPath);
 
-  var domainPath = '${testPath}/${domainName}';
+  final domainPath = '${testPath}/${domainName}';
   genDir(domainPath);
 
-  var modelPath = '${domainPath}/${modelName}';
+  final modelPath = '${domainPath}/${modelName}';
   genDir(modelPath);
-  File domainModelGen =
+  final domainModelGen =
       genFile('${modelPath}/${domainName}_${modelName}_gen.dart');
   genDomainModelGen(domainModelGen);
-  for (Concept entryConcept in ednetCoreModel.entryConcepts) {
-    File domainModelTest = genFile('${modelPath}/${domainName}_${modelName}_'
+  for (final entryConcept in ednetCoreModel.entryConcepts) {
+    final domainModelTest = genFile('${modelPath}/${domainName}_${modelName}_'
         '${entryConcept.codeLowerUnderscore}_test.dart');
     genDomainModelTest(domainModelTest, entryConcept);
   }

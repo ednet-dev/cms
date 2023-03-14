@@ -44,7 +44,7 @@ void genJsonData(File file) {
   sc = '${sc} \n';
   sc = '${sc}// lib/${domainName}/${modelName}/json/data.dart \n';
 
-  for (Concept entryConcept in ednetCoreModel.entryConcepts) {
+  for (final entryConcept in ednetCoreModel.entryConcepts) {
     sc = '${sc}var ${domainName}${firstLetterToUpper(modelName)}'
         '${entryConcept.code}Entry = r""" \n';
     sc = '${sc} \n';
@@ -61,7 +61,7 @@ void genJsonData(File file) {
 }
 
 void genJsonModel(File file) {
-  var text = """
+  final text = """
 part of ${domainName}_${modelName};
 
 // http://www.json.org/
@@ -77,57 +77,57 @@ ${modelJson ?? yamlString}
 }
 
 void genAll(String path) {
-  var libPath = '${path}/lib';
+  final libPath = '${path}/lib';
   genDir(libPath);
-  File repository = genFile('${libPath}/repository.dart');
+  final repository = genFile('${libPath}/repository.dart');
   genEDNetCoreRepository(repository);
-  File domainModelLibrary =
+  final domainModelLibrary =
       genFile('${libPath}/${domainName}_${modelName}.dart');
   genDomainModelLibrary(domainModelLibrary);
-  File domainModelAppLibrary =
+  final domainModelAppLibrary =
       genFile('${libPath}/${domainName}_${modelName}_app.dart');
   genDomainModelAppLibrary(domainModelAppLibrary);
 
-  var domainPath = '${libPath}/${domainName}';
+  final domainPath = '${libPath}/${domainName}';
   genDir(domainPath);
-  File domain = genFile('${domainPath}/domain.dart');
+  final domain = genFile('${domainPath}/domain.dart');
   genEDNetCoreDomain(domain);
 
-  var modelPath = '${domainPath}/${modelName}';
+  final modelPath = '${domainPath}/${modelName}';
   genDir(modelPath);
-  File model = genFile('${modelPath}/model.dart');
+  final model = genFile('${modelPath}/model.dart');
   genEDNetCoreModel(model);
-  for (Concept concept in ednetCoreModel.concepts) {
-    File conceptEntities =
+  for (final concept in ednetCoreModel.concepts) {
+    final conceptEntities =
         genFile('${modelPath}/${concept.codesLowerUnderscore}.dart');
     genConceptEntities(conceptEntities, concept);
   }
 
-  var jsonPath = '${modelPath}/json';
+  final jsonPath = '${modelPath}/json';
   genDir(jsonPath);
-  File jsonData = genFile('${jsonPath}/data.dart');
+  final jsonData = genFile('${jsonPath}/data.dart');
   genJsonData(jsonData);
-  File jsonModel = genFile('${jsonPath}/model.dart');
+  final jsonModel = genFile('${jsonPath}/model.dart');
   genJsonModel(jsonModel);
 
   genGen(path);
 }
 
 void genGen(String path) {
-  var genPath = '${path}/lib/gen';
+  final genPath = '${path}/lib/gen';
   genDir(genPath);
 
-  var genDomainPath = '${genPath}/${domainName}';
+  final genDomainPath = '${genPath}/${domainName}';
   genDir(genDomainPath);
-  File models = genFile('${genDomainPath}/i_domain_models.dart');
+  final models = genFile('${genDomainPath}/i_domain_models.dart');
   genEDNetCoreModels(models);
 
-  var genModelPath = '${genDomainPath}/${modelName}';
+  final genModelPath = '${genDomainPath}/${modelName}';
   genDir(genModelPath);
-  File entries = genFile('${genModelPath}/model_entries.dart');
+  final entries = genFile('${genModelPath}/model_entries.dart');
   genEDNetCoreEntries(entries);
-  for (Concept concept in ednetCoreModel.concepts) {
-    File conceptEntitiesGen =
+  for (final concept in ednetCoreModel.concepts) {
+    final conceptEntitiesGen =
         genFile('${genModelPath}/${concept.codesLowerUnderscore}.dart');
     genConceptEntitiesGen(conceptEntitiesGen, concept);
   }
