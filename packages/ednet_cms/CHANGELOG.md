@@ -1,3 +1,15 @@
+## 0.0.3-dev.4
+
+ - **PERF**: generate only for content/*.yaml.
+ - **FIX**: pub dependencies instead of local absolute path.
+ - **FIX**: correct syntax for executables in pubspec.yaml.
+ - **FEAT**: build or watch domain model with 'dart run ednet_cms:build' or 'dart run ednet_cms:watch'.
+ - **FEAT**: ContentWatcherBuilder for more performant way of building the cms.
+ - **FEAT**: example.yaml -> example.ednet.yaml.
+ - **FEAT**: invoke EDNetCodeGenerator with build_runner targeting client.
+ - **FEAT**: init CmsBuilder.
+ - **FEAT**: ednet_cms feature.
+
 ## 0.0.3-dev.3
 
  - **FIX**: pub dependencies instead of local absolute path.
