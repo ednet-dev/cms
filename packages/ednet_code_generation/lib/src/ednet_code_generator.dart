@@ -148,7 +148,7 @@ void createDomainModelFromYaml({
     dir: dir,
   );
 
-  final dynamic yaml = loadYaml(yamlString!);
+  final yaml = loadYaml(yamlString!) as YamlMap;
 
   if (yaml == null || yaml.length == 0) {
     print('missing YAML of the ${domain} model ${model}');
