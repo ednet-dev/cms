@@ -1,10 +1,11 @@
 part of ednet_core;
 
-Model fromJsonToModel(String json, Domain domain, String modelCode, yaml) {
-  var jsonConcepts;
-  var relations;
+Model fromJsonToModel(
+    String json, Domain domain, String modelCode, Map? yaml) {
+  Iterable jsonConcepts;
+  Iterable relations;
 
-  if (yaml == null) {
+  if (yaml == null || yaml.isEmpty) {
     if (json.trim() == '') {
       throw EDNetException('Empty JSON string for Model parse');
     }
@@ -12,8 +13,8 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, yaml) {
     jsonConcepts = boardMap["concepts"];
     relations = boardMap["relations"];
   } else {
-    jsonConcepts = yaml["concepts"];
-    relations = yaml["relations"];
+    jsonConcepts = yaml["concepts"] as Iterable;
+    relations = yaml["relations"] as Iterable;
   }
 
   Model model = Model(domain, modelCode);

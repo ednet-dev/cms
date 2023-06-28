@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Gen EDNet Core Content" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+    <option name="arguments" value="--genall /opt/slavisam-home-ext/projects/ednet/ednet_cms/packages/core/content /opt/slavisam-home-ext/projects/ednet/ednet_cms/apps/ednet_one/domain ednet one direct_democracy project_management social_network legislation ui" />
+    <option name="filePath" value="$PROJECT_DIR$/../experiments/dartling/ednet_core_gen/bin/ednet_core_gen.dart" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/../experiments/dartling/ednet_core_gen" />
+    <method v="2" />
+  </configuration>
+</component>

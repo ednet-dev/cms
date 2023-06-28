@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Gen SOM" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+    <option name="arguments" value="--genall /opt/slavisam-home-ext/projects/SOM/app/lib/generated SOM Manager" />
+    <option name="filePath" value="$PROJECT_DIR$/packages/ednet_code_generation/bin/ednet_code_generation.dart" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/packages/ednet_code_generation" />
+    <method v="2" />
+  </configuration>
+</component>

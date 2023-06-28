@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Gen Category Links" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+    <option name="arguments" value="--genall $PROJECT_DIR$/../experiments/dartling/ednet_core_examples/category_links Category Links" />
+    <option name="filePath" value="$PROJECT_DIR$/../experiments/dartling/ednet_core_gen/bin/ednet_core_gen.dart" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/../experiments/dartling/ednet_core_gen" />
+    <method v="2" />
+  </configuration>
+</component>

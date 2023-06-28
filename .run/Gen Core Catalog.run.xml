@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Gen Core Catalog" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+    <option name="arguments" value="--genall /opt/slavisam-home-ext/projects/ednet/ednet_cms/apps/ednet_core/catalog Core Catalog" />
+    <option name="filePath" value="$PROJECT_DIR$/../experiments/dartling/ednet_core_gen/bin/ednet_core_gen.dart" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/../experiments/dartling/ednet_core_gen" />
+    <method v="2" />
+  </configuration>
+</component>
