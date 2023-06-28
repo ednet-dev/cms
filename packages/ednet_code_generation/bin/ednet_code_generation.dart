@@ -102,7 +102,7 @@ description: ${domainName}_${modelName} application that uses ednet_core for its
 homepage: https://ednet.dev/
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: '>=3.0.3 <4.0.0'
 
 dependencies:
   ednet_core:
@@ -124,7 +124,7 @@ description: ${domainName}_${modelName} application that uses ednet_core for its
 homepage: https://context.dev/
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: '>=3.0.3 <4.0.0'
   
 dependencies:
   ednet_core: ^0.0.1+2
