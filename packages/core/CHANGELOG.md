@@ -1,3 +1,7 @@
+## 0.0.1+11
+
+ - **FIX**: ednet_core bug.
+
 ## 0.0.1+9
 
  - **FIX**: ednet_core bug.

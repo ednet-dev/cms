@@ -1,3 +1,10 @@
+## 0.0.5
+
+ - **FIX**: pub dependencies instead of local absolute path.
+ - **FEAT**(ednet_code_generation): EDNetCodeGenerator invoked from 3rd party package.
+ - **FEAT**(ednet_code_generation): refactor package from command line only and init EDNetCodeGenerator for programmatically generated domain models.
+ - **FEAT**(ednet_code_generation): feature.
+
 ## 0.0.4
 
  - **FIX**: pub dependencies instead of local absolute path.

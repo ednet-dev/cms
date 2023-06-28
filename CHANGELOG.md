@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-06-28
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`ednet_cms` - `v0.0.3-dev.5`](#ednet_cms---v003-dev5)
+ - [`ednet_code_generation` - `v0.0.5`](#ednet_code_generation---v005)
+ - [`ednet_core` - `v0.0.1+11`](#ednet_core---v00111)
+
+---
+
+#### `ednet_cms` - `v0.0.3-dev.5`
+
+ - **REFACTOR**(ednet_cms): remove unnecessary this.
+ - **PERF**(ednet_cms): generate only for content/*.yaml.
+ - **FIX**: pub dependencies instead of local absolute path.
+ - **FIX**(ednet_cms): correct syntax for executables in pubspec.yaml.
+ - **FEAT**(ednet_cms): build or watch domain model with 'dart run ednet_cms:build' or 'dart run ednet_cms:watch'.
+ - **FEAT**(ednet_cms): ContentWatcherBuilder for more performant way of building the cms.
+ - **FEAT**(ednet_cms): example.yaml -> example.ednet.yaml.
+ - **FEAT**(ednet_cms): invoke EDNetCodeGenerator with build_runner targeting client.
+ - **FEAT**(ednet_cms): init CmsBuilder.
+ - **FEAT**(ednet_cms): ednet_cms feature.
+
+#### `ednet_code_generation` - `v0.0.5`
+
+ - **FIX**: pub dependencies instead of local absolute path.
+ - **FEAT**(ednet_code_generation): EDNetCodeGenerator invoked from 3rd party package.
+ - **FEAT**(ednet_code_generation): refactor package from command line only and init EDNetCodeGenerator for programmatically generated domain models.
+ - **FEAT**(ednet_code_generation): feature.
+
+#### `ednet_core` - `v0.0.1+11`
+
+ - **FIX**: ednet_core bug.
+
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## 2023-03-14
 
 ### Changes
