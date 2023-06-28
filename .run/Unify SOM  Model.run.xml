@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Unify SOM  Model" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+    <option name="arguments" value="$PROJECT_DIR$/../../SOM/app/lib/generated/model" />
+    <option name="filePath" value="$PROJECT_DIR$/packages/ednet_core/scripts/um.dart" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/packages/ednet_core" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build CMS" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+    <option name="arguments" value="--input=/opt/slavisam-home-ext/projects/ednet/ednet_cms/packages/content/example --output=/generated --domain=EDNet --models=CMS Semantic Library" />
+    <option name="filePath" value="$PROJECT_DIR$/packages/ednet_cms/bin/build_ednet_cms.dart" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/packages/ednet_cms" />
+    <method v="2" />
+  </configuration>
+</component>
