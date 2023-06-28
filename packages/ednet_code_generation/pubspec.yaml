@@ -6,11 +6,10 @@ homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_code_generat
 documentation: https://github.com/ednet-dev/cms
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  ednet_core: ^0.0.1+11
+  ednet_core:
+    path: ../core
   test: ^1.22.0
   yaml: ^3.1.1
-
-
