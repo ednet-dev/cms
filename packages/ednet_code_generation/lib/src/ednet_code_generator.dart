@@ -22,10 +22,10 @@ String firstLetterToUpper(String text) {
 Directory genDir(String path) {
   final dir = Directory(path);
   if (dir.existsSync()) {
-    print('directory ${path} exists already');
+    print('Directory ${path} already exists.');
   } else {
-    dir.createSync();
-    print('directory created: ${path}');
+    dir.createSync(recursive: true); // create all non-existent directories
+    print('Directory created: ${path}');
   }
   return dir;
 }
@@ -179,7 +179,7 @@ void main(List<String> args) {
         throw EDNetException('model cannot be the model name');
       }
       libraryName = '${domainName}_${modelName}';
-      displayYaml(domain: domainName, model: modelName, dir: args[1]);
+      // displayYaml(domain: domainName, model: modelName, dir: args[1]);
       createDomainModelFromYaml(
         dir: args[1],
         domain: domainName,
@@ -261,7 +261,8 @@ String loadYamlFile({
   required String model,
   required String dir,
 }) {
-  final yamlFile = File('$dir/$domain/${model}/$model.yaml');
+  final yamlFilePath = p.join(dir, domain, model, '$model.yaml') as String;
+  final yamlFile = File(yamlFilePath);
   return yamlFile.readAsStringSync();
 }
 
@@ -282,7 +283,7 @@ void displayYaml({
 |    Relation: {relationName}
 ''';
 
-  renderYaml(yaml, outputTemplate);
+  // renderYaml(yaml, outputTemplate);
 }
 
 void gen(String gen,

@@ -1,9 +1,8 @@
 part of ednet_core;
 
-Model fromJsonToModel(
-    String json, Domain domain, String modelCode, Map? yaml) {
-  Iterable jsonConcepts;
-  Iterable relations;
+Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
+  Iterable jsonConcepts = [];
+  Iterable relations = [];
 
   if (yaml == null || yaml.isEmpty) {
     if (json.trim() == '') {
@@ -14,7 +13,9 @@ Model fromJsonToModel(
     relations = boardMap["relations"];
   } else {
     jsonConcepts = yaml["concepts"] as Iterable;
-    relations = yaml["relations"] as Iterable;
+    if (yaml.containsKey("relations")) {
+      relations = yaml["relations"] as Iterable;
+    }
   }
 
   Model model = Model(domain, modelCode);
