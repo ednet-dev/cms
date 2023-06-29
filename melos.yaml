@@ -10,7 +10,7 @@ packages:
 # This enables a new mechanism for linking local packages, which integrates
 # better with other tooling (e.g. dart tool, flutter tool, IDE plugins) than the
 # mechanism currently being used by default. Please read the documentation for
-# usePubspecOverrides before enabling this feature. 
+# usePubspecOverrides before enabling this feature.
 #
 # See https://melos.invertase.dev/getting-started#setup
 command:
@@ -26,32 +26,22 @@ scripts:
     run: melos exec -- "flutter format . --set-exit-if-changed"
     description: Run `flutter format .` in all packages
 
-  test:flutter:select:
-    run: melos exec --dir-exists="test" --fail-fast -- flutter test --no-pub --coverage
-    description: Run Flutter tests for a specific package in this project.
-    select-package:
-      flutter: true
-      dir-exists: test
+  test:
+    run: melos exec --dir-exists="test" --fail-fast -- "flutter test --no-pub --coverage"
+    description: Run all tests in this project.
 
-  test:flutter:
-    run: melos run test:flutter:select --no-select
-    description: Run all Flutter tests in this project.
-    select-package:
-      flutter: true
-      dir-exists: test
+  test:core:
+    run: melos exec --scope="core" -- "dart test --coverage='coverage'"
+    description: Run Dart tests for the core package in this project.
 
   test:dart:
     run: melos exec --dir-exists="test" --no-private --fail-fast -- dart test --coverage="coverage"
     description: Run Dart tests for a specific package in this project.
 
+  publish:dry:
+    run: melos publish --scope="ednet_cms" --dry-run
+    description: Dry run of publishing ednet_cms to pub.dev.
 
-  test:
-    run: melos run test:dart && melos run test:flutter --no-select
-
-  publish_cms_to_pub_dry:
-    run: melos exec --scope="ednet_cms" -- "dart pub publish --dry-run"
-    description: Publish ednet_cms to pub.dev test
-
-  publish_cms_to_pub:
-    run: melos exec --scope="ednet_cms" -- "dart pub publish --force"
-    description: Publish ednet_cms to pub.dev
+  publish:
+    run: melos publish --scope="ednet_cms" --no-dry-run
+    description: Publish ednet_cms to pub.dev.
