@@ -47,6 +47,7 @@ String genEDNetLibrary(Model model) {
     library {{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}};
 
     import "package:ednet_core/ednet_core.dart";
+    import "package:yaml/yaml.dart";
 
     part "repository.dart";
     part "gen/{{domainCodeLowerUnderscore}}/i_domain_models.dart";

@@ -12,8 +12,9 @@ String genModels(Domain domain, String library) {
       '${sc}    // fromJsonToModel function from ednet_core/lib/domain/model/transfer.json.dart \n';
   sc = '${sc} \n';
   for (Model model in domain.models) {
-    sc = '${sc}    Model model = fromJsonToModel(${domain.codeFirstLetterLower}'
-        '${model.code}ModelJson, domain, "${model.code}", null); \n';
+    sc =
+        '${sc}    Model model = fromJsonToModel(\'\', domain, "${model.code}",loadYaml(${domain.codeFirstLetterLower}'
+        '${model.code}ModelJson)); \n';
     sc = '${sc}    ${model.code}Model ${model.codeFirstLetterLower}Model = '
         '${model.code}Model(model); \n';
     sc = '${sc}    add(${model.codeFirstLetterLower}Model); \n';

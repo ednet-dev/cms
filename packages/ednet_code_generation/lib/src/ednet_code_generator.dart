@@ -95,6 +95,7 @@ environment:
   
 dependencies:
   ednet_core: 
+  yaml:
   # ednet_core_default_app:
   
   ''';

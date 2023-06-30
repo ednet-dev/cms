@@ -12,6 +12,7 @@ environment:
 dependencies:
   browser: '>=0.10.0 <0.11.0'
   ednet_core: '>=2.0.0 <3.0.0'
+  yaml:
   # ednet_core_default_app: '>=2.0.0 <3.0.0'
 
 dependencies:
