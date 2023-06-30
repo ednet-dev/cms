@@ -91,12 +91,11 @@ description: ${domainName}_${modelName} application that uses ednet_core for its
 homepage: https://context.dev/
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
   
 dependencies:
-  ednet_core: ^0.0.1+2
-  ednet_core_default_app:
-    path: ../../../../experiments/ednet_core_default_app
+  ednet_core: 
+  # ednet_core_default_app:
   
   ''';
   addText(file, text);

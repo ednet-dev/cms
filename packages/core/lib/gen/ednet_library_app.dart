@@ -12,7 +12,7 @@ final String ednetLibraryAppTemplate = '''
   
 
   import "package:ednet_core/ednet_core.dart";
-  import "package:ednet_core_default_app/ednet_core_default_app.dart";
+  // import "package:ednet_core_default_app/ednet_core_default_app.dart";
   import "package:{{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}}/{{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}}.dart";
   */
 
