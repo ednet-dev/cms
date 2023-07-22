@@ -79,10 +79,7 @@
                     }
                   }
                 },
-                "required": [
-                  "name",
-                  "type"
-                ]
+                "required": ["name", "type"]
               }
             },
             "policies": {
@@ -97,9 +94,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "name"
-                ]
+                "required": ["name"]
               }
             },
             "events": {
@@ -128,22 +123,15 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "name",
-                        "type"
-                      ]
+                      "required": ["name", "type"]
                     }
                   }
                 },
-                "required": [
-                  "name"
-                ]
+                "required": ["name"]
               }
             }
           },
-          "required": [
-            "name"
-          ]
+          "required": ["name"]
         }
       },
       "subscriptions": {
@@ -186,19 +174,13 @@
                 },
                 "oneOf": [
                   {
-                    "required": [
-                      "concept",
-                      "policy"
-                    ]
+                    "required": ["concept", "policy"]
                   }
                 ]
               }
             }
           },
-          "required": [
-            "name",
-            "event"
-          ]
+          "required": ["name", "event"]
         },
         "children": {
           "type": "array",
@@ -211,8 +193,7 @@
         "type": "array",
         "items": {
           "type": "object",
-          "properties": {
-          }
+          "properties": {}
         }
       }
     },

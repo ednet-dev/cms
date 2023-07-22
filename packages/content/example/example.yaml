@@ -5,7 +5,7 @@ concepts:
     children:
       - name: Country
       - name: Group
-      - name: Organisation
+      - name: Organization
       - name: Company
       - name: Student
       - name: Employee
@@ -101,7 +101,7 @@ concepts:
 
 relations:
   - from: Country
-    fromToName: organisations
+    fromToName: organizations
     to: Organization
     toFromName: countries
     id:
