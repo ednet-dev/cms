@@ -39,14 +39,23 @@ class GeneratePdfCommand extends Command<int> {
         // Defaults to an empty pattern to exclude no files
         // unless specified by the user
         defaultsTo: '',
+      )
+      ..addOption(
+        'outputFormat',
+        abbr: 'f',
+        help: 'The format of the output file (pdf or text).',
+        valueHelp: 'format',
+        allowed: ['pdf', 'text'],
+        defaultsTo: 'text',
       );
   }
 
   @override
+  @override
   String get description =>
-      'Generates a PDF with the concatenated source code from files matching '
+      'Generates a file with the concatenated source code from files matching '
       'the include pattern and not matching the exclude pattern '
-      'in the given directory.';
+      'in the given directory. The output format can be PDF or plain text.';
 
   @override
   String get name => 'generate';
@@ -87,7 +96,26 @@ class GeneratePdfCommand extends Command<int> {
     );
     final allCode = codeBuffer.toString();
 
-    await generatePdf(allCode, outputFileName);
+    final outputFormat = argResults?['outputFormat'] as String? ?? 'pdf';
+
+    // Check and update the output file name based on the output format
+    String updatedOutputFileName;
+    if (outputFileName.endsWith('.pdf') || outputFileName.endsWith('.txt')) {
+      updatedOutputFileName =
+          outputFileName.replaceAll(RegExp(r'\.pdf$|\.txt$'), '');
+    } else {
+      updatedOutputFileName = outputFileName;
+    }
+
+    updatedOutputFileName += outputFormat == 'pdf' ? '.pdf' : '.txt';
+
+    if (outputFormat == 'pdf') {
+      await generatePdf(allCode, updatedOutputFileName);
+      _logger.success('PDF generated: $updatedOutputFileName');
+    } else if (outputFormat == 'text') {
+      await generateTextFile(allCode, updatedOutputFileName);
+      _logger.success('Text file generated: $updatedOutputFileName');
+    }
 
     _logger.success('PDF generated: $outputFileName');
     return ExitCode.success.code;
@@ -122,6 +150,11 @@ class GeneratePdfCommand extends Command<int> {
         }
       }
     }
+  }
+
+  Future<void> generateTextFile(String allCode, String outputFileName) async {
+    final file = File(outputFileName);
+    await file.writeAsString(allCode);
   }
 
   Future<void> generatePdf(String allCode, String outputFileName) async {
