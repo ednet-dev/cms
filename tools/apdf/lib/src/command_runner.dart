@@ -1,4 +1,5 @@
 import 'package:apdf/src/commands/commands.dart';
+import 'package:apdf/src/commands/crawl_command.dart';
 import 'package:apdf/src/version.dart';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
@@ -41,6 +42,7 @@ class ApdfCommandRunner extends CompletionCommandRunner<int> {
     // Add sub commands
     addCommand(GeneratePdfCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
+    addCommand(CrawlCommand(logger: _logger));
   }
 
   @override

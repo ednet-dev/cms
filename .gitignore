@@ -1,4 +1,4 @@
-.idea/
+.idea
 melos_ednetdev.iml
 **/*.iml
 .dart_tool

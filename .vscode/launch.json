@@ -46,6 +46,22 @@
             "cwd": "packages\\ednet_code_generation",
             "request": "launch",
             "type": "dart"
+        },
+        {
+            "name": "Attach to Flutter Web",
+            "request": "attach",
+            "type": "dart",
+            "args": [
+                "--web-port",
+                "37523"
+            ]
+        },
+        {
+            "name": "Flutter (lib/main.dart)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "apps/ednet_one",
+            "program": "lib/main.dart"
         }
     ]
 }
