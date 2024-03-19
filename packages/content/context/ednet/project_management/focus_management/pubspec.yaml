@@ -1,0 +1,16 @@
+name: focus_project
+version: 0.0.1
+
+description: focus_project application that uses ednet_core for its model.
+
+homepage: https://context.dev/
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  
+dependencies:
+  ednet_core: 
+  yaml:
+  # ednet_core_default_app:
+  
+  
