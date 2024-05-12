@@ -174,4 +174,31 @@ ModelEntries createModelData(Model model) {
   return entries;
 }
 
-void main() {}
+void main() {
+  // Create the domain model
+  Model model = createDomainModel();
+
+  // Create model data
+  ModelEntries entries = createModelData(model);
+
+  // Print the simulation to the console
+  entries.forEach((conceptCode, entities) {
+    print('Concept: $conceptCode');
+    entities.forEach((entity) {
+      print('Entity: ${entity.code}');
+      print('Attributes:');
+      entity.attributes.forEach((attributeCode, attribute) {
+        print('  $attributeCode: ${attribute.value}');
+      });
+      print('Parents:');
+      entity.parents.forEach((parentCode, parent) {
+        print('  $parentCode: ${parent.code}');
+      });
+      print('Children:');
+      entity.children.forEach((childCode, child) {
+        print('  $childCode: ${child.code}');
+      });
+      print('-----------------------------------');
+    });
+  });
+}

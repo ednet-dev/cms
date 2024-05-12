@@ -149,7 +149,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
-  String? get code => _code;
+  String get code => _code ?? 'code';
 
   set code(String? code) {
     if (_code == null || _concept!.updateCode) {

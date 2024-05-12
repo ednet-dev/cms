@@ -11,6 +11,14 @@ targets:
 
 
 builders:
+  ednet_cms|jsonContentWatcherBuilder:
+    import: "package:ednet_cms/ednet_cms.dart"
+    builder_factories: [ "jsonContentWatcherBuilder" ]
+    build_to: source
+    auto_apply: none
+    build_extensions:
+      ".json": [ "_ednet_json.g.dart" ]
+
   ednet_cms|cmsBuilder:
     import: "package:ednet_cms/ednet_cms.dart"
     builder_factories: [ "cmsBuilder" ]

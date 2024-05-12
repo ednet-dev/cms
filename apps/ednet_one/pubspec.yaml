@@ -19,6 +19,8 @@ dependencies:
     sdk: flutter
 
   ednet_core: ^0.0.1+10
+  ednet_cms:
+    path: ../../packages/ednet_cms
 dev_dependencies:
   flutter_test:
     sdk: flutter

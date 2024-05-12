@@ -1,6 +1,6 @@
 part of ednet_cms;
 
-class ContentWatcherBuilder implements Builder {
+class ContentWatcherBuilder implements builder.Builder {
   String rootDir = 'lib';
   String contentDir = 'content';
 
@@ -12,7 +12,7 @@ class ContentWatcherBuilder implements Builder {
       };
 
   @override
-  Future<void> build(BuildStep buildStep) async {
+  Future<void> build(builder.BuildStep buildStep) async {
     // Only run the CmsBuilder if the changed file is in the content directory
     final inputId = buildStep.inputId;
     final inputPath = inputId.path;
@@ -22,9 +22,7 @@ class ContentWatcherBuilder implements Builder {
     final contentGlob = Glob('$rootDir/$contentDir/**');
     final isInContentDir = contentGlob.matches(inputPath);
     if (isInContentDir) {
-      final builder = CmsBuilder();
-
-      final outputId = AssetId(inputId.package,
+      final outputId = builder.AssetId(inputId.package,
           'lib/src/domain/${_toCamelCase(inputId.changeExtension('.g.dart').pathSegments.last)}');
       final rootDir = '${buildStep.inputId.package}/lib';
       final contentDir = '$rootDir/content';

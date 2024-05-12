@@ -1,5 +1,6 @@
 part of ednet_cms;
 
-Builder cmsBuilder(BuilderOptions options) => CmsBuilder();
+builder.Builder cmsBuilder(builder.BuilderOptions options) => CmsBuilder();
 
-Builder contentWatcherBuilder(BuilderOptions options) => ContentWatcherBuilder();
+builder.Builder contentWatcherBuilder(builder.BuilderOptions options) =>
+    ContentWatcherBuilder();

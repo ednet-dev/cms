@@ -2,7 +2,6 @@ library ednet_core;
 
 import 'dart:math';
 import 'dart:convert';
-
 export 'domain/model.dart';
 
 part 'domain/i_domain_models.dart';

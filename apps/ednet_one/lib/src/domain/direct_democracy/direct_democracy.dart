@@ -2,7 +2,7 @@ library direct_democracy;
 
 import 'package:ednet_core/ednet_core.dart';
 
-abstract class Vote extends Entity<Vote> {
+class Vote extends Entity<Vote> {
   static const String isForAttribute = 'isFor';
   static const String voterAttribute = 'voter';
   static const String initiativeAttribute = 'initiative';
