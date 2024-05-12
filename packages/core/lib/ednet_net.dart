@@ -182,9 +182,9 @@ void main() {
   ModelEntries entries = createModelData(model);
 
   // Print the simulation to the console
-  entries.forEach((conceptCode, entities) {
+  (entries as Iterable<Entity>).forEach((entities) {
     print('Concept: $conceptCode');
-    entities.forEach((entity) {
+    (entities as Entities<Entity>).forEach((entity) {
       print('Entity: ${entity.code}');
       print('Attributes:');
       entity.attributes.forEach((attributeCode, attribute) {
