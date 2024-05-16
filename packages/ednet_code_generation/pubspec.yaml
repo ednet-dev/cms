@@ -6,7 +6,7 @@ homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_code_generat
 documentation: https://github.com/ednet-dev/cms
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.0.3 <4.0.0 <4.0.0"
 
 dependencies:
   ednet_core:

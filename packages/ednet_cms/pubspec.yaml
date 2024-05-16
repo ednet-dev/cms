@@ -4,7 +4,7 @@ version: 0.0.3-dev.6
 homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_cms
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.0.3 <4.0.0 <4.0.0"
 
 dependencies:
   flutter:
