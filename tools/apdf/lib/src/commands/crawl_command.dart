@@ -73,7 +73,7 @@ class CrawlCommand extends Command<int> {
       }
 
       // Recursively parse children
-      for (var child in element.children) {
+      for (final child in element.children) {
         parseElement(child);
       }
 
@@ -101,7 +101,7 @@ class CrawlCommand extends Command<int> {
       'footer',
       'nav',
       'aside',
-      'main'
+      'main',
     ];
 
     for (final tag in tagsToExtract) {

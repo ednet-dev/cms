@@ -16,7 +16,7 @@ Future<void> main(List<String> args) async {
   // Create the content directory if it doesn't exist
   if (!contentDir.existsSync()) {
     contentDir.createSync();
-    final exampleFile = File('${rootDir}/content/example.ednet.yaml');
+    final exampleFile = File('$rootDir/content/example.ednet.yaml');
     final contentFile = File('${contentDir.path}/example.ednet.yaml');
     await exampleFile.copy(contentFile.path);
   }
@@ -60,7 +60,7 @@ Future<void> main(List<String> args) async {
 class Debouncer<T> {
   final Duration duration;
   Timer? _timer;
-  StreamController<T> _controller;
+  final StreamController<T> _controller;
 
   Debouncer({required this.duration})
       : _controller = StreamController<T>.broadcast();

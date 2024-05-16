@@ -76,7 +76,7 @@ class GeneratePdfCommand extends Command<int> {
             .map((pattern) => Glob(pattern, recursive: true))
             .toList()
         : [
-            Glob('**/*.dart', recursive: true)
+            Glob('**/*.dart', recursive: true),
           ]; // Default to Dart files if empty
 
     final excludeGlobs = excludePatterns.isNotEmpty
@@ -164,9 +164,9 @@ class GeneratePdfCommand extends Command<int> {
     const maxChunkSize = 1000; // Adjust this size as needed
 
     // Split the allCode into smaller chunks
-    var codeChunks = <String>[];
+    final codeChunks = <String>[];
     for (var i = 0; i < allCode.length; i += maxChunkSize) {
-      var end = (i + maxChunkSize < allCode.length)
+      final end = (i + maxChunkSize < allCode.length)
           ? i + maxChunkSize
           : allCode.length;
       codeChunks.add(allCode.substring(i, end));
