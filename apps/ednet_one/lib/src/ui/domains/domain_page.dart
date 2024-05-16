@@ -1,5 +1,3 @@
-import 'i_details_view.dart';
-
 class DomainPage {
   final int id;
   final String domain;

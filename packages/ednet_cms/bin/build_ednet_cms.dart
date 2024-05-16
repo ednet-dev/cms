@@ -1,5 +1,3 @@
-library ednet_cms_build;
-
 import 'dart:io';
 
 import 'package:args/args.dart';

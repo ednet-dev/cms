@@ -116,8 +116,6 @@ abstract class InquiriesGen extends Entities<${concept.code}> {
         return concept.codesLowerUnderscore;
       case 'concept.codeFirstLetterLower':
         return concept.codeFirstLetterLower;
-      case 'concept.codesLowerUnderscore':
-        return concept.codesLowerUnderscore;
       case 'concept.model.codeLowerUnderscore':
         return concept.model.codeLowerUnderscore;
       case 'concept.model.domain.codeLowerUnderscore':
@@ -155,9 +153,6 @@ abstract class InquiriesGen extends Entities<${concept.code}> {
         return parent.code!;
       case 'parent.destinationConcept.code':
         return parent!.destinationConcept.code!;
-
-      case 'library':
-        return library;
 
       default:
         return match.group(0)!;

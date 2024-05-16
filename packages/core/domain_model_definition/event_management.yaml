@@ -1,131 +1,156 @@
 name: EDNetOne
-description: 'EDNetOne is a network of European universities and research institutions that are working together to develop and implement a common European Data Infrastructure (EDI) for the social sciences and humanities. The EDNetOne project is funded by the European Commission under the Horizon 2020 programme. The project is coordinated by the University of Amsterdam and involves 15 partners from 11 countries. The project started in January 2018 and will run for 4 years.'
+description: 'User centric event management system, where users can create, update, cancel and publish events, event sessions and event participants. Users can also register as trainers or performers and set revenue goals. Users can also login and logout.'
 contexts:
   - EventManagement
-      depends_on: [ UserManagement ]
-      value_objects:
-        EventDatesInvalidException
-        EventStartDateBeforeEndDate
-      aggregates:
-      Event:
-        name: Event
-        attributes:
-          name:
-            type: String
-          description:
-            type: String
-          start_date:
-            type: Date
-          end_date:
-            type: Date
-        commands:
-          create:
-            intention: Create a new event
-            policy:
-              name: EventStartDateBeforeEndDate
-              expectation: Start date should be before end date
-              enforcement: throw EventDatesInvalidException
-          update:
-            intention: Update an existing event
-            policy:
-              name: EventStartDateBeforeEndDate
-              expectation: Start date should be before end date
-              enforcement: throw EventDatesInvalidException
-          cancel:
-            intention: Cancel an existing event
-          publish:
-            intention: Publish an existing event
-        events:
-          created:
-            name: EventCreated
-            payload:
-              name:
-                type: String
-              description:
-                type: String
-              start_date:
-                type: Date
-              end_date:
-                type: Date
-          updated:
-            name: EventUpdated
-            payload:
-              name:
-                type: String
-              description:
-                type: String
-              start_date:
-                type: Date
-              end_date:
-                type: Date
-          cancelled:
-            name: EventCancelled
-          published:
-            name: EventPublished
-      EventSession:
-        name: EventSession
-        attributes:
-          name:
-            type: String
-          description:
-            type: String
-          start_date:
-            type: Date
-          end_date:
-            type: Date
-          event:
-            type: Event
-        commands:
-          create:
-            intention: Create a new event session
-            policy:
-              name: EventStartDateBeforeEndDate
-              expectation: Start date should be before end date
-              enforcement: throw EventDatesInvalidException
-          update:
-            intention: Update an existing event session
-            policy:
-              name: EventStartDateBeforeEndDate
-              expectation: Start date should be before end date
-              enforcement: throw EventDatesInvalidException
-          cancel:
-            intention: Cancel an existing event session
-          publish:
-            intention: Publish an existing event session
-        events:
-          created:
-            name: EventSessionCreated
-            payload:
-              name:
-                type: String
-              description:
-                type: String
-              start_date:
-                type: Date
-              end_date:
-                type: Date
-              event:
-                type: Event
-          updated:
-            name: EventSessionUpdated
-            payload:
-              name:
-                type: String
-              description:
-                type: String
-              start_date:
-                type: Date
-              end_date:
-                type: Date
-              event:
-                type: Event
-          cancelled:
-            name: EventSessionCancelled
-          published:
-            name: EventSessionPublished
-      EventParticipant
-      name: EventParticipant
-        attributes:
+    depends_on: [ UserManagement ]
+    value_objects:
+      EventDatesInvalidException
+      EventStartDateBeforeEndDate
+    aggregates:
+    Event:
+      name: Event
+      attributes:
+        name:
+          type: String
+        description:
+          type: String
+        start_date:
+          type: Date
+        end_date:
+          type: Date
+      commands:
+        create:
+          intention: Create a new event
+          policy:
+            name: EventStartDateBeforeEndDate
+            expectation: Start date should be before end date
+            enforcement: throw EventDatesInvalidException
+        update:
+          intention: Update an existing event
+          policy:
+            name: EventStartDateBeforeEndDate
+            expectation: Start date should be before end date
+            enforcement: throw EventDatesInvalidException
+        cancel:
+          intention: Cancel an existing event
+        publish:
+          intention: Publish an existing event
+      events:
+        created:
+          name: EventCreated
+          payload:
+            name:
+              type: String
+            description:
+              type: String
+            start_date:
+              type: Date
+            end_date:
+              type: Date
+        updated:
+          name: EventUpdated
+          payload:
+            name:
+              type: String
+            description:
+              type: String
+            start_date:
+              type: Date
+            end_date:
+              type: Date
+        cancelled:
+          name: EventCancelled
+        published:
+          name: EventPublished
+    EventSession:
+      name: EventSession
+      attributes:
+        name:
+          type: String
+        description:
+          type: String
+        start_date:
+          type: Date
+        end_date:
+          type: Date
+        event:
+          type: Event
+      commands:
+        create:
+          intention: Create a new event session
+          policy:
+            name: EventStartDateBeforeEndDate
+            expectation: Start date should be before end date
+            enforcement: throw EventDatesInvalidException
+        update:
+          intention: Update an existing event session
+          policy:
+            name: EventStartDateBeforeEndDate
+            expectation: Start date should be before end date
+            enforcement: throw EventDatesInvalidException
+        cancel:
+          intention: Cancel an existing event session
+        publish:
+          intention: Publish an existing event session
+      events:
+        created:
+          name: EventSessionCreated
+          payload:
+            name:
+              type: String
+            description:
+              type: String
+            start_date:
+              type: Date
+            end_date:
+              type: Date
+            event:
+              type: Event
+        updated:
+          name: EventSessionUpdated
+          payload:
+            name:
+              type: String
+            description:
+              type: String
+            start_date:
+              type: Date
+            end_date:
+              type: Date
+            event:
+              type: Event
+        cancelled:
+          name: EventSessionCancelled
+        published:
+          name: EventSessionPublished
+    EventParticipant
+    name: EventParticipant
+      attributes:
+        user:
+          type: User
+        event:
+          type: Event
+        role:
+          type: EventParticipantRole
+        status:
+          type: EventParticipantStatus
+        created_at:
+          type: Date
+        updated_at:
+          type: Date
+    commands:
+      create:
+        intention: Create a new event participant
+      update:
+        intention: Update an existing event participant
+      cancel:
+        intention: Cancel an existing event participant
+      publish:
+        intention: Publish an existing event participant
+    events:
+      created:
+        name: EventParticipantCreated
+        payload:
           user:
             type: User
           event:
@@ -138,120 +163,95 @@ contexts:
             type: Date
           updated_at:
             type: Date
+      updated:
+        name: EventParticipantUpdated
+        payload:
+          user:
+            type: User
+          event:
+            type: Event
+          role:
+            type: EventParticipantRole
+          status:
+            type: EventParticipantStatus
+          created_at:
+            type: Date
+          updated_at:
+            type: Date
+      cancelled:
+        name: EventParticipantCancelled
+      published:
+        name: EventParticipantPublished
+    EventParticipantRole:
+      name: EventParticipantRole
+      attributes:
+        name:
+          type: String
+        description:
+          type: String
       commands:
         create:
-          intention: Create a new event participant
+          intention: Create a new event participant role
         update:
-          intention: Update an existing event participant
+          intention: Update an existing event participant role
         cancel:
-          intention: Cancel an existing event participant
+          intention: Cancel an existing event participant role
         publish:
-          intention: Publish an existing event participant
+          intention: Publish an existing event participant role
       events:
         created:
-          name: EventParticipantCreated
+          name: EventParticipantRoleCreated
           payload:
-            user:
-              type: User
-            event:
-              type: Event
-            role:
-              type: EventParticipantRole
-            status:
-              type: EventParticipantStatus
-            created_at:
-              type: Date
-            updated_at:
-              type: Date
+            name:
+              type: String
+            description:
+              type: String
         updated:
-          name: EventParticipantUpdated
+          name: EventParticipantRoleUpdated
           payload:
-            user:
-              type: User
-            event:
-              type: Event
-            role:
-              type: EventParticipantRole
-            status:
-              type: EventParticipantStatus
-            created_at:
-              type: Date
-            updated_at:
-              type: Date
+            name:
+              type: String
+            description:
+              type: String
         cancelled:
-          name: EventParticipantCancelled
+          name: EventParticipantRoleCancelled
         published:
-          name: EventParticipantPublished
-      EventParticipantRole:
-        name: EventParticipantRole
-        attributes:
-          name:
-            type: String
-          description:
-            type: String
-        commands:
-          create:
-            intention: Create a new event participant role
-          update:
-            intention: Update an existing event participant role
-          cancel:
-            intention: Cancel an existing event participant role
-          publish:
-            intention: Publish an existing event participant role
-        events:
-          created:
-            name: EventParticipantRoleCreated
-            payload:
-              name:
-                type: String
-              description:
-                type: String
-          updated:
-            name: EventParticipantRoleUpdated
-            payload:
-              name:
-                type: String
-              description:
-                type: String
-          cancelled:
-            name: EventParticipantRoleCancelled
-          published:
-            name: EventParticipantRolePublished
-      EventParticipantStatus:
-        name: EventParticipantStatus
-        attributes:
-          name:
-            type: String
-          description:
-            type: String
-        commands:
-          create:
-            intention: Create a new event participant status
-          update:
-            intention: Update an existing event participant status
-          cancel:
-            intention: Cancel an existing event participant status
-          publish:
-            intention: Publish an existing event participant status
-        events:
-          created:
-            name: EventParticipantStatusCreated
-            payload:
-              name:
-                type: String
-              description:
-                type: String
-          updated:
-            name: EventParticipantStatusUpdated
-            payload:
-              name:
-                type: String
-              description:
-                type: String
-          cancelled:
-            name: EventParticipantStatusCancelled
-          published:
-            name: EventParticipantStatusPublished
+          name: EventParticipantRolePublished
+    EventParticipantStatus:
+      name: EventParticipantStatus
+      attributes:
+        name:
+          type: String
+        description:
+          type: String
+      commands:
+        create:
+          intention: Create a new event participant status
+        update:
+          intention: Update an existing event participant status
+        cancel:
+          intention: Cancel an existing event participant status
+        publish:
+          intention: Publish an existing event participant status
+      events:
+        created:
+          name: EventParticipantStatusCreated
+          payload:
+            name:
+              type: String
+            description:
+              type: String
+        updated:
+          name: EventParticipantStatusUpdated
+          payload:
+            name:
+              type: String
+            description:
+              type: String
+        cancelled:
+          name: EventParticipantStatusCancelled
+        published:
+          name: EventParticipantStatusPublished
 
   - UserManagement:
       context:

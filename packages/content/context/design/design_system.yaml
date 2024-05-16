@@ -1,0 +1,58 @@
+domain: Design
+model: System
+concepts:
+  - name: Card
+    entry: false
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: avatar
+        type: String
+        essential: false
+        sensitive: false
+
+      - sequence: 2
+        category: attribute
+        name: header
+        type: String
+        essential: true
+        sensitive: false
+
+      - sequence: 3
+        category: attribute
+        name: subHeader
+        type: String
+        essential: false
+        sensitive: false
+
+      - sequence: 4
+        category: attribute
+        name: secondaryActions
+        type: String
+        essential: false
+        sensitive: false
+
+      - sequence: 5
+        category: attribute
+        name: primaryMedia
+        type: String
+        essential: false
+        sensitive: false
+
+      - sequence: 6
+        category: attribute
+        name: title
+        type: String
+        essential: true
+        sensitive: false
+
+      - sequence: 7
+        name: subHeader
+        type: String
+
+      - sequence: 8
+        category: attribute
+        name: description
+        type: String
+        essential: false
+        sensitive: false

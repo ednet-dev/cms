@@ -1,4 +1,4 @@
-name: ednet_dev
+name: ednet_cms
 
 environment:
   sdk: '>=3.0.3 <4.0.0'

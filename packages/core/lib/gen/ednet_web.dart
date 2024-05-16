@@ -11,7 +11,7 @@ String genEDNetWeb(Model model) {
   sc = '$sc\nimport "package:ednet_core/ednet_core.dart"; \n';
   sc = '${sc} \n';
   sc =
-      '${sc}import "package:ednet_core_default_app/ednet_core_default_app.dart"; \n';
+      '${sc}// import "package:ednet_core_default_app/ednet_core_default_app.dart"; \n';
   sc = '${sc}import "package:${domain.codeLowerUnderscore}_'
       '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'
       '${model.codeLowerUnderscore}.dart"; \n';

@@ -7,7 +7,7 @@ class CMSCanvas extends StatelessWidget {
   final List<Node> nodes;
   final List<Edge> edges;
 
-  CMSCanvas({
+  const CMSCanvas({
     super.key,
     required this.nodes,
     required this.edges,
@@ -57,7 +57,7 @@ class CMSGraphPainter extends CustomPainter {
 
     for (var edge in edges) {
       final sourceNode =
-          nodes[nodes.indexWhere((node) => node.id == edge.source?.id)];
+          nodes[nodes.indexWhere((node) => node.id == edge.source.id)];
       final targetNode =
           nodes[nodes.indexWhere((node) => node.id == edge.target.id)];
       final sourceX = center.dx + radius * cos(sourceNode.angle);

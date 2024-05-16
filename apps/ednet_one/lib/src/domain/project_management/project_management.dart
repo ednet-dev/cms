@@ -97,7 +97,7 @@ Domains createDomainModels() {
 Domains populateDomainModels(Domains domains) {
   /// Domains
   final dd = domains.getDomain('DirectDemocracy');
-
+  print(dd?.code);
   return domains;
 }
 

@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
 
                   ///domains
                   case DirectDemocracyDetailsView.routeName:
-                    return const DirectDemocracyDetailsView();
+                    return DirectDemocracyDetailsView();
                   case LegislationDetailsView.routeName:
                     return const LegislationDetailsView();
                   case ProjectManagementDetailsView.routeName:

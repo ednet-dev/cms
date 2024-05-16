@@ -8,6 +8,7 @@ abstract class Property extends Entity<Property> {
   bool update = true;
   bool sensitive = false;
   String? label;
+  AttributeType? type;
 
   Concept sourceConcept;
 
