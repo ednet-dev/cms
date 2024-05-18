@@ -183,22 +183,22 @@ void main() {
 
   // Print the simulation to the console
   (entries as Iterable<Entity>).forEach((entities) {
-    print('Concept: $conceptCode');
+    // print('Concept: $conceptCode');
     (entities as Entities<Entity>).forEach((entity) {
-      print('Entity: ${entity.code}');
-      print('Attributes:');
-      entity.attributes.forEach((attributeCode, attribute) {
-        print('  $attributeCode: ${attribute.value}');
-      });
-      print('Parents:');
-      entity.parents.forEach((parentCode, parent) {
-        print('  $parentCode: ${parent.code}');
-      });
-      print('Children:');
-      entity.children.forEach((childCode, child) {
-        print('  $childCode: ${child.code}');
-      });
-      print('-----------------------------------');
+      // print('Entity: ${entity.code}');
+      // print('Attributes:');
+      // entity.attributes.forEach((attributeCode, attribute) {
+      //   print('  $attributeCode: ${attribute.value}');
+      // });
+      // print('Parents:');
+      // entity.parents.forEach((parentCode, parent) {
+      //   print('  $parentCode: ${parent.code}');
+      // });
+      // print('Children:');
+      // entity.children.forEach((childCode, child) {
+      //   print('  $childCode: ${child.code}');
+      // });
+      // print('-----------------------------------');
     });
   });
 }

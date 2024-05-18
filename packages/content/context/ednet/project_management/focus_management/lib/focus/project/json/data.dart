@@ -4,71 +4,71 @@ part of focus_project;
 // http://jsonformatter.curiousconcept.com/ 
  
 // lib/focus/project/json/data.dart 
-var focusProjectFocusEntry = r""" 
+var focusProjectFocusEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectTaskEntry = r""" 
+var focusProjectTaskEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectProjectEntry = r""" 
+var focusProjectProjectEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectUserEntry = r""" 
+var focusProjectUserEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectDueDateEntry = r""" 
+var focusProjectDueDateEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectPriorityEntry = r""" 
+var focusProjectPriorityEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectDueDateChangeCommentEntry = r""" 
+var focusProjectDueDateChangeCommentEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectUrgencyEntry = r""" 
+var focusProjectUrgencyEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectPriorityChangeCommentEntry = r""" 
+var focusProjectPriorityChangeCommentEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectDescisionEngineEntry = r""" 
+var focusProjectDescisionEngineEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectUrgencyEstimationEntry = r""" 
+var focusProjectUrgencyEstimationEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectCommitmentTypeEntry = r""" 
+var focusProjectCommitmentTypeEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectGovernmentCommitmentEntry = r""" 
+var focusProjectGovernmentCommitmentEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectProffesionalCommitmentEntry = r""" 
+var focusProjectProffesionalCommitmentEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectPrivateCommitmentEntry = r""" 
+var focusProjectPrivateCommitmentEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectSelfCommitmentEntry = r""" 
+var focusProjectSelfCommitmentEntry = r''' 
  
-"""; 
+''';
  
-var focusProjectModel = r""" 
+var focusProjectModel = r''' 
  
-"""; 
+''';
  

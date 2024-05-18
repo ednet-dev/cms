@@ -4,10 +4,10 @@ part of focus_project;
  
 class Repository extends CoreRepository { 
  
-  static const REPOSITORY = "Repository"; 
+  static const REPOSITORY = 'Repository';
  
   Repository([String code=REPOSITORY]) : super(code) { 
-    var domain = Domain("Focus"); 
+    var domain = Domain('Focus');
     domains.add(domain); 
     add(FocusDomain(domain)); 
  

@@ -97,7 +97,7 @@ abstract class InquiriesGen extends Entities<${concept.code}> {
     switch (placeholder) {
       case 'attribute.code':
         var attribute = concept.attributes.whereType<Attribute>().first;
-        return attribute.code!;
+        return attribute.code;
       case 'attribute.type.base':
         var attribute = concept.attributes.whereType<Attribute>().first;
         return attribute.type?.base ?? '';
@@ -109,7 +109,7 @@ abstract class InquiriesGen extends Entities<${concept.code}> {
       case 'concept.id.attributeLength':
         return concept.id.attributeLength.toString();
       case 'concept.code':
-        return concept.code!;
+        return concept.code;
       case 'concept.codes':
         return concept.codes;
       case 'concept.codesLowerUnderscore':
@@ -129,7 +129,7 @@ abstract class InquiriesGen extends Entities<${concept.code}> {
         return parent.destinationConcept.codeFirstLetterLower;
       case 'destinationConcept.code':
         var child = concept.children.whereType<Child>().first;
-        return child.destinationConcept.code!;
+        return child.destinationConcept.code;
       case 'destinationConcept.codes':
         var child = concept.children.whereType<Child>().first;
         return child.destinationConcept.codes;
@@ -150,9 +150,9 @@ abstract class InquiriesGen extends Entities<${concept.code}> {
 
       case 'parent.code':
         var parent = concept.parents.whereType<Parent>().first;
-        return parent.code!;
+        return parent.code;
       case 'parent.destinationConcept.code':
-        return parent!.destinationConcept.code!;
+        return parent!.destinationConcept.code;
 
       default:
         return match.group(0)!;

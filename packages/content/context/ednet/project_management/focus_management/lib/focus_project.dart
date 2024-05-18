@@ -34,111 +34,111 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     library focus_project;
 
-    import "package:ednet_core/ednet_core.dart";
-    import "package:yaml/yaml.dart";
+    import 'package:ednet_core/ednet_core.dart';
+    import 'package:yaml/yaml.dart';
 
-    part "repository.dart";
-    part "gen/focus/i_domain_models.dart";
-    part "gen/focus/project/model_entries.dart";
-    part "focus/domain.dart";
-    part "focus/project/model.dart";
-    part "focus/project/json/data.dart";
-    part "focus/project/json/model.dart";
+    part 'repository.dart';
+    part 'gen/focus/i_domain_models.dart';
+    part 'gen/focus/project/model_entries.dart';
+    part 'focus/domain.dart';
+    part 'focus/project/model.dart';
+    part 'focus/project/json/data.dart';
+    part 'focus/project/json/model.dart';
     
-part "focus/project/focuss.dart";
+part 'focus/project/focuss.dart';
 
 
-part "focus/project/tasks.dart";
+part 'focus/project/tasks.dart';
 
 
-part "focus/project/projects.dart";
+part 'focus/project/projects.dart';
 
 
-part "focus/project/users.dart";
+part 'focus/project/users.dart';
 
 
-part "focus/project/due_dates.dart";
+part 'focus/project/due_dates.dart';
 
 
-part "focus/project/priorities.dart";
+part 'focus/project/priorities.dart';
 
 
-part "focus/project/due_date_change_comments.dart";
+part 'focus/project/due_date_change_comments.dart';
 
 
-part "focus/project/urgencies.dart";
+part 'focus/project/urgencies.dart';
 
 
-part "focus/project/priority_change_comments.dart";
+part 'focus/project/priority_change_comments.dart';
 
 
-part "focus/project/descision_engines.dart";
+part 'focus/project/descision_engines.dart';
 
 
-part "focus/project/urgency_estimations.dart";
+part 'focus/project/urgency_estimations.dart';
 
 
-part "focus/project/commitment_types.dart";
+part 'focus/project/commitment_types.dart';
 
 
-part "focus/project/government_commitments.dart";
+part 'focus/project/government_commitments.dart';
 
 
-part "focus/project/proffesional_commitments.dart";
+part 'focus/project/proffesional_commitments.dart';
 
 
-part "focus/project/private_commitments.dart";
+part 'focus/project/private_commitments.dart';
 
 
-part "focus/project/self_commitments.dart";
+part 'focus/project/self_commitments.dart';
 
     
-part "gen/focus/project/focuss.dart";
+part 'gen/focus/project/focuss.dart';
 
 
-part "gen/focus/project/tasks.dart";
+part 'gen/focus/project/tasks.dart';
 
 
-part "gen/focus/project/projects.dart";
+part 'gen/focus/project/projects.dart';
 
 
-part "gen/focus/project/users.dart";
+part 'gen/focus/project/users.dart';
 
 
-part "gen/focus/project/due_dates.dart";
+part 'gen/focus/project/due_dates.dart';
 
 
-part "gen/focus/project/priorities.dart";
+part 'gen/focus/project/priorities.dart';
 
 
-part "gen/focus/project/due_date_change_comments.dart";
+part 'gen/focus/project/due_date_change_comments.dart';
 
 
-part "gen/focus/project/urgencies.dart";
+part 'gen/focus/project/urgencies.dart';
 
 
-part "gen/focus/project/priority_change_comments.dart";
+part 'gen/focus/project/priority_change_comments.dart';
 
 
-part "gen/focus/project/descision_engines.dart";
+part 'gen/focus/project/descision_engines.dart';
 
 
-part "gen/focus/project/urgency_estimations.dart";
+part 'gen/focus/project/urgency_estimations.dart';
 
 
-part "gen/focus/project/commitment_types.dart";
+part 'gen/focus/project/commitment_types.dart';
 
 
-part "gen/focus/project/government_commitments.dart";
+part 'gen/focus/project/government_commitments.dart';
 
 
-part "gen/focus/project/proffesional_commitments.dart";
+part 'gen/focus/project/proffesional_commitments.dart';
 
 
-part "gen/focus/project/private_commitments.dart";
+part 'gen/focus/project/private_commitments.dart';
 
 
-part "gen/focus/project/self_commitments.dart";
+part 'gen/focus/project/self_commitments.dart';
 
     
   
