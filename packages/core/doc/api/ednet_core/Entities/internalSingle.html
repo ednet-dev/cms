@@ -89,7 +89,7 @@ Entity? internalSingle(Oid oid) {
     for (Entity entity in _entityList) {
       for (Child child in _concept!.children.whereType&lt;Child&gt;()) {
         if (child.internal) {
-          Entities? childEntities = entity.getChild(child.code!) as Entities?;
+          Entities? childEntities = entity.getChild(child.code) as Entities?;
           Entity? childEntity = childEntities?.internalSingle(oid);
           if (childEntity != null) {
             return childEntity;

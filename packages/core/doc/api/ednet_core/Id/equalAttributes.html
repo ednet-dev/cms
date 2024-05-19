@@ -76,7 +76,7 @@
   <pre class="language-dart"><code class="language-dart">bool equalAttributes(Id id) {
   for (Attribute a in concept.attributes.whereType&lt;Attribute&gt;()) {
     if (a.identifier) {
-      if (_attributeMap[a.code!] != id.getAttribute(a.code!)) {
+      if (_attributeMap[a.code] != id.getAttribute(a.code)) {
         return false;
       }
     }

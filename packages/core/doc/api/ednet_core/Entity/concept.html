@@ -118,61 +118,61 @@ Concept get concept {
 
   for (Attribute a in _concept!.attributes.whereType&lt;Attribute&gt;()) {
     if (a.init == null) {
-      &#47;&#47; _attributeMap[a.code!] = null;
-    } else if (a.type?.code! == &#39;DateTime&#39; &amp;&amp; a.init == &#39;now&#39;) {
-      _attributeMap[a.code!] = DateTime.now();
-    } else if (a.type?.code! == &#39;bool&#39; &amp;&amp; a.init == &#39;true&#39;) {
-      _attributeMap[a.code!] = true;
-    } else if (a.type?.code! == &#39;bool&#39; &amp;&amp; a.init == &#39;false&#39;) {
-      _attributeMap[a.code!] = false;
-    } else if (a.type?.code! == &#39;int&#39;) {
+      &#47;&#47; _attributeMap[a.code] = null;
+    } else if (a.type?.code == &#39;DateTime&#39; &amp;&amp; a.init == &#39;now&#39;) {
+      _attributeMap[a.code] = DateTime.now();
+    } else if (a.type?.code == &#39;bool&#39; &amp;&amp; a.init == &#39;true&#39;) {
+      _attributeMap[a.code] = true;
+    } else if (a.type?.code == &#39;bool&#39; &amp;&amp; a.init == &#39;false&#39;) {
+      _attributeMap[a.code] = false;
+    } else if (a.type?.code == &#39;int&#39;) {
       try {
-        _attributeMap[a.code!] = int.parse(a.init);
+        _attributeMap[a.code] = int.parse(a.init);
       } on FormatException catch (e) {
         throw TypeException(
-            &#39;${a.code!} attribute init (default) value is not int: $e&#39;);
+            &#39;${a.code} attribute init (default) value is not int: $e&#39;);
       }
-    } else if (a.type?.code! == &#39;double&#39;) {
+    } else if (a.type?.code == &#39;double&#39;) {
       try {
-        _attributeMap[a.code!] = double.parse(a.init);
+        _attributeMap[a.code] = double.parse(a.init);
       } on FormatException catch (e) {
         throw TypeException(
-            &#39;${a.code!} attribute init (default) value is not double: $e&#39;);
+            &#39;${a.code} attribute init (default) value is not double: $e&#39;);
       }
-    } else if (a.type?.code! == &#39;num&#39;) {
+    } else if (a.type?.code == &#39;num&#39;) {
       try {
-        _attributeMap[a.code!] = int.parse(a.init);
+        _attributeMap[a.code] = int.parse(a.init);
       } on FormatException catch (e1) {
         try {
-          _attributeMap[a.code!] = double.parse(a.init);
+          _attributeMap[a.code] = double.parse(a.init);
         } on FormatException catch (e2) {
           throw TypeException(
-              &#39;${a.code!} attribute init (default) value is not num: $e1; $e2&#39;);
+              &#39;${a.code} attribute init (default) value is not num: $e1; $e2&#39;);
         }
       }
-    } else if (a.type?.code! == &#39;Uri&#39;) {
+    } else if (a.type?.code == &#39;Uri&#39;) {
       try {
-        _attributeMap[a.code!] = Uri.parse(a.init);
+        _attributeMap[a.code] = Uri.parse(a.init);
       } on ArgumentError catch (e) {
         throw TypeException(
-            &#39;${a.code!} attribute init (default) value is not Uri: $e&#39;);
+            &#39;${a.code} attribute init (default) value is not Uri: $e&#39;);
       }
     } else {
-      _attributeMap[a.code!] = a.init;
+      _attributeMap[a.code] = a.init;
     }
   } &#47;&#47; for
 
   for (Parent parent in _concept!.parents.whereType&lt;Parent&gt;()) {
-    _referenceMap.remove(parent.code!);
-    _parentMap.remove(parent.code!);
+    _referenceMap.remove(parent.code);
+    _parentMap.remove(parent.code);
   }
 
   for (Child child in _concept!.children.whereType&lt;Child&gt;()) {
     var childEntities = Entities&lt;E&gt;();
     childEntities.concept = child.destinationConcept;
-    _childMap[child.code!] = childEntities;
+    _childMap[child.code] = childEntities;
     if (child.internal) {
-      _internalChildMap[child.code!] = childEntities;
+      _internalChildMap[child.code] = childEntities;
     }
   }
 }</code></pre>

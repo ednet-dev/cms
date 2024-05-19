@@ -74,10 +74,10 @@
   var domainCode = entryMap[&#39;domain&#39;];
   var modelCode = entryMap[&#39;model&#39;];
   var entryConceptCode = entryMap[&#39;entry&#39;];
-  if (_model.domain.code! != domainCode) {
+  if (_model.domain.code != domainCode) {
     throw CodeException(&#39;The $domainCode domain does not exist.&#39;);
   }
-  if (_model.code! != modelCode) {
+  if (_model.code != modelCode) {
     throw CodeException(&#39;The $modelCode model does not exist.&#39;);
   }
   var entryConcept = getConcept(entryConceptCode as String);

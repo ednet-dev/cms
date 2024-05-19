@@ -73,7 +73,7 @@
   <pre class="language-dart"><code class="language-dart">void populateEntityReferences(Entities entities) {
   for (var entity in entities) {
     for (Parent parent in entity.concept.externalParents) {
-      Reference? reference = entity.getReference(parent.code!);
+      Reference? reference = entity.getReference(parent.code);
       if (reference != null) {
         &#47;&#47;String parentOidString = reference.parentOidString;
         &#47;&#47;String parentConceptCode = reference.parentConceptCode;
@@ -84,11 +84,11 @@
           throw ParentException(&#39;Parent not found for the reference: &#39;
               &#39;${reference.toString()}&#39;);
         }
-        if (entity.getParent(parent.code!) == null) {
-          entity.setParent(parent.code!, parentEntity);
-          &#47;&#47;print(&#39;parent.opposite.code!: ${parent.opposite.code!}&#39;);
+        if (entity.getParent(parent.code) == null) {
+          entity.setParent(parent.code, parentEntity);
+          &#47;&#47;print(&#39;parent.opposite.code: ${parent.opposite.code}&#39;);
           var parentChildEntities =
-              parentEntity.getChild(parent.opposite?.code!) as Entities?;
+              parentEntity.getChild(parent.opposite?.code) as Entities?;
           &#47;&#47;print(&#39;parentChildEntities.length before add: ${parentChildEntities.length}&#39;);
           parentChildEntities?.add(entity);
           &#47;&#47;print(&#39;parentChildEntities.length after add: ${parentChildEntities.length}&#39;);
@@ -96,7 +96,7 @@
       }
     }
     for (Child internalChild in entity.concept.internalChildren) {
-      var childEntities = entity.getChild(internalChild.code!) as Entities?;
+      var childEntities = entity.getChild(internalChild.code) as Entities?;
       populateEntityReferences(childEntities!);
     }
   }

@@ -85,7 +85,7 @@ bool setChild(String name, Object entities) {
   Child? child = _concept!.children.singleWhereCode(name) as Child?;
   if (child == null) {
     String msg =
-        &#39;${_concept!.code!}.$name is not correct child entities name.&#39;;
+        &#39;${_concept!.code}.$name is not correct child entities name.&#39;;
     throw UpdateException(msg);
   }
 
@@ -97,7 +97,7 @@ bool setChild(String name, Object entities) {
     return true;
   } else {
     return false;
-    &#47;&#47; String msg = &#39;${_concept!.code!}.${child.code!} is not updatable.&#39;;
+    &#47;&#47; String msg = &#39;${_concept!.code}.${child.code} is not updatable.&#39;;
     &#47;&#47; throw UpdateException(msg);
   }
 }</code></pre>

@@ -72,8 +72,8 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">String genEDNetLibraryApp(Model model) {
   Domain domain = model.domain;
-  final String domainCodeLowerUnderscore = domain.code!.toLowerCase();
-  final String modelCodeLowerUnderscore = model.code!.toLowerCase();
+  final String domainCodeLowerUnderscore = domain.code.toLowerCase();
+  final String modelCodeLowerUnderscore = model.code.toLowerCase();
 
   return ednetLibraryAppTemplate.replaceAllMapped(RegExp(&#39;{{([A-Za-z]+)}}&#39;), (match) {
     switch (match.group(1)) {

@@ -22,7 +22,7 @@ class DomainModels implements IDomainModels {
     var modelCode = modelEntries.model.code;
     var entries = _modelEntriesMap[modelCode];
     if (entries == null) {
-      _modelEntriesMap[modelCode!] = modelEntries;
+      _modelEntriesMap[modelCode] = modelEntries;
     } else {
       throw CodeException(
           'The $modelCode model exists already in the ${_domain.code} domain.');

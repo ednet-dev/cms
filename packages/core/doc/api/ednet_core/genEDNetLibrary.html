@@ -73,8 +73,8 @@
   <pre class="language-dart"><code class="language-dart">String genEDNetLibrary(Model model) {
   Domain domain = model.domain;
 
-  final String domainCodeLowerUnderscore = domain.code!.toLowerCase();
-  final String modelCodeLowerUnderscore = model.code!.toLowerCase();
+  final String domainCodeLowerUnderscore = domain.code.toLowerCase();
+  final String modelCodeLowerUnderscore = model.code.toLowerCase();
 
   final String genEDNetLibraryTemplate = &#39;&#39;&#39;
     &#47;&#47; lib&#47;{{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}}.dart

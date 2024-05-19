@@ -30,13 +30,13 @@ String createInitEntryEntityRandomly(Concept entryConcept,
     entryEntity = entryConcept.codeFirstLetterLower;
   }
   var entryEntities = entryConcept.codesFirstLetterLower;
-  sc = '$sc    var $entryEntity = ${entryConcept.code!}('
+  sc = '$sc    var $entryEntity = ${entryConcept.code}('
       '${entryConcept.codesFirstLetterLower}.concept); \n';
   var attributesSet = setInitAttributesRandomly(entryConcept, entryEntity);
   sc = '$sc$attributesSet';
 
   for (Parent externalRequiredParent in entryConcept.externalRequiredParents) {
-    var parent = externalRequiredParent.code!;
+    var parent = externalRequiredParent.code;
     var parent6 = externalRequiredParent.codeFirstLetterUpper;
     var parents =
         externalRequiredParent.destinationConcept.codePluralFirstLetterLower;
@@ -47,10 +47,10 @@ String createInitEntryEntityRandomly(Concept entryConcept,
   sc = '$sc    $entryEntities.add($entryEntity); \n';
 
   for (Parent externalRequiredParent in entryConcept.externalRequiredParents) {
-    //var parent  = '${externalRequiredParent.code!}';
+    //var parent  = '${externalRequiredParent.code}';
     var parent7 = externalRequiredParent.codeFirstLetterUpper;
     sc = '$sc    $entryEntity$parent7.'
-        '${externalRequiredParent.opposite?.code!}.add('
+        '${externalRequiredParent.opposite?.code}.add('
         '$entryEntity); \n';
   }
 
@@ -59,9 +59,9 @@ String createInitEntryEntityRandomly(Concept entryConcept,
     for (Child child in entryConcept.children.whereType<Child>()) {
       if (child.internal) {
         String parentVar = entryEntity;
-        String parentCode = child.opposite!.code!;
+        String parentCode = child.opposite!.code;
         Concept parentConcept = entryConcept;
-        String childCode = child.code!;
+        String childCode = child.code;
         Concept childConcept = child.destinationConcept;
         var entitiesCreated = createChildEntitiesRandomly(
             parentVar, parentCode, parentConcept, childCode, childConcept);
@@ -106,13 +106,13 @@ String createTestEntryEntityRandomly(Concept entryConcept,
     entryEntity = entryConcept.codeFirstLetterLower;
   }
   var entryEntities = entryConcept.codesFirstLetterLower;
-  sc = '${sc}var $entryEntity = ${entryConcept.code!}('
+  sc = '${sc}var $entryEntity = ${entryConcept.code}('
       '${entryConcept.codesFirstLetterLower}.concept); \n';
   var attributesSet = setTestAttributesRandomly(entryConcept, entryEntity);
   sc = '$sc  $attributesSet';
 
   for (Parent externalRequiredParent in entryConcept.externalRequiredParents) {
-    var parent = externalRequiredParent.code!;
+    var parent = externalRequiredParent.code;
     var parent2 = externalRequiredParent.codeFirstLetterUpper;
     var parents = externalRequiredParent.destinationConcept;
     sc =
@@ -123,10 +123,10 @@ String createTestEntryEntityRandomly(Concept entryConcept,
   sc = '$sc      $entryEntities.add($entryEntity); \n';
 
   for (Parent externalRequiredParent in entryConcept.externalRequiredParents) {
-    //var parent  = '${externalRequiredParent.code!}';
+    //var parent  = '${externalRequiredParent.code}';
     var parent3 = externalRequiredParent.codeFirstLetterUpper;
     sc = '$sc    $entryEntity$parent3.'
-        '${externalRequiredParent.opposite?.code!}.add('
+        '${externalRequiredParent.opposite?.code}.add('
         '$entryEntity); \n';
   }
 
@@ -135,9 +135,9 @@ String createTestEntryEntityRandomly(Concept entryConcept,
     for (Child child in entryConcept.children.whereType<Child>()) {
       if (child.internal) {
         String parentVar = entryEntity;
-        String parentCode = child.opposite!.code!;
+        String parentCode = child.opposite!.code;
         Concept parentConcept = entryConcept;
-        String childCode = child.code!;
+        String childCode = child.code;
         Concept childConcept = child.destinationConcept;
         var entitiesCreated = createChildEntitiesRandomly(
             parentVar, parentCode, parentConcept, childCode, childConcept);
@@ -154,14 +154,14 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
   for (var i = 1; i < CHILD_ENTITIES_COUNT + 1; i++) {
     var childEntity = '$parentVar$childCode$i';
     var childEntities = childCode;
-    sc = '$sc    var $childEntity = ${childConcept.code!}('
+    sc = '$sc    var $childEntity = ${childConcept.code}('
         '$parentVar.$childCode.concept); \n';
     var attributesSet = setInitAttributesRandomly(childConcept, childEntity);
     sc = '$sc$attributesSet';
 
     for (Parent externalRequiredParent
         in childConcept.externalRequiredParents) {
-      var parent = externalRequiredParent.code!;
+      var parent = externalRequiredParent.code;
       var parent4 = externalRequiredParent.codeFirstLetterUpper;
       var parents =
           externalRequiredParent.destinationConcept.codePluralFirstLetterLower;
@@ -175,10 +175,10 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
 
     for (Parent externalRequiredParent
         in childConcept.externalRequiredParents) {
-//var parent  = '${externalRequiredParent.code!}';
+//var parent  = '${externalRequiredParent.code}';
       var parent8 = externalRequiredParent.codeFirstLetterUpper;
       sc = '$sc    $childEntity$parent8.'
-          '${externalRequiredParent.opposite?.code!}.add('
+          '${externalRequiredParent.opposite?.code}.add('
           '$childEntity); \n';
     }
 
@@ -187,10 +187,10 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
       if (child.internal && !child.reflexive) {
 // the old child becomes a new parent
         String newParentVar = childEntity;
-        String newParentCode = child.opposite!.code!;
+        String newParentCode = child.opposite!.code;
         Concept newParentConcept = childConcept;
 // a new child is a grandchild of the old parent, or a child of a new parent
-        String newChildCode = child.code!;
+        String newChildCode = child.code;
         Concept newChildConcept = child.destinationConcept;
         var entitiesCreated = createChildEntitiesRandomly(newParentVar,
             newParentCode, newParentConcept, newChildCode, newChildConcept);
@@ -226,7 +226,7 @@ String setInitAttributeRandomly(Attribute attribute, String entity) {
   var sc = '';
   if (attribute.increment == null) {
     var value = genAttributeTextRandomly(attribute);
-    sc = '$sc    $entity.${attribute.code!} = $value; \n';
+    sc = '$sc    $entity.${attribute.code} = $value; \n';
   }
   return sc;
 }
@@ -235,28 +235,28 @@ String setTestAttributeRandomly(Attribute attribute, String entity) {
   var sc = '';
   if (attribute.increment == null) {
     var value = genAttributeTextRandomly(attribute);
-    sc = '$sc      $entity.${attribute.code!} = $value; \n';
+    sc = '$sc      $entity.${attribute.code} = $value; \n';
   }
   return sc;
 }
 
 String genAttributeTextRandomly(Attribute attribute) {
   var value = '';
-  if (attribute.type?.code! == 'String') {
+  if (attribute.type?.code == 'String') {
     value = "'${randomWord()}'";
-  } else if (attribute.type?.code! == 'num') {
+  } else if (attribute.type?.code == 'num') {
     value = "${randomNum(1000)}";
-  } else if (attribute.type?.code! == 'int') {
+  } else if (attribute.type?.code == 'int') {
     value = "${randomInt(10000)}";
-  } else if (attribute.type?.code! == 'double') {
+  } else if (attribute.type?.code == 'double') {
     value = "${randomDouble(100)}";
-  } else if (attribute.type?.code! == 'bool') {
+  } else if (attribute.type?.code == 'bool') {
     value = "${randomBool()}";
-  } else if (attribute.type?.code! == 'DateTime') {
+  } else if (attribute.type?.code == 'DateTime') {
     value = "new DateTime.now()";
-  } else if (attribute.type?.code! == 'Uri') {
+  } else if (attribute.type?.code == 'Uri') {
     value = "Uri.parse('${randomUri()}')";
-  } else if (attribute.type?.code! == 'Email') {
+  } else if (attribute.type?.code == 'Email') {
     value = "'${randomEmail()}'";
   } else {
     value = "'${randomWord()}'";

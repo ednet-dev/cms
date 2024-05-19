@@ -25,7 +25,6 @@ class Attribute extends Property {
     }
   }
 
-
   set type(AttributeType? attributeType) {
     _type = attributeType;
     length = attributeType != null ? attributeType.length : 0;

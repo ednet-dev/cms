@@ -89,8 +89,8 @@ Entities&lt;E&gt; selectWhereAttribute(String code, Object attribute) {
   selectedEntities.propagateToSource = false;
   for (E entity in _entityList) {
     for (Attribute a in _concept!.attributes.whereType&lt;Attribute&gt;()) {
-      if (a.code! == code) {
-        if (entity.getAttribute(a.code!) == attribute) {
+      if (a.code == code) {
+        if (entity.getAttribute(a.code) == attribute) {
           selectedEntities.add(entity);
         }
       }

@@ -77,7 +77,7 @@
   <pre class="language-dart"><code class="language-dart">@override
 void clear() {
   for (var entryConcept in _model.entryConcepts) {
-    var entryEntities = getEntry(entryConcept.code!);
+    var entryEntities = getEntry(entryConcept.code);
     entryEntities.clear();
   }
 }</code></pre>

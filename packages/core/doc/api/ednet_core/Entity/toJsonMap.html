@@ -72,15 +72,15 @@
   <pre class="language-dart"><code class="language-dart">Map&lt;String, Object&gt; toJsonMap() {
   Map&lt;String, Object&gt; entityMap = &lt;String, Object&gt;{};
   for (Parent parent in _concept!.parents.whereType&lt;Parent&gt;()) {
-    Entity? parentEntity = getParent(parent.code!) as Entity?;
+    Entity? parentEntity = getParent(parent.code) as Entity?;
     if (parentEntity != null) {
       var reference = &lt;String, String&gt;{};
       reference[&#39;oid&#39;] = parentEntity.oid.toString();
-      reference[&#39;parent&#39;] = parentEntity.concept.code!;
-      reference[&#39;entry&#39;] = parentEntity.concept.entryConcept.code!;
-      entityMap[parent.code!] = reference;
+      reference[&#39;parent&#39;] = parentEntity.concept.code;
+      reference[&#39;entry&#39;] = parentEntity.concept.entryConcept.code;
+      entityMap[parent.code] = reference;
     } else {
-      entityMap[parent.code!] = &#39;null&#39;;
+      entityMap[parent.code] = &#39;null&#39;;
     }
   }
   entityMap[&#39;oid&#39;] = _oid.toString();

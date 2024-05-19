@@ -87,7 +87,7 @@ bool add(E entity) {
       _entityList.add(entity);
       _oidEntityMap[entity.oid.timeStamp] = entity;
       if (entity.code != null) {
-        _codeEntityMap[entity.code!] = entity;
+        _codeEntityMap[entity.code] = entity;
       }
       if (entity.id != null) {
         _idEntityMap[entity.id.toString()] = entity;
@@ -101,7 +101,7 @@ bool add(E entity) {
         pre = false;
         post = false;
         if (!remove(entity)) {
-          var msg = &#39;${entity.concept.code!} entity (${entity.oid}) &#39;
+          var msg = &#39;${entity.concept.code} entity (${entity.oid}) &#39;
               &#39;was added, post was not successful, remove was not successful&#39;;
           throw RemoveException(msg);
         } else {
@@ -112,8 +112,8 @@ bool add(E entity) {
       }
     } else {
       &#47;&#47; not propagated
-      var msg = &#39;${entity.concept.code!} entity (${entity.oid}) &#39;
-          &#39;was not added - propagation to the source ${source?.concept.code!} &#39;
+      var msg = &#39;${entity.concept.code} entity (${entity.oid}) &#39;
+          &#39;was not added - propagation to the source ${source?.concept.code} &#39;
           &#39;entities was not successful&#39;;
       throw AddException(msg);
     }

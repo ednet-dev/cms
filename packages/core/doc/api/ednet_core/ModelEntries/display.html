@@ -71,8 +71,8 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void display() {
   for (Concept entryConcept in _model.entryConcepts) {
-    Entities entryEntities = getEntry(entryConcept.code!);
-    entryEntities.display(title: entryConcept.code!);
+    Entities entryEntities = getEntry(entryConcept.code);
+    entryEntities.display(title: entryConcept.code);
   }
 }</code></pre>
 </section>

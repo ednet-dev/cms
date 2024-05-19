@@ -1,4 +1,4 @@
-part of ednet_core;
+import 'package:ednet_core/ednet_core.dart';
 
 String genEDNetGen(Model model) {
   Domain domain = model.domain;

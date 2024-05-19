@@ -115,10 +115,10 @@ E copy() {
     if (attribute.identifier) {
       var beforeUpdate = attribute.update;
       attribute.update = true;
-      entity.setAttribute(attribute.code!, _attributeMap[attribute.code!]);
+      entity.setAttribute(attribute.code, _attributeMap[attribute.code]);
       attribute.update = beforeUpdate;
     } else {
-      entity.setAttribute(attribute.code!, _attributeMap[attribute.code!]);
+      entity.setAttribute(attribute.code, _attributeMap[attribute.code]);
     }
   }
 
@@ -127,15 +127,15 @@ E copy() {
 
       var beforeUpdate = parent.update;
       parent.update = true;
-      entity.setParent(parent.code!, _parentMap[parent.code!]);
+      entity.setParent(parent.code, _parentMap[parent.code]);
       parent.update = beforeUpdate;
-    } else if (_parentMap[parent.code!] != null) {
-      entity.setParent(parent.code!, _parentMap[parent.code!]);
+    } else if (_parentMap[parent.code] != null) {
+      entity.setParent(parent.code, _parentMap[parent.code]);
     }
   }
 
   for (Child child in _concept!.children.whereType&lt;Child&gt;()) {
-    entity.setChild(child.code!, _childMap[child.code!]!);
+    entity.setChild(child.code, _childMap[child.code]!);
   }
 
   return entity as E;

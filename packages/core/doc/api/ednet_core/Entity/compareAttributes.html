@@ -79,8 +79,8 @@ if the result is greater than 0 then the first is greater than the second.</p>
   <pre class="language-dart"><code class="language-dart">int compareAttributes(E entity) {
   var compare = 0;
   for (Attribute a in concept.attributes.whereType&lt;Attribute&gt;()) {
-    var value1 = _attributeMap[a.code!];
-    var value2 = entity.getAttribute(a.code!);
+    var value1 = _attributeMap[a.code];
+    var value2 = entity.getAttribute(a.code);
 
     &#47;&#47; todo: check if this works
     compare = a.type?.compare(value1, value2) ?? 0;

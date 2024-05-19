@@ -81,8 +81,8 @@ if the result is greater than 0 then the first is greater than the second.</p>
     var compare = 0;
     for (Parent p in _concept.parents.whereType&lt;Parent&gt;()) {
       if (p.identifier) {
-        final ref = _referenceMap[p.code!];
-        final ref2 = id.getReference(p.code!);
+        final ref = _referenceMap[p.code];
+        final ref2 = id.getReference(p.code);
         if (ref != null &amp;&amp; ref2 != null) {
           compare = ref.oid.compareTo(ref2.oid);
 
@@ -94,7 +94,7 @@ if the result is greater than 0 then the first is greater than the second.</p>
     }
     return compare;
   }
-  throw IdException(&#39;${_concept.code!}.id does not have parents.&#39;);
+  throw IdException(&#39;${_concept.code}.id does not have parents.&#39;);
 }</code></pre>
 </section>
 

@@ -72,21 +72,21 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">String genAttributeTextRandomly(Attribute attribute) {
   var value = &#39;&#39;;
-  if (attribute.type?.code! == &#39;String&#39;) {
+  if (attribute.type?.code == &#39;String&#39;) {
     value = &quot;&#39;${randomWord()}&#39;&quot;;
-  } else if (attribute.type?.code! == &#39;num&#39;) {
+  } else if (attribute.type?.code == &#39;num&#39;) {
     value = &quot;${randomNum(1000)}&quot;;
-  } else if (attribute.type?.code! == &#39;int&#39;) {
+  } else if (attribute.type?.code == &#39;int&#39;) {
     value = &quot;${randomInt(10000)}&quot;;
-  } else if (attribute.type?.code! == &#39;double&#39;) {
+  } else if (attribute.type?.code == &#39;double&#39;) {
     value = &quot;${randomDouble(100)}&quot;;
-  } else if (attribute.type?.code! == &#39;bool&#39;) {
+  } else if (attribute.type?.code == &#39;bool&#39;) {
     value = &quot;${randomBool()}&quot;;
-  } else if (attribute.type?.code! == &#39;DateTime&#39;) {
+  } else if (attribute.type?.code == &#39;DateTime&#39;) {
     value = &quot;new DateTime.now()&quot;;
-  } else if (attribute.type?.code! == &#39;Uri&#39;) {
+  } else if (attribute.type?.code == &#39;Uri&#39;) {
     value = &quot;Uri.parse(&#39;${randomUri()}&#39;)&quot;;
-  } else if (attribute.type?.code! == &#39;Email&#39;) {
+  } else if (attribute.type?.code == &#39;Email&#39;) {
     value = &quot;&#39;${randomEmail()}&#39;&quot;;
   } else {
     value = &quot;&#39;${randomWord()}&#39;&quot;;

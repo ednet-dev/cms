@@ -79,21 +79,21 @@ Two entities are equal if they have the same content, ignoring oid and when.</p>
     throw new ConceptException(&#39;Entity concept is not defined.&#39;);
   }
 
-  if (_code != entity.code!) {
+  if (_code != entity.code) {
     return false;
   }
   for (Attribute a in _concept!.attributes.whereType&lt;Attribute&gt;()) {
-    if (_attributeMap[a.code!] != entity.getAttribute(a.code!)) {
+    if (_attributeMap[a.code] != entity.getAttribute(a.code)) {
       return false;
     }
   }
   for (Parent parent in _concept!.parents.whereType&lt;Parent&gt;()) {
-    if (_parentMap[parent.code!] != entity.getParent(parent.code!)) {
+    if (_parentMap[parent.code] != entity.getParent(parent.code)) {
       return false;
     }
   }
   for (Child child in _concept!.children.whereType&lt;Child&gt;()) {
-    if (_childMap[child.code!] != entity.getChild(child.code!)) {
+    if (_childMap[child.code] != entity.getChild(child.code)) {
       return false;
     }
   }

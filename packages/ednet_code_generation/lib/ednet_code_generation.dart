@@ -2,6 +2,7 @@ library ednet_code_generation;
 
 import 'dart:io';
 import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/gen/ednet_test.dart';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as p;
 
