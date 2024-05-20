@@ -4,7 +4,7 @@ version: 0.0.3-dev.6
 homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_cms
 
 environment:
-  sdk: ">=3.0.3 <4.0.0 <4.0.0"
+  sdk: '>=3.5.0-169.0.dev <4.0.0'
 
 dependencies:
   flutter:
@@ -20,13 +20,23 @@ dependencies:
   path: ^1.8.2
 
 dev_dependencies:
-  test: 1.24.9
+  test: ^1.25.5
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.3
+  build_runner: ^2.4.10
   build_web_compilers: ^3.2.7
 
 executables:
   build:
   watch:
+
+builders:
+  hello_world:
+    import: "package:ednet_cms/src/builders/hello_world_builder.dart"
+    builder_factories: ["helloWorldBuilder"]
+    build_extensions: {".yaml": [".dart"]}
+    auto_apply: root_package
+    build_to: source
+    runs_before: [source_gen|combining_builder]
+    applies_builders: [source_gen|combining_builder]

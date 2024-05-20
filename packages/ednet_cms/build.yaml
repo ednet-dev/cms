@@ -1,36 +1,16 @@
 targets:
   $default:
     builders:
-      ednet_cms|cmsBuilder:
-        enabled: false
-
-  initialize:
-    builders:
-      ednet_cms|contentWatcherBuilder:
-        enabled: false
-
+      ednet_cms|hello_world:
+        generate_for:
+          - domain/**/*.yaml
 
 builders:
-  ednet_cms|jsonContentWatcherBuilder:
-    import: "package:ednet_cms/ednet_cms.dart"
-    builder_factories: [ "jsonContentWatcherBuilder" ]
+  hello_world:
+    import: "package:ednet_cms/src/builders/hello_world_builder.dart"
+    builder_factories: [ "helloWorldBuilder" ]
+    build_extensions: { ".yaml": [ ".dart" ] }
+    auto_apply: root_package
     build_to: source
-    auto_apply: none
-    build_extensions:
-      ".json": [ "_ednet_json.g.dart" ]
-
-  ednet_cms|cmsBuilder:
-    import: "package:ednet_cms/ednet_cms.dart"
-    builder_factories: [ "cmsBuilder" ]
-    auto_apply: dependents
-    build_to: source
-    build_extensions:
-      ".ednet.yaml": [ "_cms.g.dart" ]
-
-  ednet_cms|contentWatcherBuilder:
-    import: "package:ednet_cms/ednet_cms.dart"
-    auto_apply: none
-    build_to: source
-    builder_factories: [ "contentWatcherBuilder" ]
-    build_extensions:
-      ".ednet.yaml": [ "_ednet.g.dart" ]
+    runs_before: [ source_gen|combining_builder ]
+    applies_builders: [ source_gen|combining_builder ]
