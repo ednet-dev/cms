@@ -658,10 +658,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       if (propagated) {
         _entityList.add(entity);
         _oidEntityMap[entity.oid.timeStamp] = entity;
-        if (entity.code != null) {
-          _codeEntityMap[entity.code] = entity;
-        }
-        if (entity.id != null) {
+        _codeEntityMap[entity.code] = entity;
+              if (entity.id != null) {
           _idEntityMap[entity.id.toString()] = entity;
         }
         if (postAdd(entity)) {
@@ -768,9 +766,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       if (propagated) {
         if (_entityList.remove(entity)) {
           _oidEntityMap.remove(entity.oid.timeStamp);
-          if (entity.code != null) {
-            _codeEntityMap.remove(entity.code);
-          }
+          _codeEntityMap.remove(entity.code);
           if (entity._concept != null && entity.id != null) {
             _idEntityMap.remove(entity.id.toString());
           }

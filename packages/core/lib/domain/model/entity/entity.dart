@@ -815,7 +815,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         attribute.update = true;
         setStringToAttribute(attribute.code, entityMap[attribute.code]);
         attribute.update = beforeUpdate;
-      } else if (attribute.code != null && entityMap[attribute.code] != null) {
+      } else {
         setStringToAttribute(attribute.code, entityMap[attribute.code]);
       }
     }
