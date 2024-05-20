@@ -8,10 +8,8 @@ class HelloWorldBuilder implements Builder {
 
   @override
   Future<void> build(BuildStep buildStep) async {
-    // Increment build number
     buildNumber++;
 
-    // Define the content of the generated file
     final content = '''
 // Generated code - Do not modify by hand
 void main() {
@@ -19,16 +17,13 @@ void main() {
 }
 ''';
 
-    // Define the output directory and file path
     final outputDir = Directory('lib/generated');
     final outputFile = File(p.join(outputDir.path, 'hello_world.dart'));
 
-    // Ensure the output directory exists
     if (!outputDir.existsSync()) {
       outputDir.createSync(recursive: true);
     }
 
-    // Write the content to the output file
     await outputFile.writeAsString(content);
 
     log.info('Generated hello_world.dart with build number: $buildNumber');
