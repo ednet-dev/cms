@@ -15,4 +15,4 @@ export 'src/builders/hello_world_builder.dart';
 // part 'src/integrations/build.dart';
 // part 'src/generation/cms_builder.dart';
 // part 'src/generation/content_watcher_builder.dart';
-// part 'src/platforms/entity_widget.dart';
+part 'src/platforms/entity_widget.dart';

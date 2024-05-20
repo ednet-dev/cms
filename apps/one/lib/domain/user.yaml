@@ -1,0 +1,7 @@
+domain: 'User'
+width: 2000
+height: 2000
+concepts:
+  - name: User
+  - name: Idea
+  - name: Goal

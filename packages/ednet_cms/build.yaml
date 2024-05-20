@@ -3,14 +3,14 @@ targets:
     builders:
       ednet_cms|hello_world:
         generate_for:
-          - domain/**/*.yaml
+          - lib/domain/**/*.yaml
 
 builders:
   hello_world:
     import: "package:ednet_cms/src/builders/hello_world_builder.dart"
     builder_factories: [ "helloWorldBuilder" ]
     build_extensions: { ".yaml": [ ".dart" ] }
-    auto_apply: root_package
+    auto_apply: dependents
     build_to: source
     runs_before: [ source_gen|combining_builder ]
     applies_builders: [ source_gen|combining_builder ]

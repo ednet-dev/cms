@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 
@@ -9,6 +10,9 @@ class HelloWorldBuilder implements Builder {
   @override
   Future<void> build(BuildStep buildStep) async {
     buildNumber++;
+
+    // Log the input file for debugging
+    log.info('Processing ${buildStep.inputId.path}');
 
     final content = '''
 // Generated code - Do not modify by hand
@@ -31,8 +35,8 @@ void main() {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-    '.yaml': ['.dart']
-  };
+        '.yaml': ['.dart']
+      };
 }
 
 Builder helloWorldBuilder(BuilderOptions options) => HelloWorldBuilder();
