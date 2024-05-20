@@ -1,0 +1,131 @@
+domain: 'ProjectManagement'
+model: 'project'
+concepts:
+  - name: User
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: name
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 2
+        category: attribute
+        name: email
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 3
+        category: attribute
+        name: phone
+        type: String
+        essential: false
+        sensitive: false
+      - sequence: 4
+        category: attribute
+        name: address
+        type: String
+        essential: false
+        sensitive: false
+      - sequence: 5
+        category: attribute
+        name: role
+        type: String
+        essential: true
+        sensitive: false
+
+  - name: Project
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: name
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 2
+        category: attribute
+        name: description
+        type: String
+        essential: false
+        sensitive: false
+      - sequence: 3
+        category: attribute
+        name: start
+        type: DateTime
+        essential: true
+        sensitive: false
+      - sequence: 4
+        category: attribute
+        name: end
+        type: DateTime
+        essential: true
+        sensitive: false
+      - sequence: 5
+        category: attribute
+        name: status
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 6
+        category: attribute
+        name: budget
+        type: double
+        essential: false
+        sensitive: false
+      - sequence: 7
+        category: attribute
+        name: currency
+        type: String
+        essential: false
+        sensitive: false
+      - sequence: 8
+        category: attribute
+        name: tasks
+        type: String
+        essential: true
+        sensitive: false
+
+  - name: Task
+    entry: false
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: name
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 2
+        category: attribute
+        name: description
+        type: String
+        essential: false
+        sensitive: false
+      - sequence: 3
+        category: attribute
+        name: start
+        type: DateTime
+        essential: false
+        sensitive: false
+      - sequence: 4
+        category: attribute
+        name: end
+        type: DateTime
+        essential: false
+        sensitive: false
+      - sequence: 5
+        category: attribute
+        name: status
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 6
+        category: relationship
+        name: assignedTo
+        type: User
+        essential: false
+        sensitive: false
+
+  - name: Resource
+

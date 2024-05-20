@@ -8,6 +8,7 @@ Domains createDomainModels() {
   Domain directDemocracy = Domain('DirectDemocracy');
   Domain socialNetwork = Domain('SocialNetwork');
   Domain legislation = Domain('Legislation');
+  Domain ednetOne = Domain('EDNetOne');
 
   Domains domains = Domains()
     ..add(projectManagement)
@@ -90,6 +91,12 @@ Domains createDomainModels() {
 
   eventChild.opposite = calendarParent;
   calendarParent.opposite = eventChild;
+
+  // Concept for domains annotating bounded context semantic
+  Model boundedContextModel = Model(ednetOne, 'BoundedContext');
+  Concept boundedContextConcept =
+      Concept(boundedContextModel, 'BoundedContext');
+  domains.concept = boundedContextConcept;
 
   return populateDomainModels(domains);
 }
