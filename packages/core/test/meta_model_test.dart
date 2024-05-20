@@ -41,6 +41,7 @@ ModelEntries createModelData(Model model) {
   var entries = ModelEntries(model);
   Entities categories = entries.getEntry('Category');
   assert(categories.isEmpty);
+  var concept = model.concepts.firstWhere((c) => c.code == 'Category');
 
   Entity dartCategory = Entity<Concept>();
   dartCategory.concept = categories.concept;
