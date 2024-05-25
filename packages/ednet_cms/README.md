@@ -84,3 +84,32 @@ considerable amount of initial code on such way that we promote best practices a
 - testing
 - implementation
 - CI/CD
+
+# Implementation
+
+## Code generation
+
+Model your domain via event storming workshop until software design level and place each 
+bounded context output in `lib/requirements/` directory.
+
+Example of bounded contexts and their aggregates as a directory structure:
+```bash
+lib/requirements/
+├── user_management
+│   ├── user.ednet.yaml
+│   └── role.ednet.yaml
+├── voting
+│   ├── vote.ednet.yaml
+│   └── ballot.ednet.yaml
+├── legislation_proposal
+│   ├── proposal.ednet.yaml
+│   └── amendment.ednet.yaml
+└── discussion_forum
+    ├── thread.ednet.yaml
+    └── comment.ednet.yaml
+```
+
+
+```yaml
+
+```

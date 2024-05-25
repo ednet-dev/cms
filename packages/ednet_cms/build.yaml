@@ -1,14 +1,14 @@
 targets:
   $default:
     builders:
-      ednet_cms|hello_world:
+      ednet_cms|content_watcher_builder:
         generate_for:
           - lib/domain/**/*.yaml
 
 builders:
-  hello_world:
-    import: "package:ednet_cms/src/builders/hello_world_builder.dart"
-    builder_factories: [ "helloWorldBuilder" ]
+  contentWatcherBuilder:
+    import: "package:ednet_cms/src/builders/content_watcher_builder.dart"
+    builder_factories: [ "contentWatcherBuilder" ]
     build_extensions: { ".yaml": [ ".dart" ] }
     auto_apply: dependents
     build_to: source

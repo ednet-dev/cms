@@ -33,9 +33,9 @@ executables:
   watch:
 
 builders:
-  hello_world:
-    import: "package:ednet_cms/src/builders/hello_world_builder.dart"
-    builder_factories: [ "helloWorldBuilder" ]
+  contentWatcherBuilder:
+    import: "package:ednet_cms/src/builders/content_watcher_builder.dart"
+    builder_factories: [ "contentWatcherBuilder" ]
     build_extensions: { ".yaml": [ ".model.dart" ] }
     auto_apply: dependents
     build_to: source

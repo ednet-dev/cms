@@ -1,0 +1,13 @@
+domain: "project"
+concepts:
+  - name: Project
+    entry: true
+  - name: Task
+  - name: Milestone
+  - name: Resource
+  - name: Role
+  - name: Team
+  - name: Skill
+  - name: Time
+  - name: Budget
+  

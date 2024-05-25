@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 
-class HelloWorldBuilder implements Builder {
+class DomainModelBuilder implements Builder {
   static int buildNumber = 0;
 
   @override
@@ -12,7 +12,7 @@ class HelloWorldBuilder implements Builder {
     buildNumber++;
 
     // Log the input file for debugging
-    log.info('Processing ${buildStep.inputId.path}');
+    log.warning('Processing ${buildStep.inputId.path}');
 
     final content = '''
 // Generated code - Do not modify by hand
@@ -22,7 +22,8 @@ void main() {
 ''';
 
     final outputDir = Directory('lib/generated');
-    final outputFile = File(p.join(outputDir.path, 'hello_world.dart'));
+    final outputFile =
+        File(p.join(outputDir.path, 'domain_model_builder.dart'));
 
     if (!outputDir.existsSync()) {
       outputDir.createSync(recursive: true);
@@ -30,7 +31,8 @@ void main() {
 
     await outputFile.writeAsString(content);
 
-    log.info('Generated hello_world.dart with build number: $buildNumber');
+    log.info(
+        'Generated domain_model_builder.dart with build number: $buildNumber');
   }
 
   @override
@@ -39,4 +41,4 @@ void main() {
       };
 }
 
-Builder helloWorldBuilder(BuilderOptions options) => HelloWorldBuilder();
+Builder domainModelBuilder(BuilderOptions options) => DomainModelBuilder();

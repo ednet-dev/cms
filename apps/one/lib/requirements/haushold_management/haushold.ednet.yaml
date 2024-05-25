@@ -1,0 +1,35 @@
+domain: 'household'
+concepts:
+  - name: Household
+    entry: true
+  - name: Member
+  - name: Budget
+  - name: Initiative
+  - name: Project
+  - name: Bank
+relations:
+  - name: finance
+    from: Household
+    to: Finance
+    cardinality:
+      min: 1
+      max: '1'
+  - name: members
+    from: Household
+    to: Member
+    cardinality:
+      min: 1
+      max: N
+  - name: initiatives
+    from: Household
+    to: Initiative
+    cardinality:
+      min: 0
+      max: N
+
+  - name: projects
+    from: Initiative
+    to: Project
+    cardinality:
+      min: 0
+      max: N

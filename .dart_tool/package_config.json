@@ -75,9 +75,9 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/http-1.2.0",
+      "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/http-1.2.1",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.3"
     },
     {
       "name": "http_parser",
@@ -225,9 +225,9 @@
     },
     {
       "name": "web",
-      "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/web-0.4.2",
+      "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/web-0.5.1",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.3"
     },
     {
       "name": "yaml",
@@ -248,7 +248,10 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2024-05-18T09:33:59.955986Z",
+  "generated": "2024-05-20T13:40:07.275235Z",
   "generator": "pub",
-  "generatorVersion": "3.2.6"
+  "generatorVersion": "3.5.0-169.0.dev",
+  "flutterRoot": "file:///Users/slavisam/bin/flutter",
+  "flutterVersion": "3.22.0-36.0.pre.54",
+  "pubCache": "file:///Users/slavisam/.pub-cache"
 }
