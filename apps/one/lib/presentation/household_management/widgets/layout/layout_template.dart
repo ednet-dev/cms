@@ -1,5 +1,6 @@
-import 'package:ednet_one/presentation/responsive_layout.dart';
 import 'package:flutter/material.dart';
+
+import 'responsive_layout.dart';
 
 class LayoutTemplate extends StatelessWidget {
   final Widget header;

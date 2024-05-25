@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'footer_widget.dart';
-import 'header_widget.dart';
-import 'layout_block.dart';
-import 'layout_state.dart';
-import 'layout_template.dart';
-import 'left_sidebar_widget.dart';
-import 'main_content_widget.dart';
-import 'right_sidebar_widget.dart';
+import '../widgets/layout/layout_template.dart';
+import '../blocs/layout_block.dart';
+import '../blocs/layout_state.dart';
+import '../widgets/layout/footer_widget.dart';
+import '../widgets/layout/header_widget.dart';
+import '../widgets/layout/left_sidebar_widget.dart';
+import '../widgets/layout/main_content_widget.dart';
+import '../widgets/layout/right_sidebar_widget.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.title});

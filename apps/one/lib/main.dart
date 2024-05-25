@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'presentation/layout_block.dart';
-import 'presentation/my_home_page.dart';
+import 'presentation/household_management/blocs/layout_block.dart';
+import 'presentation/household_management/pages/my_home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       ),
       home: BlocProvider(
         create: (context) => LayoutBloc(),
-        child: const MyHomePage(title: 'Flutter Demo Home Page'),
+        child: const MyHomePage(title: 'EDNet One'),
       ),
     );
   }
