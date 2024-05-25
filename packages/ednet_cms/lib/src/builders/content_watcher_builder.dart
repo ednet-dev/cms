@@ -20,7 +20,7 @@ class ContentWatcherBuilder implements Builder {
   Future<void> build(BuildStep buildStep) async {
     // ****
 
-    log.info('Processing: ${buildStep.inputId.path}');
+    log.info('DEBUG: ${buildStep.inputId.path}');
 
     // Get the path of the requirements directory
     final requirementsDir = '$rootDir/$contentDir';
@@ -38,12 +38,14 @@ class ContentWatcherBuilder implements Builder {
         await buildStep.findAssets(requirementsGlob).toList();
 
     for (var file in requirementsFiles) {
-      // Get the name of the file without the .ednet.yaml suffix
-      final fileName = p.basenameWithoutExtension(file.path);
-      final cleansedFileName = fileName.replaceAll('.ednet', '');
+      // Get the relative path of the file from the requirements directory
+      final relativeFilePath = p.relative(file.path, from: requirementsDir);
 
-      // Create a corresponding directory in the generated directory
-      final newDirPath = '$generatedDir/$cleansedFileName';
+      // Replace the .ednet.yaml suffix with an empty string to get the directory name
+      final directoryName = relativeFilePath.replaceAll('.ednet.yaml', '');
+
+      // Create a directory in the generated directory with the same relative path
+      final newDirPath = '$generatedDir/$directoryName';
       final newDirExists = await Directory(newDirPath).exists();
       if (!newDirExists) {
         await Directory(newDirPath).create(recursive: true);
