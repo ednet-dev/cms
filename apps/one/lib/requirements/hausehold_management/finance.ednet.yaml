@@ -1,7 +1,8 @@
-domain: 'finances'
+domain: 'household_management'
+model: 'finances'
 concepts:
-  - name:
-      entry: true
+  - name: Finance
+    entry: true
   - name: Bank
   - name: Account
   - name: Transaction

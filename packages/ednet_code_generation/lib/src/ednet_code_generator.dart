@@ -1,17 +1,25 @@
 part of ednet_code_generation;
 
 class EDNetCodeGenerator {
-  static String generate({
+  static Future<String> generate({
     required String sourceDir,
-    required String targetDir,
-    required String domainName,
+    String targetDir = 'lib/generated/ednet',
+    String domainName = 'ednet',
     required String models,
-  }) {
-    print([sourceDir, targetDir, domainName, models]);
+    File? yamlFile,
+  }) async {
+    createDomainModelFromYaml(
+      dir: sourceDir,
+      domain: domainName,
+      model: models,
+      yamlFile: yamlFile,
+    );
 
-    return '''
-      Hello world!
-    ''';
+    print('targetDir: $targetDir');
+    // Generate the project for the domain model
+    genProject('--genall', targetDir);
+
+    return 'Code generation completed!';
   }
 }
 
@@ -141,16 +149,22 @@ void createDomainModelFromYaml({
   required String dir,
   required String domain,
   required String model,
+  File? yamlFile,
 }) {
   yamlString = loadYamlFile(
     domain: domain,
     model: model,
     dir: dir,
+    yamlFile: yamlFile,
   );
 
   final yaml = loadYaml(yamlString!) as YamlMap;
 
-  if (yaml == null || yaml.length == 0) {
+  libraryName = libraryName.length > 0
+      ? libraryName
+      : '${yaml['domain']}_${yaml['model']}';
+
+  if (yaml.length == 0) {
     print('missing YAML of the ${domain} model ${model}');
   } else {
     ednetCoreRepository = CoreRepository();
@@ -260,10 +274,20 @@ String loadYamlFile({
   required String domain,
   required String model,
   required String dir,
+  File? yamlFile,
 }) {
-  final yamlFilePath = p.join(dir, domain, model, '$model.yaml') as String;
-  final yamlFile = File(yamlFilePath);
-  return yamlFile.readAsStringSync();
+  final yamlFilePath = p.join(dir, domain, '$model.yaml') as String;
+  final loadedYamlFile = yamlFile ?? File(yamlFilePath);
+
+  // wrap in try catch
+
+  try {
+    var result = loadedYamlFile.readAsStringSync();
+    return result;
+  } catch (e) {
+    print('Error reading the file: $e');
+    return '';
+  }
 }
 
 void displayYaml({

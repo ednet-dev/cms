@@ -16,10 +16,10 @@ part 'src/test_gen.dart';
 
 part 'src/web_gen.dart';
 
-late String libraryName;
-late String domainName;
+String libraryName = 'ednet_one';
+String domainName = 'ednet';
 String? outputDir;
-late String modelName;
+String modelName = 'one';
 
 late CoreRepository ednetCoreRepository;
 late Domain ednetCoreDomain;

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:build/build.dart';
+import 'package:ednet_code_generation/ednet_code_generation.dart';
 import 'package:glob/glob.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
@@ -18,8 +19,6 @@ class ContentWatcherBuilder implements Builder {
 
   @override
   Future<void> build(BuildStep buildStep) async {
-    // ****
-
     log.info('DEBUG: ${buildStep.inputId.path}');
 
     // Get the path of the requirements directory
@@ -50,61 +49,44 @@ class ContentWatcherBuilder implements Builder {
       if (!newDirExists) {
         await Directory(newDirPath).create(recursive: true);
       }
-    }
-
-    // ****
-
-    // Only run the CmsBuilder if the changed file is in the content directory
-    final inputId = buildStep.inputId;
-    final inputPath = inputId.path;
-    log.warning('FROM CONTENT WATCHER Processing ${buildStep.inputId.path}');
-
-    // final rootDir = await _getRootDir(buildStep);
-
-    final contentGlob = Glob('$rootDir/$contentDir/**');
-    final isInContentDir = contentGlob.matches(inputPath);
-    if (isInContentDir) {
-      final outputId = AssetId(inputId.package,
-          'lib/src/domain/${_toCamelCase(inputId.changeExtension('.g.dart').pathSegments.last)}');
-      final rootDir = '${buildStep.inputId.package}/lib';
-      final contentDir = '$rootDir/${this.contentDir}';
-
-      // Create the content directory if it does not exist
-      final contentDirExists = await Directory(contentDir).exists();
-      if (!contentDirExists) {
-        await Directory(contentDir).create(recursive: true);
-      }
 
       // Read the contents of the YAML file
-      final yamlFile = File(inputPath);
-      final yamlContent = await yamlFile.readAsString();
+      final yamlFile = File(file.path);
+      String yamlContent;
+      try {
+        yamlContent = await yamlFile.readAsString();
+      } catch (e) {
+        log.severe('Error reading YAML file: $file.path, Error: $e');
+        continue;
+      }
 
-      // Parse the YAML content
-      final yamlMap = loadYaml(yamlContent);
-      final entities = parseYaml(yamlContent);
-      this.printEntities(entities);
-      // Parse the YAML content
-      // final yamlMap = loadYaml(yamlContent);
-      //
-      // // Generate the domain model code
-      // final generator = EdnetCodeGenerator();
-      // final generatedCode = generator.generate(yamlMap);
+      // Parse YAML content to ensure it's valid
+      try {
+        final yamlData = loadYaml(yamlContent);
+        if (yamlData is! YamlMap) {
+          log.severe('Invalid YAML structure in file: $file.path');
+          continue;
+        }
+      } catch (e) {
+        log.severe('Error parsing YAML file: $file.path, Error: $e');
+        continue;
+      }
 
-      // Write the generated code to a file
-      final domainDir = '$rootDir/src/domain';
-      final domainFile = File('$domainDir/domain_model.dart');
-      // await domainFile.writeAsString(generatedCode);
-    }
-  }
-
-  void printEntities(List<Map<String, dynamic>> entities) {
-    for (var entity in entities) {
-      log.warning('Entity: ${entity['name']}, Extends: ${entity['extends']}');
-      for (var property in entity['properties']) {
-        log.warning(
-            '  Property: ${property['name']}, Type: ${property['type']}, Relation: ${property['relation']}');
+      // Generate the code for the YAML file
+      try {
+        await EDNetCodeGenerator.generate(
+          sourceDir: p.dirname(file.path),
+          targetDir: newDirPath,
+          domainName: directoryName,
+          models: yamlContent,
+          yamlFile: yamlFile,
+        );
+      } catch (e) {
+        log.severe('Error generating code for file: $file.path, Error: $e');
       }
     }
+
+    return;
   }
 
   List<Map<String, dynamic>> parseYaml(String yamlContent) {
@@ -136,39 +118,6 @@ class ContentWatcherBuilder implements Builder {
         }).toList(),
       };
     }).toList();
-  }
-
-  String _toCamelCase(String input) {
-    final parts = input.split('_');
-    return parts.first +
-        parts.skip(1).map((part) => part.capitalize()).join('');
-  }
-
-// Future<String> _getRootDir(BuildStep buildStep) async {
-//   if (rootDir != null) {
-//     return rootDir;
-//   }
-//
-//   final inputId = buildStep.inputId;
-//   final packageUri = inputId.packageUri;
-//   final packagePath = packageUri.toFilePath(windows: Platform.isWindows);
-//   final rootPubspecFile = File('$packagePath/../pubspec.yaml');
-//   final pubspec = await loadYamlDocument(rootPubspecFile.readAsString());
-//   final packageName = pubspec.contents.value['name'].value as String;
-//   final assetReader = buildStep.readAsset;
-//
-//   final rootAssetId = AssetId(packageName, 'lib/$packageName.dart');
-//   final rootAsset = await assetReader(rootAssetId);
-//   final rootAssetPath = rootAsset.id.path;
-//
-//   _rootDir = rootAssetPath.substring(0, rootAssetPath.lastIndexOf('/'));
-//   return _rootDir!;
-// }
-}
-
-extension CapExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${substring(1)}";
   }
 }
 

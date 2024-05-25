@@ -21,9 +21,11 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
   Model model = Model(domain, modelCode);
 
   for (var jsonConcept in jsonConcepts) {
-    String conceptCode = jsonConcept["name"];
+    String? conceptCode = jsonConcept["name"];
+    assert(conceptCode != null,
+        'Concept code is missing for the jsonConcept. For ${domain.code}.$modelCode');
     bool conceptEntry = jsonConcept["entry"] ?? false;
-    Concept concept = Concept(model, conceptCode);
+    Concept concept = Concept(model, conceptCode!);
     concept.entry = conceptEntry;
 
     var items = jsonConcept["attributes"] ?? [];

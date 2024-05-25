@@ -1,4 +1,5 @@
-domain: "project"
+domain: 'household_management'
+model: 'project'
 concepts:
   - name: Project
     entry: true

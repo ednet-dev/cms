@@ -1,0 +1,10 @@
+domain: 'household_management'
+model: 'household'
+concepts:
+  - name: Household
+    entry: true
+  - name: Member
+  - name: Budget
+  - name: Initiative
+  - name: Project
+  - name: Bank
