@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:build/build.dart';
 import 'package:glob/glob.dart';
+import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
 class ContentWatcherBuilder implements Builder {
@@ -17,6 +18,40 @@ class ContentWatcherBuilder implements Builder {
 
   @override
   Future<void> build(BuildStep buildStep) async {
+    // ****
+
+    log.info('Processing: ${buildStep.inputId.path}');
+
+    // Get the path of the requirements directory
+    final requirementsDir = '$rootDir/$contentDir';
+
+    // Create the generated directory if it does not exist
+    final generatedDir = '$rootDir/generated';
+    final generatedDirExists = await Directory(generatedDir).exists();
+    if (!generatedDirExists) {
+      await Directory(generatedDir).create(recursive: true);
+    }
+
+    // Iterate over each file in the requirements directory
+    final requirementsGlob = Glob('$requirementsDir/**.ednet.yaml');
+    final requirementsFiles =
+        await buildStep.findAssets(requirementsGlob).toList();
+
+    for (var file in requirementsFiles) {
+      // Get the name of the file without the .ednet.yaml suffix
+      final fileName = p.basenameWithoutExtension(file.path);
+      final cleansedFileName = fileName.replaceAll('.ednet', '');
+
+      // Create a corresponding directory in the generated directory
+      final newDirPath = '$generatedDir/$cleansedFileName';
+      final newDirExists = await Directory(newDirPath).exists();
+      if (!newDirExists) {
+        await Directory(newDirPath).create(recursive: true);
+      }
+    }
+
+    // ****
+
     // Only run the CmsBuilder if the changed file is in the content directory
     final inputId = buildStep.inputId;
     final inputPath = inputId.path;
@@ -71,7 +106,17 @@ class ContentWatcherBuilder implements Builder {
   }
 
   List<Map<String, dynamic>> parseYaml(String yamlContent) {
-    final yamlList = loadYaml(yamlContent) as List;
+    final yamlData = loadYaml(yamlContent);
+    List yamlList;
+
+    if (yamlData is YamlList) {
+      yamlList = yamlData;
+    } else if (yamlData is YamlMap) {
+      yamlList = [yamlData];
+    } else {
+      throw Exception('Unsupported YAML structure');
+    }
+
     return yamlList.map((item) {
       final entity = item as YamlMap;
       final properties =
