@@ -113,10 +113,27 @@ class DateTimeAttributeWidget extends StatelessWidget {
   }
 }
 
-class EntityWidget extends StatelessWidget {
+class EntityDetailScreen extends StatelessWidget {
   final Entity entity;
 
-  EntityWidget({required this.entity});
+  EntityDetailScreen({required this.entity});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title:
+              Text(entity.getStringFromAttribute('names') ?? 'Entity Detail')),
+      body: EntityWidget(entity: entity),
+    );
+  }
+}
+
+class EntityWidget extends StatelessWidget {
+  final Entity entity;
+  final void Function(Entity entity)? onEntitySelected;
+
+  EntityWidget({required this.entity, this.onEntitySelected});
 
   @override
   Widget build(BuildContext context) {
@@ -173,16 +190,32 @@ class EntityWidget extends StatelessWidget {
           ...entity.concept.parents.map((parent) {
             var parentEntity = entity.getParent(parent.code);
             if (parentEntity != null) {
-              return EntityWidget(entity: parentEntity as Entity);
+              return ListTile(
+                title: Text('Parent: ${parent.code}'),
+                onTap: () {
+                  if (onEntitySelected != null) {
+                    onEntitySelected!(parentEntity as Entity);
+                  }
+                },
+              );
             }
             return Container();
           }).toList(),
           ...entity.concept.children.map((child) {
             var childEntities = entity.getChild(child.code) as Entities?;
             if (childEntities != null) {
-              return Column(
+              return ExpansionTile(
+                title: Text('Children: ${child.code}'),
                 children: childEntities.map((childEntity) {
-                  return EntityWidget(entity: childEntity as Entity);
+                  return ListTile(
+                    title: Text(childEntity.getStringFromAttribute('name') ??
+                        'Unnamed Entity'),
+                    onTap: () {
+                      if (onEntitySelected != null) {
+                        onEntitySelected!(childEntity as Entity);
+                      }
+                    },
+                  );
                 }).toList(),
               );
             }
@@ -196,47 +229,26 @@ class EntityWidget extends StatelessWidget {
 
 class EntitiesWidget<E extends Entity<E>> extends StatelessWidget {
   final Entities<E> entities;
+  final void Function(Entity entity)? onEntitySelected;
 
-  EntitiesWidget({required this.entities});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('${entities.concept?.codePlural ?? 'Entities'}')),
-      body: ListView.builder(
-        itemCount: entities.length,
-        itemBuilder: (context, index) {
-          var entity = entities.elementAt(index);
-          return ListTile(
-            title:
-                Text(entity.getStringFromAttribute('name') ?? 'Unnamed Entity'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EntityDetailScreen(entity: entity),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class EntityDetailScreen extends StatelessWidget {
-  final Entity entity;
-
-  EntityDetailScreen({required this.entity});
+  EntitiesWidget({required this.entities, this.onEntitySelected});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return ListView.builder(
+      itemCount: entities.length,
+      itemBuilder: (context, index) {
+        var entity = entities.elementAt(index);
+        return ListTile(
           title:
-              Text(entity.getStringFromAttribute('names') ?? 'Entity Detail')),
-      body: EntityWidget(entity: entity),
+              Text(entity.getStringFromAttribute('name') ?? 'Unnamed Entity'),
+          onTap: () {
+            if (onEntitySelected != null) {
+              onEntitySelected!(entity);
+            }
+          },
+        );
+      },
     );
   }
 }

@@ -1,8 +1,10 @@
+// my_home_page.dart
 import 'package:ednet_one/generated/hausehold/project/lib/household_project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/layout_block.dart';
+import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
 import '../widgets/layout/footer_widget.dart';
 import '../widgets/layout/header_widget.dart';
@@ -32,18 +34,31 @@ class MyHomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
       ),
-      body: BlocBuilder<LayoutBloc, LayoutState>(
-        builder: (context, state) {
-          return LayoutTemplate(
-            header: const HeaderWidget(),
-            leftSidebar: LeftSidebarWidget(items: projects),
-            rightSidebar: const RightSidebarWidget(),
-            mainContent: MainContentWidget(
-              entity: projects.first,
-            ),
-            footer: const FooterWidget(),
-          );
-        },
+      body: BlocProvider(
+        create: (context) => LayoutBloc(),
+        child: BlocBuilder<LayoutBloc, LayoutState>(
+          builder: (context, state) {
+            return LayoutTemplate(
+              header: const HeaderWidget(),
+              leftSidebar: LeftSidebarWidget(
+                items: projects,
+                onEntitySelected: (entity) {
+                  BlocProvider.of<LayoutBloc>(context)
+                      .add(SelectEntityEvent(entity: entity));
+                },
+              ),
+              rightSidebar: const RightSidebarWidget(),
+              mainContent: MainContentWidget<Project>(
+                entity: (state.selectedEntity ?? projects.first) as Project,
+                onEntitySelected: (entity) {
+                  BlocProvider.of<LayoutBloc>(context)
+                      .add(SelectEntityEvent(entity: entity));
+                },
+              ),
+              footer: const FooterWidget(),
+            );
+          },
+        ),
       ),
     );
   }
