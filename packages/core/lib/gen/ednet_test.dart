@@ -43,7 +43,7 @@ String genEDNetGen(Model model) {
 
 String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   Domain domain = model.domain;
-
+  final repoName = '${domain.codeFirstLetterUpper}${model.codeFirstLetterUpper}Repo';
   var sc = ' \n';
   sc = '$sc// test/${domain.codeLowerUnderscore}/'
       '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'
@@ -806,7 +806,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc \n';
 
   sc = '${sc}void main() { \n';
-  sc = '$sc  var repository = Repository(); \n';
+  sc = '$sc  var repository = $repoName(); \n';
   sc = '$sc  ${domain.code}Domain ${domain.codeFirstLetterLower}Domain = '
       'repository.getDomainModels("${domain.code}") as ${domain.code}Domain;   \n';
   sc = '$sc  assert(${domain.codeFirstLetterLower}Domain != null); \n';

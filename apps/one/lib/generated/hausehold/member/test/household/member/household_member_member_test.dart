@@ -358,7 +358,7 @@ class MemberReaction implements ICommandReaction {
 } 
  
 void main() { 
-  var repository = Repository(); 
+  var repository = HouseholdMemberRepo(); 
   HouseholdDomain householdDomain = repository.getDomainModels("Household") as HouseholdDomain;   
   assert(householdDomain != null); 
   MemberModel memberModel = householdDomain.getModelEntries("Member") as MemberModel;  

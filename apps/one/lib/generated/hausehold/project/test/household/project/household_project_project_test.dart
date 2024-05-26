@@ -358,7 +358,7 @@ class ProjectReaction implements ICommandReaction {
 } 
  
 void main() { 
-  var repository = Repository(); 
+  var repository = HouseholdProjectRepo(); 
   HouseholdDomain householdDomain = repository.getDomainModels("Household") as HouseholdDomain;   
   assert(householdDomain != null); 
   ProjectModel projectModel = householdDomain.getModelEntries("Project") as ProjectModel;  

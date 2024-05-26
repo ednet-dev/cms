@@ -2,11 +2,11 @@ part of user_library;
  
 // lib/repository.dart 
  
-class Repository extends CoreRepository { 
+class UserLibraryRepo extends CoreRepository { 
  
-  static const REPOSITORY = "Repository"; 
+  static const REPOSITORY = "UserLibraryRepo"; 
  
-  Repository([String code=REPOSITORY]) : super(code) { 
+  UserLibraryRepo([String code=REPOSITORY]) : super(code) { 
     var domain = Domain("User"); 
     domains.add(domain); 
     add(UserDomain(domain)); 

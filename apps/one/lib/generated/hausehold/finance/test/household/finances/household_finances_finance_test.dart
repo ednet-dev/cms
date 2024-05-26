@@ -358,7 +358,7 @@ class FinanceReaction implements ICommandReaction {
 } 
  
 void main() { 
-  var repository = Repository(); 
+  var repository = HouseholdFinancesRepo(); 
   HouseholdDomain householdDomain = repository.getDomainModels("Household") as HouseholdDomain;   
   assert(householdDomain != null); 
   FinancesModel financesModel = householdDomain.getModelEntries("Finances") as FinancesModel;  

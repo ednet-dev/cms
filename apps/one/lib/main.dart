@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'generated/hausehold/project/lib/household_project.dart';
 import 'presentation/household_management/blocs/layout_block.dart';
 import 'presentation/household_management/pages/my_home_page.dart';
 
@@ -13,6 +14,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var repository = HouseholdProjectRepo();
+    HouseholdDomain householdDomain =
+        repository.getDomainModels("Household") as HouseholdDomain;
+    ProjectModel projectModel =
+        householdDomain.getModelEntries("Project") as ProjectModel;
+
+    projectModel.initProjects();
+    var projects = projectModel.projects;
+
+    print(projects.toString())  ;
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

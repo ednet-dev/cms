@@ -358,7 +358,7 @@ class HouseholdReaction implements ICommandReaction {
 } 
  
 void main() { 
-  var repository = Repository(); 
+  var repository = HouseholdCoreRepo(); 
   HouseholdDomain householdDomain = repository.getDomainModels("Household") as HouseholdDomain;   
   assert(householdDomain != null); 
   CoreModel coreModel = householdDomain.getModelEntries("Core") as CoreModel;  

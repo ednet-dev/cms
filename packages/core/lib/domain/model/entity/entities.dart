@@ -568,12 +568,12 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     bool result = true;
 
     // uniqueness validation
-    if (entity.code != null && singleWhereCode(entity.code) != null) {
-      var exception = new ValidationException(
-          'unique', '${entity.concept.code}.code is not unique.');
-      exceptions.add(exception);
-      result = false;
-    }
+    // if (entity.code != null && singleWhereCode(entity.code) != null) {
+    //   var exception = new ValidationException(
+    //       'unique', '${entity.concept.code}.code is not unique.');
+    //   exceptions.add(exception);
+    //   result = false;
+    // }
     if (entity.id != null && singleWhereId(entity.id) != null) {
       ValidationException exception = new ValidationException('unique',
           '${entity.concept.code}.id ${entity.id.toString()} is not unique.');

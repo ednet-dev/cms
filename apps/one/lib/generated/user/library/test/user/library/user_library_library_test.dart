@@ -358,7 +358,7 @@ class LibraryReaction implements ICommandReaction {
 } 
  
 void main() { 
-  var repository = Repository(); 
+  var repository = UserLibraryRepo(); 
   UserDomain userDomain = repository.getDomainModels("User") as UserDomain;   
   assert(userDomain != null); 
   LibraryModel libraryModel = userDomain.getModelEntries("Library") as LibraryModel;  

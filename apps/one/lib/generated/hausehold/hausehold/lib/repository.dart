@@ -2,11 +2,11 @@ part of household_core;
  
 // lib/repository.dart 
  
-class Repository extends CoreRepository { 
+class HouseholdCoreRepo extends CoreRepository { 
  
-  static const REPOSITORY = "Repository"; 
+  static const REPOSITORY = "HouseholdCoreRepo"; 
  
-  Repository([String code=REPOSITORY]) : super(code) { 
+  HouseholdCoreRepo([String code=REPOSITORY]) : super(code) { 
     var domain = Domain("Household"); 
     domains.add(domain); 
     add(HouseholdDomain(domain)); 
