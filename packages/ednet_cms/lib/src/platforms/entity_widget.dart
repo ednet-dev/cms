@@ -122,54 +122,121 @@ class EntityWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Column(
-        children: entity.concept.attributes.map((attribute) {
-          var value = entity.getAttribute(attribute.code);
-          switch (attribute.type?.code) {
-            case 'String':
-              return StringAttributeWidget(
-                label: attribute.code,
-                value: value as String,
-                onChanged: (newValue) {
-                  entity.setAttribute(attribute.code, newValue);
-                },
+        children: [
+          ...entity.concept.attributes.map((attribute) {
+            var value = entity.getAttribute(attribute.code);
+            switch (attribute.type?.code) {
+              case 'String':
+                return StringAttributeWidget(
+                  label: attribute.code,
+                  value: value as String,
+                  onChanged: (newValue) {
+                    entity.setAttribute(attribute.code, newValue);
+                  },
+                );
+              case 'int':
+                return IntAttributeWidget(
+                  label: attribute.code,
+                  value: value as int,
+                  onChanged: (newValue) {
+                    entity.setAttribute(attribute.code, newValue);
+                  },
+                );
+              case 'double':
+                return DoubleAttributeWidget(
+                  label: attribute.code,
+                  value: value as double,
+                  onChanged: (newValue) {
+                    entity.setAttribute(attribute.code, newValue);
+                  },
+                );
+              case 'bool':
+                return BoolAttributeWidget(
+                  label: attribute.code,
+                  value: value as bool,
+                  onChanged: (newValue) {
+                    entity.setAttribute(attribute.code, newValue);
+                  },
+                );
+              case 'DateTime':
+                return DateTimeAttributeWidget(
+                  label: attribute.code,
+                  value: value as DateTime,
+                  onChanged: (newValue) {
+                    entity.setAttribute(attribute.code, newValue);
+                  },
+                );
+              default:
+                return Container();
+            }
+          }).toList(),
+          ...entity.concept.parents.map((parent) {
+            var parentEntity = entity.getParent(parent.code);
+            if (parentEntity != null) {
+              return EntityWidget(entity: parentEntity as Entity);
+            }
+            return Container();
+          }).toList(),
+          ...entity.concept.children.map((child) {
+            var childEntities = entity.getChild(child.code) as Entities?;
+            if (childEntities != null) {
+              return Column(
+                children: childEntities.map((childEntity) {
+                  return EntityWidget(entity: childEntity as Entity);
+                }).toList(),
               );
-            case 'int':
-              return IntAttributeWidget(
-                label: attribute.code,
-                value: value as int,
-                onChanged: (newValue) {
-                  entity.setAttribute(attribute.code, newValue);
-                },
-              );
-            case 'double':
-              return DoubleAttributeWidget(
-                label: attribute.code,
-                value: value as double,
-                onChanged: (newValue) {
-                  entity.setAttribute(attribute.code, newValue);
-                },
-              );
-            case 'bool':
-              return BoolAttributeWidget(
-                label: attribute.code,
-                value: value as bool,
-                onChanged: (newValue) {
-                  entity.setAttribute(attribute.code, newValue);
-                },
-              );
-            case 'DateTime':
-              return DateTimeAttributeWidget(
-                label: attribute.code,
-                value: value as DateTime,
-                onChanged: (newValue) {
-                  entity.setAttribute(attribute.code, newValue);
-                },
-              );
-            default:
-              return Container();
-          }
-        }).toList(),
+            }
+            return Container();
+          }).toList(),
+        ],
       ),
+    );
+  }
+}
+
+class EntitiesWidget<E extends Entity<E>> extends StatelessWidget {
+  final Entities<E> entities;
+
+  EntitiesWidget({required this.entities});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('${entities.concept?.codePlural ?? 'Entities'}')),
+      body: ListView.builder(
+        itemCount: entities.length,
+        itemBuilder: (context, index) {
+          var entity = entities.elementAt(index);
+          return ListTile(
+            title:
+                Text(entity.getStringFromAttribute('name') ?? 'Unnamed Entity'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EntityDetailScreen(entity: entity),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class EntityDetailScreen extends StatelessWidget {
+  final Entity entity;
+
+  EntityDetailScreen({required this.entity});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title:
+              Text(entity.getStringFromAttribute('names') ?? 'Entity Detail')),
+      body: EntityWidget(entity: entity),
     );
   }
 }

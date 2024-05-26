@@ -1,15 +1,19 @@
+import 'package:ednet_cms/ednet_cms.dart';
+import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
-class LeftSidebarWidget extends StatelessWidget {
-  const LeftSidebarWidget({super.key});
+class LeftSidebarWidget<E extends Entity<E>> extends StatelessWidget {
+  final Entities<E> items;
+
+  const LeftSidebarWidget({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 200,
       color: Colors.green,
-      child: const Center(
-        child: Text('Left Sidebar'),
+      child: Center(
+        child: EntitiesWidget<E>(entities: this.items),
       ),
     );
   }
