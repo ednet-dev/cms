@@ -7,7 +7,6 @@ String genEntries(Model model, String library) {
   // Start of the generated code.
   String sc = '''
 part of $library;
-// Hello world from `dart run build_runner build` command :)
 // Generated code for model entries in lib/gen/${domain.codeLowerUnderscore}/${model.codeLowerUnderscore}/model_entries.dart
 
 class ${model.code}Entries extends ModelEntries {
