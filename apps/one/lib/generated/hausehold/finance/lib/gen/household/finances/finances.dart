@@ -8,6 +8,9 @@ abstract class FinanceGen extends Entity<Finance> {
     this.concept = concept; 
   } 
  
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
+  
   Finance newEntity() => Finance(concept); 
   Finances newEntities() => Finances(concept); 
   

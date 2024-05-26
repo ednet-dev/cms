@@ -11,6 +11,8 @@ model: 'library'
 concepts:
   - name: Library
     entry: true
+    attributes:
+      - name: name
   - name: Item
   - name: Author
   - name: Publisher
@@ -22,19 +24,7 @@ concepts:
   - name: Newspaper
   - name: AudioBook
   - name: eBook
-  - name: CD
-  - name: DVD
-  - name: Video
-  - name: Music
-  - name: Movie
-  - name: TVShow
-  - name: Image
-  - name: Document
-  - name: File
-  - name: Software
-  - name: Game
-  - name: Tool
-  - name: Equipment
+
 
 
 

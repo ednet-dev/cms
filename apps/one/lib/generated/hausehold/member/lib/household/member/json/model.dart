@@ -11,6 +11,13 @@ model: 'member'
 concepts:
   - name: Member
     entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: name
+        type: String
+        essential: true
+        sensitive: false
 
 ''';
   

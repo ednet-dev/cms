@@ -8,6 +8,9 @@ abstract class HouseholdGen extends Entity<Household> {
     this.concept = concept; 
   } 
  
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
+  
   Household newEntity() => Household(concept); 
   Households newEntities() => Households(concept); 
   

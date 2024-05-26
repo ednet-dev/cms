@@ -11,6 +11,14 @@ model: 'finances'
 concepts:
   - name: Finance
     entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: name
+        type: String
+        essential: true
+        sensitive: false
+
   - name: Bank
   - name: Account
   - name: CreditCard

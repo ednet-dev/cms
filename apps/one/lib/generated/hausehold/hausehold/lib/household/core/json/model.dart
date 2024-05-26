@@ -11,6 +11,13 @@ model: 'core'
 concepts:
   - name: Household
     entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: name
+        type: String
+        essential: true
+        sensitive: false
   - name: Member
   - name: Budget
   - name: Initiative

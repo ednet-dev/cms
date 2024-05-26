@@ -98,11 +98,22 @@ void testHouseholdCoreHouseholds(
     }); 
  
     test("Find household by attribute", () { 
-      // no attribute that is not required 
+      var randomHousehold = coreModel.households.random(); 
+      var household = 
+          households.firstWhereAttribute("name", randomHousehold.name); 
+      expect(household, isNotNull); 
+      expect(household.name, equals(randomHousehold.name)); 
     }); 
  
     test("Select households by attribute", () { 
-      // no attribute that is not required 
+      var randomHousehold = coreModel.households.random(); 
+      var selectedHouseholds = 
+          households.selectWhereAttribute("name", randomHousehold.name); 
+      expect(selectedHouseholds.isEmpty, isFalse); 
+      selectedHouseholds.forEach((se) => 
+          expect(se.name, equals(randomHousehold.name))); 
+ 
+      //selectedHouseholds.display(title: "Select households by name"); 
     }); 
  
     test("Select households by required attribute", () { 
@@ -110,11 +121,40 @@ void testHouseholdCoreHouseholds(
     }); 
  
     test("Select households by attribute, then add", () { 
-      // no attribute that is not id 
+      var randomHousehold = coreModel.households.random(); 
+      var selectedHouseholds = 
+          households.selectWhereAttribute("name", randomHousehold.name); 
+      expect(selectedHouseholds.isEmpty, isFalse); 
+      expect(selectedHouseholds.source?.isEmpty, isFalse); 
+      var householdsCount = households.length; 
+ 
+      var household = Household(households.concept); 
+      household.name = 'beach'; 
+      var added = selectedHouseholds.add(household); 
+      expect(added, isTrue); 
+      expect(households.length, equals(++householdsCount)); 
+ 
+      //selectedHouseholds.display(title: 
+      //  "Select households by attribute, then add"); 
+      //households.display(title: "All households"); 
     }); 
  
     test("Select households by attribute, then remove", () { 
-      // no attribute that is not id 
+      var randomHousehold = coreModel.households.random(); 
+      var selectedHouseholds = 
+          households.selectWhereAttribute("name", randomHousehold.name); 
+      expect(selectedHouseholds.isEmpty, isFalse); 
+      expect(selectedHouseholds.source?.isEmpty, isFalse); 
+      var householdsCount = households.length; 
+ 
+      var removed = selectedHouseholds.remove(randomHousehold); 
+      expect(removed, isTrue); 
+      expect(households.length, equals(--householdsCount)); 
+ 
+      randomHousehold.display(prefix: "removed"); 
+      //selectedHouseholds.display(title: 
+      //  "Select households by attribute, then remove"); 
+      //households.display(title: "All households"); 
     }); 
  
     test("Sort households", () { 
@@ -180,7 +220,12 @@ void testHouseholdCoreHouseholds(
     }); 
  
     test("Update household non id attribute with failure", () { 
-      // no attribute that is not id 
+      var randomHousehold = coreModel.households.random(); 
+      var afterUpdateEntity = randomHousehold.copy(); 
+      afterUpdateEntity.name = 'pattern'; 
+      expect(afterUpdateEntity.name, equals('pattern')); 
+      // households.update can only be used if oid, code or id is set. 
+      expect(() => households.update(randomHousehold, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
  
     test("Copy Equality", () { 
@@ -191,13 +236,15 @@ void testHouseholdCoreHouseholds(
       expect(randomHousehold, equals(randomHouseholdCopy)); 
       expect(randomHousehold.oid, equals(randomHouseholdCopy.oid)); 
       expect(randomHousehold.code, equals(randomHouseholdCopy.code)); 
+      expect(randomHousehold.name, equals(randomHouseholdCopy.name)); 
  
     }); 
  
     test("household action undo and redo", () { 
       var householdCount = households.length; 
       var household = Household(households.concept); 
-        households.add(household); 
+        household.name = 'discount'; 
+      households.add(household); 
       expect(households.length, equals(++householdCount)); 
       households.remove(household); 
       expect(households.length, equals(--householdCount)); 
@@ -216,7 +263,8 @@ void testHouseholdCoreHouseholds(
     test("household session undo and redo", () { 
       var householdCount = households.length; 
       var household = Household(households.concept); 
-        households.add(household); 
+        household.name = 'bank'; 
+      households.add(household); 
       expect(households.length, equals(++householdCount)); 
       households.remove(household); 
       expect(households.length, equals(--householdCount)); 
@@ -233,7 +281,15 @@ void testHouseholdCoreHouseholds(
     }); 
  
     test("Household update undo and redo", () { 
-      // no attribute that is not id 
+      var household = coreModel.households.random(); 
+      var action = SetAttributeCommand(session, household, "name", 'edition'); 
+      action.doIt(); 
+ 
+      session.past.undo(); 
+      expect(household.name, equals(action.before)); 
+ 
+      session.past.redo(); 
+      expect(household.name, equals(action.after)); 
     }); 
  
     test("Household action with multiple undos and redos", () { 
@@ -327,7 +383,8 @@ void testHouseholdCoreHouseholds(
  
       householdDomain.startCommandReaction(reaction); 
       var household = Household(households.concept); 
-        households.add(household); 
+        household.name = 'secretary'; 
+      households.add(household); 
       expect(households.length, equals(++householdCount)); 
       households.remove(household); 
       expect(households.length, equals(--householdCount)); 
@@ -338,7 +395,11 @@ void testHouseholdCoreHouseholds(
       expect(households.length, equals(++householdCount)); 
       expect(reaction.reactedOnAdd, isTrue); 
  
-      // no attribute that is not id 
+      var setAttributeCommand = SetAttributeCommand( 
+        session, household, "name", 'home'); 
+      setAttributeCommand.doIt(); 
+      expect(reaction.reactedOnUpdate, isTrue); 
+      householdDomain.cancelCommandReaction(reaction); 
     }); 
  
   }); 

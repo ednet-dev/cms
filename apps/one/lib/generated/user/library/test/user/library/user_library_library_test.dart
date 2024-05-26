@@ -98,11 +98,22 @@ void testUserLibraryLibraries(
     }); 
  
     test("Find library by attribute", () { 
-      // no attribute that is not required 
+      var randomLibrary = libraryModel.libraries.random(); 
+      var library = 
+          libraries.firstWhereAttribute("name", randomLibrary.name); 
+      expect(library, isNotNull); 
+      expect(library.name, equals(randomLibrary.name)); 
     }); 
  
     test("Select libraries by attribute", () { 
-      // no attribute that is not required 
+      var randomLibrary = libraryModel.libraries.random(); 
+      var selectedLibraries = 
+          libraries.selectWhereAttribute("name", randomLibrary.name); 
+      expect(selectedLibraries.isEmpty, isFalse); 
+      selectedLibraries.forEach((se) => 
+          expect(se.name, equals(randomLibrary.name))); 
+ 
+      //selectedLibraries.display(title: "Select libraries by name"); 
     }); 
  
     test("Select libraries by required attribute", () { 
@@ -110,11 +121,40 @@ void testUserLibraryLibraries(
     }); 
  
     test("Select libraries by attribute, then add", () { 
-      // no attribute that is not id 
+      var randomLibrary = libraryModel.libraries.random(); 
+      var selectedLibraries = 
+          libraries.selectWhereAttribute("name", randomLibrary.name); 
+      expect(selectedLibraries.isEmpty, isFalse); 
+      expect(selectedLibraries.source?.isEmpty, isFalse); 
+      var librariesCount = libraries.length; 
+ 
+      var library = Library(libraries.concept); 
+      library.name = 'performance'; 
+      var added = selectedLibraries.add(library); 
+      expect(added, isTrue); 
+      expect(libraries.length, equals(++librariesCount)); 
+ 
+      //selectedLibraries.display(title: 
+      //  "Select libraries by attribute, then add"); 
+      //libraries.display(title: "All libraries"); 
     }); 
  
     test("Select libraries by attribute, then remove", () { 
-      // no attribute that is not id 
+      var randomLibrary = libraryModel.libraries.random(); 
+      var selectedLibraries = 
+          libraries.selectWhereAttribute("name", randomLibrary.name); 
+      expect(selectedLibraries.isEmpty, isFalse); 
+      expect(selectedLibraries.source?.isEmpty, isFalse); 
+      var librariesCount = libraries.length; 
+ 
+      var removed = selectedLibraries.remove(randomLibrary); 
+      expect(removed, isTrue); 
+      expect(libraries.length, equals(--librariesCount)); 
+ 
+      randomLibrary.display(prefix: "removed"); 
+      //selectedLibraries.display(title: 
+      //  "Select libraries by attribute, then remove"); 
+      //libraries.display(title: "All libraries"); 
     }); 
  
     test("Sort libraries", () { 
@@ -180,7 +220,12 @@ void testUserLibraryLibraries(
     }); 
  
     test("Update library non id attribute with failure", () { 
-      // no attribute that is not id 
+      var randomLibrary = libraryModel.libraries.random(); 
+      var afterUpdateEntity = randomLibrary.copy(); 
+      afterUpdateEntity.name = 'autobus'; 
+      expect(afterUpdateEntity.name, equals('autobus')); 
+      // libraries.update can only be used if oid, code or id is set. 
+      expect(() => libraries.update(randomLibrary, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
  
     test("Copy Equality", () { 
@@ -191,13 +236,15 @@ void testUserLibraryLibraries(
       expect(randomLibrary, equals(randomLibraryCopy)); 
       expect(randomLibrary.oid, equals(randomLibraryCopy.oid)); 
       expect(randomLibrary.code, equals(randomLibraryCopy.code)); 
+      expect(randomLibrary.name, equals(randomLibraryCopy.name)); 
  
     }); 
  
     test("library action undo and redo", () { 
       var libraryCount = libraries.length; 
       var library = Library(libraries.concept); 
-        libraries.add(library); 
+        library.name = 'economy'; 
+      libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
       expect(libraries.length, equals(--libraryCount)); 
@@ -216,7 +263,8 @@ void testUserLibraryLibraries(
     test("library session undo and redo", () { 
       var libraryCount = libraries.length; 
       var library = Library(libraries.concept); 
-        libraries.add(library); 
+        library.name = 'heating'; 
+      libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
       expect(libraries.length, equals(--libraryCount)); 
@@ -233,7 +281,15 @@ void testUserLibraryLibraries(
     }); 
  
     test("Library update undo and redo", () { 
-      // no attribute that is not id 
+      var library = libraryModel.libraries.random(); 
+      var action = SetAttributeCommand(session, library, "name", 'candy'); 
+      action.doIt(); 
+ 
+      session.past.undo(); 
+      expect(library.name, equals(action.before)); 
+ 
+      session.past.redo(); 
+      expect(library.name, equals(action.after)); 
     }); 
  
     test("Library action with multiple undos and redos", () { 
@@ -327,7 +383,8 @@ void testUserLibraryLibraries(
  
       userDomain.startCommandReaction(reaction); 
       var library = Library(libraries.concept); 
-        libraries.add(library); 
+        library.name = 'cardboard'; 
+      libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
       expect(libraries.length, equals(--libraryCount)); 
@@ -338,7 +395,11 @@ void testUserLibraryLibraries(
       expect(libraries.length, equals(++libraryCount)); 
       expect(reaction.reactedOnAdd, isTrue); 
  
-      // no attribute that is not id 
+      var setAttributeCommand = SetAttributeCommand( 
+        session, library, "name", 'privacy'); 
+      setAttributeCommand.doIt(); 
+      expect(reaction.reactedOnUpdate, isTrue); 
+      userDomain.cancelCommandReaction(reaction); 
     }); 
  
   }); 

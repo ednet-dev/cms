@@ -21,12 +21,15 @@ class CoreModel extends CoreEntries {
  
   void initHouseholds() { 
     var household1 = Household(households.concept); 
+    household1.name = 'effort'; 
     households.add(household1); 
  
     var household2 = Household(households.concept); 
+    household2.name = 'ticket'; 
     households.add(household2); 
  
     var household3 = Household(households.concept); 
+    household3.name = 'lifespan'; 
     households.add(household3); 
  
   } 

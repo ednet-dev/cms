@@ -98,11 +98,22 @@ void testHouseholdMemberMembers(
     }); 
  
     test("Find member by attribute", () { 
-      // no attribute that is not required 
+      var randomMember = memberModel.members.random(); 
+      var member = 
+          members.firstWhereAttribute("name", randomMember.name); 
+      expect(member, isNotNull); 
+      expect(member.name, equals(randomMember.name)); 
     }); 
  
     test("Select members by attribute", () { 
-      // no attribute that is not required 
+      var randomMember = memberModel.members.random(); 
+      var selectedMembers = 
+          members.selectWhereAttribute("name", randomMember.name); 
+      expect(selectedMembers.isEmpty, isFalse); 
+      selectedMembers.forEach((se) => 
+          expect(se.name, equals(randomMember.name))); 
+ 
+      //selectedMembers.display(title: "Select members by name"); 
     }); 
  
     test("Select members by required attribute", () { 
@@ -110,11 +121,40 @@ void testHouseholdMemberMembers(
     }); 
  
     test("Select members by attribute, then add", () { 
-      // no attribute that is not id 
+      var randomMember = memberModel.members.random(); 
+      var selectedMembers = 
+          members.selectWhereAttribute("name", randomMember.name); 
+      expect(selectedMembers.isEmpty, isFalse); 
+      expect(selectedMembers.source?.isEmpty, isFalse); 
+      var membersCount = members.length; 
+ 
+      var member = Member(members.concept); 
+      member.name = 'wave'; 
+      var added = selectedMembers.add(member); 
+      expect(added, isTrue); 
+      expect(members.length, equals(++membersCount)); 
+ 
+      //selectedMembers.display(title: 
+      //  "Select members by attribute, then add"); 
+      //members.display(title: "All members"); 
     }); 
  
     test("Select members by attribute, then remove", () { 
-      // no attribute that is not id 
+      var randomMember = memberModel.members.random(); 
+      var selectedMembers = 
+          members.selectWhereAttribute("name", randomMember.name); 
+      expect(selectedMembers.isEmpty, isFalse); 
+      expect(selectedMembers.source?.isEmpty, isFalse); 
+      var membersCount = members.length; 
+ 
+      var removed = selectedMembers.remove(randomMember); 
+      expect(removed, isTrue); 
+      expect(members.length, equals(--membersCount)); 
+ 
+      randomMember.display(prefix: "removed"); 
+      //selectedMembers.display(title: 
+      //  "Select members by attribute, then remove"); 
+      //members.display(title: "All members"); 
     }); 
  
     test("Sort members", () { 
@@ -180,7 +220,12 @@ void testHouseholdMemberMembers(
     }); 
  
     test("Update member non id attribute with failure", () { 
-      // no attribute that is not id 
+      var randomMember = memberModel.members.random(); 
+      var afterUpdateEntity = randomMember.copy(); 
+      afterUpdateEntity.name = 'bank'; 
+      expect(afterUpdateEntity.name, equals('bank')); 
+      // members.update can only be used if oid, code or id is set. 
+      expect(() => members.update(randomMember, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
  
     test("Copy Equality", () { 
@@ -191,13 +236,15 @@ void testHouseholdMemberMembers(
       expect(randomMember, equals(randomMemberCopy)); 
       expect(randomMember.oid, equals(randomMemberCopy.oid)); 
       expect(randomMember.code, equals(randomMemberCopy.code)); 
+      expect(randomMember.name, equals(randomMemberCopy.name)); 
  
     }); 
  
     test("member action undo and redo", () { 
       var memberCount = members.length; 
       var member = Member(members.concept); 
-        members.add(member); 
+        member.name = 'flower'; 
+      members.add(member); 
       expect(members.length, equals(++memberCount)); 
       members.remove(member); 
       expect(members.length, equals(--memberCount)); 
@@ -216,7 +263,8 @@ void testHouseholdMemberMembers(
     test("member session undo and redo", () { 
       var memberCount = members.length; 
       var member = Member(members.concept); 
-        members.add(member); 
+        member.name = 'election'; 
+      members.add(member); 
       expect(members.length, equals(++memberCount)); 
       members.remove(member); 
       expect(members.length, equals(--memberCount)); 
@@ -233,7 +281,15 @@ void testHouseholdMemberMembers(
     }); 
  
     test("Member update undo and redo", () { 
-      // no attribute that is not id 
+      var member = memberModel.members.random(); 
+      var action = SetAttributeCommand(session, member, "name", 'policeman'); 
+      action.doIt(); 
+ 
+      session.past.undo(); 
+      expect(member.name, equals(action.before)); 
+ 
+      session.past.redo(); 
+      expect(member.name, equals(action.after)); 
     }); 
  
     test("Member action with multiple undos and redos", () { 
@@ -327,7 +383,8 @@ void testHouseholdMemberMembers(
  
       householdDomain.startCommandReaction(reaction); 
       var member = Member(members.concept); 
-        members.add(member); 
+        member.name = 'photo'; 
+      members.add(member); 
       expect(members.length, equals(++memberCount)); 
       members.remove(member); 
       expect(members.length, equals(--memberCount)); 
@@ -338,7 +395,11 @@ void testHouseholdMemberMembers(
       expect(members.length, equals(++memberCount)); 
       expect(reaction.reactedOnAdd, isTrue); 
  
-      // no attribute that is not id 
+      var setAttributeCommand = SetAttributeCommand( 
+        session, member, "name", 'text'); 
+      setAttributeCommand.doIt(); 
+      expect(reaction.reactedOnUpdate, isTrue); 
+      householdDomain.cancelCommandReaction(reaction); 
     }); 
  
   }); 

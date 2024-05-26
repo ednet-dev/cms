@@ -8,6 +8,9 @@ abstract class LibraryGen extends Entity<Library> {
     this.concept = concept; 
   } 
  
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
+  
   Library newEntity() => Library(concept); 
   Libraries newEntities() => Libraries(concept); 
   

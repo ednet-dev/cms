@@ -8,6 +8,9 @@ abstract class MemberGen extends Entity<Member> {
     this.concept = concept; 
   } 
  
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
+  
   Member newEntity() => Member(concept); 
   Members newEntities() => Members(concept); 
   

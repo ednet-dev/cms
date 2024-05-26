@@ -56,45 +56,6 @@ class LibraryEntries extends ModelEntries {
     if (concept.code == "eBook") {
       return eBooks(concept);
     }
-    if (concept.code == "CD") {
-      return CDs(concept);
-    }
-    if (concept.code == "DVD") {
-      return DVDs(concept);
-    }
-    if (concept.code == "Video") {
-      return Videos(concept);
-    }
-    if (concept.code == "Music") {
-      return Musics(concept);
-    }
-    if (concept.code == "Movie") {
-      return Movies(concept);
-    }
-    if (concept.code == "TVShow") {
-      return TVShows(concept);
-    }
-    if (concept.code == "Image") {
-      return Images(concept);
-    }
-    if (concept.code == "Document") {
-      return Documents(concept);
-    }
-    if (concept.code == "File") {
-      return Files(concept);
-    }
-    if (concept.code == "Software") {
-      return Softwares(concept);
-    }
-    if (concept.code == "Game") {
-      return Games(concept);
-    }
-    if (concept.code == "Tool") {
-      return Tools(concept);
-    }
-    if (concept.code == "Equipment") {
-      return Equipments(concept);
-    }
     return null;
   }
 
@@ -139,45 +100,6 @@ class LibraryEntries extends ModelEntries {
     }
     if (concept.code == "eBook") {
       return eBook(concept);
-    }
-    if (concept.code == "CD") {
-      return CD(concept);
-    }
-    if (concept.code == "DVD") {
-      return DVD(concept);
-    }
-    if (concept.code == "Video") {
-      return Video(concept);
-    }
-    if (concept.code == "Music") {
-      return Music(concept);
-    }
-    if (concept.code == "Movie") {
-      return Movie(concept);
-    }
-    if (concept.code == "TVShow") {
-      return TVShow(concept);
-    }
-    if (concept.code == "Image") {
-      return Image(concept);
-    }
-    if (concept.code == "Document") {
-      return Document(concept);
-    }
-    if (concept.code == "File") {
-      return File(concept);
-    }
-    if (concept.code == "Software") {
-      return Software(concept);
-    }
-    if (concept.code == "Game") {
-      return Game(concept);
-    }
-    if (concept.code == "Tool") {
-      return Tool(concept);
-    }
-    if (concept.code == "Equipment") {
-      return Equipment(concept);
     }
     return null;
   }

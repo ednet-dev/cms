@@ -98,11 +98,22 @@ void testHouseholdProjectProjects(
     }); 
  
     test("Find project by attribute", () { 
-      // no attribute that is not required 
+      var randomProject = projectModel.projects.random(); 
+      var project = 
+          projects.firstWhereAttribute("name", randomProject.name); 
+      expect(project, isNotNull); 
+      expect(project.name, equals(randomProject.name)); 
     }); 
  
     test("Select projects by attribute", () { 
-      // no attribute that is not required 
+      var randomProject = projectModel.projects.random(); 
+      var selectedProjects = 
+          projects.selectWhereAttribute("name", randomProject.name); 
+      expect(selectedProjects.isEmpty, isFalse); 
+      selectedProjects.forEach((se) => 
+          expect(se.name, equals(randomProject.name))); 
+ 
+      //selectedProjects.display(title: "Select projects by name"); 
     }); 
  
     test("Select projects by required attribute", () { 
@@ -110,11 +121,40 @@ void testHouseholdProjectProjects(
     }); 
  
     test("Select projects by attribute, then add", () { 
-      // no attribute that is not id 
+      var randomProject = projectModel.projects.random(); 
+      var selectedProjects = 
+          projects.selectWhereAttribute("name", randomProject.name); 
+      expect(selectedProjects.isEmpty, isFalse); 
+      expect(selectedProjects.source?.isEmpty, isFalse); 
+      var projectsCount = projects.length; 
+ 
+      var project = Project(projects.concept); 
+      project.name = 'children'; 
+      var added = selectedProjects.add(project); 
+      expect(added, isTrue); 
+      expect(projects.length, equals(++projectsCount)); 
+ 
+      //selectedProjects.display(title: 
+      //  "Select projects by attribute, then add"); 
+      //projects.display(title: "All projects"); 
     }); 
  
     test("Select projects by attribute, then remove", () { 
-      // no attribute that is not id 
+      var randomProject = projectModel.projects.random(); 
+      var selectedProjects = 
+          projects.selectWhereAttribute("name", randomProject.name); 
+      expect(selectedProjects.isEmpty, isFalse); 
+      expect(selectedProjects.source?.isEmpty, isFalse); 
+      var projectsCount = projects.length; 
+ 
+      var removed = selectedProjects.remove(randomProject); 
+      expect(removed, isTrue); 
+      expect(projects.length, equals(--projectsCount)); 
+ 
+      randomProject.display(prefix: "removed"); 
+      //selectedProjects.display(title: 
+      //  "Select projects by attribute, then remove"); 
+      //projects.display(title: "All projects"); 
     }); 
  
     test("Sort projects", () { 
@@ -180,7 +220,12 @@ void testHouseholdProjectProjects(
     }); 
  
     test("Update project non id attribute with failure", () { 
-      // no attribute that is not id 
+      var randomProject = projectModel.projects.random(); 
+      var afterUpdateEntity = randomProject.copy(); 
+      afterUpdateEntity.name = 'employer'; 
+      expect(afterUpdateEntity.name, equals('employer')); 
+      // projects.update can only be used if oid, code or id is set. 
+      expect(() => projects.update(randomProject, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
  
     test("Copy Equality", () { 
@@ -191,13 +236,15 @@ void testHouseholdProjectProjects(
       expect(randomProject, equals(randomProjectCopy)); 
       expect(randomProject.oid, equals(randomProjectCopy.oid)); 
       expect(randomProject.code, equals(randomProjectCopy.code)); 
+      expect(randomProject.name, equals(randomProjectCopy.name)); 
  
     }); 
  
     test("project action undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        projects.add(project); 
+        project.name = 'children'; 
+      projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
       expect(projects.length, equals(--projectCount)); 
@@ -216,7 +263,8 @@ void testHouseholdProjectProjects(
     test("project session undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        projects.add(project); 
+        project.name = 'organization'; 
+      projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
       expect(projects.length, equals(--projectCount)); 
@@ -233,7 +281,15 @@ void testHouseholdProjectProjects(
     }); 
  
     test("Project update undo and redo", () { 
-      // no attribute that is not id 
+      var project = projectModel.projects.random(); 
+      var action = SetAttributeCommand(session, project, "name", 'winter'); 
+      action.doIt(); 
+ 
+      session.past.undo(); 
+      expect(project.name, equals(action.before)); 
+ 
+      session.past.redo(); 
+      expect(project.name, equals(action.after)); 
     }); 
  
     test("Project action with multiple undos and redos", () { 
@@ -327,7 +383,8 @@ void testHouseholdProjectProjects(
  
       householdDomain.startCommandReaction(reaction); 
       var project = Project(projects.concept); 
-        projects.add(project); 
+        project.name = 'discount'; 
+      projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
       expect(projects.length, equals(--projectCount)); 
@@ -338,7 +395,11 @@ void testHouseholdProjectProjects(
       expect(projects.length, equals(++projectCount)); 
       expect(reaction.reactedOnAdd, isTrue); 
  
-      // no attribute that is not id 
+      var setAttributeCommand = SetAttributeCommand( 
+        session, project, "name", 'consulting'); 
+      setAttributeCommand.doIt(); 
+      expect(reaction.reactedOnUpdate, isTrue); 
+      householdDomain.cancelCommandReaction(reaction); 
     }); 
  
   }); 

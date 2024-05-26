@@ -80,45 +80,6 @@ part "user/library/audio_books.dart";
 
 part "user/library/e_books.dart";
 
-
-part "user/library/c_ds.dart";
-
-
-part "user/library/d_v_ds.dart";
-
-
-part "user/library/videos.dart";
-
-
-part "user/library/musics.dart";
-
-
-part "user/library/movies.dart";
-
-
-part "user/library/t_v_shows.dart";
-
-
-part "user/library/images.dart";
-
-
-part "user/library/documents.dart";
-
-
-part "user/library/files.dart";
-
-
-part "user/library/softwares.dart";
-
-
-part "user/library/games.dart";
-
-
-part "user/library/tools.dart";
-
-
-part "user/library/equipments.dart";
-
     
 part "gen/user/library/libraries.dart";
 
@@ -154,45 +115,6 @@ part "gen/user/library/audio_books.dart";
 
 
 part "gen/user/library/e_books.dart";
-
-
-part "gen/user/library/c_ds.dart";
-
-
-part "gen/user/library/d_v_ds.dart";
-
-
-part "gen/user/library/videos.dart";
-
-
-part "gen/user/library/musics.dart";
-
-
-part "gen/user/library/movies.dart";
-
-
-part "gen/user/library/t_v_shows.dart";
-
-
-part "gen/user/library/images.dart";
-
-
-part "gen/user/library/documents.dart";
-
-
-part "gen/user/library/files.dart";
-
-
-part "gen/user/library/softwares.dart";
-
-
-part "gen/user/library/games.dart";
-
-
-part "gen/user/library/tools.dart";
-
-
-part "gen/user/library/equipments.dart";
 
     
   

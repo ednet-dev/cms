@@ -98,11 +98,22 @@ void testHouseholdFinancesFinances(
     }); 
  
     test("Find finance by attribute", () { 
-      // no attribute that is not required 
+      var randomFinance = financesModel.finances.random(); 
+      var finance = 
+          finances.firstWhereAttribute("name", randomFinance.name); 
+      expect(finance, isNotNull); 
+      expect(finance.name, equals(randomFinance.name)); 
     }); 
  
     test("Select finances by attribute", () { 
-      // no attribute that is not required 
+      var randomFinance = financesModel.finances.random(); 
+      var selectedFinances = 
+          finances.selectWhereAttribute("name", randomFinance.name); 
+      expect(selectedFinances.isEmpty, isFalse); 
+      selectedFinances.forEach((se) => 
+          expect(se.name, equals(randomFinance.name))); 
+ 
+      //selectedFinances.display(title: "Select finances by name"); 
     }); 
  
     test("Select finances by required attribute", () { 
@@ -110,11 +121,40 @@ void testHouseholdFinancesFinances(
     }); 
  
     test("Select finances by attribute, then add", () { 
-      // no attribute that is not id 
+      var randomFinance = financesModel.finances.random(); 
+      var selectedFinances = 
+          finances.selectWhereAttribute("name", randomFinance.name); 
+      expect(selectedFinances.isEmpty, isFalse); 
+      expect(selectedFinances.source?.isEmpty, isFalse); 
+      var financesCount = finances.length; 
+ 
+      var finance = Finance(finances.concept); 
+      finance.name = 'void'; 
+      var added = selectedFinances.add(finance); 
+      expect(added, isTrue); 
+      expect(finances.length, equals(++financesCount)); 
+ 
+      //selectedFinances.display(title: 
+      //  "Select finances by attribute, then add"); 
+      //finances.display(title: "All finances"); 
     }); 
  
     test("Select finances by attribute, then remove", () { 
-      // no attribute that is not id 
+      var randomFinance = financesModel.finances.random(); 
+      var selectedFinances = 
+          finances.selectWhereAttribute("name", randomFinance.name); 
+      expect(selectedFinances.isEmpty, isFalse); 
+      expect(selectedFinances.source?.isEmpty, isFalse); 
+      var financesCount = finances.length; 
+ 
+      var removed = selectedFinances.remove(randomFinance); 
+      expect(removed, isTrue); 
+      expect(finances.length, equals(--financesCount)); 
+ 
+      randomFinance.display(prefix: "removed"); 
+      //selectedFinances.display(title: 
+      //  "Select finances by attribute, then remove"); 
+      //finances.display(title: "All finances"); 
     }); 
  
     test("Sort finances", () { 
@@ -180,7 +220,12 @@ void testHouseholdFinancesFinances(
     }); 
  
     test("Update finance non id attribute with failure", () { 
-      // no attribute that is not id 
+      var randomFinance = financesModel.finances.random(); 
+      var afterUpdateEntity = randomFinance.copy(); 
+      afterUpdateEntity.name = 'left'; 
+      expect(afterUpdateEntity.name, equals('left')); 
+      // finances.update can only be used if oid, code or id is set. 
+      expect(() => finances.update(randomFinance, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
  
     test("Copy Equality", () { 
@@ -191,13 +236,15 @@ void testHouseholdFinancesFinances(
       expect(randomFinance, equals(randomFinanceCopy)); 
       expect(randomFinance.oid, equals(randomFinanceCopy.oid)); 
       expect(randomFinance.code, equals(randomFinanceCopy.code)); 
+      expect(randomFinance.name, equals(randomFinanceCopy.name)); 
  
     }); 
  
     test("finance action undo and redo", () { 
       var financeCount = finances.length; 
       var finance = Finance(finances.concept); 
-        finances.add(finance); 
+        finance.name = 'architecture'; 
+      finances.add(finance); 
       expect(finances.length, equals(++financeCount)); 
       finances.remove(finance); 
       expect(finances.length, equals(--financeCount)); 
@@ -216,7 +263,8 @@ void testHouseholdFinancesFinances(
     test("finance session undo and redo", () { 
       var financeCount = finances.length; 
       var finance = Finance(finances.concept); 
-        finances.add(finance); 
+        finance.name = 'explanation'; 
+      finances.add(finance); 
       expect(finances.length, equals(++financeCount)); 
       finances.remove(finance); 
       expect(finances.length, equals(--financeCount)); 
@@ -233,7 +281,15 @@ void testHouseholdFinancesFinances(
     }); 
  
     test("Finance update undo and redo", () { 
-      // no attribute that is not id 
+      var finance = financesModel.finances.random(); 
+      var action = SetAttributeCommand(session, finance, "name", 'fish'); 
+      action.doIt(); 
+ 
+      session.past.undo(); 
+      expect(finance.name, equals(action.before)); 
+ 
+      session.past.redo(); 
+      expect(finance.name, equals(action.after)); 
     }); 
  
     test("Finance action with multiple undos and redos", () { 
@@ -327,7 +383,8 @@ void testHouseholdFinancesFinances(
  
       householdDomain.startCommandReaction(reaction); 
       var finance = Finance(finances.concept); 
-        finances.add(finance); 
+        finance.name = 'dvd'; 
+      finances.add(finance); 
       expect(finances.length, equals(++financeCount)); 
       finances.remove(finance); 
       expect(finances.length, equals(--financeCount)); 
@@ -338,7 +395,11 @@ void testHouseholdFinancesFinances(
       expect(finances.length, equals(++financeCount)); 
       expect(reaction.reactedOnAdd, isTrue); 
  
-      // no attribute that is not id 
+      var setAttributeCommand = SetAttributeCommand( 
+        session, finance, "name", 'teaching'); 
+      setAttributeCommand.doIt(); 
+      expect(reaction.reactedOnUpdate, isTrue); 
+      householdDomain.cancelCommandReaction(reaction); 
     }); 
  
   }); 
