@@ -120,6 +120,11 @@ class ContentWatcherBuilder implements Builder {
 
   @override
   Future<void> build(BuildStep buildStep) async {
+    // continue if path is in /lib/generated
+    if (!buildStep.inputId.path.contains('requirements')) {
+      return;
+    }
+
     log.info('DEBUG: ${buildStep.inputId.path}');
     await requirementsProcessor.processRequirements(
         'lib', 'requirements', buildStep);
