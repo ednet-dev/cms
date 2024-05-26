@@ -129,7 +129,11 @@ void testHouseholdProjectProjects(
       var projectsCount = projects.length; 
  
       var project = Project(projects.concept); 
-      project.name = 'children'; 
+      project.name = 'vessel'; 
+      project.description = 'salary'; 
+      project.startDate = new DateTime.now(); 
+      project.endDate = new DateTime.now(); 
+      project.budget = 1.9145288562008034; 
       var added = selectedProjects.add(project); 
       expect(added, isTrue); 
       expect(projects.length, equals(++projectsCount)); 
@@ -222,8 +226,8 @@ void testHouseholdProjectProjects(
     test("Update project non id attribute with failure", () { 
       var randomProject = projectModel.projects.random(); 
       var afterUpdateEntity = randomProject.copy(); 
-      afterUpdateEntity.name = 'employer'; 
-      expect(afterUpdateEntity.name, equals('employer')); 
+      afterUpdateEntity.name = 'tag'; 
+      expect(afterUpdateEntity.name, equals('tag')); 
       // projects.update can only be used if oid, code or id is set. 
       expect(() => projects.update(randomProject, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -237,13 +241,21 @@ void testHouseholdProjectProjects(
       expect(randomProject.oid, equals(randomProjectCopy.oid)); 
       expect(randomProject.code, equals(randomProjectCopy.code)); 
       expect(randomProject.name, equals(randomProjectCopy.name)); 
+      expect(randomProject.description, equals(randomProjectCopy.description)); 
+      expect(randomProject.startDate, equals(randomProjectCopy.startDate)); 
+      expect(randomProject.endDate, equals(randomProjectCopy.endDate)); 
+      expect(randomProject.budget, equals(randomProjectCopy.budget)); 
  
     }); 
  
     test("project action undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        project.name = 'children'; 
+        project.name = 'cash'; 
+      project.description = 'cinema'; 
+      project.startDate = new DateTime.now(); 
+      project.endDate = new DateTime.now(); 
+      project.budget = 12.856822129580026; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -263,7 +275,11 @@ void testHouseholdProjectProjects(
     test("project session undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        project.name = 'organization'; 
+        project.name = 'salad'; 
+      project.description = 'advisor'; 
+      project.startDate = new DateTime.now(); 
+      project.endDate = new DateTime.now(); 
+      project.budget = 66.42270900110576; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -282,7 +298,7 @@ void testHouseholdProjectProjects(
  
     test("Project update undo and redo", () { 
       var project = projectModel.projects.random(); 
-      var action = SetAttributeCommand(session, project, "name", 'winter'); 
+      var action = SetAttributeCommand(session, project, "name", 'understanding'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +399,11 @@ void testHouseholdProjectProjects(
  
       householdDomain.startCommandReaction(reaction); 
       var project = Project(projects.concept); 
-        project.name = 'discount'; 
+        project.name = 'dog'; 
+      project.description = 'done'; 
+      project.startDate = new DateTime.now(); 
+      project.endDate = new DateTime.now(); 
+      project.budget = 59.61741193732139; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -396,7 +416,7 @@ void testHouseholdProjectProjects(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, project, "name", 'consulting'); 
+        session, project, "name", 'school'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       householdDomain.cancelCommandReaction(reaction); 

@@ -8,6 +8,42 @@ var householdProjectProjectEntry = r"""
  
 """; 
  
+var householdProjectTaskEntry = r""" 
+ 
+"""; 
+ 
+var householdProjectMilestoneEntry = r""" 
+ 
+"""; 
+ 
+var householdProjectResourceEntry = r""" 
+ 
+"""; 
+ 
+var householdProjectRoleEntry = r""" 
+ 
+"""; 
+ 
+var householdProjectTeamEntry = r""" 
+ 
+"""; 
+ 
+var householdProjectSkillEntry = r""" 
+ 
+"""; 
+ 
+var householdProjectTimeEntry = r""" 
+ 
+"""; 
+ 
+var householdProjectBudgetEntry = r""" 
+ 
+"""; 
+ 
+var householdProjectInitiativeEntry = r""" 
+ 
+"""; 
+ 
 var householdProjectModel = r""" 
  
 """; 

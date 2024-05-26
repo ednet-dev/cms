@@ -11,6 +11,24 @@ class ProjectEntries extends ModelEntries {
     var concept;
     concept = model.concepts.singleWhereCode("Project");
     entries["Project"] = Projects(concept);
+    concept = model.concepts.singleWhereCode("Task");
+    entries["Task"] = Tasks(concept);
+    concept = model.concepts.singleWhereCode("Milestone");
+    entries["Milestone"] = Milestones(concept);
+    concept = model.concepts.singleWhereCode("Resource");
+    entries["Resource"] = Resources(concept);
+    concept = model.concepts.singleWhereCode("Role");
+    entries["Role"] = Roles(concept);
+    concept = model.concepts.singleWhereCode("Team");
+    entries["Team"] = Teams(concept);
+    concept = model.concepts.singleWhereCode("Skill");
+    entries["Skill"] = Skills(concept);
+    concept = model.concepts.singleWhereCode("Time");
+    entries["Time"] = Times(concept);
+    concept = model.concepts.singleWhereCode("Budget");
+    entries["Budget"] = Budgets(concept);
+    concept = model.concepts.singleWhereCode("Initiative");
+    entries["Initiative"] = Initiatives(concept);
     return entries;
   }
 
@@ -92,4 +110,13 @@ class ProjectEntries extends ModelEntries {
     return null;
   }
   Projects get projects => getEntry("Project") as Projects;
+  Tasks get tasks => getEntry("Task") as Tasks;
+  Milestones get milestones => getEntry("Milestone") as Milestones;
+  Resources get resources => getEntry("Resource") as Resources;
+  Roles get roles => getEntry("Role") as Roles;
+  Teams get teams => getEntry("Team") as Teams;
+  Skills get skills => getEntry("Skill") as Skills;
+  Times get times => getEntry("Time") as Times;
+  Budgets get budgets => getEntry("Budget") as Budgets;
+  Initiatives get initiatives => getEntry("Initiative") as Initiatives;
 }

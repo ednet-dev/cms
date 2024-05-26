@@ -129,7 +129,7 @@ void testHouseholdCoreHouseholds(
       var householdsCount = households.length; 
  
       var household = Household(households.concept); 
-      household.name = 'beach'; 
+      household.name = 'chemist'; 
       var added = selectedHouseholds.add(household); 
       expect(added, isTrue); 
       expect(households.length, equals(++householdsCount)); 
@@ -222,8 +222,8 @@ void testHouseholdCoreHouseholds(
     test("Update household non id attribute with failure", () { 
       var randomHousehold = coreModel.households.random(); 
       var afterUpdateEntity = randomHousehold.copy(); 
-      afterUpdateEntity.name = 'pattern'; 
-      expect(afterUpdateEntity.name, equals('pattern')); 
+      afterUpdateEntity.name = 'family'; 
+      expect(afterUpdateEntity.name, equals('family')); 
       // households.update can only be used if oid, code or id is set. 
       expect(() => households.update(randomHousehold, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testHouseholdCoreHouseholds(
     test("household action undo and redo", () { 
       var householdCount = households.length; 
       var household = Household(households.concept); 
-        household.name = 'discount'; 
+        household.name = 'done'; 
       households.add(household); 
       expect(households.length, equals(++householdCount)); 
       households.remove(household); 
@@ -263,7 +263,7 @@ void testHouseholdCoreHouseholds(
     test("household session undo and redo", () { 
       var householdCount = households.length; 
       var household = Household(households.concept); 
-        household.name = 'bank'; 
+        household.name = 'taxi'; 
       households.add(household); 
       expect(households.length, equals(++householdCount)); 
       households.remove(household); 
@@ -282,7 +282,7 @@ void testHouseholdCoreHouseholds(
  
     test("Household update undo and redo", () { 
       var household = coreModel.households.random(); 
-      var action = SetAttributeCommand(session, household, "name", 'edition'); 
+      var action = SetAttributeCommand(session, household, "name", 'salad'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testHouseholdCoreHouseholds(
  
       householdDomain.startCommandReaction(reaction); 
       var household = Household(households.concept); 
-        household.name = 'secretary'; 
+        household.name = 'marriage'; 
       households.add(household); 
       expect(households.length, equals(++householdCount)); 
       households.remove(household); 
@@ -396,7 +396,7 @@ void testHouseholdCoreHouseholds(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, household, "name", 'home'); 
+        session, household, "name", 'restaurant'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       householdDomain.cancelCommandReaction(reaction); 

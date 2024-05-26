@@ -129,7 +129,7 @@ void testUserLibraryLibraries(
       var librariesCount = libraries.length; 
  
       var library = Library(libraries.concept); 
-      library.name = 'performance'; 
+      library.name = 'lake'; 
       var added = selectedLibraries.add(library); 
       expect(added, isTrue); 
       expect(libraries.length, equals(++librariesCount)); 
@@ -222,8 +222,8 @@ void testUserLibraryLibraries(
     test("Update library non id attribute with failure", () { 
       var randomLibrary = libraryModel.libraries.random(); 
       var afterUpdateEntity = randomLibrary.copy(); 
-      afterUpdateEntity.name = 'autobus'; 
-      expect(afterUpdateEntity.name, equals('autobus')); 
+      afterUpdateEntity.name = 'circle'; 
+      expect(afterUpdateEntity.name, equals('circle')); 
       // libraries.update can only be used if oid, code or id is set. 
       expect(() => libraries.update(randomLibrary, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testUserLibraryLibraries(
     test("library action undo and redo", () { 
       var libraryCount = libraries.length; 
       var library = Library(libraries.concept); 
-        library.name = 'economy'; 
+        library.name = 'undo'; 
       libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
@@ -263,7 +263,7 @@ void testUserLibraryLibraries(
     test("library session undo and redo", () { 
       var libraryCount = libraries.length; 
       var library = Library(libraries.concept); 
-        library.name = 'heating'; 
+        library.name = 'thing'; 
       libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
@@ -282,7 +282,7 @@ void testUserLibraryLibraries(
  
     test("Library update undo and redo", () { 
       var library = libraryModel.libraries.random(); 
-      var action = SetAttributeCommand(session, library, "name", 'candy'); 
+      var action = SetAttributeCommand(session, library, "name", 'hospital'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testUserLibraryLibraries(
  
       userDomain.startCommandReaction(reaction); 
       var library = Library(libraries.concept); 
-        library.name = 'cardboard'; 
+        library.name = 'body'; 
       libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
@@ -396,7 +396,7 @@ void testUserLibraryLibraries(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, library, "name", 'privacy'); 
+        session, library, "name", 'crisis'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       userDomain.cancelCommandReaction(reaction); 

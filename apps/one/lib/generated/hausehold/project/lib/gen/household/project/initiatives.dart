@@ -8,6 +8,15 @@ abstract class InitiativeGen extends Entity<Initiative> {
     this.concept = concept; 
   } 
  
+  Reference get projectReference => getReference("project") as Reference; 
+  void set projectReference(Reference reference) { setReference("project", reference); } 
+  
+  Project get project => getParent("project") as Project; 
+  void set project(Project p) { setParent("project", p); } 
+  
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
+  
   Initiative newEntity() => Initiative(concept); 
   Initiatives newEntities() => Initiatives(concept); 
   
