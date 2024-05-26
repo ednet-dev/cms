@@ -49,11 +49,8 @@ class CodeGenerator {
     required File yamlFile,
   }) async {
     try {
-      await EDNetCodeGenerator.generate(
-        sourceDir: sourceDir,
+      await EDNetCodeGenerator.generateFromYaml(
         targetDir: targetDir,
-        domainName: domainName,
-        models: models,
         yamlFile: yamlFile,
       );
     } catch (e) {
@@ -91,14 +88,16 @@ class RequirementsProcessor {
       await directoryManager.ensureDirectoryExists(newDirPath);
 
       final yamlContent = await yamlReader.readYamlFile(file.path);
-      yamlReader.parseYaml(yamlContent);
+      final yamlParsed = yamlReader.parseYaml(yamlContent);
 
+      var dirname = p.dirname(file.path);
+      var yamlFileLocal = File(file.path);
       await codeGenerator.generateCode(
-        sourceDir: p.dirname(file.path),
+        sourceDir: dirname,
         targetDir: newDirPath,
-        domainName: directoryName,
+        domainName: yamlParsed['domain'],
         models: yamlContent,
-        yamlFile: File(file.path),
+        yamlFile: yamlFileLocal,
       );
     }
   }

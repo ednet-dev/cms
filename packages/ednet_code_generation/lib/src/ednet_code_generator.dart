@@ -12,8 +12,20 @@ class EDNetCodeGenerator {
       dir: sourceDir,
       domain: domainName,
       model: models,
-      yamlFile: yamlFile,
     );
+
+    print('targetDir: $targetDir');
+    // Generate the project for the domain model
+    genProject('--genall', targetDir);
+
+    return 'Code generation completed!';
+  }
+
+  static Future<String> generateFromYaml({
+    required String targetDir,
+    required File yamlFile,
+  }) async {
+    createDomainModelFromLoadedYaml(yamlFile: yamlFile);
 
     print('targetDir: $targetDir');
     // Generate the project for the domain model
@@ -31,10 +43,12 @@ Directory genDir(String path) {
   final dir = Directory(path);
   if (dir.existsSync()) {
     print('Directory ${path} already exists.');
-  } else {
-    dir.createSync(recursive: true); // create all non-existent directories
-    print('Directory created: ${path}');
+    // deleting dir
+    dir.deleteSync(recursive: true);
   }
+  dir.createSync(recursive: true); // create all non-existent directories
+  print('Directory created: ${path}');
+
   return dir;
 }
 
@@ -92,17 +106,18 @@ void genReadme(File file) {
 void genPubspec(File file) {
   final text = '''
 name: ${domainName}_${modelName}
-version: 0.0.1
+version: 1.0.0
 
 description: ${domainName}_${modelName} application that uses ednet_core for its model.
 
-homepage: https://context.dev/
+homepage: https://ednet.one/
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
   
 dependencies:
   ednet_core: 
+    path: ../../../../../../packages/core
   yaml:
   # ednet_core_default_app:
   
@@ -145,24 +160,45 @@ void createDomainModel(String projectPath) {
   }
 }
 
+void createDomainModelFromLoadedYaml({
+  required File yamlFile,
+}) {
+  yamlString = yamlFile.readAsStringSync();
+  final yaml = loadYaml(yamlString!) as YamlMap;
+
+  domainName = yaml['domain'] as String;
+  modelName = yaml['model'] as String;
+
+  libraryName = '${domainName}_${modelName}';
+
+  if (yaml.length == 0) {
+    print('missing YAML of the ${domainName} model ${modelName}');
+  } else {
+    ednetCoreRepository = CoreRepository();
+    ednetCoreDomain = Domain(firstLetterToUpper(domainName));
+    ednetCoreModel = fromJsonToModel(
+        '', ednetCoreDomain, firstLetterToUpper(modelName), yaml);
+    ednetCoreRepository.domains.add(ednetCoreDomain);
+  }
+}
+
 void createDomainModelFromYaml({
   required String dir,
   required String domain,
   required String model,
-  File? yamlFile,
 }) {
   yamlString = loadYamlFile(
     domain: domain,
     model: model,
     dir: dir,
-    yamlFile: yamlFile,
   );
 
   final yaml = loadYaml(yamlString!) as YamlMap;
 
-  libraryName = libraryName.length > 0
-      ? libraryName
-      : '${yaml['domain']}_${yaml['model']}';
+  domain = yaml['domain'] as String;
+  model = yaml['model'] as String;
+
+  libraryName = libraryName.length > 0 ? libraryName : '${domain}_${model}';
 
   if (yaml.length == 0) {
     print('missing YAML of the ${domain} model ${model}');
@@ -274,9 +310,8 @@ String constructFilePath({
   required String domain,
   required String model,
   required String dir,
-  File? yamlFile,
 }) {
-  return yamlFile != null ? yamlFile.path : p.join(dir, domain, '$model.yaml');
+  return p.join(dir, domain, '$model.yaml');
 }
 
 String readFileContent(String filePath) {
@@ -292,14 +327,12 @@ String loadYamlFile({
   required String domain,
   required String model,
   required String dir,
-  File? yamlFile,
 }) {
-  final filePath = constructFilePath(
-      domain: domain, model: model, dir: dir, yamlFile: yamlFile);
+  final filePath = constructFilePath(domain: domain, model: model, dir: dir);
   return readFileContent(filePath);
 }
 
-void displayYaml({
+void displayY4aml({
   required String domain,
   required String model,
   required String dir,
