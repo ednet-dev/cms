@@ -1,4 +1,4 @@
-domain: 'household_management'
+domain: 'household'
 model: 'finances'
 concepts:
   - name: Finance

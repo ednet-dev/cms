@@ -13,6 +13,15 @@ class DirectoryManager {
       await Directory(path).create(recursive: true);
     }
   }
+
+  Future<void> runPubGet(String path) async {
+    final result =
+        await Process.run('dart', ['pub', 'get'], workingDirectory: path);
+    if (result.exitCode != 0) {
+      log.severe('Failed to run dart pub get in $path: ${result.stderr}');
+      throw Exception('dart pub get failed');
+    }
+  }
 }
 
 class YamlReader {
@@ -53,6 +62,7 @@ class CodeGenerator {
         targetDir: targetDir,
         yamlFile: yamlFile,
       );
+      // Execute dart pub get in the root folder of the generated lib
     } catch (e) {
       log.severe('Error generating code for file: $sourceDir, Error: $e');
       throw e;
@@ -99,6 +109,10 @@ class RequirementsProcessor {
         models: yamlContent,
         yamlFile: yamlFileLocal,
       );
+
+      //defer 1 second await directoryManager.runPubGet(newDirPath);
+      await Future.delayed(Duration(seconds: 1));
+      await directoryManager.runPubGet(newDirPath);
     }
   }
 }

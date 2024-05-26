@@ -1,4 +1,4 @@
-domain: 'household_management'
+domain: 'household'
 model: 'project'
 concepts:
   - name: Project
@@ -12,4 +12,4 @@ concepts:
   - name: Time
   - name: Budget
   - name: Initiative
-  
+

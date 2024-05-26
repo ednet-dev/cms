@@ -1,5 +1,5 @@
-domain: 'household_management'
-model: 'household'
+domain: 'household'
+model: 'core'
 concepts:
   - name: Household
     entry: true

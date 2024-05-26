@@ -3,7 +3,7 @@ targets:
     builders:
       ednet_cms|content_watcher_builder:
         generate_for:
-          - lib/domain/**/*.yaml
+          - lib/requirements/**/*.yaml
 
 builders:
   contentWatcherBuilder:

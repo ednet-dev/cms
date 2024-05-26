@@ -1,0 +1,5 @@
+domain: 'household'
+model: 'member'
+concepts:
+  - name: Member
+    entry: true
