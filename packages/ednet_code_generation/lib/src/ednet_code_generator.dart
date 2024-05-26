@@ -270,24 +270,33 @@ void renderYaml(String yamlString, String outputTemplate) {
   }
 }
 
+String constructFilePath({
+  required String domain,
+  required String model,
+  required String dir,
+  File? yamlFile,
+}) {
+  return yamlFile != null ? yamlFile.path : p.join(dir, domain, '$model.yaml');
+}
+
+String readFileContent(String filePath) {
+  try {
+    return File(filePath).readAsStringSync();
+  } catch (e) {
+    print('Error reading the file: $e');
+    return '';
+  }
+}
+
 String loadYamlFile({
   required String domain,
   required String model,
   required String dir,
   File? yamlFile,
 }) {
-  final yamlFilePath = p.join(dir, domain, '$model.yaml') as String;
-  final loadedYamlFile = yamlFile ?? File(yamlFilePath);
-
-  // wrap in try catch
-
-  try {
-    var result = loadedYamlFile.readAsStringSync();
-    return result;
-  } catch (e) {
-    print('Error reading the file: $e');
-    return '';
-  }
+  final filePath = constructFilePath(
+      domain: domain, model: model, dir: dir, yamlFile: yamlFile);
+  return readFileContent(filePath);
 }
 
 void displayYaml({

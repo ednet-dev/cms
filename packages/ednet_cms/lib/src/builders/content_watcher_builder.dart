@@ -6,11 +6,113 @@ import 'package:glob/glob.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
-class ContentWatcherBuilder implements Builder {
-  String rootDir = 'lib';
-  String contentDir = 'requirements';
+class DirectoryManager {
+  Future<void> ensureDirectoryExists(String path) async {
+    final dirExists = await Directory(path).exists();
+    if (!dirExists) {
+      await Directory(path).create(recursive: true);
+    }
+  }
+}
 
-  ContentWatcherBuilder();
+class YamlReader {
+  Future<String> readYamlFile(String path) async {
+    final yamlFile = File(path);
+    try {
+      return await yamlFile.readAsString();
+    } catch (e) {
+      log.severe('Error reading YAML file: $path, Error: $e');
+      throw e;
+    }
+  }
+
+  dynamic parseYaml(String yamlContent) {
+    try {
+      final yamlData = loadYaml(yamlContent);
+      if (yamlData is! YamlMap && yamlData is! YamlList) {
+        throw Exception('Invalid YAML structure');
+      }
+      return yamlData;
+    } catch (e) {
+      log.severe('Error parsing YAML content: $yamlContent, Error: $e');
+      throw e;
+    }
+  }
+}
+
+class CodeGenerator {
+  Future<void> generateCode({
+    required String sourceDir,
+    required String targetDir,
+    required String domainName,
+    required String models,
+    required File yamlFile,
+  }) async {
+    try {
+      await EDNetCodeGenerator.generate(
+        sourceDir: sourceDir,
+        targetDir: targetDir,
+        domainName: domainName,
+        models: models,
+        yamlFile: yamlFile,
+      );
+    } catch (e) {
+      log.severe('Error generating code for file: $sourceDir, Error: $e');
+      throw e;
+    }
+  }
+}
+
+class RequirementsProcessor {
+  final DirectoryManager directoryManager;
+  final YamlReader yamlReader;
+  final CodeGenerator codeGenerator;
+
+  RequirementsProcessor({
+    required this.directoryManager,
+    required this.yamlReader,
+    required this.codeGenerator,
+  });
+
+  Future<void> processRequirements(
+      String rootDir, String contentDir, BuildStep buildStep) async {
+    final requirementsDir = '$rootDir/$contentDir';
+    final generatedDir = '$rootDir/generated';
+    await directoryManager.ensureDirectoryExists(generatedDir);
+
+    final requirementsGlob = Glob('$requirementsDir/**.ednet.yaml');
+    final requirementsFiles =
+        await buildStep.findAssets(requirementsGlob).toList();
+
+    for (var file in requirementsFiles) {
+      final relativeFilePath = p.relative(file.path, from: requirementsDir);
+      final directoryName = relativeFilePath.replaceAll('.ednet.yaml', '');
+      final newDirPath = '$generatedDir/$directoryName';
+      await directoryManager.ensureDirectoryExists(newDirPath);
+
+      final yamlContent = await yamlReader.readYamlFile(file.path);
+      yamlReader.parseYaml(yamlContent);
+
+      await codeGenerator.generateCode(
+        sourceDir: p.dirname(file.path),
+        targetDir: newDirPath,
+        domainName: directoryName,
+        models: yamlContent,
+        yamlFile: File(file.path),
+      );
+    }
+  }
+}
+
+class ContentWatcherBuilder implements Builder {
+  final RequirementsProcessor requirementsProcessor;
+
+  ContentWatcherBuilder()
+      : requirementsProcessor = RequirementsProcessor(
+          directoryManager: DirectoryManager(),
+          yamlReader: YamlReader(),
+          codeGenerator: CodeGenerator(),
+        );
 
   @override
   Map<String, List<String>> get buildExtensions => {
@@ -20,104 +122,8 @@ class ContentWatcherBuilder implements Builder {
   @override
   Future<void> build(BuildStep buildStep) async {
     log.info('DEBUG: ${buildStep.inputId.path}');
-
-    // Get the path of the requirements directory
-    final requirementsDir = '$rootDir/$contentDir';
-
-    // Create the generated directory if it does not exist
-    final generatedDir = '$rootDir/generated';
-    final generatedDirExists = await Directory(generatedDir).exists();
-    if (!generatedDirExists) {
-      await Directory(generatedDir).create(recursive: true);
-    }
-
-    // Iterate over each file in the requirements directory
-    final requirementsGlob = Glob('$requirementsDir/**.ednet.yaml');
-    final requirementsFiles =
-        await buildStep.findAssets(requirementsGlob).toList();
-
-    for (var file in requirementsFiles) {
-      // Get the relative path of the file from the requirements directory
-      final relativeFilePath = p.relative(file.path, from: requirementsDir);
-
-      // Replace the .ednet.yaml suffix with an empty string to get the directory name
-      final directoryName = relativeFilePath.replaceAll('.ednet.yaml', '');
-
-      // Create a directory in the generated directory with the same relative path
-      final newDirPath = '$generatedDir/$directoryName';
-      final newDirExists = await Directory(newDirPath).exists();
-      if (!newDirExists) {
-        await Directory(newDirPath).create(recursive: true);
-      }
-
-      // Read the contents of the YAML file
-      final yamlFile = File(file.path);
-      String yamlContent;
-      try {
-        yamlContent = await yamlFile.readAsString();
-      } catch (e) {
-        log.severe('Error reading YAML file: $file.path, Error: $e');
-        continue;
-      }
-
-      // Parse YAML content to ensure it's valid
-      try {
-        final yamlData = loadYaml(yamlContent);
-        if (yamlData is! YamlMap) {
-          log.severe('Invalid YAML structure in file: $file.path');
-          continue;
-        }
-      } catch (e) {
-        log.severe('Error parsing YAML file: $file.path, Error: $e');
-        continue;
-      }
-
-      // Generate the code for the YAML file
-      try {
-        await EDNetCodeGenerator.generate(
-          sourceDir: p.dirname(file.path),
-          targetDir: newDirPath,
-          domainName: directoryName,
-          models: yamlContent,
-          yamlFile: yamlFile,
-        );
-      } catch (e) {
-        log.severe('Error generating code for file: $file.path, Error: $e');
-      }
-    }
-
-    return;
-  }
-
-  List<Map<String, dynamic>> parseYaml(String yamlContent) {
-    final yamlData = loadYaml(yamlContent);
-    List yamlList;
-
-    if (yamlData is YamlList) {
-      yamlList = yamlData;
-    } else if (yamlData is YamlMap) {
-      yamlList = [yamlData];
-    } else {
-      throw Exception('Unsupported YAML structure');
-    }
-
-    return yamlList.map((item) {
-      final entity = item as YamlMap;
-      final properties =
-          entity['properties'] != null ? entity['properties'] as List : [];
-      return {
-        'name': entity['name'],
-        'extends': entity['extends'],
-        'properties': properties.map((property) {
-          final prop = property as YamlMap;
-          return {
-            'name': prop['name'],
-            'type': prop['type'],
-            'relation': prop['relation'],
-          };
-        }).toList(),
-      };
-    }).toList();
+    await requirementsProcessor.processRequirements(
+        'lib', 'requirements', buildStep);
   }
 }
 
