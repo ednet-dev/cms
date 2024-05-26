@@ -1,7 +1,7 @@
-# ednet_one 
+# user_library 
 
 **Categories**: ednet_core, domain models. 
 
 ## Description: 
-ednet_one project uses 
+user_library project uses 
 [EDNetCore](https://github.com/context-dev/ednet_core) for the model.

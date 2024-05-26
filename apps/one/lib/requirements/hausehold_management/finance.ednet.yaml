@@ -5,11 +5,8 @@ concepts:
     entry: true
   - name: Bank
   - name: Account
-  - name: Transaction
   - name: CreditCard
   - name: Cash
   - name: Savings
   - name: Investment
   - name: Income
-  - name: Expense
-  - name: Asset

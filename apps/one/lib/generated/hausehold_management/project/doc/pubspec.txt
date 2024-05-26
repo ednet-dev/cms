@@ -1,8 +1,8 @@
-name: ednet_one
+name: household_management_project
 author: Your Name
 homepage: http://ondart.me/
 version: 0.0.1
-description: ednet_one application that uses ednet_core for its model.
+description: household_management_project application that uses ednet_core for its model.
 environment:
   sdk: '>=3.0.3 <4.0.0'
 dependencies:
