@@ -72,8 +72,8 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Map&lt;String, Object&gt; fromEntryToMap(String entryConceptCode) {
   Map&lt;String, Object&gt; entryMap = &lt;String, Object&gt;{};
-  entryMap[&#39;domain&#39;] = _model.domain.code!;
-  entryMap[&#39;model&#39;] = _model.code!;
+  entryMap[&#39;domain&#39;] = _model.domain.code;
+  entryMap[&#39;model&#39;] = _model.code;
   entryMap[&#39;entry&#39;] = entryConceptCode;
   Entities entryEntities = getEntry(entryConceptCode);
   entryMap[&#39;entities&#39;] = entryEntities.toJsonList();

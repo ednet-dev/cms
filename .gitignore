@@ -5,3 +5,4 @@ melos_ednetdev.iml
 .dart_tool/package_config.json
 package_config.json
 pubspec_overrides.yaml
+/.dart_tool/

@@ -1,17 +1,37 @@
 part of ednet_code_generation;
 
 class EDNetCodeGenerator {
-  static String generate({
+  static Future<String> generate({
     required String sourceDir,
-    required String targetDir,
-    required String domainName,
+    String targetDir = 'lib/generated/ednet',
+    String domainName = 'ednet',
     required String models,
-  }) {
-    print([sourceDir, targetDir, domainName, models]);
+    File? yamlFile,
+  }) async {
+    createDomainModelFromYaml(
+      dir: sourceDir,
+      domain: domainName,
+      model: models,
+    );
 
-    return '''
-      Hello world!
-    ''';
+    print('targetDir: $targetDir');
+    // Generate the project for the domain model
+    genProject('--genall', targetDir);
+
+    return 'Code generation completed!';
+  }
+
+  static Future<String> generateFromYaml({
+    required String targetDir,
+    required File yamlFile,
+  }) async {
+    createDomainModelFromLoadedYaml(yamlFile: yamlFile);
+
+    print('targetDir: $targetDir');
+    // Generate the project for the domain model
+    genProject('--genall', targetDir);
+
+    return 'Code generation completed!';
   }
 }
 
@@ -23,10 +43,12 @@ Directory genDir(String path) {
   final dir = Directory(path);
   if (dir.existsSync()) {
     print('Directory ${path} already exists.');
-  } else {
-    dir.createSync(recursive: true); // create all non-existent directories
-    print('Directory created: ${path}');
+    // deleting dir
+    dir.deleteSync(recursive: true);
   }
+  dir.createSync(recursive: true); // create all non-existent directories
+  print('Directory created: ${path}');
+
   return dir;
 }
 
@@ -84,17 +106,18 @@ void genReadme(File file) {
 void genPubspec(File file) {
   final text = '''
 name: ${domainName}_${modelName}
-version: 0.0.1
+version: 1.0.0
 
 description: ${domainName}_${modelName} application that uses ednet_core for its model.
 
-homepage: https://context.dev/
+homepage: https://ednet.one/
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
   
 dependencies:
   ednet_core: 
+    path: ../../../../../../packages/core
   yaml:
   # ednet_core_default_app:
   
@@ -137,6 +160,28 @@ void createDomainModel(String projectPath) {
   }
 }
 
+void createDomainModelFromLoadedYaml({
+  required File yamlFile,
+}) {
+  yamlString = yamlFile.readAsStringSync();
+  final yaml = loadYaml(yamlString!) as YamlMap;
+
+  domainName = yaml['domain'] as String;
+  modelName = yaml['model'] as String;
+
+  libraryName = '${domainName}_${modelName}';
+
+  if (yaml.length == 0) {
+    print('missing YAML of the ${domainName} model ${modelName}');
+  } else {
+    ednetCoreRepository = CoreRepository();
+    ednetCoreDomain = Domain(firstLetterToUpper(domainName));
+    ednetCoreModel = fromJsonToModel(
+        '', ednetCoreDomain, firstLetterToUpper(modelName), yaml);
+    ednetCoreRepository.domains.add(ednetCoreDomain);
+  }
+}
+
 void createDomainModelFromYaml({
   required String dir,
   required String domain,
@@ -150,7 +195,12 @@ void createDomainModelFromYaml({
 
   final yaml = loadYaml(yamlString!) as YamlMap;
 
-  if (yaml == null || yaml.length == 0) {
+  domain = yaml['domain'] as String;
+  model = yaml['model'] as String;
+
+  libraryName = libraryName.length > 0 ? libraryName : '${domain}_${model}';
+
+  if (yaml.length == 0) {
     print('missing YAML of the ${domain} model ${model}');
   } else {
     ednetCoreRepository = CoreRepository();
@@ -256,17 +306,33 @@ void renderYaml(String yamlString, String outputTemplate) {
   }
 }
 
+String constructFilePath({
+  required String domain,
+  required String model,
+  required String dir,
+}) {
+  return p.join(dir, domain, '$model.yaml');
+}
+
+String readFileContent(String filePath) {
+  try {
+    return File(filePath).readAsStringSync();
+  } catch (e) {
+    print('Error reading the file: $e');
+    return '';
+  }
+}
+
 String loadYamlFile({
   required String domain,
   required String model,
   required String dir,
 }) {
-  final yamlFilePath = p.join(dir, domain, model, '$model.yaml') as String;
-  final yamlFile = File(yamlFilePath);
-  return yamlFile.readAsStringSync();
+  final filePath = constructFilePath(domain: domain, model: model, dir: dir);
+  return readFileContent(filePath);
 }
 
-void displayYaml({
+void displayY4aml({
   required String domain,
   required String model,
   required String dir,

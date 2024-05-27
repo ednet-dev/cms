@@ -77,8 +77,8 @@
       (whenSet!.millisecondsSinceEpoch &lt;
           entity.whenSet!.millisecondsSinceEpoch)) {
     for (Attribute attribute in _concept!.nonIdentifierAttributes) {
-      var newValue = entity.getAttribute(attribute.code!);
-      var attributeSet = setAttribute(attribute.code!, newValue);
+      var newValue = entity.getAttribute(attribute.code);
+      var attributeSet = setAttribute(attribute.code, newValue);
       if (!attributeSet) {
         allSet = false;
       }

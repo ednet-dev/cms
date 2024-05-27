@@ -87,7 +87,7 @@ bool remove(E entity) {
       if (_entityList.remove(entity)) {
         _oidEntityMap.remove(entity.oid.timeStamp);
         if (entity.code != null) {
-          _codeEntityMap.remove(entity.code!);
+          _codeEntityMap.remove(entity.code);
         }
         if (entity._concept != null &amp;&amp; entity.id != null) {
           _idEntityMap.remove(entity.id.toString());
@@ -101,7 +101,7 @@ bool remove(E entity) {
           pre = false;
           post = false;
           if (!add(entity)) {
-            var msg = &#39;${entity.concept.code!} entity (${entity.oid}) &#39;
+            var msg = &#39;${entity.concept.code} entity (${entity.oid}) &#39;
                 &#39;was removed, post was not successful, add was not successful&#39;;
             throw AddException(msg);
           } else {
@@ -113,8 +113,8 @@ bool remove(E entity) {
       }
     } else {
       &#47;&#47; not propagated
-      var msg = &#39;${entity.concept.code!} entity (${entity.oid}) &#39;
-          &#39;was not removed - propagation to the source ${source!.concept.code!} &#39;
+      var msg = &#39;${entity.concept.code} entity (${entity.oid}) &#39;
+          &#39;was not removed - propagation to the source ${source!.concept.code} &#39;
           &#39;entities was not successful&#39;;
       throw RemoveException(msg);
     }

@@ -84,8 +84,3 @@ String loadYaml(
   return yamlFile.readAsStringSync();
 }
 
-// ok let me refine your knowledge about pub package "adaptive_layout: ^0.1.7", here excerpt form its documentation:"""
-//
-//
-//
-// """

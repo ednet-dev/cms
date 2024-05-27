@@ -72,7 +72,7 @@
   <pre class="language-dart"><code class="language-dart">Map&lt;String, Object&gt; toJsonMap() {
   var entriesMap = &lt;String, Object&gt;{};
   for (var entryConcept in _model.entryConcepts) {
-    entriesMap[entryConcept.code!] = fromEntryToMap(entryConcept.code!);
+    entriesMap[entryConcept.code] = fromEntryToMap(entryConcept.code);
   }
   return entriesMap;
 }</code></pre>

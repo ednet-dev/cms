@@ -74,26 +74,26 @@
   <pre class="language-dart"><code class="language-dart">bool validateIncrementAndRequired(entity, bool isValid) {
   for (Attribute a in _concept!.attributes.whereType&lt;Attribute&gt;()) {
     var shouldIncrement = a.increment != null;
-    var exists = entity.getAttribute(a.code!) != null;
+    var exists = entity.getAttribute(a.code) != null;
     var isRequired = a.required;
 
     if (shouldIncrement) {
       if (length == 0) {
-        entity.setAttribute(a.code!, a.increment!);
-      } else if (a.type?.code! == &#39;int&#39;) {
+        entity.setAttribute(a.code, a.increment!);
+      } else if (a.type?.code == &#39;int&#39;) {
         var lastEntity = last;
-        int incrementAttribute = lastEntity.getAttribute(a.code!) as int;
+        int incrementAttribute = lastEntity.getAttribute(a.code) as int;
         var attributeUpdate = a.update;
         a.update = true;
-        entity.setAttribute(a.code!, incrementAttribute + a.increment!);
+        entity.setAttribute(a.code, incrementAttribute + a.increment!);
         a.update = attributeUpdate;
       } else {
         throw TypeException(
-            &#39;${a.code!} attribute value cannot be incremented.&#39;);
+            &#39;${a.code} attribute value cannot be incremented.&#39;);
       }
     } else if (isRequired &amp;&amp; !exists) {
       const category = &#39;required&#39;;
-      final message = &#39;${entity.concept.code!}.${a.code!} attribute is null.&#39;;
+      final message = &#39;${entity.concept.code}.${a.code} attribute is null.&#39;;
       final exception = ValidationException(category, message);
 
       exceptions.add(exception);
@@ -101,9 +101,9 @@
     }
   }
   for (Parent p in _concept!.parents.whereType&lt;Parent&gt;()) {
-    if (p.required &amp;&amp; entity.getParent(p.code!) == null) {
+    if (p.required &amp;&amp; entity.getParent(p.code) == null) {
       const category = &#39;required&#39;;
-      final message = &#39;${entity.concept.code!}.${p.code!} parent is null.&#39;;
+      final message = &#39;${entity.concept.code}.${p.code} parent is null.&#39;;
       final exception = ValidationException(category, message);
 
       exceptions.add(exception);

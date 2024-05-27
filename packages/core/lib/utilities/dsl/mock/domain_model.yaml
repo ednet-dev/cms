@@ -125,29 +125,29 @@ EventManagement:
         published:
           name: EventSessionPublished
     EventParticipant
-      name: EventParticipant
-        attributes:
-          user:
-            type: User
-          event:
-            type: Event
-          role:
-            type: EventParticipantRole
-          status:
-            type: EventParticipantStatus
-          created_at:
-            type: Date
-          updated_at:
-            type: Date
-      commands:
-        create:
-          intention: Create a new event participant
-        update:
-          intention: Update an existing event participant
-        cancel:
-          intention: Cancel an existing event participant
-        publish:
-          intention: Publish an existing event participant
+    name: EventParticipant
+      attributes:
+        user:
+          type: User
+        event:
+          type: Event
+        role:
+          type: EventParticipantRole
+        status:
+          type: EventParticipantStatus
+        created_at:
+          type: Date
+        updated_at:
+          type: Date
+    commands:
+      create:
+        intention: Create a new event participant
+      update:
+        intention: Update an existing event participant
+      cancel:
+        intention: Cancel an existing event participant
+      publish:
+        intention: Publish an existing event participant
     events:
       created:
         name: EventParticipantCreated
@@ -420,57 +420,57 @@ PermissionManagement:
         deleted:
           name: PermissionDeleted
 
-EDNetOne
-  context:
+  EDNetOne
+context:
+  name: EDNetOne
+  depends_on: [ AuthManagement, UserManagement, EventManagement, EventParticipantManagement, RoleManagement, PermissionManagement ]
+aggregates:
+  EDNetOne:
     name: EDNetOne
-    depends_on: [ AuthManagement, UserManagement, EventManagement, EventParticipantManagement, RoleManagement, PermissionManagement ]
-  aggregates:
-    EDNetOne:
-      name: EDNetOne
-    attributes:
-      name:
-        type: String
-      description:
-        type: String
-      url:
-        type: String
-    commands:
-      create:
-        intention: Create a new EDNetOne
-      update:
-        intention: Update an existing EDNetOne
-      delete:
-        intention: Delete an existing EDNetOne
-    events:
-      EDNetOneCreated:
-        payload:
-          name:
-            type: String
-          description:
-            type: String
-          url:
-            type: String
-      EDNetOneUpdated:
-        payload:
-          name:
-            type: String
-          description:
-            type: String
-          url:
-            type: String
-      EDNetOneDeleted
-      BuyerPurchasedItem
-        payload:
-          buyer:
-            type: User
-          item:
-            type: Item
-          quantity:
-            type: Number
-          price:
-            type: Number
-          total:
-            type: Number
+  attributes:
+    name:
+      type: String
+    description:
+      type: String
+    url:
+      type: String
+  commands:
+    create:
+      intention: Create a new EDNetOne
+    update:
+      intention: Update an existing EDNetOne
+    delete:
+      intention: Delete an existing EDNetOne
+  events:
+    EDNetOneCreated:
+      payload:
+        name:
+          type: String
+        description:
+          type: String
+        url:
+          type: String
+    EDNetOneUpdated:
+      payload:
+        name:
+          type: String
+        description:
+          type: String
+        url:
+          type: String
+    EDNetOneDeleted
+    BuyerPurchasedItem
+    payload:
+      buyer:
+        type: User
+      item:
+        type: Item
+      quantity:
+        type: Number
+      price:
+        type: Number
+      total:
+        type: Number
 
 
 # please show me dart solution which can parse them and instantiate Domain Model so that developer can invoke command on aggregates and application services

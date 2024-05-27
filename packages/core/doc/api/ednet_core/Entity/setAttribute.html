@@ -86,13 +86,13 @@ bool setAttribute(String name, Object? value) {
 
     var attribute = _concept!.attributes.singleWhereCode(name);
     if (attribute == null) {
-      String msg = &#39;${_concept!.code!}.$name is not correct attribute name.&#39;;
+      String msg = &#39;${_concept!.code}.$name is not correct attribute name.&#39;;
       throw UpdateException(msg);
     }
     &#47;*
      * validation done in Entities.preAdd
     if (value == null &amp;&amp; attribute.minc != &#39;0&#39;) {
-      String msg = &#39;${_concept!.code!}.$name cannot be null.&#39;;
+      String msg = &#39;${_concept!.code}.$name cannot be null.&#39;;
       throw new UpdateException(msg);
     }
     *&#47;
@@ -106,7 +106,7 @@ bool setAttribute(String name, Object? value) {
       updated = true;
       _whenSet = DateTime.now();
     } else {
-      String msg = &#39;${_concept!.code!}.${attribute.code!} is not updatable.&#39;;
+      String msg = &#39;${_concept!.code}.${attribute.code} is not updatable.&#39;;
       throw UpdateException(msg);
     }
     if (postSetAttribute(name, value)) {
@@ -117,7 +117,7 @@ bool setAttribute(String name, Object? value) {
       pre = false;
       post = false;
       if (beforeValue == null || !setAttribute(name, beforeValue)) {
-        var msg = &#39;${_concept!.code!}.${attribute.code!} &#39;
+        var msg = &#39;${_concept!.code}.${attribute.code} &#39;
             &#39;was set to a new value, post was not successful, &#39;
             &#39;set to the before value was not successful&#39;;
         throw RemoveException(msg);

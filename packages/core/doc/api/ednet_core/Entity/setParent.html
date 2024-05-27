@@ -85,24 +85,24 @@ bool setParent(String name, entity) {
   Parent? parent = _concept!.parents.singleWhereCode(name) as Parent?;
   if (parent == null) {
     String msg =
-        &#39;${_concept!.code!}.$name is not correct parent entity name.&#39;;
+        &#39;${_concept!.code}.$name is not correct parent entity name.&#39;;
     throw UpdateException(msg);
   }
 
   if (entity != null &amp;&amp; getParent(name) == null) {
-    var reference = Reference(entity.oid.toString(), entity.concept.code!,
-        entity.concept.entryConcept.code!);
+    var reference = Reference(entity.oid.toString(), entity.concept.code,
+        entity.concept.entryConcept.code);
     _parentMap[name] = entity;
     _referenceMap[name] = reference;
     return true;
   } else if (entity != null &amp;&amp; parent.update) {
-    var reference = Reference(entity.oid.toString(), entity.concept.code!,
-        entity.concept.entryConcept.code!);
+    var reference = Reference(entity.oid.toString(), entity.concept.code,
+        entity.concept.entryConcept.code);
     _parentMap[name] = entity;
     _referenceMap[name] = reference;
     return true;
   } else {
-    String msg = &#39;${_concept!.code!}.${parent.code!} is not updatable.&#39;;
+    String msg = &#39;${_concept!.code}.${parent.code} is not updatable.&#39;;
     throw UpdateException(msg);
   }
 }</code></pre>

@@ -76,8 +76,8 @@
   <pre class="language-dart"><code class="language-dart">bool equalParents(Id id) {
   for (Parent p in _concept.parents.whereType&lt;Parent&gt;()) {
     if (p.identifier) {
-      final refA = _referenceMap[p.code!];
-      final refB = id.getReference(p.code!);
+      final refA = _referenceMap[p.code];
+      final refB = id.getReference(p.code);
       if (refA != refB) {
         return false;
       }

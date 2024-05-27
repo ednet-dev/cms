@@ -84,44 +84,44 @@ bool setStringToAttribute(String name, String string) {
   Attribute? attribute =
       _concept!.attributes.singleWhereCode(name) as Attribute?;
   if (attribute == null) {
-    String msg = &#39;${_concept!.code!}.$name is not correct attribute name.&#39;;
+    String msg = &#39;${_concept!.code}.$name is not correct attribute name.&#39;;
     throw UpdateException(msg);
   }
 
   if (string == &#39;null&#39;) {
     return setAttribute(name, null);
   }
-  if (attribute.type?.code! == &#39;DateTime&#39;) {
+  if (attribute.type?.code == &#39;DateTime&#39;) {
     try {
       return setAttribute(name, DateTime.parse(string));
     } on ArgumentError catch (e) {
-      throw TypeException(&#39;${_concept!.code!}.${attribute.code!} &#39;
+      throw TypeException(&#39;${_concept!.code}.${attribute.code} &#39;
           &#39;attribute value is not DateTime: $e&#39;);
     }
-  } else if (attribute.type?.code! == &#39;bool&#39;) {
+  } else if (attribute.type?.code == &#39;bool&#39;) {
     if (string == &#39;true&#39;) {
       return setAttribute(name, true);
     } else if (string == &#39;false&#39;) {
       return setAttribute(name, false);
     } else {
-      throw TypeException(&#39;${attribute.code!} &#39;
+      throw TypeException(&#39;${attribute.code} &#39;
           &#39;attribute value is not bool.&#39;);
     }
-  } else if (attribute.type?.code! == &#39;int&#39;) {
+  } else if (attribute.type?.code == &#39;int&#39;) {
     try {
       return setAttribute(name, int.parse(string));
     } on FormatException catch (e) {
-      throw TypeException(&#39;${attribute.code!} &#39;
+      throw TypeException(&#39;${attribute.code} &#39;
           &#39;attribute value is not int: $e&#39;);
     }
-  } else if (attribute.type?.code! == &#39;double&#39;) {
+  } else if (attribute.type?.code == &#39;double&#39;) {
     try {
       return setAttribute(name, double.parse(string));
     } on FormatException catch (e) {
-      throw TypeException(&#39;${attribute.code!} &#39;
+      throw TypeException(&#39;${attribute.code} &#39;
           &#39;attribute value is not double: $e&#39;);
     }
-  } else if (attribute.type?.code! == &#39;num&#39;) {
+  } else if (attribute.type?.code == &#39;num&#39;) {
     try {
       return setAttribute(name, int.parse(string));
     } on FormatException catch (e1) {
@@ -129,15 +129,15 @@ bool setStringToAttribute(String name, String string) {
         return setAttribute(name, double.parse(string));
       } on FormatException catch (e2) {
         throw TypeException(
-            &#39;${attribute.code!} attribute value is not num: $e1; $e2&#39;);
+            &#39;${attribute.code} attribute value is not num: $e1; $e2&#39;);
       }
     }
-  } else if (attribute.type?.code! == &#39;Uri&#39;) {
+  } else if (attribute.type?.code == &#39;Uri&#39;) {
     try {
       return setAttribute(name, Uri.parse(string));
     } on ArgumentError catch (e) {
       throw TypeException(
-          &#39;${attribute.code!} attribute value is not Uri: $e&#39;);
+          &#39;${attribute.code} attribute value is not Uri: $e&#39;);
     }
   } else {
     &#47;&#47; other

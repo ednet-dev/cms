@@ -11,12 +11,12 @@ class Id implements IId<Id> {
         _attributeMap = <String, Object?>{} {
     for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.identifier) {
-        _referenceMap.remove(p.code!);
+        _referenceMap.remove(p.code);
       }
     }
     for (Attribute a in concept.attributes.whereType<Attribute>()) {
       if (a.identifier) {
-        _attributeMap.remove(a.code!);
+        _attributeMap.remove(a.code);
       }
     }
   }
@@ -42,8 +42,8 @@ class Id implements IId<Id> {
   }
 
   void setParent(String code, Entity entity) {
-    Reference reference = Reference(entity.oid.toString(), entity.concept.code!,
-        entity.concept.entryConcept.code!);
+    Reference reference = Reference(entity.oid.toString(), entity.concept.code,
+        entity.concept.entryConcept.code);
     setReference(code, reference);
   }
 
@@ -64,8 +64,8 @@ class Id implements IId<Id> {
   bool equalParents(Id id) {
     for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.identifier) {
-        final refA = _referenceMap[p.code!];
-        final refB = id.getReference(p.code!);
+        final refA = _referenceMap[p.code];
+        final refB = id.getReference(p.code);
         if (refA != refB) {
           return false;
         }
@@ -78,7 +78,7 @@ class Id implements IId<Id> {
   bool equalAttributes(Id id) {
     for (Attribute a in concept.attributes.whereType<Attribute>()) {
       if (a.identifier) {
-        if (_attributeMap[a.code!] != id.getAttribute(a.code!)) {
+        if (_attributeMap[a.code] != id.getAttribute(a.code)) {
           return false;
         }
       }
@@ -174,8 +174,8 @@ class Id implements IId<Id> {
       var compare = 0;
       for (Parent p in _concept.parents.whereType<Parent>()) {
         if (p.identifier) {
-          final ref = _referenceMap[p.code!];
-          final ref2 = id.getReference(p.code!);
+          final ref = _referenceMap[p.code];
+          final ref2 = id.getReference(p.code);
           if (ref != null && ref2 != null) {
             compare = ref.oid.compareTo(ref2.oid);
 
@@ -187,7 +187,7 @@ class Id implements IId<Id> {
       }
       return compare;
     }
-    throw IdException('${_concept.code!}.id does not have parents.');
+    throw IdException('${_concept.code}.id does not have parents.');
   }
 
   /// Compares two ids based on attributes.
@@ -198,8 +198,8 @@ class Id implements IId<Id> {
     if (id.attributeLength > 0) {
       var compare = 0;
       for (Attribute a in concept.attributes.whereType<Attribute>()) {
-        var value1 = _attributeMap[a.code!];
-        var value2 = id.getAttribute(a.code!);
+        var value1 = _attributeMap[a.code];
+        var value2 = id.getAttribute(a.code);
         if (value1 != null && value2 != null) {
           compare = a.type!.compare(value1, value2);
           if (compare != 0) {
@@ -209,7 +209,7 @@ class Id implements IId<Id> {
       } // for
       return compare;
     }
-    throw IdException('${_concept.code!}.id does not have attributes.');
+    throw IdException('${_concept.code}.id does not have attributes.');
   }
 
   /// Compares two ids based on parent entity ids and attributes.
@@ -228,7 +228,7 @@ class Id implements IId<Id> {
       }
       return compare;
     }
-    throw IdException('${_concept.code!}.id is not defined.');
+    throw IdException('${_concept.code}.id is not defined.');
   }
 
   /// Drops the end of a string.

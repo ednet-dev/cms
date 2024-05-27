@@ -21,9 +21,12 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
   Model model = Model(domain, modelCode);
 
   for (var jsonConcept in jsonConcepts) {
-    String conceptCode = jsonConcept["name"];
+    String? conceptCode = jsonConcept["name"];
+    assert(conceptCode != null,
+    'Concept code is missing for the jsonConcept. For ${domain
+        .code}.$modelCode');
     bool conceptEntry = jsonConcept["entry"] ?? false;
-    Concept concept = Concept(model, conceptCode);
+    Concept concept = Concept(model, conceptCode!);
     concept.entry = conceptEntry;
 
     var items = jsonConcept["attributes"] ?? [];
@@ -39,7 +42,7 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
         } else if (itemCategory == 'required') {
           attribute.minc = '1';
         }
-        int itemSequence = item["sequence"];
+        int itemSequence = item["sequence"] as int? ?? 0;
         attribute.sequence = itemSequence;
         String itemInit = item["init"] ?? '';
         if (itemInit.trim() == '') {
@@ -75,11 +78,13 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
     Concept? concept2 = model.concepts.singleWhereCode(to);
     if (concept1 == null) {
       throw ConceptException(
-          'Line concept is missing for the $from jsonConcept. For ${domain.code}.$modelCode');
+          'Line concept is missing for the $from jsonConcept. For ${domain
+              .code}.$modelCode');
     }
     if (concept2 == null) {
       throw ConceptException(
-          'Line concept is missing for the $to jsonConcept. For ${domain.code}.$modelCode');
+          'Line concept is missing for the $to jsonConcept. For ${domain
+              .code}.$modelCode');
     }
 
     String fromToName = relation["fromToName"];

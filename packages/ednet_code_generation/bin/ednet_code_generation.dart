@@ -20,7 +20,7 @@ void main(List<String> args) {
         throw EDNetException('model cannot be the model name');
       }
       libraryName = '${domainName}_${modelName}';
-      displayYaml(domain: domainName, model: modelName, dir: args[1]);
+      // displayYaml(domain: domainName, model: modelName, dir: args[1]);
       createDomainModelFromYaml(
         dir: args[1],
         domain: domainName,

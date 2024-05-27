@@ -85,12 +85,12 @@ Id? get id {
   Id id = Id(_concept!);
   for (Parent p in _concept!.parents.whereType&lt;Parent&gt;()) {
     if (p.identifier) {
-      id.setReference(p.code!, _referenceMap[p.code!]);
+      id.setReference(p.code, _referenceMap[p.code]);
     }
   }
   for (Attribute a in _concept!.attributes.whereType&lt;Attribute&gt;()) {
     if (a.identifier) {
-      id.setAttribute(a.code!, _attributeMap[a.code!]);
+      id.setAttribute(a.code, _attributeMap[a.code]);
     }
   }
   if (id.length == 0) {

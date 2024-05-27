@@ -20,8 +20,8 @@ final String ednetLibraryAppTemplate = '''
 
 String genEDNetLibraryApp(Model model) {
   Domain domain = model.domain;
-  final String domainCodeLowerUnderscore = domain.code!.toLowerCase();
-  final String modelCodeLowerUnderscore = model.code!.toLowerCase();
+  final String domainCodeLowerUnderscore = domain.code.toLowerCase();
+  final String modelCodeLowerUnderscore = model.code.toLowerCase();
 
   return ednetLibraryAppTemplate.replaceAllMapped(RegExp('{{([A-Za-z]+)}}'),
       (match) {

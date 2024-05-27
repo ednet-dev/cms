@@ -84,13 +84,13 @@ if the result is greater than 0 then the first is greater than the second.</p>
   <pre class="language-dart"><code class="language-dart">@override
 int compareTo(entity) {
   if (code?.isNotEmpty ?? false) {
-    return _code!.compareTo(entity.code!);
+    return _code!.compareTo(entity.code);
   } else if (entity.id != null &amp;&amp; id != null) {
     return id!.compareTo(entity.id);
   } else if (concept.attributes.isNotEmpty) {
     return compareAttributes(entity);
   } else {
-    String msg = &#39;${_concept!.code!} concept does not have attributes.&#39;;
+    String msg = &#39;${_concept!.code} concept does not have attributes.&#39;;
     throw IdException(msg);
   }
 }</code></pre>

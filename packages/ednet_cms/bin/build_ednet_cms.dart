@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:ednet_code_generation/ednet_code_generation.dart';
 // import 'package:ednet_code_generation/ednet_code_generation.dart';
 
 // import 'package:ednet_cms/build_ednet_cms.dart';
@@ -37,12 +38,12 @@ void main(List<String> args) async {
   final rest = options.rest;
   final models = [model, ...rest];
 
-  final builder = EDNetCodeGenerator(
-    domainPath: inputPath,
-    outputPath: outputPath,
-    domainName: domainName,
-    models: models,
-  );
+  // final builder = EDNetCodeGenerator(
+  //   domainPath: inputPath,
+  //   outputPath: outputPath,
+  //   domainName: domainName,
+  //   models: models,
+  // );
 
   var name = options['domain'];
 
@@ -95,36 +96,36 @@ void main(List<String> args) async {
     final watcher = DirectoryWatcher(options['domain']);
     watcher.events.listen((event) {
       print('Changes detected. Rebuilding...');
-      builder.generateAll();
+      // builder.generateAll();
       print('Done.');
     });
   } else {
-    builder.generateAll();
+    // builder.generateAll();
   }
 }
 
-class EDNetCodeGenerator {
-  var domainPath;
-
-  var outputPath;
-
-  var domainName;
-
-  var models;
-
-  EDNetCodeGenerator({
-    this.domainPath,
-    this.outputPath,
-    this.domainName,
-    this.models,
-  });
-
-  get name => 'EDNet' + domainName;
-
-  void generateAll() {
-    print('I am generating $name domain model...');
-  }
-}
+// class EDNetCodeGenerator {
+//   var domainPath;
+//
+//   var outputPath;
+//
+//   var domainName;
+//
+//   var models;
+//
+//   EDNetCodeGenerator({
+//     this.domainPath,
+//     this.outputPath,
+//     this.domainName,
+//     this.models,
+//   });
+//
+//   get name => 'EDNet' + domainName;
+//
+//   void generateAll() {
+//     print('I am generating $name domain model...');
+//   }
+// }
 
 /// Builds a dartling domain model from YAML files.
 ///

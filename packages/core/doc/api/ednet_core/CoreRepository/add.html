@@ -71,7 +71,7 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void add(DomainModels domainModels) {
-  var domainCode = domainModels.domain.code!;
+  var domainCode = domainModels.domain.code;
   var models = getDomainModels(domainCode);
   if (models == null) {
     _domainModelsMap[domainCode] = domainModels;

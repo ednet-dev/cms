@@ -37,8 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 String genEDNetLibrary(Model model) {
   Domain domain = model.domain;
 
-  final String domainCodeLowerUnderscore = domain.code!.toLowerCase();
-  final String modelCodeLowerUnderscore = model.code!.toLowerCase();
+  final String domainCodeLowerUnderscore = domain.code.toLowerCase();
+  final String modelCodeLowerUnderscore = model.code.toLowerCase();
 
   final String genEDNetLibraryTemplate = '''
     // lib/{{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}}.dart

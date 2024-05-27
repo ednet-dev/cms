@@ -1,4 +1,4 @@
 library infrastructure;
 
-export 'infrastructure/repository.dart';
 export 'infrastructure/graph.dart';
+export 'infrastructure/repository.dart';

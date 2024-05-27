@@ -1,7 +1,9 @@
 part of ednet_core;
 
 bool randomBool() => Random().nextBool();
+
 double randomDouble(num max) => Random().nextDouble() * max;
+
 int randomInt(int max) => Random().nextInt(max);
 
 num randomNum(int max) {
@@ -24,8 +26,11 @@ randomSign() {
 }
 
 String randomWord() => randomListElement(wordList);
+
 String randomUri() => randomListElement(uriList);
+
 String randomEmail() => randomListElement(emailList);
+
 randomListElement(List list) => list[randomInt(list.length - 1)];
 
 var wordList = [

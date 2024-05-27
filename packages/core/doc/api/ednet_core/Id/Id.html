@@ -71,12 +71,12 @@
       _attributeMap = &lt;String, Object?&gt;{} {
   for (Parent p in _concept.parents.whereType&lt;Parent&gt;()) {
     if (p.identifier) {
-      _referenceMap.remove(p.code!);
+      _referenceMap.remove(p.code);
     }
   }
   for (Attribute a in concept.attributes.whereType&lt;Attribute&gt;()) {
     if (a.identifier) {
-      _attributeMap.remove(a.code!);
+      _attributeMap.remove(a.code);
     }
   }
 }</code></pre>

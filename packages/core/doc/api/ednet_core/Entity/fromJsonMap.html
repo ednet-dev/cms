@@ -137,10 +137,10 @@
     if (attribute.identifier) {
       var beforeUpdate = attribute.update;
       attribute.update = true;
-      setStringToAttribute(attribute.code!, entityMap[attribute.code!]);
+      setStringToAttribute(attribute.code, entityMap[attribute.code]);
       attribute.update = beforeUpdate;
-    } else if (attribute.code != null &amp;&amp; entityMap[attribute.code!] != null) {
-      setStringToAttribute(attribute.code!, entityMap[attribute.code!]);
+    } else if (attribute.code != null &amp;&amp; entityMap[attribute.code] != null) {
+      setStringToAttribute(attribute.code, entityMap[attribute.code]);
     }
   }
   _neighborsFromJsonMap(entityMap, internalParent);

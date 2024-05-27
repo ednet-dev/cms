@@ -1,0 +1,24 @@
+name: ednet_one
+description: "Integration app"
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.5.0-169.0.dev <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  bloc: ^8.1.4
+  flutter_bloc: ^8.1.5
+
+dev_dependencies:
+  ednet_cms:
+    path: ../../packages/ednet_cms
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.10
+  build_config: ^1.1.1
+flutter:
+  uses-material-design: true

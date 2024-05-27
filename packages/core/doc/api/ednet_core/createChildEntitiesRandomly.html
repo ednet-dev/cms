@@ -80,14 +80,14 @@
   for (var i = 1; i &lt; CHILD_ENTITIES_COUNT + 1; i++) {
     var childEntity = &#39;$parentVar$childCode$i&#39;;
     var childEntities = childCode;
-    sc = &#39;$sc    var $childEntity = ${childConcept.code!}(&#39;
+    sc = &#39;$sc    var $childEntity = ${childConcept.code}(&#39;
         &#39;$parentVar.$childCode.concept); \n&#39;;
     var attributesSet = setInitAttributesRandomly(childConcept, childEntity);
     sc = &#39;$sc$attributesSet&#39;;
 
     for (Parent externalRequiredParent
         in childConcept.externalRequiredParents) {
-      var parent = externalRequiredParent.code!;
+      var parent = externalRequiredParent.code;
       var parent4 = externalRequiredParent.codeFirstLetterUpper;
       var parents =
           externalRequiredParent.destinationConcept.codePluralFirstLetterLower;
@@ -101,10 +101,10 @@
 
     for (Parent externalRequiredParent
         in childConcept.externalRequiredParents) {
-&#47;&#47;var parent  = &#39;${externalRequiredParent.code!}&#39;;
+&#47;&#47;var parent  = &#39;${externalRequiredParent.code}&#39;;
       var parent8 = externalRequiredParent.codeFirstLetterUpper;
       sc = &#39;$sc    $childEntity$parent8.&#39;
-          &#39;${externalRequiredParent.opposite?.code!}.add(&#39;
+          &#39;${externalRequiredParent.opposite?.code}.add(&#39;
           &#39;$childEntity); \n&#39;;
     }
 
@@ -113,10 +113,10 @@
       if (child.internal &amp;&amp; !child.reflexive) {
 &#47;&#47; the old child becomes a new parent
         String newParentVar = childEntity;
-        String newParentCode = child.opposite!.code!;
+        String newParentCode = child.opposite!.code;
         Concept newParentConcept = childConcept;
 &#47;&#47; a new child is a grandchild of the old parent, or a child of a new parent
-        String newChildCode = child.code!;
+        String newChildCode = child.code;
         Concept newChildConcept = child.destinationConcept;
         var entitiesCreated = createChildEntitiesRandomly(newParentVar,
             newParentCode, newParentConcept, newChildCode, newChildConcept);

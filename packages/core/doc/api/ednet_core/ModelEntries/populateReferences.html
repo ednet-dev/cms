@@ -72,7 +72,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void populateReferences(entriesMap) {
   for (var entryConcept in _model.entryConcepts) {
-    var entryMap = entriesMap[entryConcept.code!];
+    var entryMap = entriesMap[entryConcept.code];
     populateEntryReferencesFromJsonMap(entryMap);
   }
 }</code></pre>

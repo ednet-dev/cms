@@ -89,8 +89,8 @@ Entities&lt;E&gt; selectWhereParent(String code, IEntity parent) {
   selectedEntities.propagateToSource = false;
   for (E entity in _entityList) {
     for (Parent p in _concept!.parents.whereType&lt;Parent&gt;()) {
-      if (p.code! == code) {
-        if (entity.getParent(p.code!) == parent) {
+      if (p.code == code) {
+        if (entity.getParent(p.code) == parent) {
           selectedEntities.add(entity);
         }
       }

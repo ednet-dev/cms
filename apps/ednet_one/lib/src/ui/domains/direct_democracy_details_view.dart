@@ -26,7 +26,8 @@ class _DirectDemocracyDetailsViewState
         title: const Text('Direct democracy domain model'),
       ),
       body: Center(
-        child: EntityWidget(entity: vote),
+        child: Text('Direct democracy domain model WIDGET PLACEHOLDER')
+        // child: EntityWidget(entity: vote),
       ),
     );
   }

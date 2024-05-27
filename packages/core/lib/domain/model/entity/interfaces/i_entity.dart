@@ -24,7 +24,7 @@ abstract class IEntity<E extends IEntity<E>> implements Comparable {
 
   bool postSetAttribute(String name, Object value);
 
-  String getStringFromAttribute(String name);
+  String? getStringFromAttribute(String name);
 
   String? getStringOrNullFromAttribute(String name);
 

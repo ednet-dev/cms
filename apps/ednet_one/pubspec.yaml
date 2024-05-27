@@ -10,7 +10,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.0.3 <4.0.0 <4.0.0"
+  sdk: "^3.5.0-152"
 
 dependencies:
   flutter:
@@ -18,7 +18,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  ednet_core: ^0.0.1+10
+  ednet_core:
+    path: ../../packages/core
   ednet_cms:
     path: ../../packages/ednet_cms
 dev_dependencies:
@@ -26,6 +27,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+  build_runner: ^2.4.10
 
 flutter:
   uses-material-design: true

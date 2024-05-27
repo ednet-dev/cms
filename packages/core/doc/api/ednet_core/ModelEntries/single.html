@@ -78,7 +78,7 @@
   <pre class="language-dart"><code class="language-dart">@override
 Entity? single(Oid oid) {
   for (Concept entryConcept in _model.entryConcepts) {
-    var entity = internalSingle(entryConcept.code!, oid);
+    var entity = internalSingle(entryConcept.code, oid);
     if (entity != null) return entity;
   }
   return null;

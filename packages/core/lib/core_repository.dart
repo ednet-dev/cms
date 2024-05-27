@@ -15,7 +15,7 @@ class CoreRepository {
       : _domainModelsMap = const <String, DomainModels>{};
 
   void add(DomainModels domainModels) {
-    var domainCode = domainModels.domain.code!;
+    var domainCode = domainModels.domain.code;
     var models = getDomainModels(domainCode);
     if (models == null) {
       _domainModelsMap[domainCode] = domainModels;
@@ -75,7 +75,6 @@ class CoreRepository {
           for (Concept entryConcept in model.entryConcepts) {
             subTitle(
                 '${domain.code}.${model.code}.${entryConcept.code} model tests');
-            print(genEDNetTest(this, model, entryConcept));
           }
         }
       }
@@ -85,7 +84,6 @@ class CoreRepository {
         for (Model model in domain.models) {
           subTitle('Code generation of the '
               '${domain.code}.${model.code} model');
-          print(genEDNetGen(model));
         }
       }
 
