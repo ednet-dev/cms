@@ -6,8 +6,11 @@ class StringAttributeWidget extends StatelessWidget {
   final String value;
   final Function(String) onChanged;
 
-  StringAttributeWidget(
-      {required this.label, required this.value, required this.onChanged});
+  StringAttributeWidget({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +28,11 @@ class IntAttributeWidget extends StatelessWidget {
   final int value;
   final Function(int) onChanged;
 
-  IntAttributeWidget(
-      {required this.label, required this.value, required this.onChanged});
+  IntAttributeWidget({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +51,11 @@ class DoubleAttributeWidget extends StatelessWidget {
   final double value;
   final Function(double) onChanged;
 
-  DoubleAttributeWidget(
-      {required this.label, required this.value, required this.onChanged});
+  DoubleAttributeWidget({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +74,11 @@ class BoolAttributeWidget extends StatelessWidget {
   final bool value;
   final Function(bool) onChanged;
 
-  BoolAttributeWidget(
-      {required this.label, required this.value, required this.onChanged});
+  BoolAttributeWidget({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +100,11 @@ class DateTimeAttributeWidget extends StatelessWidget {
   final DateTime value;
   final Function(DateTime) onChanged;
 
-  DateTimeAttributeWidget(
-      {required this.label, required this.value, required this.onChanged});
+  DateTimeAttributeWidget({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +128,12 @@ class DateTimeAttributeWidget extends StatelessWidget {
   }
 }
 
+String getTitle(Entity<dynamic> entity) {
+  var name = entity.getStringFromAttribute('name');
+  var title = entity.getStringFromAttribute('title');
+  return name != null ? name : title ?? 'Unnamed Entity';
+}
+
 class EntityDetailScreen extends StatelessWidget {
   final Entity entity;
 
@@ -122,8 +143,8 @@ class EntityDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title:
-              Text(entity.getStringFromAttribute('names') ?? 'Entity Detail')),
+        title: Text(entity.getStringFromAttribute('name') ?? 'Entity Detail'),
+      ),
       body: EntityWidget(entity: entity),
     );
   }
@@ -137,67 +158,41 @@ class EntityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var count = 0;
-    var count2 = 0;
-    var count3 = 0;
-
     return Card(
       child: Column(
         children: [
-          ...entity.concept.attributes.toList().map((entry) {
-            count += 1;
-            int index = count;
-            var attribute = entry;
+          ...entity.concept.attributes.map((attribute) {
             var value = entity.getAttribute(attribute.code);
-            return Align(
-              alignment: Alignment(index % 2 == 0 ? -1.0 : 1.0, 0.0),
-              child: _buildAttributeWidget(attribute, value),
+            return _buildAttributeWidget(attribute as Attribute, value);
+          }).toList(),
+          ...entity.concept.parents.map((parent) {
+            var parentEntity = entity.getParent(parent.code) as Entity;
+            return ListTile(
+              title: Text('${getTitle(parentEntity)}'),
+              onTap: () {
+                if (onEntitySelected != null) {
+                  onEntitySelected!(parentEntity);
+                }
+              },
             );
           }).toList(),
-          ...entity.concept.parents.toList().map((entry) {
-            count2 += 1;
-            int index = count2;
-            var parent = entry;
-            var parentEntity = entity.getParent(parent.code);
-            var parentName =
-                (parentEntity as Entity).getStringFromAttribute('name');
-            return Align(
-              alignment: Alignment(index % 2 == 0 ? -1.0 : 1.0, 0.0),
-              child: ListTile(
-                title: Text('Parent: ${parentName}'),
-                onTap: () {
-                  if (onEntitySelected != null) {
-                    onEntitySelected!(parentEntity);
-                  }
-                },
-              ),
-            );
-          }).toList(),
-          ...entity.concept.children.toList().map((entry) {
-            count3 += 1;
-            int index = count3;
-            var child = entry;
+          ...entity.concept.children.map((child) {
             var childEntities = entity.getChild(child.code) as Entities?;
             return childEntities != null
-                ? Align(
-                    alignment: Alignment(index % 2 == 0 ? -1.0 : 1.0, 0.0),
-                    child: ExpansionTile(
-                      title: Text('${child.codeFirstLetterUpper}',
-                          style: Theme.of(context).textTheme.labelMedium),
-                      children: childEntities.map((childEntity) {
-                        return ListTile(
-                          title: Text(
-                              childEntity.getStringFromAttribute('name') ??
-                                  'Unnamed Entity',
-                              style: Theme.of(context).textTheme.bodyMedium),
-                          onTap: () {
-                            if (onEntitySelected != null) {
-                              onEntitySelected!(childEntity as Entity);
-                            }
-                          },
-                        );
-                      }).toList(),
-                    ),
+                ? ExpansionTile(
+                    title: Text('${child.codeFirstLetterUpper}',
+                        style: Theme.of(context).textTheme.labelLarge),
+                    children: childEntities.map((childEntity) {
+                      return ListTile(
+                        title: Text(getTitle(childEntity),
+                            style: Theme.of(context).textTheme.labelMedium),
+                        onTap: () {
+                          if (onEntitySelected != null) {
+                            onEntitySelected!(childEntity as Entity);
+                          }
+                        },
+                      );
+                    }).toList(),
                   )
                 : Container();
           }).toList(),
@@ -284,8 +279,7 @@ class EntitiesWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             var entity = entities.elementAt(index);
             return ListTile(
-              title: Text(
-                  entity.getStringFromAttribute('name') ?? 'Unnamed Entity'),
+              title: Text(getTitle(entity)),
               onTap: () {
                 if (onEntitySelected != null) {
                   onEntitySelected!(entity as Entity);

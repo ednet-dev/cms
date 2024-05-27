@@ -3,10 +3,11 @@
 // ednet cms
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/generated/hausehold/project/lib/household_project.dart';
+import 'package:ednet_one/generated/user/library/lib/user_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../generated/hausehold/project/lib/household_project.dart';
 import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
@@ -24,15 +25,31 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var repository = HouseholdProjectRepo();
+    var householdProjectRepo = HouseholdProjectRepo();
+    // var householdFinancesRepo = HouseholdFinancesRepo();
+    // var householdMemberRepo = HouseholdMemberRepo();
+    var userLibraryRepo = UserLibraryRepo();
+
     HouseholdDomain householdDomain =
-        repository.getDomainModels("Household") as HouseholdDomain;
+        householdProjectRepo.getDomainModels("Household") as HouseholdDomain;
+    UserDomain userDomain =
+        userLibraryRepo.getDomainModels("User") as UserDomain;
+
     ProjectModel projectModel =
         householdDomain.getModelEntries("Project") as ProjectModel;
 
-    projectModel.init();
-    var projects = projectModel.projects;
+    LibraryModel libraryModel =
+        userDomain.getModelEntries("Library") as LibraryModel;
 
+    projectModel.init();
+    libraryModel.init();
+
+    var domains = Domains()
+      ..add(householdDomain.domain)
+      ..add(userDomain.domain);
+
+    var projects = projectModel.projects;
+    // var allRepos = OneCoreRepository();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -57,7 +74,32 @@ class MyHomePage extends StatelessWidget {
                 model: projectModel.model,
                 domain: householdDomain.domain,
               ),
-              rightSidebar: const RightSidebarWidget(),
+              rightSidebar: RightSidebarWidget(
+                domains: domains,
+                // domains: allRepos.domains,
+                onDomainSelected: (domain) {
+                  // Handle domain selection, navigate to DomainDetailScreen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DomainDetailScreen(domain: domain),
+                    ),
+                  );
+                },
+                onModelSelected: (model) {
+                  // Handle model selection, navigate to ModelDetailScreen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ModelDetailScreen(
+                        domain: model.domain,
+                        model: model,
+                        path: [model.domain.code, model.code],
+                      ),
+                    ),
+                  );
+                },
+              ),
               mainContent: MainContentWidget(
                 entity: state.selectedEntity ?? projects.first,
                 onEntitySelected: (entity) {
@@ -261,3 +303,84 @@ class ModelsWidget extends StatelessWidget {
     );
   }
 }
+
+// class MyHomePage extends StatelessWidget {
+//   const MyHomePage({super.key, required this.title});
+//
+//   final String title;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     var repository = CoreRepository();
+//     var domains = repository.domains;
+//
+//     var householdDomain = domains.singleWhereCode("Household") as HouseholdDomain;
+//     var projectModel = householdDomain.getModelEntries("Project") as ProjectModel;
+//     projectModel.init();
+//     var projects = projectModel.projects;
+//
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+//         title: Text(title),
+//       ),
+//       body: BlocProvider(
+//         create: (context) => LayoutBloc(),
+//         child: BlocBuilder<LayoutBloc, LayoutState>(
+//           builder: (context, state) {
+//             return LayoutTemplate(
+//               header: HeaderWidget(
+//                   path: [],
+//                   onPathSegmentTapped: (index) {
+//                     // Handle Home path tap, if needed
+//                   }
+//               ),
+//               leftSidebar: LeftSidebarWidget(
+//                 items: projects,
+//                 onEntitySelected: (entity) {
+//                   BlocProvider.of<LayoutBloc>(context)
+//                       .add(SelectEntityEvent(entity: entity));
+//                 },
+//                 model: projectModel.model,
+//                 domain: householdDomain.domain,
+//               ),
+//               rightSidebar: RightSidebarWidget(
+//                 domains: domains,
+//                 onDomainSelected: (domain) {
+//                   // Handle domain selection, navigate to DomainDetailScreen
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (context) => DomainDetailScreen(domain: domain),
+//                     ),
+//                   );
+//                 },
+//                 onModelSelected: (model) {
+//                   // Handle model selection, navigate to ModelDetailScreen
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (context) => ModelDetailScreen(
+//                         domain: model.domain,
+//                         model: model,
+//                         path: [model.domain.code, model.code],
+//                       ),
+//                     ),
+//                   );
+//                 },
+//               ),
+//               mainContent: MainContentWidget(
+//                 entity: state.selectedEntity ?? projects.first,
+//                 onEntitySelected: (entity) {
+//                   BlocProvider.of<LayoutBloc>(context)
+//                       .add(SelectEntityEvent(entity: entity));
+//                 },
+//               ),
+//               footer: const FooterWidget(),
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }

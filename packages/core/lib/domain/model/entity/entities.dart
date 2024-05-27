@@ -14,8 +14,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   @override
   Entities<E>? source;
 
-  String minc = '0';
-  String maxc = 'N';
+  String minC = '0';
+  String maxC = 'N';
   bool pre = false;
   bool post = false;
   bool propagateToSource = false;
@@ -627,13 +627,13 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   bool validateCardinality(bool isValid) {
-    if (maxc != 'N') {
+    if (maxC != 'N') {
       int maxInt;
       try {
-        maxInt = int.parse(maxc);
+        maxInt = int.parse(maxC);
         if (length == maxInt) {
           const category = 'max cardinality';
-          final message = '${_concept!.code}.max is $maxc.';
+          final message = '${_concept!.code}.max is $maxC.';
           var exception = ValidationException(category, message);
 
           exceptions.add(exception);
@@ -659,7 +659,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         _entityList.add(entity);
         _oidEntityMap[entity.oid.timeStamp] = entity;
         _codeEntityMap[entity.code] = entity;
-              if (entity.id != null) {
+        if (entity.id != null) {
           _idEntityMap[entity.id.toString()] = entity;
         }
         if (postAdd(entity)) {
@@ -733,13 +733,13 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     bool result = true;
 
     // min validation
-    if (minc != '0') {
+    if (minC != '0') {
       int minInt;
       try {
-        minInt = int.parse(minc);
+        minInt = int.parse(minC);
         if (length == minInt) {
           const category = 'min';
-          final message = '${_concept!.code}.min is $minc.';
+          final message = '${_concept!.code}.min is $minC.';
           ValidationException exception =
               ValidationException(category, message);
 

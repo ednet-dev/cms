@@ -84,7 +84,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
             _attributeMap[a.code] = double.parse(a.init);
           } on FormatException catch (e2) {
             throw TypeException(
-                '${a.code} attribute init (default) value is not num: $e1; $e2');
+                '${a
+                    .code} attribute init (default) value is not num: $e1; $e2');
           }
         }
       } else if (a.type?.code == 'Uri') {
@@ -299,7 +300,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
-  String getStringFromAttribute(String name) => _attributeMap[name].toString();
+  String? getStringFromAttribute(String name) => _attributeMap[name].toString();
 
   @override
   String? getStringOrNullFromAttribute(String name) =>
@@ -311,7 +312,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       throw new ConceptException('Entity concept is not defined.');
     }
     Attribute? attribute =
-        _concept!.attributes.singleWhereCode(name) as Attribute?;
+    _concept!.attributes.singleWhereCode(name) as Attribute?;
     if (attribute == null) {
       String msg = '${_concept!.code}.$name is not correct attribute name.';
       throw UpdateException(msg);
@@ -593,7 +594,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     } else if (concept.attributes.isNotEmpty) {
       return compareAttributes(entity);
     } else {
-      String msg = '${_concept!.code} concept does not have attributes.';
+      var msg = '${_concept!.code} concept does not have attributes.';
       throw IdException(msg);
     }
   }
@@ -619,7 +620,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   /// Returns a string that represents this entity by using oid and code.
   @override
-  String toString() {
+  toString() {
     if (_code == null) {
       return '{${_concept!.code}: {oid:${_oid.toString()}}}';
     } else {
@@ -632,11 +633,10 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   /// Displays (prints) an entity with its attributes, parents and children.
-  void display(
-      {String prefix = '',
-      bool withOid = true,
-      bool withChildren = true,
-      bool withInternalChildren = true}) {
+  void display({String prefix = '',
+    bool withOid = true,
+    bool withChildren = true,
+    bool withInternalChildren = true}) {
     if (_concept == null) {
       throw new ConceptException('Entity concept is not defined.');
     }
@@ -734,7 +734,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     entityMap['whenRemoved'] = _whenRemoved.toString();
 
     for (var k in _attributeMap.keys) {
-      entityMap[k] = getStringFromAttribute(k);
+      entityMap[k] = getStringFromAttribute(k) as Object;
     }
 
     for (var k in _internalChildMap.keys) {
@@ -848,7 +848,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
             parentOidString != null &&
             entryConceptCode != null) {
           Reference reference =
-              Reference(parentOidString, parentConceptCode, entryConceptCode);
+          Reference(parentOidString, parentConceptCode, entryConceptCode);
           Oid parentOid = reference.oid;
           setReference(parent.code, reference);
           if (parent.internal) {
