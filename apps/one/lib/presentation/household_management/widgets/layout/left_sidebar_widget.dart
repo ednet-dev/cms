@@ -4,12 +4,18 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 // left_sidebar_widget.dart
 
-class LeftSidebarWidget<E extends Entity<E>> extends StatelessWidget {
-  final Entities<E> items;
+class LeftSidebarWidget extends StatelessWidget {
+  final Entities items;
   final void Function(Entity entity)? onEntitySelected;
+  final Domain domain;
+  final Model model;
 
   const LeftSidebarWidget(
-      {super.key, required this.items, this.onEntitySelected});
+      {super.key,
+      required this.items,
+      this.onEntitySelected,
+      required this.domain,
+      required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +23,11 @@ class LeftSidebarWidget<E extends Entity<E>> extends StatelessWidget {
       width: 200,
       color: Colors.green,
       child: Center(
-        child: EntitiesWidget<E>(
+        child: EntitiesWidget(
           entities: this.items,
           onEntitySelected: onEntitySelected,
+          domain: this.domain,
+          model: model,
         ),
       ),
     );

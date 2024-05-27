@@ -3,8 +3,8 @@ import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
-class MainContentWidget<E extends Entity<E>> extends StatelessWidget {
-  final E entity;
+class MainContentWidget extends StatelessWidget {
+  final Entity entity;
   final void Function(Entity entity)? onEntitySelected;
 
   const MainContentWidget(
