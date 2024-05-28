@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 part of ednet_cms;
 
 // Widget for String attribute
@@ -20,9 +18,7 @@ class StringAttributeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme
-            .of(context)
-            .inputDecorationTheme),
+            .applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value),
         onChanged: onChanged,
       ),
@@ -48,9 +44,7 @@ class IntAttributeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme
-            .of(context)
-            .inputDecorationTheme),
+            .applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value.toString()),
         keyboardType: TextInputType.number,
         onChanged: (text) => onChanged(int.tryParse(text) ?? 0),
@@ -77,11 +71,9 @@ class DoubleAttributeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme
-            .of(context)
-            .inputDecorationTheme),
+            .applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value.toString()),
-        keyboardType: TextInputType.number,
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
         onChanged: (text) => onChanged(double.tryParse(text) ?? 0.0),
       ),
     );
@@ -107,17 +99,11 @@ class BoolAttributeWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: Theme
-              .of(context)
-              .textTheme
-              .bodyLarge),
+          Text(label, style: Theme.of(context).textTheme.bodyLarge),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Theme
-                .of(context)
-                .colorScheme
-                .secondary,
+            activeColor: Theme.of(context).colorScheme.secondary,
           ),
         ],
       ),
@@ -144,10 +130,7 @@ class DateTimeAttributeWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: Theme
-              .of(context)
-              .textTheme
-              .bodyLarge),
+          Text(label, style: Theme.of(context).textTheme.bodyLarge),
           TextButton(
             onPressed: () async {
               DateTime? picked = await showDatePicker(
@@ -159,10 +142,7 @@ class DateTimeAttributeWidget extends StatelessWidget {
               if (picked != null && picked != value) onChanged(picked);
             },
             child: Text(value.toLocal().toString().split(' ')[0],
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyLarge),
+                style: Theme.of(context).textTheme.bodyLarge),
           ),
         ],
       ),
@@ -229,26 +209,20 @@ class EntityWidget extends StatelessWidget {
               var childEntities = entity.getChild(child.code) as Entities?;
               return childEntities != null
                   ? ExpansionTile(
-                title: Text(child.codeFirstLetterUpper,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .labelLarge),
-                children: childEntities.map((childEntity) {
-                  return ListTile(
-                    title: Text(getTitle(childEntity),
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .labelMedium),
-                    onTap: () {
-                      if (onEntitySelected != null) {
-                        onEntitySelected!(childEntity as Entity);
-                      }
-                    },
-                  );
-                }).toList(),
-              )
+                      title: Text(child.codeFirstLetterUpper,
+                          style: Theme.of(context).textTheme.labelLarge),
+                      children: childEntities.map((childEntity) {
+                        return ListTile(
+                          title: Text(getTitle(childEntity),
+                              style: Theme.of(context).textTheme.labelMedium),
+                          onTap: () {
+                            if (onEntitySelected != null) {
+                              onEntitySelected!(childEntity as Entity);
+                            }
+                          },
+                        );
+                      }).toList(),
+                    )
                   : Container();
             }).toList(),
           ],
@@ -257,8 +231,8 @@ class EntityWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAttributeWidget(Attribute attribute, dynamic value,
-      BuildContext context) {
+  Widget _buildAttributeWidget(
+      Attribute attribute, dynamic value, BuildContext context) {
     switch (attribute.type?.code) {
       case 'String':
         return StringAttributeWidget(
