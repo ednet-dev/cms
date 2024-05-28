@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 part of ednet_cms;
 
 // Widget for String attribute
@@ -14,16 +16,19 @@ class StringAttributeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(labelText: label)
-          .applyDefaults(Theme.of(context).inputDecorationTheme),
-      controller: TextEditingController(text: value),
-      onChanged: onChanged,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        decoration: InputDecoration(labelText: label)
+            .applyDefaults(Theme
+            .of(context)
+            .inputDecorationTheme),
+        controller: TextEditingController(text: value),
+        onChanged: onChanged,
+      ),
     );
   }
 }
-
-// Similarly, update other attribute widgets
 
 // Widget for int attribute
 class IntAttributeWidget extends StatelessWidget {
@@ -39,11 +44,17 @@ class IntAttributeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(labelText: label),
-      controller: TextEditingController(text: value.toString()),
-      keyboardType: TextInputType.number,
-      onChanged: (text) => onChanged(int.tryParse(text) ?? 0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        decoration: InputDecoration(labelText: label)
+            .applyDefaults(Theme
+            .of(context)
+            .inputDecorationTheme),
+        controller: TextEditingController(text: value.toString()),
+        keyboardType: TextInputType.number,
+        onChanged: (text) => onChanged(int.tryParse(text) ?? 0),
+      ),
     );
   }
 }
@@ -62,11 +73,17 @@ class DoubleAttributeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(labelText: label),
-      controller: TextEditingController(text: value.toString()),
-      keyboardType: TextInputType.number,
-      onChanged: (text) => onChanged(double.tryParse(text) ?? 0.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        decoration: InputDecoration(labelText: label)
+            .applyDefaults(Theme
+            .of(context)
+            .inputDecorationTheme),
+        controller: TextEditingController(text: value.toString()),
+        keyboardType: TextInputType.number,
+        onChanged: (text) => onChanged(double.tryParse(text) ?? 0.0),
+      ),
     );
   }
 }
@@ -85,14 +102,25 @@ class BoolAttributeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(label),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: Theme
+              .of(context)
+              .textTheme
+              .bodyLarge),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeColor: Theme
+                .of(context)
+                .colorScheme
+                .secondary,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -111,32 +139,45 @@ class DateTimeAttributeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(label),
-        TextButton(
-          onPressed: () async {
-            DateTime? picked = await showDatePicker(
-              context: context,
-              initialDate: value,
-              firstDate: DateTime(2000),
-              lastDate: DateTime(2100),
-            );
-            if (picked != null && picked != value) onChanged(picked);
-          },
-          child: Text(value.toLocal().toString().split(' ')[0]),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: Theme
+              .of(context)
+              .textTheme
+              .bodyLarge),
+          TextButton(
+            onPressed: () async {
+              DateTime? picked = await showDatePicker(
+                context: context,
+                initialDate: value,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+              if (picked != null && picked != value) onChanged(picked);
+            },
+            child: Text(value.toLocal().toString().split(' ')[0],
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyLarge),
+          ),
+        ],
+      ),
     );
   }
 }
 
+// Function to get title from entity
 String getTitle(Entity<dynamic> entity) {
   var name = entity.getStringFromAttribute('name');
   var title = entity.getStringFromAttribute('title');
-  return name != null ? name : title ?? 'Unnamed Entity';
+  return name ?? title ?? 'Unnamed Entity';
 }
 
+// Widget for entity details screen
 class EntityDetailScreen extends StatelessWidget {
   final Entity entity;
 
@@ -153,6 +194,7 @@ class EntityDetailScreen extends StatelessWidget {
   }
 }
 
+// Widget for rendering entity attributes
 class EntityWidget extends StatelessWidget {
   final Entity entity;
   final void Function(Entity entity)? onEntitySelected;
@@ -162,49 +204,61 @@ class EntityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        children: [
-          ...entity.concept.attributes.map((attribute) {
-            var value = entity.getAttribute(attribute.code);
-            return _buildAttributeWidget(attribute as Attribute, value);
-          }).toList(),
-          ...entity.concept.parents.map((parent) {
-            var parentEntity = entity.getParent(parent.code) as Entity;
-            return ListTile(
-              title: Text('${getTitle(parentEntity)}'),
-              onTap: () {
-                if (onEntitySelected != null) {
-                  onEntitySelected!(parentEntity);
-                }
-              },
-            );
-          }).toList(),
-          ...entity.concept.children.map((child) {
-            var childEntities = entity.getChild(child.code) as Entities?;
-            return childEntities != null
-                ? ExpansionTile(
-                    title: Text('${child.codeFirstLetterUpper}',
-                        style: Theme.of(context).textTheme.labelLarge),
-                    children: childEntities.map((childEntity) {
-                      return ListTile(
-                        title: Text(getTitle(childEntity),
-                            style: Theme.of(context).textTheme.labelMedium),
-                        onTap: () {
-                          if (onEntitySelected != null) {
-                            onEntitySelected!(childEntity as Entity);
-                          }
-                        },
-                      );
-                    }).toList(),
-                  )
-                : Container();
-          }).toList(),
-        ],
+      margin: EdgeInsets.all(16.0),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            ...entity.concept.attributes.map((attribute) {
+              var value = entity.getAttribute(attribute.code);
+              return _buildAttributeWidget(
+                  attribute as Attribute, value, context);
+            }).toList(),
+            ...entity.concept.parents.map((parent) {
+              var parentEntity = entity.getParent(parent.code) as Entity;
+              return ListTile(
+                title: Text(getTitle(parentEntity)),
+                onTap: () {
+                  if (onEntitySelected != null) {
+                    onEntitySelected!(parentEntity);
+                  }
+                },
+              );
+            }).toList(),
+            ...entity.concept.children.map((child) {
+              var childEntities = entity.getChild(child.code) as Entities?;
+              return childEntities != null
+                  ? ExpansionTile(
+                title: Text(child.codeFirstLetterUpper,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .labelLarge),
+                children: childEntities.map((childEntity) {
+                  return ListTile(
+                    title: Text(getTitle(childEntity),
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .labelMedium),
+                    onTap: () {
+                      if (onEntitySelected != null) {
+                        onEntitySelected!(childEntity as Entity);
+                      }
+                    },
+                  );
+                }).toList(),
+              )
+                  : Container();
+            }).toList(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildAttributeWidget(Attribute attribute, dynamic value) {
+  Widget _buildAttributeWidget(Attribute attribute, dynamic value,
+      BuildContext context) {
     switch (attribute.type?.code) {
       case 'String':
         return StringAttributeWidget(
