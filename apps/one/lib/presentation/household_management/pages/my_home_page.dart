@@ -256,6 +256,8 @@ class ModelDetailScreen extends StatelessWidget {
             if (index == 0) {
               Navigator.popUntil(context, ModalRoute.withName('/'));
             } else if (index == 1) {
+              Navigator.popUntil(context, ModalRoute.withName('/domain'));
+            } else if (index == 2) {
               Navigator.pop(context);
             }
           },
