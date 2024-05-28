@@ -4,6 +4,8 @@
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/generated/user/library/lib/user_library.dart';
+import 'package:ednet_one/presentation/household_management/blocs/theme_block.dart';
+import 'package:ednet_one/presentation/household_management/widgets/layout/alternative_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -58,75 +60,104 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.swap_horiz),
+            onPressed: () {
+              context.read<LayoutBloc>().add(ToggleLayoutEvent());
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: () {
+              BlocProvider.of<ThemeBloc>(context).toggleTheme();
+            },
+          ),
+        ],
       ),
       body: BlocProvider(
         create: (context) => LayoutBloc(),
         child: BlocBuilder<LayoutBloc, LayoutState>(
           builder: (context, state) {
-            return LayoutTemplate(
-              header: HeaderWidget(
-                path: path,
-                onPathSegmentTapped: (index) {
-                  _handlePathSegmentTapped(context, index);
-                },
-              ),
-              leftSidebar: LeftSidebarWidget(
-                items: projects,
-                onEntitySelected: (entity) {
-                  setState(() {
-                    path.add(entity.getStringFromAttribute('name') ?? 'Entity');
-                  });
-                  BlocProvider.of<LayoutBloc>(context)
-                      .add(SelectEntityEvent(entity: entity));
-                },
-                model: projectModel.model,
-                domain: householdDomain.domain,
-              ),
-              rightSidebar: RightSidebarWidget(
-                domains: domains,
-                onDomainSelected: (domain) {
-                  setState(() {
-                    path = ['Home', domain.code];
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DomainDetailScreen(
-                        domain: domain,
-                        onModelSelected: _handleModelSelected,
-                      ),
+            return state.layoutType == LayoutType.defaultLayout
+                ? LayoutTemplate(
+                    header: HeaderWidget(
+                      path: path,
+                      onPathSegmentTapped: (index) {
+                        _handlePathSegmentTapped(context, index);
+                      },
                     ),
-                  );
-                },
-                onModelSelected: (model) {
-                  setState(() {
-                    path = ['Home', model.domain.code, model.code];
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ModelDetailScreen(
-                        domain: model.domain,
-                        model: model,
-                        path: path,
-                        onEntitySelected: _handleEntitySelected,
-                      ),
+                    leftSidebar: LeftSidebarWidget(
+                      items: projects,
+                      onEntitySelected: (entity) {
+                        setState(() {
+                          path.add(entity.getStringFromAttribute('name') ??
+                              'Entity');
+                        });
+                        BlocProvider.of<LayoutBloc>(context)
+                            .add(SelectEntityEvent(entity: entity));
+                      },
+                      model: projectModel.model,
+                      domain: householdDomain.domain,
                     ),
+                    rightSidebar: RightSidebarWidget(
+                      domains: domains,
+                      onDomainSelected: (domain) {
+                        setState(() {
+                          path = ['Home', domain.code];
+                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DomainDetailScreen(
+                              domain: domain,
+                              onModelSelected: _handleModelSelected,
+                            ),
+                          ),
+                        );
+                      },
+                      onModelSelected: (model) {
+                        setState(() {
+                          path = ['Home', model.domain.code, model.code];
+                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModelDetailScreen(
+                              domain: model.domain,
+                              model: model,
+                              path: path,
+                              onEntitySelected: _handleEntitySelected,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    mainContent: MainContentWidget(
+                      entity: state.selectedEntity ?? projects.first,
+                      onEntitySelected: (entity) {
+                        setState(() {
+                          path.add(entity.getStringFromAttribute('name') ??
+                              'Entity');
+                        });
+                        BlocProvider.of<LayoutBloc>(context)
+                            .add(SelectEntityEvent(entity: entity));
+                      },
+                    ),
+                    footer: const FooterWidget(),
+                  )
+                : AlternativeLayout(
+                    domains: domains,
+                    selectedEntity: state.selectedEntity,
+                    onEntitySelected: (entity) {
+                      setState(() {
+                        path.add(
+                            entity.getStringFromAttribute('name') ?? 'Entity');
+                      });
+                      BlocProvider.of<LayoutBloc>(context)
+                          .add(SelectEntityEvent(entity: entity));
+                    },
                   );
-                },
-              ),
-              mainContent: MainContentWidget(
-                entity: state.selectedEntity ?? projects.first,
-                onEntitySelected: (entity) {
-                  setState(() {
-                    path.add(entity.getStringFromAttribute('name') ?? 'Entity');
-                  });
-                  BlocProvider.of<LayoutBloc>(context)
-                      .add(SelectEntityEvent(entity: entity));
-                },
-              ),
-              footer: const FooterWidget(),
-            );
           },
         ),
       ),

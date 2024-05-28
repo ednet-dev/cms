@@ -1,4 +1,4 @@
-// layout_state.dart
+// layout_event.dart
 import 'package:ednet_core/ednet_core.dart';
 
 abstract class LayoutEvent {}
@@ -8,3 +8,5 @@ class SelectEntityEvent extends LayoutEvent {
 
   SelectEntityEvent({required this.entity});
 }
+
+class ToggleLayoutEvent extends LayoutEvent {}

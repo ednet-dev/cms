@@ -17,6 +17,8 @@ final ThemeData cheerfulLightTheme = ThemeData(
       fontSize: 20,
       fontWeight: FontWeight.bold,
     ),
+    iconTheme: IconThemeData(color: Colors.white),
+    actionsIconTheme: IconThemeData(color: Colors.white),
   ),
   textTheme: _buildTextTheme(Colors.black87),
   inputDecorationTheme: InputDecorationTheme(
@@ -49,6 +51,8 @@ final ThemeData cheerfulDarkTheme = ThemeData(
       fontSize: 20,
       fontWeight: FontWeight.bold,
     ),
+    iconTheme: IconThemeData(color: Colors.black87),
+    actionsIconTheme: IconThemeData(color: Colors.black87),
   ),
   textTheme: _buildTextTheme(Colors.white),
   inputDecorationTheme: InputDecorationTheme(

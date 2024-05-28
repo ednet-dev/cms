@@ -1,7 +1,5 @@
 // header_widget.dart
-import 'package:ednet_one/presentation/household_management/blocs/theme_block.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HeaderWidget extends StatelessWidget {
   final List<String> path;
@@ -40,12 +38,6 @@ class HeaderWidget extends StatelessWidget {
                   );
                 },
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.brightness_6),
-              onPressed: () {
-                BlocProvider.of<ThemeBloc>(context).toggleTheme();
-              },
             ),
           ],
         ),
