@@ -1,15 +1,15 @@
-part of household_finances; 
+part of finance_household; 
  
 // lib/repository.dart 
  
-class HouseholdFinancesRepo extends CoreRepository { 
+class FinanceHouseholdRepo extends CoreRepository { 
  
-  static const REPOSITORY = "HouseholdFinancesRepo"; 
+  static const REPOSITORY = "FinanceHouseholdRepo"; 
  
-  HouseholdFinancesRepo([String code=REPOSITORY]) : super(code) { 
-    var domain = Domain("Household"); 
+  FinanceHouseholdRepo([String code=REPOSITORY]) : super(code) { 
+    var domain = Domain("Finance"); 
     domains.add(domain); 
-    add(HouseholdDomain(domain)); 
+    add(FinanceDomain(domain)); 
  
   } 
  

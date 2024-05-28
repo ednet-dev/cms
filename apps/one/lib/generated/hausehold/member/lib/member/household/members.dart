@@ -1,0 +1,24 @@
+part of member_household; 
+ 
+// lib/member/household/members.dart 
+ 
+class Member extends MemberGen { 
+ 
+  Member(Concept concept) : super(concept); 
+ 
+  // added after code gen - begin 
+ 
+  // added after code gen - end 
+ 
+} 
+ 
+class Members extends MembersGen { 
+ 
+  Members(Concept concept) : super(concept); 
+ 
+  // added after code gen - begin 
+ 
+  // added after code gen - end 
+ 
+} 
+ 

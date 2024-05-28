@@ -3,13 +3,13 @@
 // ednet cms
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/generated/user/library/lib/user_library.dart';
+import 'package:ednet_one/generated/hausehold/project/lib/project_household.dart';
+import 'package:ednet_one/generated/user/library/lib/library_user.dart';
 import 'package:ednet_one/presentation/household_management/blocs/theme_block.dart';
 import 'package:ednet_one/presentation/household_management/widgets/layout/alternative_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../generated/hausehold/project/lib/household_project.dart';
 import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
@@ -34,23 +34,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var householdProjectRepo = HouseholdProjectRepo();
-    var userLibraryRepo = UserLibraryRepo();
+    var householdProjectRepo = ProjectHouseholdRepo();
+    var userLibraryRepo = LibraryUserRepo();
 
-    HouseholdDomain householdDomain =
-        householdProjectRepo.getDomainModels("Household") as HouseholdDomain;
-    UserDomain userDomain =
-        userLibraryRepo.getDomainModels("User") as UserDomain;
+    ProjectDomain householdDomain =
+        householdProjectRepo.getDomainModels("Project") as ProjectDomain;
+    LibraryDomain userDomain =
+        userLibraryRepo.getDomainModels("Library") as LibraryDomain;
 
-    ProjectModel projectModel =
-        householdDomain.getModelEntries("Project") as ProjectModel;
-    LibraryModel libraryModel =
-        userDomain.getModelEntries("Library") as LibraryModel;
+    HouseholdModel projectModel =
+        householdDomain.getModelEntries("Household") as HouseholdModel;
+    UserModel libraryModel = userDomain.getModelEntries("User") as UserModel;
 
     projectModel.init();
     libraryModel.init();
 
     var domains = Domains()
+      ..add(householdDomain.domain)
       ..add(householdDomain.domain)
       ..add(userDomain.domain);
 

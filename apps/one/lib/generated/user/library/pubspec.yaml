@@ -1,7 +1,7 @@
-name: user_library
+name: library_user
 version: 1.0.0
 
-description: user_library application that uses ednet_core for its model.
+description: library_user application that uses ednet_core for its model.
 
 homepage: https://ednet.one/
 

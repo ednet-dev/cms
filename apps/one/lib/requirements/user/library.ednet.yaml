@@ -1,5 +1,5 @@
-domain: 'user'
-model: 'library'
+domain: 'library'
+model: 'user'
 concepts:
   - name: Library
     entry: true

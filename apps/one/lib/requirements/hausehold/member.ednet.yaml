@@ -1,5 +1,5 @@
-domain: 'household'
-model: 'member'
+domain: 'member'
+model: 'household'
 concepts:
   - name: Member
     entry: true

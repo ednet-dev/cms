@@ -1,15 +1,15 @@
-part of user_library; 
+part of library_user; 
  
 // lib/repository.dart 
  
-class UserLibraryRepo extends CoreRepository { 
+class LibraryUserRepo extends CoreRepository { 
  
-  static const REPOSITORY = "UserLibraryRepo"; 
+  static const REPOSITORY = "LibraryUserRepo"; 
  
-  UserLibraryRepo([String code=REPOSITORY]) : super(code) { 
-    var domain = Domain("User"); 
+  LibraryUserRepo([String code=REPOSITORY]) : super(code) { 
+    var domain = Domain("Library"); 
     domains.add(domain); 
-    add(UserDomain(domain)); 
+    add(LibraryDomain(domain)); 
  
   } 
  
