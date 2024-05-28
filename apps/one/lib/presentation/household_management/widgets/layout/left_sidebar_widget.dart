@@ -21,7 +21,6 @@ class LeftSidebarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 200,
-      color: Colors.green,
       child: Center(
         child: EntitiesWidget(
           entities: this.items,

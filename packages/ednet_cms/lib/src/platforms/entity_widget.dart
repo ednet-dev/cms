@@ -15,12 +15,15 @@ class StringAttributeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(labelText: label)
+          .applyDefaults(Theme.of(context).inputDecorationTheme),
       controller: TextEditingController(text: value),
       onChanged: onChanged,
     );
   }
 }
+
+// Similarly, update other attribute widgets
 
 // Widget for int attribute
 class IntAttributeWidget extends StatelessWidget {

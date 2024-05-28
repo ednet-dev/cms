@@ -7,7 +7,6 @@ class FooterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      color: Colors.purple,
       child: Center(
         child: Text('Footer - ${DateTime.now().toString()}'),
       ),

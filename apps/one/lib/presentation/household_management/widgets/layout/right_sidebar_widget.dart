@@ -16,7 +16,6 @@ class RightSidebarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 200,
-      color: Colors.blueGrey[50],
       child: ListView(
         children: domains.map((domain) {
           return ExpansionTile(

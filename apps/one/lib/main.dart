@@ -1,7 +1,9 @@
+// main.dart
+import 'package:ednet_one/presentation/household_management/blocs/layout_block.dart';
+import 'package:ednet_one/presentation/household_management/blocs/theme_block.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'presentation/household_management/blocs/layout_block.dart';
 import 'presentation/household_management/pages/my_home_page.dart';
 
 void main() {
@@ -13,15 +15,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: BlocProvider(
-        create: (context) => LayoutBloc(),
-        child: const MyHomePage(title: 'EDNet One'),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => LayoutBloc()),
+        BlocProvider(create: (context) => ThemeBloc()),
+      ],
+      child: BlocBuilder<ThemeBloc, ThemeData>(
+        builder: (context, theme) {
+          return MaterialApp(
+            title: 'Flutter Demo',
+            theme: theme,
+            home: const MyHomePage(title: 'EDNet One'),
+          );
+        },
       ),
     );
   }

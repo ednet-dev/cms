@@ -18,16 +18,21 @@ import '../widgets/layout/left_sidebar_widget.dart';
 import '../widgets/layout/main_content_widget.dart';
 import '../widgets/layout/right_sidebar_widget.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<String> path = ['Home'];
+
+  @override
   Widget build(BuildContext context) {
     var householdProjectRepo = HouseholdProjectRepo();
-    // var householdFinancesRepo = HouseholdFinancesRepo();
-    // var householdMemberRepo = HouseholdMemberRepo();
     var userLibraryRepo = UserLibraryRepo();
 
     HouseholdDomain householdDomain =
@@ -37,7 +42,6 @@ class MyHomePage extends StatelessWidget {
 
     ProjectModel projectModel =
         householdDomain.getModelEntries("Project") as ProjectModel;
-
     LibraryModel libraryModel =
         userDomain.getModelEntries("Library") as LibraryModel;
 
@@ -49,11 +53,11 @@ class MyHomePage extends StatelessWidget {
       ..add(userDomain.domain);
 
     var projects = projectModel.projects;
-    // var allRepos = OneCoreRepository();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
+        title: Text(widget.title),
       ),
       body: BlocProvider(
         create: (context) => LayoutBloc(),
@@ -61,13 +65,17 @@ class MyHomePage extends StatelessWidget {
           builder: (context, state) {
             return LayoutTemplate(
               header: HeaderWidget(
-                  path: [],
-                  onPathSegmentTapped: (index) {
-                    // Handle Home path tap, if needed
-                  }),
+                path: path,
+                onPathSegmentTapped: (index) {
+                  _handlePathSegmentTapped(context, index);
+                },
+              ),
               leftSidebar: LeftSidebarWidget(
                 items: projects,
                 onEntitySelected: (entity) {
+                  setState(() {
+                    path.add(entity.getStringFromAttribute('name') ?? 'Entity');
+                  });
                   BlocProvider.of<LayoutBloc>(context)
                       .add(SelectEntityEvent(entity: entity));
                 },
@@ -76,25 +84,32 @@ class MyHomePage extends StatelessWidget {
               ),
               rightSidebar: RightSidebarWidget(
                 domains: domains,
-                // domains: allRepos.domains,
                 onDomainSelected: (domain) {
-                  // Handle domain selection, navigate to DomainDetailScreen
+                  setState(() {
+                    path = ['Home', domain.code];
+                  });
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DomainDetailScreen(domain: domain),
+                      builder: (context) => DomainDetailScreen(
+                        domain: domain,
+                        onModelSelected: _handleModelSelected,
+                      ),
                     ),
                   );
                 },
                 onModelSelected: (model) {
-                  // Handle model selection, navigate to ModelDetailScreen
+                  setState(() {
+                    path = ['Home', model.domain.code, model.code];
+                  });
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ModelDetailScreen(
                         domain: model.domain,
                         model: model,
-                        path: [model.domain.code, model.code],
+                        path: path,
+                        onEntitySelected: _handleEntitySelected,
                       ),
                     ),
                   );
@@ -103,6 +118,9 @@ class MyHomePage extends StatelessWidget {
               mainContent: MainContentWidget(
                 entity: state.selectedEntity ?? projects.first,
                 onEntitySelected: (entity) {
+                  setState(() {
+                    path.add(entity.getStringFromAttribute('name') ?? 'Entity');
+                  });
                   BlocProvider.of<LayoutBloc>(context)
                       .add(SelectEntityEvent(entity: entity));
                 },
@@ -114,13 +132,37 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+
+  void _handlePathSegmentTapped(BuildContext context, int index) {
+    if (index < path.length - 1) {
+      setState(() {
+        path = path.sublist(0, index + 1);
+      });
+      Navigator.popUntil(context, ModalRoute.withName('/'));
+    }
+  }
+
+  void _handleModelSelected(Model model) {
+    setState(() {
+      path.add(model.code);
+    });
+  }
+
+  void _handleEntitySelected(Entity entity) {
+    setState(() {
+      path.add(entity.getStringFromAttribute('name') ?? 'Entity');
+    });
+  }
 }
 
+// domain_detail_screen.dart
 class DomainDetailScreen extends StatelessWidget {
   final Domain domain;
   final List<String> path;
+  final void Function(Model model) onModelSelected;
 
-  DomainDetailScreen({required this.domain}) : path = [domain.code];
+  DomainDetailScreen({required this.domain, required this.onModelSelected})
+      : path = ['Home', domain.code];
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +172,8 @@ class DomainDetailScreen extends StatelessWidget {
           path: path,
           onPathSegmentTapped: (index) {
             if (index == 0) {
+              Navigator.popUntil(context, ModalRoute.withName('/'));
+            } else if (index == 1) {
               Navigator.pop(context);
             }
           },
@@ -138,11 +182,18 @@ class DomainDetailScreen extends StatelessWidget {
       body: ModelsWidget(
         models: domain.models,
         onModelSelected: (model) {
+          onModelSelected(model);
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ModelDetailScreen(
-                  domain: domain, model: model, path: path + [model.code]),
+                domain: domain,
+                model: model,
+                path: path + [model.code],
+                onEntitySelected: (entity) {
+                  // Implement entity selection handling here
+                },
+              ),
             ),
           );
         },
@@ -151,13 +202,18 @@ class DomainDetailScreen extends StatelessWidget {
   }
 }
 
+// model_detail_screen.dart
 class ModelDetailScreen extends StatelessWidget {
   final Domain domain;
   final Model model;
   final List<String> path;
+  final void Function(Entity entity) onEntitySelected;
 
   ModelDetailScreen(
-      {required this.domain, required this.model, required this.path});
+      {required this.domain,
+      required this.model,
+      required this.path,
+      required this.onEntitySelected});
 
   @override
   Widget build(BuildContext context) {
@@ -179,13 +235,15 @@ class ModelDetailScreen extends StatelessWidget {
         domain: domain,
         model: model,
         onEntitySelected: (entity) {
+          onEntitySelected(entity);
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => EntityDetailScreen(
-                  entity: entity,
-                  path: path +
-                      [entity.getStringFromAttribute('name') ?? 'Entity']),
+                entity: entity,
+                path:
+                    path + [entity.getStringFromAttribute('name') ?? 'Entity'],
+              ),
             ),
           );
         },
@@ -194,6 +252,7 @@ class ModelDetailScreen extends StatelessWidget {
   }
 }
 
+// entity_detail_screen.dart
 class EntityDetailScreen extends StatelessWidget {
   final Entity entity;
   final List<String> path;
@@ -218,36 +277,6 @@ class EntityDetailScreen extends StatelessWidget {
         ),
       ),
       body: EntityWidget(entity: entity),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var repository = CoreRepository();
-    var domains = repository.domains;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: HeaderWidget(
-          path: ['Home'],
-          onPathSegmentTapped: (index) {
-            // Handle Home path tap, if needed
-          },
-        ),
-      ),
-      body: DomainsWidget(
-        domains: domains,
-        onDomainSelected: (domain) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DomainDetailScreen(domain: domain),
-            ),
-          );
-        },
-      ),
     );
   }
 }
@@ -303,84 +332,3 @@ class ModelsWidget extends StatelessWidget {
     );
   }
 }
-
-// class MyHomePage extends StatelessWidget {
-//   const MyHomePage({super.key, required this.title});
-//
-//   final String title;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     var repository = CoreRepository();
-//     var domains = repository.domains;
-//
-//     var householdDomain = domains.singleWhereCode("Household") as HouseholdDomain;
-//     var projectModel = householdDomain.getModelEntries("Project") as ProjectModel;
-//     projectModel.init();
-//     var projects = projectModel.projects;
-//
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-//         title: Text(title),
-//       ),
-//       body: BlocProvider(
-//         create: (context) => LayoutBloc(),
-//         child: BlocBuilder<LayoutBloc, LayoutState>(
-//           builder: (context, state) {
-//             return LayoutTemplate(
-//               header: HeaderWidget(
-//                   path: [],
-//                   onPathSegmentTapped: (index) {
-//                     // Handle Home path tap, if needed
-//                   }
-//               ),
-//               leftSidebar: LeftSidebarWidget(
-//                 items: projects,
-//                 onEntitySelected: (entity) {
-//                   BlocProvider.of<LayoutBloc>(context)
-//                       .add(SelectEntityEvent(entity: entity));
-//                 },
-//                 model: projectModel.model,
-//                 domain: householdDomain.domain,
-//               ),
-//               rightSidebar: RightSidebarWidget(
-//                 domains: domains,
-//                 onDomainSelected: (domain) {
-//                   // Handle domain selection, navigate to DomainDetailScreen
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(
-//                       builder: (context) => DomainDetailScreen(domain: domain),
-//                     ),
-//                   );
-//                 },
-//                 onModelSelected: (model) {
-//                   // Handle model selection, navigate to ModelDetailScreen
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(
-//                       builder: (context) => ModelDetailScreen(
-//                         domain: model.domain,
-//                         model: model,
-//                         path: [model.domain.code, model.code],
-//                       ),
-//                     ),
-//                   );
-//                 },
-//               ),
-//               mainContent: MainContentWidget(
-//                 entity: state.selectedEntity ?? projects.first,
-//                 onEntitySelected: (entity) {
-//                   BlocProvider.of<LayoutBloc>(context)
-//                       .add(SelectEntityEvent(entity: entity));
-//                 },
-//               ),
-//               footer: const FooterWidget(),
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
