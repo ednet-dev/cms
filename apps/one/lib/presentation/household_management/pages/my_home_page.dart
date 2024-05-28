@@ -240,11 +240,12 @@ class ModelDetailScreen extends StatelessWidget {
   final List<String> path;
   final void Function(Entity entity) onEntitySelected;
 
-  ModelDetailScreen(
-      {required this.domain,
-      required this.model,
-      required this.path,
-      required this.onEntitySelected});
+  ModelDetailScreen({
+    required this.domain,
+    required this.model,
+    required this.path,
+    required this.onEntitySelected,
+  });
 
   @override
   Widget build(BuildContext context) {
