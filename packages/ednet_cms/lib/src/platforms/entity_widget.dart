@@ -18,9 +18,7 @@ class StringAttributeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme
-            .of(context)
-            .inputDecorationTheme),
+            .applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value),
         onChanged: onChanged,
       ),
@@ -46,9 +44,7 @@ class IntAttributeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme
-            .of(context)
-            .inputDecorationTheme),
+            .applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value.toString()),
         keyboardType: TextInputType.number,
         onChanged: (text) => onChanged(int.tryParse(text) ?? 0),
@@ -75,9 +71,7 @@ class DoubleAttributeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme
-            .of(context)
-            .inputDecorationTheme),
+            .applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value.toString()),
         keyboardType: TextInputType.numberWithOptions(decimal: true),
         onChanged: (text) => onChanged(double.tryParse(text) ?? 0.0),
@@ -105,17 +99,11 @@ class BoolAttributeWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: Theme
-              .of(context)
-              .textTheme
-              .bodyLarge),
+          Text(label, style: Theme.of(context).textTheme.bodyLarge),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Theme
-                .of(context)
-                .colorScheme
-                .secondary,
+            activeColor: Theme.of(context).colorScheme.secondary,
           ),
         ],
       ),
@@ -142,10 +130,7 @@ class DateTimeAttributeWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: Theme
-              .of(context)
-              .textTheme
-              .bodyLarge),
+          Text(label, style: Theme.of(context).textTheme.bodyLarge),
           TextButton(
             onPressed: () async {
               DateTime? picked = await showDatePicker(
@@ -158,10 +143,7 @@ class DateTimeAttributeWidget extends StatelessWidget {
             },
             child: Text(
               value.toLocal().toString().split(' ')[0],
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyLarge,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
         ],
@@ -194,7 +176,7 @@ class EntityDetailScreen extends StatelessWidget {
   }
 }
 
-// Widget for rendering entity attributes
+// Widgets for rendering entity attributes
 class EntityWidget extends StatelessWidget {
   final Entity entity;
   final void Function(Entity entity)? onEntitySelected;
@@ -236,8 +218,8 @@ class EntityWidget extends StatelessWidget {
                       .textTheme
                       .labelLarge,
                 ),
-                children: childEntities.map((childEntity) {
-                  return ListTile(
+                      children: childEntities.map((childEntity) {
+                        return ListTile(
                     title: Text(
                       getTitle(childEntity),
                       style: Theme
@@ -245,14 +227,14 @@ class EntityWidget extends StatelessWidget {
                           .textTheme
                           .labelMedium,
                     ),
-                    onTap: () {
-                      if (onEntitySelected != null) {
-                        onEntitySelected!(childEntity as Entity);
-                      }
-                    },
-                  );
-                }).toList(),
-              )
+                          onTap: () {
+                            if (onEntitySelected != null) {
+                              onEntitySelected!(childEntity as Entity);
+                            }
+                          },
+                        );
+                      }).toList(),
+                    )
                   : Container();
             }).toList(),
           ],
@@ -261,8 +243,8 @@ class EntityWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAttributeWidget(Attribute attribute, dynamic value,
-      BuildContext context) {
+  Widget _buildAttributeWidget(
+      Attribute attribute, dynamic value, BuildContext context) {
     switch (attribute.type?.code) {
       case 'String':
         return StringAttributeWidget(
@@ -350,6 +332,200 @@ class EntitiesWidget extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+class DashboardScreen extends StatelessWidget {
+  final Domains domains;
+
+  DashboardScreen({required this.domains});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Dashboard'),
+      ),
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        itemCount: domains.length,
+        itemBuilder: (context, index) {
+          final domain = domains.elementAt(index);
+          return DomainTile(domain: domain);
+        },
+      ),
+    );
+  }
+}
+
+class DomainTile extends StatelessWidget {
+  final Domain domain;
+
+  DomainTile({required this.domain});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DomainDetailScreen(domain: domain),
+            ),
+          );
+        },
+        child: Column(
+          children: [
+            Icon(Icons.domain, size: 100),
+            Text(domain.code, style: TextStyle(fontSize: 24)),
+            Text(domain.description),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DomainDetailScreen extends StatelessWidget {
+  final Domain domain;
+
+  DomainDetailScreen({required this.domain});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(domain.code),
+      ),
+      body: ListView.builder(
+        itemCount: domain.models.length,
+        itemBuilder: (context, index) {
+          final model = domain.models.elementAt(index);
+          return ModelTile(model: model, domain: domain);
+        },
+      ),
+    );
+  }
+}
+
+class ModelTile extends StatelessWidget {
+  final Model model;
+  final Domain domain;
+
+  ModelTile({required this.model, required this.domain});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ModelDetailScreen(domain: domain, model: model),
+            ),
+          );
+        },
+        child: Column(
+          children: [
+            Icon(Icons.model_training, size: 100),
+            Text(model.code, style: TextStyle(fontSize: 24)),
+            Text(model.description ?? ''),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ModelDetailScreen extends StatelessWidget {
+  final Domain domain;
+  final Model model;
+
+  ModelDetailScreen({required this.domain, required this.model});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(model.code),
+      ),
+      body: ListView.builder(
+        itemCount: model.entryConcepts.length,
+        itemBuilder: (context, index) {
+          final concept = model.entryConcepts[index];
+          return AggregateTile(concept: concept, model: model, domain: domain);
+        },
+      ),
+    );
+  }
+}
+
+class AggregateTile extends StatelessWidget {
+  final Concept concept;
+  final Model model;
+  final Domain domain;
+
+  AggregateTile(
+      {required this.concept, required this.model, required this.domain});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AggregateDetailScreen(
+                  domain: domain, model: model, concept: concept),
+            ),
+          );
+        },
+        child: Column(
+          children: [
+            Icon(Icons.adjust, size: 100),
+            Text(concept.code, style: TextStyle(fontSize: 24)),
+            Text(concept.entry.toString()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AggregateDetailScreen extends StatelessWidget {
+  final Domain domain;
+  final Model model;
+  final Concept concept;
+
+  AggregateDetailScreen(
+      {required this.domain, required this.model, required this.concept});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(concept.code),
+      ),
+      body: EntitiesWidget(
+        entities: concept.attributes,
+        domain: domain,
+        model: model,
+        onEntitySelected: (entity) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EntityDetailScreen(entity: entity),
+            ),
+          );
+        },
+      ),
     );
   }
 }

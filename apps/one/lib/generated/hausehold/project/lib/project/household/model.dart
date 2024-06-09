@@ -51,7 +51,7 @@ class HouseholdModel extends HouseholdEntries {
     fromJson(projectHouseholdModel); 
   } 
  
-  void init() { 
+  void simulate() {
     initProjects(); 
     initTasks(); 
     initResources(); 

@@ -11,7 +11,7 @@ void testProjectHouseholdRoles(
   group("Testing Project.Household.Role", () { 
     session = projectDomain.newSession();  
     setUp(() { 
-      householdModel.init(); 
+      householdModel.simulate();
     }); 
     tearDown(() { 
       householdModel.clear(); 

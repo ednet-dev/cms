@@ -11,7 +11,7 @@ void testProjectHouseholdSkills(
   group("Testing Project.Household.Skill", () { 
     session = projectDomain.newSession();  
     setUp(() { 
-      householdModel.init(); 
+      householdModel.simulate();
     }); 
     tearDown(() { 
       householdModel.clear(); 

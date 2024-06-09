@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 class LeftSidebarWidget extends StatelessWidget {
   final Entities items;
   final void Function(Entity entity)? onEntitySelected;
-  final Domain domain;
-  final Model model;
+  final Domain? domain;
+  final Model? model;
 
   const LeftSidebarWidget(
       {super.key,
@@ -19,14 +19,21 @@ class LeftSidebarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (model == null) {
+      return Text('Model not provided.');
+    }
+
+    if (domain == null) {
+      return Text('Domain not provided.');
+    }
     return Container(
       width: 200,
       child: Center(
         child: EntitiesWidget(
           entities: this.items,
           onEntitySelected: onEntitySelected,
-          domain: this.domain,
-          model: model,
+          domain: this.domain!,
+          model: model!,
         ),
       ),
     );

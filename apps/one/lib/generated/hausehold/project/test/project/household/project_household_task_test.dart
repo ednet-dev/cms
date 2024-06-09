@@ -11,7 +11,7 @@ void testProjectHouseholdTasks(
   group("Testing Project.Household.Task", () { 
     session = projectDomain.newSession();  
     setUp(() { 
-      householdModel.init(); 
+      householdModel.simulate();
     }); 
     tearDown(() { 
       householdModel.clear(); 

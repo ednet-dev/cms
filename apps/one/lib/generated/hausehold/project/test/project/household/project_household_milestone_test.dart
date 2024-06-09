@@ -11,7 +11,7 @@ void testProjectHouseholdMilestones(
   group("Testing Project.Household.Milestone", () { 
     session = projectDomain.newSession();  
     setUp(() { 
-      householdModel.init(); 
+      householdModel.simulate();
     }); 
     tearDown(() { 
       householdModel.clear(); 

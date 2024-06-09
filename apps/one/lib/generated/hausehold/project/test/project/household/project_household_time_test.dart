@@ -11,7 +11,7 @@ void testProjectHouseholdTimes(
   group("Testing Project.Household.Time", () { 
     session = projectDomain.newSession();  
     setUp(() { 
-      householdModel.init(); 
+      householdModel.simulate();
     }); 
     tearDown(() { 
       householdModel.clear(); 

@@ -4,7 +4,7 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
 class MainContentWidget extends StatelessWidget {
-  final Entity entity;
+  final Entity? entity;
   final void Function(Entity entity)? onEntitySelected;
 
   const MainContentWidget(
@@ -14,10 +14,12 @@ class MainContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: EntityWidget(
-          entity: entity,
-          onEntitySelected: onEntitySelected,
-        ),
+        child: entity != null
+            ? EntityWidget(
+                entity: entity!,
+                onEntitySelected: onEntitySelected,
+              )
+            : Text('Entity not loaded'),
       ),
     );
   }

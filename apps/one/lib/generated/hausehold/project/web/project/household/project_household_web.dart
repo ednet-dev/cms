@@ -10,7 +10,7 @@ import "package:project_household/project_household.dart";
 void initData(CoreRepository repository) { 
    ProjectDomain? projectDomain = repository.getDomainModels("Project") as ProjectDomain?; 
    HouseholdModel? householdModel = projectDomain?.getModelEntries("Household") as HouseholdModel?; 
-   householdModel?.init(); 
+   householdModel?.simulate();
    householdModel?.display(); 
 } 
  

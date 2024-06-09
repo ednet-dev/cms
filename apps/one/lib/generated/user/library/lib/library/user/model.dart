@@ -15,7 +15,7 @@ class UserModel extends UserEntries {
     fromJson(libraryUserModel); 
   } 
  
-  void init() { 
+  void simulate() {
     initLibraries(); 
   } 
  

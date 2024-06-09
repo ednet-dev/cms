@@ -11,7 +11,7 @@ void testProjectHouseholdInitiatives(
   group("Testing Project.Household.Initiative", () { 
     session = projectDomain.newSession();  
     setUp(() { 
-      householdModel.init(); 
+      householdModel.simulate();
     }); 
     tearDown(() { 
       householdModel.clear(); 

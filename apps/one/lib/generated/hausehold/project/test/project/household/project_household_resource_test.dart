@@ -11,7 +11,7 @@ void testProjectHouseholdResources(
   group("Testing Project.Household.Resource", () { 
     session = projectDomain.newSession();  
     setUp(() { 
-      householdModel.init(); 
+      householdModel.simulate();
     }); 
     tearDown(() { 
       householdModel.clear(); 
