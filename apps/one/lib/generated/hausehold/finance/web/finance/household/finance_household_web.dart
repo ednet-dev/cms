@@ -10,7 +10,7 @@ import "package:finance_household/finance_household.dart";
 void initData(CoreRepository repository) { 
    FinanceDomain? financeDomain = repository.getDomainModels("Finance") as FinanceDomain?; 
    HouseholdModel? householdModel = financeDomain?.getModelEntries("Household") as HouseholdModel?; 
-   householdModel?.init(); 
+   householdModel?.simulate();
    householdModel?.display(); 
 } 
  

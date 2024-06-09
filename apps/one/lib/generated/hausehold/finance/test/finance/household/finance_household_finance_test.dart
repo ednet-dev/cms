@@ -11,7 +11,7 @@ void testFinanceHouseholdFinances(
   group("Testing Finance.Household.Finance", () { 
     session = financeDomain.newSession();  
     setUp(() { 
-      householdModel.init(); 
+      householdModel.simulate();
     }); 
     tearDown(() { 
       householdModel.clear(); 

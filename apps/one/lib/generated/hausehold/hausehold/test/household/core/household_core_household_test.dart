@@ -11,7 +11,7 @@ void testHouseholdCoreHouseholds(
   group("Testing Household.Core.Household", () { 
     session = householdDomain.newSession();  
     setUp(() { 
-      coreModel.init(); 
+      coreModel.simulate();
     }); 
     tearDown(() { 
       coreModel.clear(); 

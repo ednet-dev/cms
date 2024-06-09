@@ -15,7 +15,7 @@ class HouseholdModel extends HouseholdEntries {
     fromJson(memberHouseholdModel); 
   } 
  
-  void init() { 
+  void simulate() {
     initMembers(); 
   } 
  

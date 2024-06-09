@@ -10,7 +10,7 @@ import "package:library_user/library_user.dart";
 void initData(CoreRepository repository) { 
    LibraryDomain? libraryDomain = repository.getDomainModels("Library") as LibraryDomain?; 
    UserModel? userModel = libraryDomain?.getModelEntries("User") as UserModel?; 
-   userModel?.init(); 
+   userModel?.simulate();
    userModel?.display(); 
 } 
  

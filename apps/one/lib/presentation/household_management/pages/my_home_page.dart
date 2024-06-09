@@ -3,6 +3,12 @@
 // ednet cms
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/generated/hausehold/finance/lib/finance_household.dart'
+    as finance_household;
+import 'package:ednet_one/generated/hausehold/hausehold/lib/household_core.dart'
+    as household_core;
+import 'package:ednet_one/generated/hausehold/member/lib/member_household.dart'
+    as member_household;
 import 'package:ednet_one/generated/hausehold/project/lib/project_household.dart';
 import 'package:ednet_one/generated/user/library/lib/library_user.dart';
 import 'package:ednet_one/presentation/household_management/application.dart';
@@ -44,21 +50,57 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var householdProjectRepo = ProjectHouseholdRepo();
     var userLibraryRepo = LibraryUserRepo();
+    var householdMemberRepo = member_household.MemberHouseholdRepo();
+    var householdCoreRepo = household_core.HouseholdCoreRepo();
 
+    //domain: 'project'
+    // model: 'household'
     ProjectDomain householdDomain =
         householdProjectRepo.getDomainModels("Project") as ProjectDomain;
     HouseholdModel projectModel =
         householdDomain.getModelEntries("Household") as HouseholdModel;
     projectModel.simulate();
 
+    //domain: 'user'
+    // model: 'library'
     LibraryDomain userDomain =
         userLibraryRepo.getDomainModels("Library") as LibraryDomain;
     UserModel libraryModel = userDomain.getModelEntries("User") as UserModel;
     libraryModel.simulate();
 
+    //domain: 'finance'
+    // model: 'household'
+    finance_household.FinanceDomain financeDomain =
+        finance_household.FinanceHouseholdRepo().getDomainModels("Finance")
+            as finance_household.FinanceDomain;
+
+    finance_household.HouseholdModel financeModel = financeDomain
+        .getModelEntries("Household") as finance_household.HouseholdModel;
+    financeModel.simulate();
+
+    //domain: 'member'
+    // model: 'household'
+    member_household.MemberDomain memberDomain = householdMemberRepo
+        .getDomainModels("Member") as member_household.MemberDomain;
+    member_household.HouseholdModel memberModel = memberDomain
+        .getModelEntries("Household") as member_household.HouseholdModel;
+
+    //domain: 'household'
+    // model: 'core'
+    household_core.HouseholdDomain householdCoreDomain = householdCoreRepo
+        .getDomainModels("Household") as household_core.HouseholdDomain;
+    household_core.CoreModel householdCoreModel =
+        householdCoreDomain.getModelEntries("Core") as household_core.CoreModel;
+    householdCoreModel.simulate();
+
+    memberModel.simulate();
+
     var domains = Domains()
       ..add(householdDomain.domain)
-      ..add(userDomain.domain);
+      ..add(userDomain.domain)
+      ..add(financeDomain.domain)
+      ..add(memberDomain.domain)
+      ..add(householdCoreDomain.domain);
 
     var projects = projectModel.projects;
 

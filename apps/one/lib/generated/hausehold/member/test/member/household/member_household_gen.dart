@@ -10,7 +10,7 @@ void genCode(CoreRepository repository) {
 void initData(CoreRepository repository) { 
    var memberDomain = repository.getDomainModels("Member"); 
    HouseholdModel? householdModel = memberDomain?.getModelEntries("Household") as HouseholdModel?; 
-   householdModel?.init(); 
+   householdModel?.simulate();
    //householdModel.display(); 
 } 
  

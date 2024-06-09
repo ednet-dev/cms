@@ -10,7 +10,7 @@ import "package:household_core/household_core.dart";
 void initData(CoreRepository repository) { 
    HouseholdDomain? householdDomain = repository.getDomainModels("Household") as HouseholdDomain?; 
    CoreModel? coreModel = householdDomain?.getModelEntries("Core") as CoreModel?; 
-   coreModel?.init(); 
+   coreModel?.simulate();
    coreModel?.display(); 
 } 
  

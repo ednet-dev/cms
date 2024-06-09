@@ -10,7 +10,7 @@ void genCode(CoreRepository repository) {
 void initData(CoreRepository repository) { 
    var libraryDomain = repository.getDomainModels("Library"); 
    UserModel? userModel = libraryDomain?.getModelEntries("User") as UserModel?; 
-   userModel?.init(); 
+   userModel?.simulate();
    //userModel.display(); 
 } 
  

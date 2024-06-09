@@ -11,7 +11,7 @@ void testLibraryUserLibraries(
   group("Testing Library.User.Library", () { 
     session = libraryDomain.newSession();  
     setUp(() { 
-      userModel.init(); 
+      userModel.simulate();
     }); 
     tearDown(() { 
       userModel.clear(); 
