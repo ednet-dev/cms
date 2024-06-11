@@ -1,5 +1,6 @@
 library ednet_cms;
 import 'package:ednet_core/ednet_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
 

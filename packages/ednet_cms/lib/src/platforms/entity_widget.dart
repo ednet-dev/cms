@@ -189,7 +189,7 @@ class EntityWidget extends StatelessWidget {
       margin: EdgeInsets.all(16.0),
       child: Padding(
         padding: EdgeInsets.all(16.0),
-        child: Column(
+        child: ListView(
           children: [
             ...entity.concept.attributes.map((attribute) {
               var value = entity.getAttribute(attribute.code);
@@ -211,22 +211,16 @@ class EntityWidget extends StatelessWidget {
               var childEntities = entity.getChild(child.code) as Entities?;
               return childEntities != null
                   ? ExpansionTile(
-                title: Text(
-                  child.codeFirstLetterUpper,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .labelLarge,
-                ),
+                      title: Text(
+                        child.codeFirstLetterUpper,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
                       children: childEntities.map((childEntity) {
                         return ListTile(
-                    title: Text(
-                      getTitle(childEntity),
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .labelMedium,
-                    ),
+                          title: Text(
+                            getTitle(childEntity),
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
                           onTap: () {
                             if (onEntitySelected != null) {
                               onEntitySelected!(childEntity as Entity);
@@ -292,46 +286,136 @@ class EntityWidget extends StatelessWidget {
   }
 }
 
-// Widget for Entities, updated to navigate models and domains
-class EntitiesWidget extends StatelessWidget {
+class EntitiesWidget extends StatefulWidget {
   final Entities entities;
-  final void Function(Entity entity)? onEntitySelected;
-  final Domain domain;
-  final Model model;
+  final void Function(Entity entity) onEntitySelected;
+  final BookmarkManager bookmarkManager;
 
   EntitiesWidget({
     required this.entities,
-    this.onEntitySelected,
-    required this.domain,
-    required this.model,
+    required this.onEntitySelected,
+    required this.bookmarkManager,
+    required void Function(Bookmark bookmark) onBookmarkCreated,
   });
 
   @override
+  _EntitiesWidgetState createState() => _EntitiesWidgetState();
+}
+
+class _EntitiesWidgetState extends State<EntitiesWidget> {
+  List<FilterCriteria> _filters = [];
+  List<Entity> _filteredEntities = [];
+
+  ScrollController _scrollController = ScrollController();
+  bool _isBookmarking = false;
+  TextEditingController _bookmarkTitleController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _applyFilters();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _loadMoreEntities();
+    }
+  }
+
+  void _applyFilters() {
+    setState(() {
+      _filteredEntities = widget.entities.where((entity) {
+        for (var filter in _filters) {
+          if (!_matchesFilter(entity as Entity, filter)) {
+            return false;
+          }
+        }
+        return true;
+      }).toList() as List<Entity>;
+    });
+  }
+
+  bool _matchesFilter(Entity entity, FilterCriteria filter) {
+    final attributeValue = entity.getAttribute(filter.attribute)?.getValue();
+    switch (filter.operator) {
+      case '=':
+        return attributeValue == filter.value;
+      case '!=':
+        return attributeValue != filter.value;
+      case '>':
+        return attributeValue > filter.value;
+      case '<':
+        return attributeValue < filter.value;
+      // Add more operators as needed
+      default:
+        return false;
+    }
+  }
+
+  void _loadMoreEntities() {
+    // Implement logic to load more entities if available
+  }
+
+  void _addFilter(FilterCriteria filter) {
+    setState(() {
+      _filters.add(filter);
+      _applyFilters();
+    });
+  }
+
+  void _createBookmark() async {
+    setState(() {
+      _isBookmarking = true;
+    });
+  }
+
+  void _saveBookmark() async {
+    final bookmarkTitle = _bookmarkTitleController.text;
+    if (bookmarkTitle.isNotEmpty) {
+      final bookmark = Bookmark(
+        title: bookmarkTitle,
+        url: Uri(path: '/entities', queryParameters: {
+          'filters': _filters
+              .map((filter) =>
+                  '${filter.attribute}:${filter.operator}:${filter.value}')
+              .join(','),
+          'title': bookmarkTitle,
+        }).toString(),
+      );
+
+      await widget.bookmarkManager.addBookmark(bookmark);
+      widget.onEntitySelected(bookmark);
+    }
+    setState(() {
+      _isBookmarking = false;
+      _bookmarkTitleController.clear();
+    });
+  }
+
+  void _cancelBookmark() {
+    setState(() {
+      _isBookmarking = false;
+      _bookmarkTitleController.clear();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text('Back to Models'),
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: _filteredEntities.length,
+      itemBuilder: (context, index) {
+        final entity = _filteredEntities[index];
+        return ListTile(
+          title:
+              Text(entity.getStringFromAttribute('name') ?? 'Unnamed Entity'),
           onTap: () {
-            Navigator.pop(context);
+            widget.onEntitySelected(entity);
           },
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: entities.length,
-          itemBuilder: (context, index) {
-            var entity = entities.elementAt(index);
-            return ListTile(
-              title: Text(getTitle(entity)),
-              onTap: () {
-                if (onEntitySelected != null) {
-                  onEntitySelected!(entity as Entity);
-                }
-              },
-            );
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 }
@@ -513,19 +597,140 @@ class AggregateDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(concept.code),
       ),
-      body: EntitiesWidget(
-        entities: concept.attributes,
-        domain: domain,
-        model: model,
-        onEntitySelected: (entity) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EntityDetailScreen(entity: entity),
-            ),
-          );
+      body: ListView.builder(
+        itemCount: concept.attributes.length,
+        itemBuilder: (context, index) {
+          final attribute = concept.attributes.elementAt(index);
+          return AttributeTile(
+              attribute: attribute as Attribute,
+              concept: concept,
+              model: model);
         },
       ),
     );
+  }
+}
+
+class AttributeTile extends StatelessWidget {
+  final Attribute attribute;
+  final Concept concept;
+  final Model model;
+
+  AttributeTile(
+      {required this.attribute, required this.concept, required this.model});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AttributeDetailScreen(
+                  model: model, concept: concept, attribute: attribute),
+            ),
+          );
+        },
+        child: Column(
+          children: [
+            Icon(Icons.adjust, size: 100),
+            Text(attribute.code, style: TextStyle(fontSize: 24)),
+            Text(attribute.getStringFromAttribute(attribute.code).toString()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AttributeDetailScreen extends StatelessWidget {
+  final Model model;
+  final Concept concept;
+  final Attribute attribute;
+
+  AttributeDetailScreen(
+      {required this.model, required this.concept, required this.attribute});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(attribute.code),
+      ),
+      body: ListView(
+        children: [
+          Text('Attribute: ${attribute.code}'),
+          Text('Type: ${attribute.type?.code}'),
+          Text('Length: ${attribute.length}'),
+          Text('Required: ${attribute.required}'),
+          Text('Identifier: ${attribute.identifier}'),
+          Text('Derive: ${attribute.derive}'),
+        ],
+      ),
+    );
+  }
+}
+
+class BookmarkManager {
+  static const String _bookmarkKey = 'bookmarks';
+
+  Future<List<Bookmark>> getBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_bookmarkKey) == false
+        ? []
+        : []
+            .map((bookmark) =>
+                Bookmark(url: bookmark['url'], title: bookmark['title']))
+            .toList();
+  }
+
+  Future<void> addBookmark(Bookmark bookmark) async {
+    final prefs = await SharedPreferences.getInstance();
+    final bookmarks = await getBookmarks();
+    bookmarks.add(bookmark);
+    await prefs.setStringList(
+        _bookmarkKey, bookmarks.map((bookmark) => bookmark.toJson()).toList());
+  }
+
+  Future<void> removeBookmark(String bookmark) async {
+    final prefs = await SharedPreferences.getInstance();
+    final bookmarks = await getBookmarks();
+    bookmarks.remove(bookmark);
+    await prefs.setStringList(
+        _bookmarkKey, bookmarks.map((bookmark) => bookmark.toJson()).toList());
+  }
+}
+
+class ModelsWidget extends StatelessWidget {
+  final Models models;
+  final void Function(Model model) onModelSelected;
+
+  ModelsWidget({required this.models, required this.onModelSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: models.length,
+      itemBuilder: (context, index) {
+        final model = models.elementAt(index);
+        return ListTile(
+          title: Text(model.code),
+          onTap: () => onModelSelected(model),
+        );
+      },
+    );
+  }
+}
+
+class Bookmark extends Entity<Bookmark> {
+  String? title;
+  String url;
+
+  Bookmark({this.title, required this.url});
+
+  @override
+  String toString() {
+    return title ?? 'Unnamed Bookmark: $url';
   }
 }

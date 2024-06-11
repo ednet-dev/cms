@@ -1,34 +1,47 @@
 // main.dart
-import 'package:ednet_one/presentation/household_management/blocs/layout_block.dart';
-import 'package:ednet_one/presentation/household_management/blocs/theme_block.dart';
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'presentation/household_management/pages/my_home_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late AppLinks _appLinks;
+  late StreamSubscription<Uri> _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _appLinks = AppLinks();
+    _sub = _appLinks.uriLinkStream.listen((Uri? uri) {
+      if (uri != null) {
+        // Handle incoming link
+        // Parse the URI and navigate to the appropriate screen
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => LayoutBloc()),
-        BlocProvider(create: (context) => ThemeBloc()),
-      ],
-      child: BlocBuilder<ThemeBloc, ThemeData>(
-        builder: (context, theme) {
-          return MaterialApp(
-            title: 'Flutter Demo',
-            theme: theme,
-            home: const MyHomePage(title: 'EDNet One'),
-          );
-        },
-      ),
+    return MaterialApp(
+      title: 'EDNet One',
+      home: MyHomePage(title: 'One Home', appLinks: _appLinks),
     );
   }
 }

@@ -2,20 +2,25 @@
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
-// left_sidebar_widget.dart
 
 class LeftSidebarWidget extends StatelessWidget {
   final Entities items;
-  final void Function(Entity entity)? onEntitySelected;
+  final void Function(Entity entity) onEntitySelected;
   final Domain? domain;
   final Model? model;
 
-  const LeftSidebarWidget(
-      {super.key,
-      required this.items,
-      this.onEntitySelected,
-      required this.domain,
-      required this.model});
+  LeftSidebarWidget({
+    Key? key,
+    required this.items,
+    required void Function(Entity entity) onEntitySelected,
+    required this.domain,
+    required this.model,
+  })  : onEntitySelected = onEntitySelected ?? _defaultOnEntitySelected,
+        super(key: key);
+
+  static void _defaultOnEntitySelected(Entity entity) {
+    print('Entity selected: ${entity.code}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +37,10 @@ class LeftSidebarWidget extends StatelessWidget {
         child: EntitiesWidget(
           entities: this.items,
           onEntitySelected: onEntitySelected,
-          domain: this.domain!,
-          model: model!,
+          bookmarkManager: BookmarkManager(),
+          onBookmarkCreated: (Bookmark bookmark) {
+            print('Bookmark created: ${bookmark.code}');
+          },
         ),
       ),
     );

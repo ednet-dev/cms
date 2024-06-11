@@ -1,25 +1,18 @@
 // my_home_page.dart
 // ednet core
 // ednet cms
+import 'package:app_links/app_links.dart';
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/generated/hausehold/finance/lib/finance_household.dart'
-    as finance_household;
-import 'package:ednet_one/generated/hausehold/hausehold/lib/household_core.dart'
-    as household_core;
-import 'package:ednet_one/generated/hausehold/member/lib/member_household.dart'
-    as member_household;
-import 'package:ednet_one/generated/hausehold/project/lib/project_household.dart';
-import 'package:ednet_one/generated/user/library/lib/library_user.dart';
-import 'package:ednet_one/presentation/household_management/application.dart';
 import 'package:ednet_one/presentation/household_management/blocs/theme_block.dart';
-import 'package:ednet_one/presentation/household_management/widgets/layout/alternative_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
+import '../one_application.dart';
+import '../widgets/layout/alternative_layout.dart';
 import '../widgets/layout/footer_widget.dart';
 import '../widgets/layout/header_widget.dart';
 import '../widgets/layout/layout_template.dart';
@@ -28,9 +21,10 @@ import '../widgets/layout/main_content_widget.dart';
 import '../widgets/layout/right_sidebar_widget.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.appLinks});
 
   final String title;
+  final AppLinks appLinks;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -38,72 +32,67 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> path = ['Home'];
-  late Application app;
+
+  late OneApplication app;
+  late Domain selectedDomain;
+  late Model selectedModel;
+  Entity? selectedEntity;
+
+  List<Bookmark> bookmarks = [];
+  BookmarkManager bookmarkManager = BookmarkManager();
 
   @override
   void initState() {
     super.initState();
-    app = Application();
+    app = OneApplication();
+
+    if (app.domains.isNotEmpty) {
+      selectedDomain = app.domains.first;
+      if (selectedDomain.models.isNotEmpty) {
+        selectedModel = selectedDomain.models.first;
+        if (selectedModel.concepts.isNotEmpty) {
+          selectedEntity = null;
+        }
+      }
+    }
+
+    _loadBookmarks();
+    widget.appLinks.uriLinkStream.listen((Uri? uri) {
+      if (uri != null) {
+        _handleBookmarkSelected(uri.toString());
+      }
+    });
+  }
+
+  void _loadBookmarks() async {
+    final loadedBookmarks = await bookmarkManager.getBookmarks();
+    setState(() {
+      bookmarks = loadedBookmarks;
+    });
+  }
+
+  void _handleBookmarkCreated(Bookmark bookmark) {
+    setState(() {
+      bookmarks.add(bookmark);
+    });
+  }
+
+  void _handleBookmarkSelected(String bookmark) {
+    final uri = Uri.parse(bookmark);
+    final filters = uri.queryParameters['filters']?.split(',') ?? [];
+    // Restore filters, domain, and model based on the bookmark
+    // This part needs implementation based on your specific logic
+  }
+
+  void _handleRemoveBookmark(Bookmark bookmark) async {
+    await bookmarkManager.removeBookmark(bookmark.url);
+    setState(() {
+      bookmarks.remove(bookmark);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var householdProjectRepo = ProjectHouseholdRepo();
-    var userLibraryRepo = LibraryUserRepo();
-    var householdMemberRepo = member_household.MemberHouseholdRepo();
-    var householdCoreRepo = household_core.HouseholdCoreRepo();
-
-    //domain: 'project'
-    // model: 'household'
-    ProjectDomain householdDomain =
-        householdProjectRepo.getDomainModels("Project") as ProjectDomain;
-    HouseholdModel projectModel =
-        householdDomain.getModelEntries("Household") as HouseholdModel;
-    projectModel.simulate();
-
-    //domain: 'user'
-    // model: 'library'
-    LibraryDomain userDomain =
-        userLibraryRepo.getDomainModels("Library") as LibraryDomain;
-    UserModel libraryModel = userDomain.getModelEntries("User") as UserModel;
-    libraryModel.simulate();
-
-    //domain: 'finance'
-    // model: 'household'
-    finance_household.FinanceDomain financeDomain =
-        finance_household.FinanceHouseholdRepo().getDomainModels("Finance")
-            as finance_household.FinanceDomain;
-
-    finance_household.HouseholdModel financeModel = financeDomain
-        .getModelEntries("Household") as finance_household.HouseholdModel;
-    financeModel.simulate();
-
-    //domain: 'member'
-    // model: 'household'
-    member_household.MemberDomain memberDomain = householdMemberRepo
-        .getDomainModels("Member") as member_household.MemberDomain;
-    member_household.HouseholdModel memberModel = memberDomain
-        .getModelEntries("Household") as member_household.HouseholdModel;
-
-    //domain: 'household'
-    // model: 'core'
-    household_core.HouseholdDomain householdCoreDomain = householdCoreRepo
-        .getDomainModels("Household") as household_core.HouseholdDomain;
-    household_core.CoreModel householdCoreModel =
-        householdCoreDomain.getModelEntries("Core") as household_core.CoreModel;
-    householdCoreModel.simulate();
-
-    memberModel.simulate();
-
-    var domains = Domains()
-      ..add(householdDomain.domain)
-      ..add(userDomain.domain)
-      ..add(financeDomain.domain)
-      ..add(memberDomain.domain)
-      ..add(householdCoreDomain.domain);
-
-    var projects = projectModel.projects;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -134,9 +123,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPathSegmentTapped: (index) {
                     _handlePathSegmentTapped(context, index);
                   },
+                  filters: [],
+                  onAddFilter: (FilterCriteria filter) {},
+                  onBookmark: () {},
                 ),
                 leftSidebar: LeftSidebarWidget(
-                  items: projects,
+                  items: selectedModel.concepts,
                   onEntitySelected: (entity) {
                     setState(() {
                       path.add(
@@ -145,11 +137,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     BlocProvider.of<LayoutBloc>(context)
                         .add(SelectEntityEvent(entity: entity));
                   },
-                  model: projectModel.model,
-                  domain: householdDomain.domain,
+                  model: selectedModel,
+                  domain: selectedDomain,
                 ),
                 rightSidebar: RightSidebarWidget(
-                  domains: domains,
+                  domains: app.domains,
                   onDomainSelected: (domain) {
                     setState(() {
                       path = ['Home', domain.code];
@@ -181,9 +173,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   },
                 ),
-                mainContent: !projects.isEmpty
+                mainContent: !selectedModel.concepts.isEmpty
                     ? MainContentWidget(
-                        entity: state.selectedEntity ?? projects.first,
+                        entity: state.selectedEntity ??
+                            selectedModel.concepts.first,
                         onEntitySelected: (entity) {
                           setState(() {
                             path.add(entity.getStringFromAttribute('name') ??
@@ -198,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             } else {
               return AlternativeLayout(
-                domains: domains,
+                domains: app.domains,
                 selectedEntity: state.selectedEntity,
                 onEntitySelected: (entity) {
                   setState(() {
@@ -210,6 +203,20 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             }
           },
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Wrap(
+          children: bookmarks
+              .map((bookmark) => ListTile(
+                    title: Text(bookmark.title ?? ''),
+                    onTap: () => _handleBookmarkSelected(bookmark.url),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () => _handleRemoveBookmark(bookmark),
+                    ),
+                  ))
+              .toList(),
         ),
       ),
     );
@@ -237,7 +244,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-// domain_detail_screen.dart
 class DomainDetailScreen extends StatelessWidget {
   final Domain domain;
   final List<String> path;
@@ -259,6 +265,9 @@ class DomainDetailScreen extends StatelessWidget {
               Navigator.pop(context);
             }
           },
+          filters: [],
+          onAddFilter: (FilterCriteria filter) {},
+          onBookmark: () {},
         ),
       ),
       body: ModelsWidget(
@@ -273,7 +282,7 @@ class DomainDetailScreen extends StatelessWidget {
                 model: model,
                 path: path + [model.code],
                 onEntitySelected: (entity) {
-                  // Implement entity selection handling here
+                  // Handle entity selection
                 },
               ),
             ),
@@ -284,7 +293,6 @@ class DomainDetailScreen extends StatelessWidget {
   }
 }
 
-// model_detail_screen.dart
 class ModelDetailScreen extends StatelessWidget {
   final Domain domain;
   final Model model;
@@ -313,12 +321,13 @@ class ModelDetailScreen extends StatelessWidget {
               Navigator.pop(context);
             }
           },
+          filters: [],
+          onAddFilter: (FilterCriteria filter) {},
+          onBookmark: () {},
         ),
       ),
       body: EntitiesWidget(
         entities: model.concepts,
-        domain: domain,
-        model: model,
         onEntitySelected: (entity) {
           onEntitySelected(entity);
           Navigator.push(
@@ -326,47 +335,17 @@ class ModelDetailScreen extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => EntityDetailScreen(
                 entity: entity,
-                path:
-                    path + [entity.getStringFromAttribute('name') ?? 'Entity'],
               ),
             ),
           );
         },
+        bookmarkManager: BookmarkManager(),
+        onBookmarkCreated: (Bookmark bookmark) {},
       ),
     );
   }
 }
 
-// entity_detail_screen.dart
-class EntityDetailScreen extends StatelessWidget {
-  final Entity entity;
-  final List<String> path;
-
-  EntityDetailScreen({required this.entity, required this.path});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: HeaderWidget(
-          path: path,
-          onPathSegmentTapped: (index) {
-            if (index == 0) {
-              Navigator.popUntil(context, ModalRoute.withName('/'));
-            } else if (index == 1) {
-              Navigator.popUntil(context, ModalRoute.withName('/domain'));
-            } else if (index == 2) {
-              Navigator.pop(context);
-            }
-          },
-        ),
-      ),
-      body: EntityWidget(entity: entity),
-    );
-  }
-}
-
-// Widget for Domains
 class DomainsWidget extends StatelessWidget {
   final Domains domains;
   final void Function(Domain domain)? onDomainSelected;
@@ -392,28 +371,173 @@ class DomainsWidget extends StatelessWidget {
   }
 }
 
-// Widget for Models within a Domain
-class ModelsWidget extends StatelessWidget {
-  final Models models;
-  final void Function(Model model)? onModelSelected;
-
-  ModelsWidget({required this.models, this.onModelSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: models.length,
-      itemBuilder: (context, index) {
-        var model = models.elementAt(index);
-        return ListTile(
-          title: Text(model.code),
-          onTap: () {
-            if (onModelSelected != null) {
-              onModelSelected!(model);
-            }
-          },
-        );
-      },
-    );
-  }
-}
+// class EntitiesWidget extends StatefulWidget {
+//   final Entities<Concept> entities;
+//   final void Function(Bookmark bookmark) onBookmarkCreated;
+//   final BookmarkManager bookmarkManager;
+//
+//   EntitiesWidget(
+//       {required this.entities,
+//       required this.onBookmarkCreated,
+//       required this.bookmarkManager,
+//       required void Function(Entity<Entity> entity) onEntitySelected});
+//
+//   @override
+//   _EntitiesWidgetState createState() => _EntitiesWidgetState();
+// }
+//
+// class _EntitiesWidgetState extends State<EntitiesWidget> {
+//   List<FilterCriteria> _filters = [];
+//   List<Entity> _filteredEntities = [];
+//   ScrollController _scrollController = ScrollController();
+//   bool _isBookmarking = false;
+//   TextEditingController _bookmarkTitleController = TextEditingController();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _applyFilters();
+//     _scrollController.addListener(_onScroll);
+//   }
+//
+//   void _onScroll() {
+//     if (_scrollController.position.pixels ==
+//         _scrollController.position.maxScrollExtent) {
+//       _loadMoreEntities();
+//     }
+//   }
+//
+//   void _applyFilters() {
+//     setState(() {
+//       _filteredEntities = widget.entities.where((entity) {
+//         for (var filter in _filters) {
+//           if (!_matchesFilter(entity, filter)) {
+//             return false;
+//           }
+//         }
+//         return true;
+//       }).toList();
+//     });
+//   }
+//
+//   bool _matchesFilter(Entity entity, FilterCriteria filter) {
+//     final attributeValue = entity.getAttribute(filter.attribute)?.getValue();
+//     switch (filter.operator) {
+//       case '=':
+//         return attributeValue == filter.value;
+//       case '!=':
+//         return attributeValue != filter.value;
+//       case '>':
+//         return attributeValue > filter.value;
+//       case '<':
+//         return attributeValue < filter.value;
+//       // Add more operators as needed
+//       default:
+//         return false;
+//     }
+//   }
+//
+//   void _loadMoreEntities() {
+//     // Implement logic to load more entities if available
+//   }
+//
+//   void _addFilter(FilterCriteria filter) {
+//     setState(() {
+//       _filters.add(filter);
+//       _applyFilters();
+//     });
+//   }
+//
+//   void _createBookmark() async {
+//     setState(() {
+//       _isBookmarking = true;
+//     });
+//   }
+//
+//   void _saveBookmark() async {
+//     final bookmarkTitle = _bookmarkTitleController.text;
+//     if (bookmarkTitle.isNotEmpty) {
+//       final bookmark = Bookmark(
+//           title: bookmarkTitle,
+//           url: '/entities?filters=' +
+//               _filters
+//                   .map((filter) =>
+//                       '${filter.attribute}:${filter.operator}:${filter.value}')
+//                   .join(','));
+//
+//       await widget.bookmarkManager.addBookmark(bookmark);
+//       widget.onBookmarkCreated(bookmark);
+//     }
+//     setState(() {
+//       _isBookmarking = false;
+//       _bookmarkTitleController.clear();
+//     });
+//   }
+//
+//   void _cancelBookmark() {
+//     setState(() {
+//       _isBookmarking = false;
+//       _bookmarkTitleController.clear();
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SingleChildScrollView(
+//       child: Column(
+//         children: [
+//           HeaderWidget(
+//             filters: _filters,
+//             onAddFilter: _addFilter,
+//             onBookmark: _createBookmark,
+//             path: [
+//               'Home',
+//             ],
+//             onPathSegmentTapped: (index) {
+//               // Handle path segment tap
+//             },
+//           ),
+//           if (_isBookmarking)
+//             Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: Row(
+//                 children: [
+//                   Expanded(
+//                     child: TextField(
+//                       controller: _bookmarkTitleController,
+//                       decoration: InputDecoration(hintText: 'Bookmark Title'),
+//                     ),
+//                   ),
+//                   IconButton(
+//                     icon: Icon(Icons.check),
+//                     onPressed: _saveBookmark,
+//                   ),
+//                   IconButton(
+//                     icon: Icon(Icons.cancel),
+//                     onPressed: _cancelBookmark,
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           Expanded(
+//             child: ListView.builder(
+//               controller: _scrollController,
+//               itemCount: _filteredEntities.length,
+//               itemBuilder: (context, index) {
+//                 final entity = _filteredEntities[index];
+//                 return ListTile(
+//                   title: Text(entity.getStringFromAttribute('name') ??
+//                       'Unnamed Entity'),
+//                   subtitle: Text(entity.toString()),
+//                   onTap: () {
+//                     // Handle entity selection if needed
+//                   },
+//                 );
+//               },
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
