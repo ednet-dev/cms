@@ -1,4 +1,4 @@
-domain: 'project_management'
+domain: 'project'
 model: 'brainstorming'
 concepts:
   - name: MindMap
@@ -24,10 +24,6 @@ concepts:
         - name: description
         - name: url
   - name: Idea
-    attributes:
-        - name: name
-        - name: description
-  - name: Concept
     attributes:
         - name: name
         - name: description

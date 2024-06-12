@@ -1,7 +1,7 @@
-name: finance_household
+name: household_finance
 version: 1.0.0
 
-description: finance_household application that uses ednet_core for its model.
+description: household_finance application that uses ednet_core for its model.
 
 homepage: https://ednet.one/
 

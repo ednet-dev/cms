@@ -1,7 +1,7 @@
-# member_household 
+# household_member 
 
 **Categories**: ednet_core, domain models. 
 
 ## Description: 
-member_household project uses 
+household_member project uses 
 [EDNetCore](https://github.com/context-dev/ednet_core) for the model.

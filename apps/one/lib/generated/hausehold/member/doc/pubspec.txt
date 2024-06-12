@@ -1,8 +1,8 @@
-name: member_household
+name: household_member
 author: Your Name
 homepage: http://ondart.me/
 version: 0.0.1
-description: member_household application that uses ednet_core for its model.
+description: household_member application that uses ednet_core for its model.
 environment:
   sdk: '>=3.0.3 <4.0.0'
 dependencies:

@@ -1,4 +1,4 @@
-domain: 'project_management'
+domain: 'project'
 model: 'planning'
 concepts:
   - name: Plan

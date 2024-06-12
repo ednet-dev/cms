@@ -1,7 +1,7 @@
-# finance_household 
+# household_finance 
 
 **Categories**: ednet_core, domain models. 
 
 ## Description: 
-finance_household project uses 
+household_finance project uses 
 [EDNetCore](https://github.com/context-dev/ednet_core) for the model.

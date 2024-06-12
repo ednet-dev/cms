@@ -1,5 +1,5 @@
-domain: 'project_management'
-model: 'GTD'
+domain: 'project'
+model: 'gtd'
 concepts:
   - name: Inbox
     entry: true
@@ -146,7 +146,7 @@ concepts:
         name: ReviewCompleted
         description: A review has been conducted and the system updated.
 
-  - name: Action
+  - name: NextAction
     entry: true
     attributes:
       - sequence: 1
@@ -250,7 +250,7 @@ relations:
     internal: false
     category: 'association'
 
-  - from: Action
+  - from: NextAction
     to: Task
     fromToName: tasks
     fromToMin: '0'

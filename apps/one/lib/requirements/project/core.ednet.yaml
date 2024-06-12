@@ -1,235 +1,281 @@
-domain: 'project_management'
+domain: 'project'
 model: 'core'
 concepts:
-  - name: InitiationPhase
+  - name: Project
     entry: true
     attributes:
       - sequence: 1
         category: attribute
-        name: ProjectCharter
-        type: Document
+        name: name
+        type: String
         essential: true
         sensitive: false
       - sequence: 2
         category: attribute
-        name: StakeholderIdentification
-        type: List
-        essential: true
+        name: description
+        type: String
+        essential: false
         sensitive: false
       - sequence: 3
         category: attribute
-        name: FeasibilityStudy
-        type: Document
+        name: startDate
+        type: DateTime
         essential: true
         sensitive: false
       - sequence: 4
         category: attribute
-        name: ProjectGoals
-        type: List
-        essential: true
-        sensitive: false
-
-  - name: PlanningPhase
-    entry: true
-    attributes:
-      - sequence: 1
-        category: attribute
-        name: ScopeDefinition
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 2
-        category: attribute
-        name: WorkBreakdownStructure
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 3
-        category: attribute
-        name: ScheduleDevelopment
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 4
-        category: attribute
-        name: ResourcePlanning
-        type: Document
-        essential: true
+        name: endDate
+        type: DateTime
+        essential: false
         sensitive: false
       - sequence: 5
         category: attribute
-        name: Budgeting
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 6
-        category: attribute
-        name: RiskManagement
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 7
-        category: attribute
-        name: CommunicationPlan
-        type: Document
-        essential: true
+        name: budget
+        type: double
+        essential: false
         sensitive: false
 
-  - name: ExecutionPhase
+  - name: Task
     entry: true
     attributes:
       - sequence: 1
         category: attribute
-        name: TaskAssignment
-        type: Document
+        name: title
+        type: String
         essential: true
         sensitive: false
       - sequence: 2
         category: attribute
-        name: ResourceAllocation
-        type: Document
+        name: dueDate
+        type: DateTime
         essential: true
         sensitive: false
       - sequence: 3
         category: attribute
-        name: ProjectManagement
-        type: Document
+        name: status
+        type: String
         essential: true
         sensitive: false
       - sequence: 4
         category: attribute
-        name: QualityAssurance
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 5
-        category: attribute
-        name: Communication
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 6
-        category: attribute
-        name: RiskMonitoring
-        type: Document
-        essential: true
+        name: priority
+        type: String
+        essential: false
         sensitive: false
 
-  - name: MonitoringAndControllingPhase
+  - name: Milestone
     entry: true
     attributes:
       - sequence: 1
         category: attribute
-        name: PerformanceMeasurement
-        type: Document
+        name: name
+        type: String
         essential: true
         sensitive: false
       - sequence: 2
         category: attribute
-        name: ChangeManagement
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 3
-        category: attribute
-        name: QualityControl
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 4
-        category: attribute
-        name: IssueResolution
-        type: Document
-        essential: true
-        sensitive: false
-      - sequence: 5
-        category: attribute
-        name: Reporting
-        type: Document
+        name: date
+        type: DateTime
         essential: true
         sensitive: false
 
-  - name: ClosingPhase
+  - name: Resource
     entry: true
     attributes:
       - sequence: 1
         category: attribute
-        name: FinalDeliverableHandover
-        type: Document
+        name: name
+        type: String
         essential: true
         sensitive: false
       - sequence: 2
         category: attribute
-        name: ProjectDocumentation
-        type: Document
+        name: type
+        type: String
         essential: true
         sensitive: false
       - sequence: 3
         category: attribute
-        name: StakeholderSignOff
-        type: Document
+        name: cost
+        type: double
+        essential: false
+        sensitive: false
+
+  - name: Role
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: title
+        type: String
         essential: true
         sensitive: false
-      - sequence: 4
+      - sequence: 2
         category: attribute
-        name: ProjectReview
-        type: Document
+        name: responsibility
+        type: String
         essential: true
         sensitive: false
-      - sequence: 5
+
+  - name: Team
+    entry: true
+    attributes:
+      - sequence: 1
         category: attribute
-        name: ResourceRelease
-        type: Document
+        name: name
+        type: String
         essential: true
         sensitive: false
-      - sequence: 6
+
+  - name: Skill
+    entry: true
+    attributes:
+      - sequence: 1
         category: attribute
-        name: CelebrateSuccess
-        type: Document
+        name: name
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 2
+        category: attribute
+        name: level
+        type: String
+        essential: false
+        sensitive: false
+
+  - name: Time
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: hours
+        type: int
+        essential: true
+        sensitive: false
+
+  - name: Budget
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: amount
+        type: double
+        essential: true
+        sensitive: false
+      - sequence: 2
+        category: attribute
+        name: currency
+        type: String
+        essential: true
+        sensitive: false
+
+  - name: Initiative
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: name
+        type: String
         essential: true
         sensitive: false
 
 relations:
-  - from: InitiationPhase
-    to: PlanningPhase
-    fromToName: planningPhase
-    fromToMin: '1'
-    fromToMax: '1'
-    toFromName: initiationPhase
+  - from: Project
+    to: Task
+    fromToName: tasks
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: project
     toFromMin: '1'
     toFromMax: '1'
     internal: false
-    category: 'sequence'
+    category: 'association'
 
-  - from: PlanningPhase
-    to: ExecutionPhase
-    fromToName: executionPhase
-    fromToMin: '1'
-    fromToMax: '1'
-    toFromName: planningPhase
+  - from: Project
+    to: Milestone
+    fromToName: milestones
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: project
     toFromMin: '1'
     toFromMax: '1'
     internal: false
-    category: 'sequence'
+    category: 'association'
 
-  - from: ExecutionPhase
-    to: MonitoringAndControllingPhase
-    fromToName: monitoringAndControllingPhase
-    fromToMin: '1'
-    fromToMax: '1'
-    toFromName: executionPhase
+  - from: Task
+    to: Resource
+    fromToName: resources
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: task
     toFromMin: '1'
     toFromMax: '1'
     internal: false
-    category: 'sequence'
+    category: 'association'
 
-  - from: MonitoringAndControllingPhase
-    to: ClosingPhase
-    fromToName: closingPhase
-    fromToMin: '1'
-    fromToMax: '1'
-    toFromName: monitoringAndControllingPhase
+  - from: Team
+    to: Role
+    fromToName: roles
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: team
     toFromMin: '1'
     toFromMax: '1'
     internal: false
-    category: 'sequence'
+    category: 'association'
+
+  - from: Resource
+    to: Skill
+    fromToName: skills
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: resource
+    toFromMin: '1'
+    toFromMax: '1'
+    internal: false
+    category: 'association'
+
+  - from: Project
+    to: Team
+    fromToName: teams
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: project
+    toFromMin: '1'
+    toFromMax: '1'
+    internal: false
+    category: 'association'
+
+  - from: Project
+    to: Budget
+    fromToName: budgets
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: project
+    toFromMin: '1'
+    toFromMax: '1'
+    internal: false
+    category: 'association'
+
+  - from: Project
+    to: Initiative
+    fromToName: initiatives
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: project
+    toFromMin: '1'
+    toFromMax: '1'
+    internal: false
+    category: 'association'
+
+  - from: Project
+    to: Time
+    fromToName: times
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromName: project
+    toFromMin: '1'
+    toFromMax: '1'
+    internal: false
+    category: 'association'
+

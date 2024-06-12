@@ -1,7 +1,7 @@
-name: member_household
+name: household_member
 version: 1.0.0
 
-description: member_household application that uses ednet_core for its model.
+description: household_member application that uses ednet_core for its model.
 
 homepage: https://ednet.one/
 
