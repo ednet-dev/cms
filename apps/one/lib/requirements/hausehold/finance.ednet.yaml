@@ -1,5 +1,5 @@
-domain: 'finance'
-model: 'household'
+domain: 'household'
+model: 'finance'
 concepts:
   - name: Finance
     entry: true
