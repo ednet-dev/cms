@@ -432,32 +432,15 @@ class SortOrder {
   static const SortOrder DESCENDING = SortOrder('DESCENDING');
 }
 
-class UserCriteria extends Criteria<User> {
-  UserCriteria() : super(chainingOperand: Operand.AND);
-}
-
-class User extends Entity<User> {
-  static const String nameAttribute = 'name';
-  static const String ageAttribute = 'age';
-
-  User(Concept concept) {
-    this.concept = concept;
-  }
-
-  String get name => getAttribute(nameAttribute);
-
-  set name(String name) => setAttribute(nameAttribute, name);
-
-  int get age => getAttribute(ageAttribute);
-
-  set age(int age) => setAttribute(ageAttribute, age);
-}
-
-final criteria = Criteria<User>()
-  ..addCriterion(Criterion(User.nameAttribute, Operand.EQUAL, 'John'))
-  ..addCriterion(Criterion(User.ageAttribute, Operand.GREATER_THAN, 18))
-  ..addCriterion(Criterion(User.ageAttribute, Operand.LESS_THAN, 30))
-  ..addCriterion(
-      Criterion(User.ageAttribute, Operand.SORT, SortOrder.ASCENDING))
-  ..addCriterion(Criterion(User.ageAttribute, Operand.LIMIT, 10))
-  ..addCriterion(Criterion(User.ageAttribute, Operand.SKIP, 5));
+// class UserCriteria extends Criteria<User> {
+//   UserCriteria() : super(chainingOperand: Operand.AND);
+// }
+//
+// final criteria = Criteria<User>()
+//   ..addCriterion(Criterion(User.nameAttribute, Operand.EQUAL, 'John'))
+//   ..addCriterion(Criterion(User.ageAttribute, Operand.GREATER_THAN, 18))
+//   ..addCriterion(Criterion(User.ageAttribute, Operand.LESS_THAN, 30))
+//   ..addCriterion(
+//       Criterion(User.ageAttribute, Operand.SORT, SortOrder.ASCENDING))
+//   ..addCriterion(Criterion(User.ageAttribute, Operand.LIMIT, 10))
+//   ..addCriterion(Criterion(User.ageAttribute, Operand.SKIP, 5));
