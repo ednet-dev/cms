@@ -129,8 +129,8 @@ void testProjectCoreRoles(
       var rolesCount = roles.length; 
  
       var role = Role(roles.concept); 
-      role.title = 'candy'; 
-      role.responsibility = 'left'; 
+      role.title = 'selfie'; 
+      role.responsibility = 'element'; 
       var added = selectedRoles.add(role); 
       expect(added, isTrue); 
       expect(roles.length, equals(++rolesCount)); 
@@ -223,8 +223,8 @@ void testProjectCoreRoles(
     test("Update role non id attribute with failure", () { 
       var randomRole = coreModel.roles.random(); 
       var afterUpdateEntity = randomRole.copy(); 
-      afterUpdateEntity.title = 'ocean'; 
-      expect(afterUpdateEntity.title, equals('ocean')); 
+      afterUpdateEntity.title = 'professor'; 
+      expect(afterUpdateEntity.title, equals('professor')); 
       // roles.update can only be used if oid, code or id is set. 
       expect(() => roles.update(randomRole, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -245,8 +245,8 @@ void testProjectCoreRoles(
     test("role action undo and redo", () { 
       var roleCount = roles.length; 
       var role = Role(roles.concept); 
-        role.title = 'tree'; 
-      role.responsibility = 'time'; 
+        role.title = 'hell'; 
+      role.responsibility = 'team'; 
     var roleTeam = coreModel.teams.random(); 
     role.team = roleTeam; 
       roles.add(role); 
@@ -269,8 +269,8 @@ void testProjectCoreRoles(
     test("role session undo and redo", () { 
       var roleCount = roles.length; 
       var role = Role(roles.concept); 
-        role.title = 'account'; 
-      role.responsibility = 'knowledge'; 
+        role.title = 'water'; 
+      role.responsibility = 'advisor'; 
     var roleTeam = coreModel.teams.random(); 
     role.team = roleTeam; 
       roles.add(role); 
@@ -292,7 +292,7 @@ void testProjectCoreRoles(
  
     test("Role update undo and redo", () { 
       var role = coreModel.roles.random(); 
-      var action = SetAttributeCommand(session, role, "title", 'executive'); 
+      var action = SetAttributeCommand(session, role, "title", 'paper'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -393,8 +393,8 @@ void testProjectCoreRoles(
  
       projectDomain.startCommandReaction(reaction); 
       var role = Role(roles.concept); 
-        role.title = 'river'; 
-      role.responsibility = 'selfie'; 
+        role.title = 'output'; 
+      role.responsibility = 'wheat'; 
     var roleTeam = coreModel.teams.random(); 
     role.team = roleTeam; 
       roles.add(role); 
@@ -410,7 +410,7 @@ void testProjectCoreRoles(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, role, "title", 'music'); 
+        session, role, "title", 'college'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

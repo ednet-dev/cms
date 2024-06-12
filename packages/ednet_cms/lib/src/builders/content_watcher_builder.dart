@@ -58,15 +58,95 @@ class CodeGenerator {
     required File yamlFile,
   }) async {
     try {
-      await EDNetCodeGenerator.generateFromYaml(
+      final meta = await EDNetCodeGenerator.generateFromYaml(
         targetDir: targetDir,
         yamlFile: yamlFile,
       );
-      // Execute dart pub get in the root folder of the generated lib
+
+      updateOneApplication(meta);
     } catch (e) {
       log.severe('Error generating code for file: $sourceDir, Error: $e');
       throw e;
     }
+  }
+
+  void updateOneApplication(MetaInfo meta) {
+    final oneApplicationFile = File('lib/generated/one_application.dart');
+    final alias =
+        '${meta.domain[0]}${meta.domain[meta.domain.length - 1]}${meta.model[0]}${meta.model[meta.model.length - 1]}';
+    final importPath =
+        'package:ednet_one/generated/${meta.domain}/${meta.model}/lib/${meta.domain}_${meta.model}.dart';
+
+    // Placeholder for the imports section
+    const importsPlaceholder = '// IMPORTS PLACEHOLDER';
+    // Placeholder for the initialization section
+    const initPlaceholder = '// INIT PLACEHOLDER';
+
+    if (!oneApplicationFile.existsSync()) {
+      oneApplicationFile.writeAsStringSync("""
+import 'package:ednet_core/ednet_core.dart';
+
+$importsPlaceholder
+
+class OneApplication {
+  final Domains _domains = Domains();
+
+  OneApplication() {
+    _initializeDomains();
+  }
+
+  void _initializeDomains() {
+    $initPlaceholder
+  }
+
+  Domains get domains => _domains;
+}
+""");
+    }
+
+    var content = oneApplicationFile.readAsStringSync();
+
+    // Add import if it doesn't already exist
+    if (!content.contains("import '$importPath' as $alias;")) {
+      content = content.replaceFirst(importsPlaceholder,
+          "import '$importPath' as $alias;\n$importsPlaceholder");
+    }
+
+    // Prepare the initialization code
+    final repoVarName =
+        '${firstLetterLower(meta.domain)}${firstLetterUpper(meta.model)}Repo';
+    final domainVarName =
+        '${firstLetterLower(meta.domain)}${firstLetterUpper(meta.model)}Domain';
+    final modelVarName = '${firstLetterLower(meta.model)}Model';
+
+    final initCode = """
+    // ${meta.domain} ${meta.model}
+    final $repoVarName = $alias.${firstLetterUpper(meta.domain)}${firstLetterUpper(meta.model)}Repo();
+    $alias.${firstLetterUpper(meta.domain)}Domain $domainVarName = $repoVarName
+        .getDomainModels("${firstLetterUpper(meta.domain)}") as $alias.${firstLetterUpper(meta.domain)}Domain;
+    $alias.${firstLetterUpper(meta.model)}Model $modelVarName =
+        $domainVarName.getModelEntries("${firstLetterUpper(meta.model)}") as $alias.${firstLetterUpper(meta.model)}Model;
+    $modelVarName.init();
+
+    _domains..add($domainVarName.domain);
+""";
+
+    // Add initialization if it doesn't already exist
+    if (!content.contains(initCode.trim())) {
+      content =
+          content.replaceFirst(initPlaceholder, "$initCode$initPlaceholder");
+    }
+
+    // Write the updated content back to the file
+    oneApplicationFile.writeAsStringSync(content);
+  }
+
+  String firstLetterUpper(String text) {
+    return '${text[0].toUpperCase()}${text.substring(1)}';
+  }
+
+  String firstLetterLower(String text) {
+    return '${text[0].toLowerCase()}${text.substring(1)}';
   }
 }
 

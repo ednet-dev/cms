@@ -129,13 +129,13 @@ void testProjectSchedulingPlanningPhases(
       var planningPhasesCount = planningPhases.length; 
  
       var planningPhase = PlanningPhase(planningPhases.concept); 
-      planningPhase.ScopeDefinition = 'umbrella'; 
-      planningPhase.WorkBreakdownStructure = 'car'; 
-      planningPhase.ScheduleDevelopment = 'corner'; 
-      planningPhase.ResourcePlanning = 'circle'; 
-      planningPhase.Budgeting = 'hospital'; 
-      planningPhase.RiskManagement = 'home'; 
-      planningPhase.CommunicationPlan = 'tall'; 
+      planningPhase.ScopeDefinition = 'country'; 
+      planningPhase.WorkBreakdownStructure = 'web'; 
+      planningPhase.ScheduleDevelopment = 'small'; 
+      planningPhase.ResourcePlanning = 'tent'; 
+      planningPhase.Budgeting = 'girl'; 
+      planningPhase.RiskManagement = 'policeman'; 
+      planningPhase.CommunicationPlan = 'boat'; 
       var added = selectedPlanningPhases.add(planningPhase); 
       expect(added, isTrue); 
       expect(planningPhases.length, equals(++planningPhasesCount)); 
@@ -228,8 +228,8 @@ void testProjectSchedulingPlanningPhases(
     test("Update planningPhase non id attribute with failure", () { 
       var randomPlanningPhase = schedulingModel.planningPhases.random(); 
       var afterUpdateEntity = randomPlanningPhase.copy(); 
-      afterUpdateEntity.ScopeDefinition = 'present'; 
-      expect(afterUpdateEntity.ScopeDefinition, equals('present')); 
+      afterUpdateEntity.ScopeDefinition = 'training'; 
+      expect(afterUpdateEntity.ScopeDefinition, equals('training')); 
       // planningPhases.update can only be used if oid, code or id is set. 
       expect(() => planningPhases.update(randomPlanningPhase, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -255,13 +255,13 @@ void testProjectSchedulingPlanningPhases(
     test("planningPhase action undo and redo", () { 
       var planningPhaseCount = planningPhases.length; 
       var planningPhase = PlanningPhase(planningPhases.concept); 
-        planningPhase.ScopeDefinition = 'tree'; 
-      planningPhase.WorkBreakdownStructure = 'marriage'; 
-      planningPhase.ScheduleDevelopment = 'cable'; 
-      planningPhase.ResourcePlanning = 'tax'; 
-      planningPhase.Budgeting = 'table'; 
-      planningPhase.RiskManagement = 'hot'; 
-      planningPhase.CommunicationPlan = 'sailing'; 
+        planningPhase.ScopeDefinition = 'park'; 
+      planningPhase.WorkBreakdownStructure = 'price'; 
+      planningPhase.ScheduleDevelopment = 'month'; 
+      planningPhase.ResourcePlanning = 'offence'; 
+      planningPhase.Budgeting = 'pencil'; 
+      planningPhase.RiskManagement = 'wave'; 
+      planningPhase.CommunicationPlan = 'highway'; 
     var planningPhaseInitiationPhase = schedulingModel.initiationPhases.random(); 
     planningPhase.initiationPhase = planningPhaseInitiationPhase; 
       planningPhases.add(planningPhase); 
@@ -284,13 +284,13 @@ void testProjectSchedulingPlanningPhases(
     test("planningPhase session undo and redo", () { 
       var planningPhaseCount = planningPhases.length; 
       var planningPhase = PlanningPhase(planningPhases.concept); 
-        planningPhase.ScopeDefinition = 'software'; 
-      planningPhase.WorkBreakdownStructure = 'cash'; 
-      planningPhase.ScheduleDevelopment = 'brave'; 
-      planningPhase.ResourcePlanning = 'fish'; 
-      planningPhase.Budgeting = 'hot'; 
-      planningPhase.RiskManagement = 'lifespan'; 
-      planningPhase.CommunicationPlan = 'cabinet'; 
+        planningPhase.ScopeDefinition = 'parfem'; 
+      planningPhase.WorkBreakdownStructure = 'secretary'; 
+      planningPhase.ScheduleDevelopment = 'abstract'; 
+      planningPhase.ResourcePlanning = 'holiday'; 
+      planningPhase.Budgeting = 'autobus'; 
+      planningPhase.RiskManagement = 'selfie'; 
+      planningPhase.CommunicationPlan = 'corner'; 
     var planningPhaseInitiationPhase = schedulingModel.initiationPhases.random(); 
     planningPhase.initiationPhase = planningPhaseInitiationPhase; 
       planningPhases.add(planningPhase); 
@@ -312,7 +312,7 @@ void testProjectSchedulingPlanningPhases(
  
     test("PlanningPhase update undo and redo", () { 
       var planningPhase = schedulingModel.planningPhases.random(); 
-      var action = SetAttributeCommand(session, planningPhase, "ScopeDefinition", 'feeling'); 
+      var action = SetAttributeCommand(session, planningPhase, "ScopeDefinition", 'answer'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -413,13 +413,13 @@ void testProjectSchedulingPlanningPhases(
  
       projectDomain.startCommandReaction(reaction); 
       var planningPhase = PlanningPhase(planningPhases.concept); 
-        planningPhase.ScopeDefinition = 'picture'; 
-      planningPhase.WorkBreakdownStructure = 'course'; 
-      planningPhase.ScheduleDevelopment = 'photo'; 
-      planningPhase.ResourcePlanning = 'candy'; 
-      planningPhase.Budgeting = 'ship'; 
-      planningPhase.RiskManagement = 'architecture'; 
-      planningPhase.CommunicationPlan = 'team'; 
+        planningPhase.ScopeDefinition = 'training'; 
+      planningPhase.WorkBreakdownStructure = 'energy'; 
+      planningPhase.ScheduleDevelopment = 'yellow'; 
+      planningPhase.ResourcePlanning = 'abstract'; 
+      planningPhase.Budgeting = 'call'; 
+      planningPhase.RiskManagement = 'holiday'; 
+      planningPhase.CommunicationPlan = 'accomodation'; 
     var planningPhaseInitiationPhase = schedulingModel.initiationPhases.random(); 
     planningPhase.initiationPhase = planningPhaseInitiationPhase; 
       planningPhases.add(planningPhase); 
@@ -435,7 +435,7 @@ void testProjectSchedulingPlanningPhases(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, planningPhase, "ScopeDefinition", 'book'); 
+        session, planningPhase, "ScopeDefinition", 'tent'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

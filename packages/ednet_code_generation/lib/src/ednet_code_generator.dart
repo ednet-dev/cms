@@ -21,7 +21,7 @@ class EDNetCodeGenerator {
     return 'Code generation completed!';
   }
 
-  static Future<String> generateFromYaml({
+  static Future<MetaInfo> generateFromYaml({
     required String targetDir,
     required File yamlFile,
   }) async {
@@ -31,8 +31,24 @@ class EDNetCodeGenerator {
     // Generate the project for the domain model
     genProject('--genall', targetDir);
 
-    return 'Code generation completed!';
+    return MetaInfo(
+      domain: domainName,
+      model: modelName,
+      dir: targetDir,
+    );
   }
+}
+
+class MetaInfo {
+  final String domain;
+  final String model;
+  final String dir;
+
+  MetaInfo({
+    required this.domain,
+    required this.model,
+    required this.dir,
+  });
 }
 
 String firstLetterToUpper(String text) {

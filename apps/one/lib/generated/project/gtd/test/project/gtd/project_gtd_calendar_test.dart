@@ -129,7 +129,7 @@ void testProjectGtdCalendars(
       var calendarsCount = calendars.length; 
  
       var calendar = Calendar(calendars.concept); 
-      calendar.events = 'agreement'; 
+      calendar.events = 'hunting'; 
       var added = selectedCalendars.add(calendar); 
       expect(added, isTrue); 
       expect(calendars.length, equals(++calendarsCount)); 
@@ -222,8 +222,8 @@ void testProjectGtdCalendars(
     test("Update calendar non id attribute with failure", () { 
       var randomCalendar = gtdModel.calendars.random(); 
       var afterUpdateEntity = randomCalendar.copy(); 
-      afterUpdateEntity.events = 'consulting'; 
-      expect(afterUpdateEntity.events, equals('consulting')); 
+      afterUpdateEntity.events = 'architecture'; 
+      expect(afterUpdateEntity.events, equals('architecture')); 
       // calendars.update can only be used if oid, code or id is set. 
       expect(() => calendars.update(randomCalendar, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectGtdCalendars(
     test("calendar action undo and redo", () { 
       var calendarCount = calendars.length; 
       var calendar = Calendar(calendars.concept); 
-        calendar.events = 'end'; 
+        calendar.events = 'undo'; 
     var calendarTask = gtdModel.tasks.random(); 
     calendar.task = calendarTask; 
       calendars.add(calendar); 
@@ -266,7 +266,7 @@ void testProjectGtdCalendars(
     test("calendar session undo and redo", () { 
       var calendarCount = calendars.length; 
       var calendar = Calendar(calendars.concept); 
-        calendar.events = 'tree'; 
+        calendar.events = 'home'; 
     var calendarTask = gtdModel.tasks.random(); 
     calendar.task = calendarTask; 
       calendars.add(calendar); 
@@ -288,7 +288,7 @@ void testProjectGtdCalendars(
  
     test("Calendar update undo and redo", () { 
       var calendar = gtdModel.calendars.random(); 
-      var action = SetAttributeCommand(session, calendar, "events", 'sailing'); 
+      var action = SetAttributeCommand(session, calendar, "events", 'tape'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -389,7 +389,7 @@ void testProjectGtdCalendars(
  
       projectDomain.startCommandReaction(reaction); 
       var calendar = Calendar(calendars.concept); 
-        calendar.events = 'question'; 
+        calendar.events = 'capacity'; 
     var calendarTask = gtdModel.tasks.random(); 
     calendar.task = calendarTask; 
       calendars.add(calendar); 
@@ -405,7 +405,7 @@ void testProjectGtdCalendars(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, calendar, "events", 'body'); 
+        session, calendar, "events", 'chairman'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

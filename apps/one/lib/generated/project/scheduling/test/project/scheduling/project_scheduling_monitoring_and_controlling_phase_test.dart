@@ -129,11 +129,11 @@ void testProjectSchedulingMonitoringAndControllingPhases(
       var monitoringAndControllingPhasesCount = monitoringAndControllingPhases.length; 
  
       var monitoringAndControllingPhase = MonitoringAndControllingPhase(monitoringAndControllingPhases.concept); 
-      monitoringAndControllingPhase.PerformanceMeasurement = 'heating'; 
-      monitoringAndControllingPhase.ChangeManagement = 'heaven'; 
-      monitoringAndControllingPhase.QualityControl = 'answer'; 
-      monitoringAndControllingPhase.IssueResolution = 'beginning'; 
-      monitoringAndControllingPhase.Reporting = 'big'; 
+      monitoringAndControllingPhase.PerformanceMeasurement = 'understanding'; 
+      monitoringAndControllingPhase.ChangeManagement = 'truck'; 
+      monitoringAndControllingPhase.QualityControl = 'lunch'; 
+      monitoringAndControllingPhase.IssueResolution = 'judge'; 
+      monitoringAndControllingPhase.Reporting = 'fascination'; 
       var added = selectedMonitoringAndControllingPhases.add(monitoringAndControllingPhase); 
       expect(added, isTrue); 
       expect(monitoringAndControllingPhases.length, equals(++monitoringAndControllingPhasesCount)); 
@@ -226,8 +226,8 @@ void testProjectSchedulingMonitoringAndControllingPhases(
     test("Update monitoringAndControllingPhase non id attribute with failure", () { 
       var randomMonitoringAndControllingPhase = schedulingModel.monitoringAndControllingPhases.random(); 
       var afterUpdateEntity = randomMonitoringAndControllingPhase.copy(); 
-      afterUpdateEntity.PerformanceMeasurement = 'auto'; 
-      expect(afterUpdateEntity.PerformanceMeasurement, equals('auto')); 
+      afterUpdateEntity.PerformanceMeasurement = 'team'; 
+      expect(afterUpdateEntity.PerformanceMeasurement, equals('team')); 
       // monitoringAndControllingPhases.update can only be used if oid, code or id is set. 
       expect(() => monitoringAndControllingPhases.update(randomMonitoringAndControllingPhase, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -251,11 +251,11 @@ void testProjectSchedulingMonitoringAndControllingPhases(
     test("monitoringAndControllingPhase action undo and redo", () { 
       var monitoringAndControllingPhaseCount = monitoringAndControllingPhases.length; 
       var monitoringAndControllingPhase = MonitoringAndControllingPhase(monitoringAndControllingPhases.concept); 
-        monitoringAndControllingPhase.PerformanceMeasurement = 'crisis'; 
-      monitoringAndControllingPhase.ChangeManagement = 'training'; 
-      monitoringAndControllingPhase.QualityControl = 'time'; 
-      monitoringAndControllingPhase.IssueResolution = 'college'; 
-      monitoringAndControllingPhase.Reporting = 'slate'; 
+        monitoringAndControllingPhase.PerformanceMeasurement = 'plate'; 
+      monitoringAndControllingPhase.ChangeManagement = 'lifespan'; 
+      monitoringAndControllingPhase.QualityControl = 'dog'; 
+      monitoringAndControllingPhase.IssueResolution = 'saving'; 
+      monitoringAndControllingPhase.Reporting = 'car'; 
     var monitoringAndControllingPhaseExecutionPhase = schedulingModel.executionPhases.random(); 
     monitoringAndControllingPhase.executionPhase = monitoringAndControllingPhaseExecutionPhase; 
       monitoringAndControllingPhases.add(monitoringAndControllingPhase); 
@@ -278,11 +278,11 @@ void testProjectSchedulingMonitoringAndControllingPhases(
     test("monitoringAndControllingPhase session undo and redo", () { 
       var monitoringAndControllingPhaseCount = monitoringAndControllingPhases.length; 
       var monitoringAndControllingPhase = MonitoringAndControllingPhase(monitoringAndControllingPhases.concept); 
-        monitoringAndControllingPhase.PerformanceMeasurement = 'beer'; 
-      monitoringAndControllingPhase.ChangeManagement = 'guest'; 
-      monitoringAndControllingPhase.QualityControl = 'finger'; 
-      monitoringAndControllingPhase.IssueResolution = 'policeman'; 
-      monitoringAndControllingPhase.Reporting = 'opinion'; 
+        monitoringAndControllingPhase.PerformanceMeasurement = 'accident'; 
+      monitoringAndControllingPhase.ChangeManagement = 'pattern'; 
+      monitoringAndControllingPhase.QualityControl = 'mind'; 
+      monitoringAndControllingPhase.IssueResolution = 'walking'; 
+      monitoringAndControllingPhase.Reporting = 'service'; 
     var monitoringAndControllingPhaseExecutionPhase = schedulingModel.executionPhases.random(); 
     monitoringAndControllingPhase.executionPhase = monitoringAndControllingPhaseExecutionPhase; 
       monitoringAndControllingPhases.add(monitoringAndControllingPhase); 
@@ -304,7 +304,7 @@ void testProjectSchedulingMonitoringAndControllingPhases(
  
     test("MonitoringAndControllingPhase update undo and redo", () { 
       var monitoringAndControllingPhase = schedulingModel.monitoringAndControllingPhases.random(); 
-      var action = SetAttributeCommand(session, monitoringAndControllingPhase, "PerformanceMeasurement", 'time'); 
+      var action = SetAttributeCommand(session, monitoringAndControllingPhase, "PerformanceMeasurement", 'dvd'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -405,11 +405,11 @@ void testProjectSchedulingMonitoringAndControllingPhases(
  
       projectDomain.startCommandReaction(reaction); 
       var monitoringAndControllingPhase = MonitoringAndControllingPhase(monitoringAndControllingPhases.concept); 
-        monitoringAndControllingPhase.PerformanceMeasurement = 'chemist'; 
-      monitoringAndControllingPhase.ChangeManagement = 'teaching'; 
-      monitoringAndControllingPhase.QualityControl = 'text'; 
-      monitoringAndControllingPhase.IssueResolution = 'edition'; 
-      monitoringAndControllingPhase.Reporting = 'health'; 
+        monitoringAndControllingPhase.PerformanceMeasurement = 'wife'; 
+      monitoringAndControllingPhase.ChangeManagement = 'privacy'; 
+      monitoringAndControllingPhase.QualityControl = 'deep'; 
+      monitoringAndControllingPhase.IssueResolution = 'oil'; 
+      monitoringAndControllingPhase.Reporting = 'plate'; 
     var monitoringAndControllingPhaseExecutionPhase = schedulingModel.executionPhases.random(); 
     monitoringAndControllingPhase.executionPhase = monitoringAndControllingPhaseExecutionPhase; 
       monitoringAndControllingPhases.add(monitoringAndControllingPhase); 
@@ -425,7 +425,7 @@ void testProjectSchedulingMonitoringAndControllingPhases(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, monitoringAndControllingPhase, "PerformanceMeasurement", 'navigation'); 
+        session, monitoringAndControllingPhase, "PerformanceMeasurement", 'secretary'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

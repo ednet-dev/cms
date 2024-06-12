@@ -21,15 +21,15 @@ class FinanceModel extends FinanceEntries {
  
   void initFinances() { 
     var finance1 = Finance(finances.concept); 
-    finance1.name = 'tension'; 
+    finance1.name = 'point'; 
     finances.add(finance1); 
  
     var finance2 = Finance(finances.concept); 
-    finance2.name = 'fish'; 
+    finance2.name = 'beer'; 
     finances.add(finance2); 
  
     var finance3 = Finance(finances.concept); 
-    finance3.name = 'training'; 
+    finance3.name = 'selfdo'; 
     finances.add(finance3); 
  
   } 

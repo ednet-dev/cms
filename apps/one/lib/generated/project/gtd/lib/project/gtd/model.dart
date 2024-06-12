@@ -56,36 +56,36 @@ class GtdModel extends GtdEntries {
  
   void initInboxes() { 
     var inbox1 = Inbox(inboxes.concept); 
-    inbox1.items = 'horse'; 
+    inbox1.items = 'productivity'; 
     inboxes.add(inbox1); 
  
     var inbox2 = Inbox(inboxes.concept); 
-    inbox2.items = 'plaho'; 
+    inbox2.items = 'car'; 
     inboxes.add(inbox2); 
  
     var inbox3 = Inbox(inboxes.concept); 
-    inbox3.items = 'truck'; 
+    inbox3.items = 'hall'; 
     inboxes.add(inbox3); 
  
   } 
  
   void initClarifiedItems() { 
     var clarifiedItem1 = ClarifiedItem(clarifiedItems.concept); 
-    clarifiedItem1.nextAction = 'wave'; 
+    clarifiedItem1.nextAction = 'chemist'; 
     var clarifiedItem1Inbox = inboxes.random(); 
     clarifiedItem1.inbox = clarifiedItem1Inbox; 
     clarifiedItems.add(clarifiedItem1); 
     clarifiedItem1Inbox.clarifiedItems.add(clarifiedItem1); 
  
     var clarifiedItem2 = ClarifiedItem(clarifiedItems.concept); 
-    clarifiedItem2.nextAction = 'paper'; 
+    clarifiedItem2.nextAction = 'job'; 
     var clarifiedItem2Inbox = inboxes.random(); 
     clarifiedItem2.inbox = clarifiedItem2Inbox; 
     clarifiedItems.add(clarifiedItem2); 
     clarifiedItem2Inbox.clarifiedItems.add(clarifiedItem2); 
  
     var clarifiedItem3 = ClarifiedItem(clarifiedItems.concept); 
-    clarifiedItem3.nextAction = 'paper'; 
+    clarifiedItem3.nextAction = 'executive'; 
     var clarifiedItem3Inbox = inboxes.random(); 
     clarifiedItem3.inbox = clarifiedItem3Inbox; 
     clarifiedItems.add(clarifiedItem3); 
@@ -95,7 +95,7 @@ class GtdModel extends GtdEntries {
  
   void initTasks() { 
     var task1 = Task(tasks.concept); 
-    task1.description = 'organization'; 
+    task1.description = 'economy'; 
     var task1ClarifiedItem = clarifiedItems.random(); 
     task1.clarifiedItem = task1ClarifiedItem; 
     var task1Review = reviews.random(); 
@@ -108,7 +108,7 @@ class GtdModel extends GtdEntries {
     task1Action.tasks.add(task1); 
  
     var task2 = Task(tasks.concept); 
-    task2.description = 'agreement'; 
+    task2.description = 'crisis'; 
     var task2ClarifiedItem = clarifiedItems.random(); 
     task2.clarifiedItem = task2ClarifiedItem; 
     var task2Review = reviews.random(); 
@@ -121,7 +121,7 @@ class GtdModel extends GtdEntries {
     task2Action.tasks.add(task2); 
  
     var task3 = Task(tasks.concept); 
-    task3.description = 'beginning'; 
+    task3.description = 'umbrella'; 
     var task3ClarifiedItem = clarifiedItems.random(); 
     task3.clarifiedItem = task3ClarifiedItem; 
     var task3Review = reviews.random(); 
@@ -137,21 +137,21 @@ class GtdModel extends GtdEntries {
  
   void initProjects() { 
     var project1 = Project(projects.concept); 
-    project1.tasks = 'test'; 
+    project1.tasks = 'fascination'; 
     var project1Task = tasks.random(); 
     project1.task = project1Task; 
     projects.add(project1); 
     project1Task.projects.add(project1); 
  
     var project2 = Project(projects.concept); 
-    project2.tasks = 'table'; 
+    project2.tasks = 'finger'; 
     var project2Task = tasks.random(); 
     project2.task = project2Task; 
     projects.add(project2); 
     project2Task.projects.add(project2); 
  
     var project3 = Project(projects.concept); 
-    project3.tasks = 'hot'; 
+    project3.tasks = 'electronic'; 
     var project3Task = tasks.random(); 
     project3.task = project3Task; 
     projects.add(project3); 
@@ -161,21 +161,21 @@ class GtdModel extends GtdEntries {
  
   void initCalendars() { 
     var calendar1 = Calendar(calendars.concept); 
-    calendar1.events = 'performance'; 
+    calendar1.events = 'finger'; 
     var calendar1Task = tasks.random(); 
     calendar1.task = calendar1Task; 
     calendars.add(calendar1); 
     calendar1Task.calendar.add(calendar1); 
  
     var calendar2 = Calendar(calendars.concept); 
-    calendar2.events = 'pub'; 
+    calendar2.events = 'ball'; 
     var calendar2Task = tasks.random(); 
     calendar2.task = calendar2Task; 
     calendars.add(calendar2); 
     calendar2Task.calendar.add(calendar2); 
  
     var calendar3 = Calendar(calendars.concept); 
-    calendar3.events = 'holiday'; 
+    calendar3.events = 'sin'; 
     var calendar3Task = tasks.random(); 
     calendar3.task = calendar3Task; 
     calendars.add(calendar3); 
@@ -185,21 +185,21 @@ class GtdModel extends GtdEntries {
  
   void initContextLists() { 
     var contextList1 = ContextList(contextLists.concept); 
-    contextList1.contexts = 'cup'; 
+    contextList1.contexts = 'fish'; 
     var contextList1Task = tasks.random(); 
     contextList1.task = contextList1Task; 
     contextLists.add(contextList1); 
     contextList1Task.contextLists.add(contextList1); 
  
     var contextList2 = ContextList(contextLists.concept); 
-    contextList2.contexts = 'opinion'; 
+    contextList2.contexts = 'truck'; 
     var contextList2Task = tasks.random(); 
     contextList2.task = contextList2Task; 
     contextLists.add(contextList2); 
     contextList2Task.contextLists.add(contextList2); 
  
     var contextList3 = ContextList(contextLists.concept); 
-    contextList3.contexts = 'beer'; 
+    contextList3.contexts = 'measuremewnt'; 
     var contextList3Task = tasks.random(); 
     contextList3.task = contextList3Task; 
     contextLists.add(contextList3); 
@@ -209,30 +209,30 @@ class GtdModel extends GtdEntries {
  
   void initReviews() { 
     var review1 = Review(reviews.concept); 
-    review1.assessments = 'deep'; 
+    review1.assessments = 'baby'; 
     reviews.add(review1); 
  
     var review2 = Review(reviews.concept); 
-    review2.assessments = 'dog'; 
+    review2.assessments = 'question'; 
     reviews.add(review2); 
  
     var review3 = Review(reviews.concept); 
-    review3.assessments = 'electronic'; 
+    review3.assessments = 'saving'; 
     reviews.add(review3); 
  
   } 
  
   void initNextActions() { 
     var nextAction1 = NextAction(nextActions.concept); 
-    nextAction1.work = 'dinner'; 
+    nextAction1.work = 'job'; 
     nextActions.add(nextAction1); 
  
     var nextAction2 = NextAction(nextActions.concept); 
-    nextAction2.work = 'college'; 
+    nextAction2.work = 'web'; 
     nextActions.add(nextAction2); 
  
     var nextAction3 = NextAction(nextActions.concept); 
-    nextAction3.work = 'coffee'; 
+    nextAction3.work = 'election'; 
     nextActions.add(nextAction3); 
  
   } 

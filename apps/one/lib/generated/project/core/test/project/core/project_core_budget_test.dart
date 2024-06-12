@@ -129,8 +129,8 @@ void testProjectCoreBudgets(
       var budgetsCount = budgets.length; 
  
       var budget = Budget(budgets.concept); 
-      budget.amount = 59.45678232988434; 
-      budget.currency = 'slate'; 
+      budget.amount = 47.45193442737916; 
+      budget.currency = 'policeman'; 
       var added = selectedBudgets.add(budget); 
       expect(added, isTrue); 
       expect(budgets.length, equals(++budgetsCount)); 
@@ -223,8 +223,8 @@ void testProjectCoreBudgets(
     test("Update budget non id attribute with failure", () { 
       var randomBudget = coreModel.budgets.random(); 
       var afterUpdateEntity = randomBudget.copy(); 
-      afterUpdateEntity.amount = 83.37102400507229; 
-      expect(afterUpdateEntity.amount, equals(83.37102400507229)); 
+      afterUpdateEntity.amount = 94.1817199760243; 
+      expect(afterUpdateEntity.amount, equals(94.1817199760243)); 
       // budgets.update can only be used if oid, code or id is set. 
       expect(() => budgets.update(randomBudget, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -245,8 +245,8 @@ void testProjectCoreBudgets(
     test("budget action undo and redo", () { 
       var budgetCount = budgets.length; 
       var budget = Budget(budgets.concept); 
-        budget.amount = 29.614757691665407; 
-      budget.currency = 'hot'; 
+        budget.amount = 16.765031225794537; 
+      budget.currency = 'children'; 
     var budgetProject = coreModel.projects.random(); 
     budget.project = budgetProject; 
       budgets.add(budget); 
@@ -269,8 +269,8 @@ void testProjectCoreBudgets(
     test("budget session undo and redo", () { 
       var budgetCount = budgets.length; 
       var budget = Budget(budgets.concept); 
-        budget.amount = 62.95219761584653; 
-      budget.currency = 'web'; 
+        budget.amount = 75.28428360710716; 
+      budget.currency = 'meter'; 
     var budgetProject = coreModel.projects.random(); 
     budget.project = budgetProject; 
       budgets.add(budget); 
@@ -292,7 +292,7 @@ void testProjectCoreBudgets(
  
     test("Budget update undo and redo", () { 
       var budget = coreModel.budgets.random(); 
-      var action = SetAttributeCommand(session, budget, "amount", 66.0245978222008); 
+      var action = SetAttributeCommand(session, budget, "amount", 98.85285128747124); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -393,8 +393,8 @@ void testProjectCoreBudgets(
  
       projectDomain.startCommandReaction(reaction); 
       var budget = Budget(budgets.concept); 
-        budget.amount = 47.61800367936361; 
-      budget.currency = 'entrance'; 
+        budget.amount = 27.627931352871606; 
+      budget.currency = 'candy'; 
     var budgetProject = coreModel.projects.random(); 
     budget.project = budgetProject; 
       budgets.add(budget); 
@@ -410,7 +410,7 @@ void testProjectCoreBudgets(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, budget, "amount", 62.92726065290979); 
+        session, budget, "amount", 65.7701431085973); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

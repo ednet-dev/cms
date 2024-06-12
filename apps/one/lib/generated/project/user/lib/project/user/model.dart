@@ -21,27 +21,27 @@ class UserModel extends UserEntries {
  
   void initUsers() { 
     var user1 = User(users.concept); 
-    user1.name = 'grading'; 
-    user1.email = 'money'; 
-    user1.password = 'salary'; 
-    user1.role = 'brave'; 
-    user1.status = 'tax'; 
+    user1.name = 'secretary'; 
+    user1.email = 'call'; 
+    user1.password = 'mile'; 
+    user1.role = 'boat'; 
+    user1.status = 'ocean'; 
     users.add(user1); 
  
     var user2 = User(users.concept); 
-    user2.name = 'consulting'; 
-    user2.email = 'cabinet'; 
-    user2.password = 'park'; 
-    user2.role = 'message'; 
-    user2.status = 'darts'; 
+    user2.name = 'judge'; 
+    user2.email = 'phone'; 
+    user2.password = 'tape'; 
+    user2.role = 'dvd'; 
+    user2.status = 'hell'; 
     users.add(user2); 
  
     var user3 = User(users.concept); 
-    user3.name = 'call'; 
-    user3.email = 'lifespan'; 
-    user3.password = 'output'; 
-    user3.role = 'knowledge'; 
-    user3.status = 'candy'; 
+    user3.name = 'corner'; 
+    user3.email = 'cabinet'; 
+    user3.password = 'brad'; 
+    user3.role = 'craving'; 
+    user3.status = 'secretary'; 
     users.add(user3); 
  
   } 

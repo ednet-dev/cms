@@ -129,7 +129,7 @@ void testHouseholdFinanceFinances(
       var financesCount = finances.length; 
  
       var finance = Finance(finances.concept); 
-      finance.name = 'school'; 
+      finance.name = 'river'; 
       var added = selectedFinances.add(finance); 
       expect(added, isTrue); 
       expect(finances.length, equals(++financesCount)); 
@@ -222,8 +222,8 @@ void testHouseholdFinanceFinances(
     test("Update finance non id attribute with failure", () { 
       var randomFinance = financeModel.finances.random(); 
       var afterUpdateEntity = randomFinance.copy(); 
-      afterUpdateEntity.name = 'flower'; 
-      expect(afterUpdateEntity.name, equals('flower')); 
+      afterUpdateEntity.name = 'small'; 
+      expect(afterUpdateEntity.name, equals('small')); 
       // finances.update can only be used if oid, code or id is set. 
       expect(() => finances.update(randomFinance, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testHouseholdFinanceFinances(
     test("finance action undo and redo", () { 
       var financeCount = finances.length; 
       var finance = Finance(finances.concept); 
-        finance.name = 'advisor'; 
+        finance.name = 'brad'; 
       finances.add(finance); 
       expect(finances.length, equals(++financeCount)); 
       finances.remove(finance); 
@@ -263,7 +263,7 @@ void testHouseholdFinanceFinances(
     test("finance session undo and redo", () { 
       var financeCount = finances.length; 
       var finance = Finance(finances.concept); 
-        finance.name = 'television'; 
+        finance.name = 'saving'; 
       finances.add(finance); 
       expect(finances.length, equals(++financeCount)); 
       finances.remove(finance); 
@@ -282,7 +282,7 @@ void testHouseholdFinanceFinances(
  
     test("Finance update undo and redo", () { 
       var finance = financeModel.finances.random(); 
-      var action = SetAttributeCommand(session, finance, "name", 'kids'); 
+      var action = SetAttributeCommand(session, finance, "name", 'saving'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testHouseholdFinanceFinances(
  
       householdDomain.startCommandReaction(reaction); 
       var finance = Finance(finances.concept); 
-        finance.name = 'chemist'; 
+        finance.name = 'ball'; 
       finances.add(finance); 
       expect(finances.length, equals(++financeCount)); 
       finances.remove(finance); 
@@ -396,7 +396,7 @@ void testHouseholdFinanceFinances(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, finance, "name", 'letter'); 
+        session, finance, "name", 'economy'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       householdDomain.cancelCommandReaction(reaction); 
