@@ -4,6 +4,7 @@
 import 'package:app_links/app_links.dart';
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/generated/one_application.dart';
 import 'package:ednet_one/presentation/household_management/blocs/theme_block.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
-import '../one_application.dart';
 import '../widgets/layout/alternative_layout.dart';
 import '../widgets/layout/footer_widget.dart';
 import '../widgets/layout/header_widget.dart';
