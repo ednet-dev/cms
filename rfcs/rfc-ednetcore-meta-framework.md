@@ -8,7 +8,7 @@ This document proposes a collaboration on an open-source project to develop a me
 
 The software development industry is shifting towards highly abstract and conceptual architectural thinking, as evidenced by the rise of no-code platforms. This trend emphasizes the importance of concepts, their contextual roles, and relationships over implementation details like UI or persistence concerns. Consequently, the industry is moving towards a higher level of creative competition, where specialized developers maintain substacks with deep system knowledge.
 
-The analog-to-digital transition is immense, utilizing novel niches with disruptive potential. This project aims to democratize the no-code approach by enabling developers to focus on the Domain Model, addressing the ongoing shortage of highly skilled developers.
+The analog-to-digital transition is immense, utilizing novel niches with disruptive potential. This project aims to democratize the no-code approach by enabling developers to focus on the Domain Model.
 
 ## Framework Description
 
