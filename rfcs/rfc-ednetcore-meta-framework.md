@@ -1,73 +1,44 @@
-# Proposal for Collaboration on EDNetCore: A Meta Framework for Rapid Definition of Domain Models
+# Proposal for Collaboration on `ednet_core`: A Domain Model Meta Framework
 
-## Introduction:
+## Introduction
 
-This document presents a proposal for collaboration on an open-source project to develop a meta framework for rapid
-definition of domain models called EDNetCore. This framework is built on top of the Domain-Driven Design (DDD) and
-EventStorming methodologies and enables the encapsulation of reusable parts of semantic implementation for generic
-repositories and UI default renderings.
+This document proposes a collaboration on an open-source project to develop a meta-framework for the rapid definition of domain models, called `ednet_core`. Built on Domain-Driven Design (DDD) and EventStorming methodologies, this framework encapsulates reusable semantic implementations for generic repositories and UI default renderings.
 
-## Motivation:
+## Motivation
 
-The software development industry is experiencing a shift towards highly abstract and conceptual thinking in
-architectural terms, as evidenced by the disruptive advance of no-code platforms and solutions. This trend demands a
-focus on the concepts of solutions, their contextual role, and relationships, rather than the implementation details
-such as UI or persistence concerns. This shift places pressure on the industry to compete in creativity at a higher
-level, where the minority of highly specialized developers will act as maintainers of sub-stacks with similar knowledge
-of systems and subsystems as the modern average developer.
+The software development industry is shifting towards highly abstract and conceptual architectural thinking, as evidenced by the rise of no-code platforms. This trend emphasizes the importance of concepts, their contextual roles, and relationships over implementation details like UI or persistence concerns. Consequently, the industry is moving towards a higher level of creative competition, where specialized developers maintain substacks with deep system knowledge.
 
-The pressure of the analog-to-digital transition is immense and will utilize every novel niche with disrupting potential
-and fulfill it. The shortage of endemic highly skilled developers is continuous and omnipresent, and this project aims
-to democratize the no-code approach by empowering developers to focus on what matters, the Domain Model.
+The analog-to-digital transition is immense, utilizing novel niches with disruptive potential. This project aims to democratize the no-code approach by enabling developers to focus on the Domain Model, addressing the ongoing shortage of highly skilled developers.
 
-## Framework Description:
+## Framework Description
 
-### EDNetDSL
-is used to describe any domain model.
-EDNetCMS interprets it on various platforms using appropriate default model interpreters, 
-by only manipulating a YAML file of user stories high-level concepts and their basic relationships,
-as not more complex as a basic ER diagram, we can generate an entire well-structured, evolveable MVP of domain model in
-discussion and deploy it on the platform of our choosing.
+### ednet DSL
 
+The `ednet` Domain-Specific Language (DSL) is used to describe domain models. The `ednet_cms` tool generates code that interprets this DSL on various platforms using default model interpreters. By manipulating a YAML file of user stories, high-level concepts, and their relationships—akin to a basic ER diagram—we can generate a well-structured, evolvable MVP for a domain model.
+
+Example `ednet` DSL:
 ```yaml
 concepts:
   - name: User
     entry: true
     attributes:
-      - sequence: 1
-        name: username
-
-      - sequence: 2
-        name: password
+      - name: username
+      - name: password
         sensitive: true
-
-      - sequence: 3
-        name: email
-
-      - sequence: 4
-        name: name
+      - name: email
+      - name: name
 
   - name: Address
     attributes:
-      - sequence: 1
-        name: zip
-
-      - sequence: 2
-        name: city
-
-      - sequence: 3
-        name: street
-
-      - sequence: 4
-        name: number
+      - name: zip
+      - name: city
+      - name: street
+      - name: number
 
   - name: Country
     attributes:
-      - sequence: 1
-        name: name
-
-      - sequence: 2
-        name: iso
+      - name: name
+      - name: iso
 
 relations:
   - from: Address
@@ -80,7 +51,6 @@ relations:
     fromToCardinality:
       min: 1
       max: 1
-
     toFromCardinality:
       min: 0
       max: N
@@ -97,7 +67,6 @@ relations:
     fromToCardinality:
       min: 1
       max: 1
-
     toFromCardinality:
       min: 0
       max: N
@@ -105,84 +74,45 @@ relations:
     internal: false
 ```
 
-### EDNetCore
-is an instance implementation of EDNetDSL meta framework for rapid definition of domain models and is an abstraction on top of DDD and
-EventStorming, implementing their semantic and lingo. It enables the encapsulation of reusable parts of implementation
-for generic repositories and UI default renderings. In combination with other open-source initiatives, EDNetCore can
-generate almost everything infrastructural and have default Flutter material interpreter app for multi-platform
-deployment or default React material interpreter app optimized for web deployment of EDNetCore domain models.
+### ednet_core
 
+`ednet_core` is an implementation of the `ednet` DSL, providing a meta-framework for rapid domain model definition. It abstracts Domain-Driven Design and EventStorming principles, enabling the encapsulation of reusable implementation parts for generic repositories and basic UX.
+
+`ednet_core` can generate nearly all infrastructural components, offering default Flutter material interpreter apps for multi-platform deployment and React material interpreter apps optimized for web deployment.
+
+Example usage in Dart:
 ```dart
 import 'package:ednet_core/ednet_core.dart';
 
-/// Entities and Value objects
 class Vote extends Entity<Vote> {}
-
 class Votes extends Entities<Vote> {}
-
 class Initiative extends Entity<Initiative> {}
-
 class Citizen extends Entity<Citizen> {}
 
-class Proposal extends Entity<Proposal> {}
-
-class Address extends ValueObject<Address> {}
-// ...
-
-/// Commands
 class VoteForProposalCommand extends IEntitiesCommand {}
-
 class VoteAgainstProposalCommand extends IEntitiesCommand {}
-
 class CommentProposalCommand extends IEntitiesCommand {}
-// ... 
 
-/// Side effects as Command reactions  - Events
 class ProposalCommentedReaction implements ICommandReaction {}
-// ...
 
-/// Events
 class VotedForProposalEvent extends IEntitiesEvent {}
-
 class VotedAgainstProposalEvent extends IEntitiesEvent {}
-// ...
 ```
 
-## Project Ambition:
+## Project Ambition
 
-The project's ambition is not small, and there is a job to be done across all levels of seniority. There are amounts of
-legacy Dart 1 code waiting to be transformed into modern mixins and extensions. Large scale architectural concerns
-around performant peer-to-peer capabilities with universal platform as a constraint must be addressed. Furthermore, the
-definition, implementation, and concrete specialization of the rest of DDD and EventStorming artifacts, such as policies
-and events, aggregate roots, systems, etc., are yet to be integrated.
+The project encompasses all levels of seniority, addressing the following tasks:
 
-ECMA Script transpilation and hooking publishing to npmjs for web development
+- Transforming legacy Dart 1 code into modern mixins and extensions.
+- Tackling large-scale architectural concerns, such as performant peer-to-peer capabilities with universal platform constraints.
+- Defining and integrating DDD and EventStorming artifacts like policies, events, aggregate roots, and systems.
+- Transpiling to ECMAScript and publishing to npmjs for web development.
+- Providing backend use case examples, integrating `ednet_core` with Dart or Node.js, and popular technologies like Remix.
+- Creating extensive documentation in the form of C4 diagrams for the existing API and architecture of `ednet_core`.
+- Implementing code generation for the DSL to empower stakeholders, such as Product Managers, to participate in software design.
+- Utilizing resources like DBPedia for generic interpretation or building a library of highly contextualized specializations of public semantic models.
+- Ensuring deployment capabilities support all major cloud providers in a unified way (EaaS).
 
-Backend use case specifics and examples of usage EDNetCore as domain model framework for custom backend with dart or
-nodejs and integration with existing ecosystem of popular technologies missing domain model opinion as Remix and
-similar.
+## Conclusion
 
-One domain model framework integrating backend and frontend implementation at the end generating optionally different
-levels of the architecture for the integration.
-
-Extensive documentation for existing API and architecture of EDNetCore in form of C4.
-
-The implementation of code generation for our DSL will empower higher stakeholders like Product managers to take more
-direct responsibility for the implementation on the software design level fully. They will understand how we derived our
-language and serve as active participants in the process.
-
-Working with highly structured graphs like are metamodels of domain models have bound us to utilize resources like
-DBPedia for generic interpretation or at least building of library of highly contextualized specializations of available
-public semantic models. Or, in plain language - we can and shall use public knowledge dbs and their ontologies to model
-all that there is, or to spark a life in our structured knowledge so that we persist our custom interactions of our
-custom contexts.
-
-EaaS, Everything as a service, we have to pay special attention to deployment capabilities and support all major cloud providers in unified way
-
-## Conclusion:
-
-The EDNetCore meta framework for rapid definition of domain models, built on top of DDD and EventStorming, aims to
-democratize the no-code approach to software development by empowering developers to focus on what matters, the Domain
-Model. This open-source initiative offers the potential to generate almost everything infrastructural, and with the
-implementation of code generation for our DSL, we will enable higher stakeholders to take more direct responsibility for
-the implementation of software design.
+The `ednet_core` meta-framework for rapid domain model definition, built on DDD and EventStorming, aims to democratize the no-code approach to software development. By enabling developers to focus on the Domain Model, this open-source initiative has the potential to generate nearly all infrastructural components. With DSL-based code generation, higher stakeholders can take direct responsibility for software design implementation.
