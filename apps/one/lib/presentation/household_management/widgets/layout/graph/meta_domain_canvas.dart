@@ -5,6 +5,96 @@ import 'dart:ui';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
+class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
+  final Map<String, Offset> velocity = {};
+  final double repulsionForce = 10000.0;
+  final double springForce = 0.1;
+  final int iterations = 1000;
+  final double damping = 0.95;
+
+  @override
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
+    final positions = <String, Offset>{};
+    final forces = <String, Offset>{};
+
+    final random = Random();
+
+    _initializePositions(domains, size, positions, random);
+
+    for (var i = 0; i < iterations; i++) {
+      _applyForces(positions, forces);
+      _updatePositions(positions, forces);
+    }
+
+    return positions;
+  }
+
+  void _initializePositions(Domains domains, Size size,
+      Map<String, Offset> positions, Random random) {
+    for (var domain in domains) {
+      positions[domain.code] = Offset(
+          random.nextDouble() * size.width, random.nextDouble() * size.height);
+
+      for (var model in domain.models) {
+        positions[model.code] = Offset(random.nextDouble() * size.width,
+            random.nextDouble() * size.height);
+
+        for (var entity in model.concepts) {
+          positions[entity.code] = Offset(random.nextDouble() * size.width,
+              random.nextDouble() * size.height);
+
+          for (var child in entity.children) {
+            positions[child.code] = Offset(random.nextDouble() * size.width,
+                random.nextDouble() * size.height);
+          }
+        }
+      }
+    }
+  }
+
+  void _applyForces(Map<String, Offset> positions, Map<String, Offset> forces) {
+    for (var entry in positions.entries) {
+      final position = entry.value;
+      var force = Offset.zero;
+
+      for (var otherEntry in positions.entries) {
+        if (entry.key == otherEntry.key) continue;
+
+        final direction = position - otherEntry.value;
+        final distance = max(direction.distance, 1.0);
+        final repulsion =
+            direction / distance * repulsionForce / (distance * distance);
+        force += repulsion;
+      }
+
+      forces[entry.key] = force;
+    }
+
+    for (var domain in positions.keys) {
+      for (var model in positions.keys) {
+        if (domain == model) continue;
+        final direction = positions[domain]! - positions[model]!;
+        final distance = max(direction.distance, 1.0);
+        final attraction = direction / distance * springForce * distance;
+        forces[domain] = forces[domain]! - attraction;
+        forces[model] = forces[model]! + attraction;
+      }
+    }
+  }
+
+  void _updatePositions(
+      Map<String, Offset> positions, Map<String, Offset> forces) {
+    for (var entry in positions.entries) {
+      final force = forces[entry.key]!;
+      final velocity =
+          (this.velocity[entry.key] ?? Offset.zero) + force * springForce;
+
+      positions[entry.key] = entry.value + velocity;
+      this.velocity[entry.key] = velocity * damping;
+    }
+  }
+}
+
 class MetaDomainPainter extends CustomPainter {
   final Domains domains;
   final TransformationController transformationController;
@@ -27,60 +117,58 @@ class MetaDomainPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final positions = layoutAlgorithm.calculateLayout(domains, size);
-
     system.nodes.clear();
 
     for (var domain in domains) {
-      Offset domainPosition = positions[domain.code]!;
-      Node domainNode = Node();
-      domainNode.addComponent(PositionComponent(domainPosition));
-      domainNode.addComponent(RenderComponent(
-        Paint()..color = Colors.blue,
-        Rect.fromCenter(center: domainPosition, width: 100, height: 50),
-      ));
-      system.addNode(domainNode);
-
-      for (var model in domain.models) {
-        Offset modelPosition = positions[model.code]!;
-        Node modelNode = Node();
-        modelNode.addComponent(PositionComponent(modelPosition));
-        modelNode.addComponent(RenderComponent(
-          Paint()..color = Colors.green,
-          Rect.fromCenter(center: modelPosition, width: 100, height: 50),
-        ));
-        system.addNode(modelNode);
-
-        for (var entity in model.concepts) {
-          Offset entityPosition = positions[entity.code]!;
-          Node entityNode = Node();
-          entityNode.addComponent(PositionComponent(entityPosition));
-          entityNode.addComponent(RenderComponent(
-            Paint()..color = Colors.red,
-            Rect.fromCenter(center: entityPosition, width: 100, height: 50),
-          ));
-          system.addNode(entityNode);
-
-          for (var child in entity.children) {
-            Offset childPosition = positions[child.code]!;
-            Node childNode = Node();
-            childNode.addComponent(PositionComponent(childPosition));
-            childNode.addComponent(RenderComponent(
-              Paint()..color = Colors.red,
-              Rect.fromCenter(center: childPosition, width: 100, height: 50),
-            ));
-            system.addNode(childNode);
-
-            canvas.drawLine(
-              entityPosition,
-              childPosition,
-              Paint()..color = Colors.black,
-            );
-          }
-        }
-      }
+      _paintDomain(canvas, domain, positions);
     }
 
     system.render(canvas);
+  }
+
+  void _paintDomain(
+      Canvas canvas, Domain domain, Map<String, Offset> positions) {
+    Offset domainPosition = positions[domain.code]!;
+    Node domainNode = _createNode(domainPosition, Colors.blue);
+    system.addNode(domainNode);
+
+    for (var model in domain.models) {
+      Offset modelPosition = positions[model.code]!;
+      Node modelNode = _createNode(modelPosition, Colors.green);
+      system.addNode(modelNode);
+
+      for (var entity in model.concepts) {
+        Offset entityPosition = positions[entity.code]!;
+        Node entityNode = _createNode(entityPosition, Colors.red);
+        system.addNode(entityNode);
+
+        for (var child in entity.children) {
+          Offset childPosition = positions[child.code]!;
+          Node childNode = _createNode(childPosition, Colors.red);
+          system.addNode(childNode);
+
+          _drawLine(canvas, entityPosition, childPosition);
+        }
+      }
+    }
+  }
+
+  Node _createNode(Offset position, Color color) {
+    Node node = Node();
+    node.addComponent(PositionComponent(position));
+    node.addComponent(RenderComponent(
+      Paint()..color = color,
+      Rect.fromCenter(center: position, width: 100, height: 50),
+    ));
+    return node;
+  }
+
+  void _drawLine(Canvas canvas, Offset start, Offset end) {
+    canvas.drawLine(
+      start,
+      end,
+      Paint()..color = Colors.black,
+    );
   }
 
   @override
@@ -264,7 +352,7 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
   void initState() {
     super.initState();
     _transformationController = TransformationController();
-    _currentAlgorithm = widget.layoutAlgorithm;
+    _currentAlgorithm = ForceDirectedLayoutAlgorithm();
     _system = System();
     _animationManager = AnimationManager();
     _gameLoop = GameLoop(
@@ -334,72 +422,6 @@ enum NodeType {
 
 abstract class LayoutAlgorithm {
   Map<String, Offset> calculateLayout(Domains domains, Size size);
-}
-
-class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
-  final Map<String, Offset> velocity = {};
-
-  @override
-  Map<String, Offset> calculateLayout(Domains domains, Size size) {
-    final positions = <String, Offset>{};
-    final forces = <String, Offset>{};
-
-    final random = Random();
-    const int iterations = 1000;
-    const double repulsionForce = 10000.0;
-    const double springForce = 0.1;
-
-    for (var domain in domains) {
-      positions[domain.code] = Offset(
-          random.nextDouble() * size.width, random.nextDouble() * size.height);
-
-      for (var model in domain.models) {
-        positions[model.code] = Offset(random.nextDouble() * size.width,
-            random.nextDouble() * size.height);
-
-        for (var entity in model.concepts) {
-          positions[entity.code] = Offset(random.nextDouble() * size.width,
-              random.nextDouble() * size.height);
-
-          for (var child in entity.children) {
-            positions[child.code] = Offset(random.nextDouble() * size.width,
-                random.nextDouble() * size.height);
-          }
-        }
-      }
-    }
-
-    for (var i = 0; i < iterations; i++) {
-      for (var entry in positions.entries) {
-        final position = entry.value;
-        var force = Offset.zero;
-
-        for (var otherEntry in positions.entries) {
-          if (entry.key == otherEntry.key) continue;
-
-          final direction = position - otherEntry.value;
-          final distance = max(direction.distance, 1.0);
-          final repulsion =
-              direction / distance * repulsionForce / (distance * distance);
-
-          force += repulsion;
-        }
-
-        forces[entry.key] = force;
-      }
-
-      for (var entry in positions.entries) {
-        final force = forces[entry.key]!;
-        final velocity =
-            (this.velocity[entry.key] ?? Offset.zero) + force * springForce;
-
-        positions[entry.key] = entry.value + velocity;
-        this.velocity[entry.key] = velocity * 0.95;
-      }
-    }
-
-    return positions;
-  }
 }
 
 class GridLayoutAlgorithm extends LayoutAlgorithm {
@@ -492,7 +514,13 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
     final positions = <String, Offset>{};
     final center = Offset(size.width / 2, size.height / 2);
 
-    // Position roots in a circle
+    _positionRoots(domains, center, positions);
+
+    return positions;
+  }
+
+  void _positionRoots(
+      Domains domains, Offset center, Map<String, Offset> positions) {
     final rootCount = domains.length;
     final rootAngleStep = 2 * pi / rootCount;
     for (int i = 0; i < rootCount; i++) {
@@ -502,12 +530,9 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
           center + Offset(rootRadius * cos(angle), rootRadius * sin(angle));
       positions[domain.code] = rootPosition;
 
-      // Position children recursively
       _positionChildren(
           domain, rootPosition, positions, 1, angle, rootAngleStep / 2);
     }
-
-    return positions;
   }
 
   void _positionChildren(
