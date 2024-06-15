@@ -157,6 +157,7 @@ class LayoutAlgorithmIcon extends StatelessWidget {
 }
 
 class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
+  final AVLTree avlTree = AVLTree();
   final Map<String, Offset> velocity = {};
   final double repulsionForce = 1000.0; // Adjusted repulsion force
   final double springForce = 0.1; // Spring force constant
@@ -166,44 +167,52 @@ class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
 
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
-    final positions = <String, Offset>{};
     final forces = <String, Offset>{};
 
     final random = Random();
-    _initializePositions(domains, size, positions, random);
+    _initializePositions(domains, size, random);
 
     for (var i = 0; i < iterations; i++) {
-      _applyForces(positions, forces);
-      _updatePositions(positions, forces);
+      _applyForces(forces);
+      _updatePositions(forces);
     }
 
-    return positions;
+    return _getPositions();
   }
 
-  void _initializePositions(Domains domains, Size size,
-      Map<String, Offset> positions, Random random) {
+  void _initializePositions(Domains domains, Size size, Random random) {
     for (var domain in domains) {
-      positions[domain.code] = Offset(
-          random.nextDouble() * size.width, random.nextDouble() * size.height);
+      avlTree.insertNode(
+          domain.code,
+          Offset(random.nextDouble() * size.width,
+              random.nextDouble() * size.height));
 
       for (var model in domain.models) {
-        positions[model.code] = Offset(random.nextDouble() * size.width,
-            random.nextDouble() * size.height);
+        avlTree.insertNode(
+            model.code,
+            Offset(random.nextDouble() * size.width,
+                random.nextDouble() * size.height));
 
         for (var entity in model.concepts) {
-          positions[entity.code] = Offset(random.nextDouble() * size.width,
-              random.nextDouble() * size.height);
+          avlTree.insertNode(
+              entity.code,
+              Offset(random.nextDouble() * size.width,
+                  random.nextDouble() * size.height));
 
           for (var child in entity.children) {
-            positions[child.code] = Offset(random.nextDouble() * size.width,
-                random.nextDouble() * size.height);
+            avlTree.insertNode(
+                child.code,
+                Offset(random.nextDouble() * size.width,
+                    random.nextDouble() * size.height));
           }
         }
       }
     }
   }
 
-  void _applyForces(Map<String, Offset> positions, Map<String, Offset> forces) {
+  void _applyForces(Map<String, Offset> forces) {
+    final positions = _getPositions();
+
     for (var entry in positions.entries) {
       final position = entry.value;
       var force = Offset.zero;
@@ -236,16 +245,30 @@ class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
     }
   }
 
-  void _updatePositions(
-      Map<String, Offset> positions, Map<String, Offset> forces) {
+  void _updatePositions(Map<String, Offset> forces) {
+    final positions = _getPositions();
+
     for (var entry in positions.entries) {
       final force = forces[entry.key]!;
       final velocity =
           (this.velocity[entry.key] ?? Offset.zero) + force * springForce;
 
-      positions[entry.key] = entry.value + velocity;
+      avlTree.insertNode(entry.key, entry.value + velocity);
       this.velocity[entry.key] = velocity * damping;
     }
+  }
+
+  Map<String, Offset> _getPositions() {
+    final positions = <String, Offset>{};
+    void traverse(TreeNode? node) {
+      if (node == null) return;
+      positions[node.key] = node.position;
+      traverse(node.left);
+      traverse(node.right);
+    }
+
+    traverse(avlTree.root);
+    return positions;
   }
 }
 
