@@ -5,12 +5,39 @@ import 'dart:ui';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
+class LayoutAlgorithmIcon extends StatelessWidget {
+  final IconData icon;
+  final String name;
+  final VoidCallback onTap;
+
+  LayoutAlgorithmIcon({
+    required this.icon,
+    required this.name,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 40.0),
+          Text(name, style: TextStyle(fontSize: 12.0)),
+        ],
+      ),
+    );
+  }
+}
+
 class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
   final Map<String, Offset> velocity = {};
-  final double repulsionForce = 10000.0;
-  final double springForce = 0.1;
-  final int iterations = 1000;
-  final double damping = 0.95;
+  final double repulsionForce = 1000.0; // Adjusted repulsion force
+  final double springForce = 0.1; // Spring force constant
+  final int iterations = 1000; // Number of iterations for the algorithm
+  final double damping =
+      0.85; // Velocity damping factor to stabilize the layout
 
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
@@ -18,7 +45,6 @@ class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
     final forces = <String, Offset>{};
 
     final random = Random();
-
     _initializePositions(domains, size, positions, random);
 
     for (var i = 0; i < iterations; i++) {
@@ -61,9 +87,10 @@ class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
         if (entry.key == otherEntry.key) continue;
 
         final direction = position - otherEntry.value;
-        final distance = max(direction.distance, 1.0);
+        final distance = max(direction.distance, 0.1); // Avoid division by zero
         final repulsion =
             direction / distance * repulsionForce / (distance * distance);
+
         force += repulsion;
       }
 
@@ -75,7 +102,9 @@ class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
         if (domain == model) continue;
         final direction = positions[domain]! - positions[model]!;
         final distance = max(direction.distance, 1.0);
-        final attraction = direction / distance * springForce * distance;
+        final attraction =
+            direction / distance * springForce * log(distance + 1);
+
         forces[domain] = forces[domain]! - attraction;
         forces[model] = forces[model]! + attraction;
       }
@@ -374,35 +403,77 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
     });
   }
 
+  void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
+    setState(() {
+      _currentAlgorithm = algorithm;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onScaleStart: _onInteractionStart,
-      onScaleEnd: _onInteractionEnd,
-      child: InteractiveViewer(
-        transformationController: _transformationController,
-        onInteractionUpdate: (details) {
-          setState(() {
-            _transformationController.value = _transformationController.value
-              ..translate(
-                  details.focalPointDelta.dx, details.focalPointDelta.dy)
-              ..scale(details.scale);
-          });
-        },
-        minScale: 0.1,
-        maxScale: 5.0,
-        child: CustomPaint(
-          size: Size.infinite,
-          painter: MetaDomainPainter(
-            domains: widget.domains,
-            transformationController: _transformationController,
-            layoutAlgorithm: _currentAlgorithm,
-            decorators: widget.decorators,
-            isDragging: _isDragging,
-            system: _system,
-            animationManager: _animationManager,
+    return Scaffold(
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LayoutAlgorithmIcon(
+                icon: Icons.auto_fix_high,
+                name: 'Force Directed',
+                onTap: () =>
+                    _changeLayoutAlgorithm(ForceDirectedLayoutAlgorithm()),
+              ),
+              LayoutAlgorithmIcon(
+                icon: Icons.grid_on,
+                name: 'Grid',
+                onTap: () => _changeLayoutAlgorithm(GridLayoutAlgorithm()),
+              ),
+              LayoutAlgorithmIcon(
+                icon: Icons.circle,
+                name: 'Circular',
+                onTap: () => _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
+              ),
+              LayoutAlgorithmIcon(
+                icon: Icons.format_indent_increase,
+                name: 'Master Detail',
+                onTap: () =>
+                    _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
+              ),
+            ],
           ),
-        ),
+          Expanded(
+            child: GestureDetector(
+              onScaleStart: _onInteractionStart,
+              onScaleEnd: _onInteractionEnd,
+              child: InteractiveViewer(
+                transformationController: _transformationController,
+                onInteractionUpdate: (details) {
+                  setState(() {
+                    _transformationController.value =
+                        _transformationController.value
+                          ..translate(details.focalPointDelta.dx,
+                              details.focalPointDelta.dy)
+                          ..scale(details.scale);
+                  });
+                },
+                minScale: 0.1,
+                maxScale: 5.0,
+                child: CustomPaint(
+                  size: Size.infinite,
+                  painter: MetaDomainPainter(
+                    domains: widget.domains,
+                    transformationController: _transformationController,
+                    layoutAlgorithm: _currentAlgorithm,
+                    decorators: widget.decorators,
+                    isDragging: _isDragging,
+                    system: _system,
+                    animationManager: _animationManager,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -418,10 +489,6 @@ enum NodeType {
   domain,
   model,
   entity,
-}
-
-abstract class LayoutAlgorithm {
-  Map<String, Offset> calculateLayout(Domains domains, Size size);
 }
 
 class GridLayoutAlgorithm extends LayoutAlgorithm {
@@ -602,4 +669,15 @@ class MasterDetailLayoutAlgorithm extends LayoutAlgorithm {
 
     return positions;
   }
+}
+
+enum LayoutAlgorithmType {
+  forceDirected,
+  grid,
+  circular,
+  masterDetail,
+}
+
+abstract class LayoutAlgorithm {
+  Map<String, Offset> calculateLayout(Domains domains, Size size);
 }

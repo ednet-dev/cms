@@ -40,7 +40,8 @@ class _MyHomePageState extends State<MyHomePage> {
   BookmarkManager bookmarkManager = BookmarkManager();
 
   bool showMetaCanvas = false;
-  LayoutAlgorithm _selectedAlgorithm = ForceDirectedLayoutAlgorithm();
+  LayoutAlgorithm _selectedAlgorithm =
+      ForceDirectedLayoutAlgorithm() as LayoutAlgorithm;
 
   @override
   void initState() {
@@ -130,22 +131,36 @@ class _MyHomePageState extends State<MyHomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.auto_fix_high),
-                        onPressed: () => _changeLayoutAlgorithm(
-                            ForceDirectedLayoutAlgorithm()),
+                      LayoutAlgorithmIcon(
+                        icon: Icons.auto_fix_high,
+                        name: 'Force Directed',
+                        onTap: () => _changeLayoutAlgorithm(
+                            ForceDirectedLayoutAlgorithm() as LayoutAlgorithm),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.grid_on),
-                        onPressed: () =>
-                            _changeLayoutAlgorithm(GridLayoutAlgorithm()),
+                      LayoutAlgorithmIcon(
+                        icon: Icons.grid_on,
+                        name: 'Grid',
+                        onTap: () => _changeLayoutAlgorithm(
+                            GridLayoutAlgorithm() as LayoutAlgorithm),
+                      ),
+                      LayoutAlgorithmIcon(
+                        icon: Icons.circle,
+                        name: 'Circular',
+                        onTap: () => _changeLayoutAlgorithm(
+                            CircularLayoutAlgorithm() as LayoutAlgorithm),
+                      ),
+                      LayoutAlgorithmIcon(
+                        icon: Icons.format_indent_increase,
+                        name: 'Master Detail',
+                        onTap: () => _changeLayoutAlgorithm(
+                            MasterDetailLayoutAlgorithm() as LayoutAlgorithm),
                       ),
                     ],
                   ),
                   Expanded(
                     child: MetaDomainCanvas(
                       domains: app.domains,
-                      layoutAlgorithm: _selectedAlgorithm,
+                      layoutAlgorithm: _selectedAlgorithm as LayoutAlgorithm,
                       decorators: [],
                     ),
                   ),
