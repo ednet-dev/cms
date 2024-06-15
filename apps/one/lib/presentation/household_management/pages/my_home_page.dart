@@ -146,6 +146,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: MetaDomainCanvas(
                       domains: app.domains,
                       layoutAlgorithm: _selectedAlgorithm,
+                      decorators: [
+                        UXDecorator(
+                          color: Colors.blue,
+                          strokeWidth: 2.0,
+                          radius: 10.0,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -329,5 +336,3 @@ class EntriesSidebarWidget extends StatelessWidget {
     );
   }
 }
-
-

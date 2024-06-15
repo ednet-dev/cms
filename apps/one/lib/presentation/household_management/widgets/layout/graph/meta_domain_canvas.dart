@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 class MetaDomainCanvas extends StatefulWidget {
   final Domains domains;
   final LayoutAlgorithm layoutAlgorithm;
+  final List<UXDecorator> decorators;
 
   MetaDomainCanvas({
     required this.domains,
     required this.layoutAlgorithm,
+    required this.decorators,
   });
 
   @override
@@ -17,8 +19,6 @@ class MetaDomainCanvas extends StatefulWidget {
 }
 
 class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
-  Offset _dragOffset = Offset.zero;
-  double _scale = 1.0;
   late TransformationController _transformationController;
   late LayoutAlgorithm _currentAlgorithm;
 
@@ -35,7 +35,7 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
       transformationController: _transformationController,
       onInteractionUpdate: (details) {
         setState(() {
-          _transformationController.value = Matrix4.identity()
+          _transformationController.value = _transformationController.value
             ..translate(details.focalPointDelta.dx, details.focalPointDelta.dy)
             ..scale(details.scale);
         });
@@ -46,9 +46,9 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
         size: Size.infinite,
         painter: MetaDomainPainter(
           domains: widget.domains,
-          offset: _dragOffset,
-          scale: _scale,
+          transformationController: _transformationController,
           layoutAlgorithm: _currentAlgorithm,
+          decorators: widget.decorators,
         ),
       ),
     );
@@ -57,53 +57,111 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
 
 class MetaDomainPainter extends CustomPainter {
   final Domains domains;
-  final Offset offset;
-  final double scale;
+  final TransformationController transformationController;
   final LayoutAlgorithm layoutAlgorithm;
+  final List<UXDecorator> decorators;
 
   MetaDomainPainter({
     required this.domains,
-    required this.offset,
-    required this.scale,
+    required this.transformationController,
     required this.layoutAlgorithm,
+    required this.decorators,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2 / scale;
+      ..color = Colors.black
+      ..strokeWidth = 2;
 
-    Map<String, Offset> positions =
-        layoutAlgorithm.calculateLayout(domains, size);
+    final scale = transformationController.value.getMaxScaleOnAxis();
+    final positions = layoutAlgorithm.calculateLayout(domains, size);
+
+    canvas.save();
+    canvas.transform(transformationController.value.storage);
 
     for (var domain in domains) {
       Offset domainPosition = positions[domain.code]!;
-      _drawText(canvas, domain.code, domainPosition, Colors.blue);
+      _drawNode(canvas, domain.code, domainPosition, Colors.blue,
+          NodeType.domain, scale);
 
       for (var model in domain.models) {
         Offset modelPosition = positions[model.code]!;
-        _drawText(canvas, model.code, modelPosition, Colors.green);
+        _drawNode(canvas, model.code, modelPosition, Colors.green,
+            NodeType.model, scale);
 
         for (var entity in model.concepts) {
           Offset entityPosition = positions[entity.code]!;
-          _drawText(canvas, entity.code, entityPosition, Colors.red);
+          _drawNode(canvas, entity.code, entityPosition, Colors.red,
+              NodeType.entity, scale);
 
-          // Draw relationships
           for (var child in entity.children) {
             Offset childPosition = positions[child.code]!;
-            _drawText(canvas, child.code, childPosition, Colors.red);
-
-            // Draw lines
-            canvas.drawLine(
-                entityPosition, childPosition, paint..color = Colors.black);
+            _drawNode(canvas, child.code, childPosition, Colors.red,
+                NodeType.entity, scale);
+            canvas.drawLine(entityPosition, childPosition, paint);
           }
         }
       }
     }
+
+    canvas.restore();
   }
 
-  void _drawText(Canvas canvas, String text, Offset position, Color color) {
+  void _drawNode(Canvas canvas, String text, Offset position, Color color,
+      NodeType type, double scale) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    switch (type) {
+      case NodeType.domain:
+        _drawRectangleNode(canvas, text, position, paint, scale);
+        break;
+      case NodeType.model:
+        _drawEllipseNode(canvas, text, position, paint, scale);
+        break;
+      case NodeType.entity:
+        _drawDiamondNode(canvas, text, position, paint, scale);
+        break;
+    }
+
+    // Apply decorators
+    for (var decorator in decorators) {
+      decorator.apply(canvas, position, scale);
+    }
+  }
+
+  void _drawRectangleNode(
+      Canvas canvas, String text, Offset position, Paint paint, double scale) {
+    final rect = Rect.fromCenter(
+        center: position, width: 100 / scale, height: 50 / scale);
+    canvas.drawRect(rect, paint);
+    _drawText(canvas, text, position, Colors.white, scale);
+  }
+
+  void _drawEllipseNode(
+      Canvas canvas, String text, Offset position, Paint paint, double scale) {
+    final rect = Rect.fromCenter(
+        center: position, width: 100 / scale, height: 50 / scale);
+    canvas.drawOval(rect, paint);
+    _drawText(canvas, text, position, Colors.white, scale);
+  }
+
+  void _drawDiamondNode(
+      Canvas canvas, String text, Offset position, Paint paint, double scale) {
+    final path = Path()
+      ..moveTo(position.dx, position.dy - 50 / scale)
+      ..lineTo(position.dx + 50 / scale, position.dy)
+      ..lineTo(position.dx, position.dy + 50 / scale)
+      ..lineTo(position.dx - 50 / scale, position.dy)
+      ..close();
+    canvas.drawPath(path, paint);
+    _drawText(canvas, text, position, Colors.white, scale);
+  }
+
+  void _drawText(
+      Canvas canvas, String text, Offset position, Color color, double scale) {
     final textStyle = TextStyle(color: color, fontSize: 16 / scale);
     final textSpan = TextSpan(text: text, style: textStyle);
     final textPainter = TextPainter(
@@ -119,6 +177,12 @@ class MetaDomainPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
+}
+
+enum NodeType {
+  domain,
+  model,
+  entity,
 }
 
 abstract class LayoutAlgorithm {
@@ -222,5 +286,45 @@ class GridLayoutAlgorithm extends LayoutAlgorithm {
     }
 
     return positions;
+  }
+}
+
+abstract class UXDecorator {
+  void apply(Canvas canvas, Offset position, double scale);
+}
+
+class HighlightDecorator implements UXDecorator {
+  final Color color;
+  final double thickness;
+
+  HighlightDecorator({required this.color, this.thickness = 2.0});
+
+  @override
+  void apply(Canvas canvas, Offset position, double scale) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = thickness / scale;
+    final rect = Rect.fromCenter(
+        center: position, width: 110 / scale, height: 60 / scale);
+    canvas.drawRect(rect, paint);
+  }
+}
+
+class TooltipDecorator implements UXDecorator {
+  final String tooltip;
+  final TextStyle textStyle;
+
+  TooltipDecorator({required this.tooltip, required this.textStyle});
+
+  @override
+  void apply(Canvas canvas, Offset position, double scale) {
+    final textSpan = TextSpan(text: tooltip, style: textStyle);
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    textPainter.paint(canvas, position + Offset(0, -50 / scale));
   }
 }
