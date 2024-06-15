@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Bookmark> bookmarks = [];
   BookmarkManager bookmarkManager = BookmarkManager();
 
-  bool _isDiagramView = false;
+  bool showMetaCanvas = false;
 
   @override
   void initState() {
@@ -84,12 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // Implement bookmark selection logic here
   }
 
-  void _toggleViewMode() {
-    setState(() {
-      _isDiagramView = !_isDiagramView;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,8 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: Icon(_isDiagramView ? Icons.list : Icons.graphic_eq),
-            onPressed: _toggleViewMode,
+            icon: Icon(Icons.view_quilt),
+            onPressed: () {
+              setState(() {
+                showMetaCanvas = !showMetaCanvas;
+              });
+            },
           ),
           IconButton(
             icon: Icon(Icons.swap_horiz),
@@ -119,9 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
         create: (context) => LayoutBloc(),
         child: BlocBuilder<LayoutBloc, LayoutState>(
           builder: (context, state) {
-            if (_isDiagramView) {
-              return MetaDomainCanvas(
-                  domains: app.domains);
+            if (showMetaCanvas) {
+              return Expanded(child: MetaDomainCanvas(domains: app.domains));
             } else {
               return Row(
                 children: [

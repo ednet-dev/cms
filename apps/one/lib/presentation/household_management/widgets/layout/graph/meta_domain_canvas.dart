@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +35,7 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
 class MetaDomainPainter extends CustomPainter {
   final Domains domains;
   final Offset offset;
+  final Map<String, Offset> velocity = {};
 
   MetaDomainPainter({required this.domains, required this.offset});
 
@@ -42,40 +45,31 @@ class MetaDomainPainter extends CustomPainter {
       ..color = Colors.blue
       ..strokeWidth = 2;
 
-    double domainX = offset.dx + 20;
-    double domainY = offset.dy + 20;
+    Map<String, Offset> positions = _applyForceDirectedLayout(size);
 
     for (var domain in domains) {
-      final domainRect = Rect.fromLTWH(domainX, domainY, 200, 50);
-      canvas.drawRect(domainRect, paint);
-      _drawText(canvas, domain.code, domainRect.center, Colors.white);
+      Offset domainPosition = positions[domain.code]!;
+      _drawText(canvas, domain.code, domainPosition, Colors.blue);
 
-      double modelY = domainY + 60;
       for (var model in domain.models) {
-        final modelRect = Rect.fromLTWH(domainX + 20, modelY, 160, 40);
-        canvas.drawRect(modelRect, paint..color = Colors.green);
-        _drawText(canvas, model.code, modelRect.center, Colors.white);
+        Offset modelPosition = positions[model.code]!;
+        _drawText(canvas, model.code, modelPosition, Colors.green);
 
-        modelY += 50;
-
-        // Draw relationships
         for (var entity in model.concepts) {
-          final entityPosition = Offset(domainX + 220, modelY);
+          Offset entityPosition = positions[entity.code]!;
           _drawText(canvas, entity.code, entityPosition, Colors.red);
 
+          // Draw relationships
           for (var child in entity.children) {
-            final childPosition = Offset(domainX + 420, modelY + 40);
+            Offset childPosition = positions[child.code]!;
             _drawText(canvas, child.code, childPosition, Colors.red);
 
             // Draw lines
-            canvas.drawLine(entityPosition, childPosition, paint);
+            canvas.drawLine(
+                entityPosition, childPosition, paint..color = Colors.black);
           }
-
-          modelY += 50;
         }
       }
-
-      domainY = modelY + 20;
     }
   }
 
@@ -89,6 +83,67 @@ class MetaDomainPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(canvas,
         position - Offset(textPainter.width / 2, textPainter.height / 2));
+  }
+
+  Map<String, Offset> _applyForceDirectedLayout(Size size) {
+    final positions = <String, Offset>{};
+    final forces = <String, Offset>{};
+
+    final random = Random();
+    const int iterations = 1000;
+    const double repulsionForce = 10000.0;
+    const double springForce = 0.1;
+
+    for (var domain in domains) {
+      positions[domain.code] = Offset(
+          random.nextDouble() * size.width, random.nextDouble() * size.height);
+
+      for (var model in domain.models) {
+        positions[model.code] = Offset(random.nextDouble() * size.width,
+            random.nextDouble() * size.height);
+
+        for (var entity in model.concepts) {
+          positions[entity.code] = Offset(random.nextDouble() * size.width,
+              random.nextDouble() * size.height);
+
+          for (var child in entity.children) {
+            positions[child.code] = Offset(random.nextDouble() * size.width,
+                random.nextDouble() * size.height);
+          }
+        }
+      }
+    }
+
+    for (var i = 0; i < iterations; i++) {
+      for (var entry in positions.entries) {
+        final position = entry.value;
+        var force = Offset.zero;
+
+        for (var otherEntry in positions.entries) {
+          if (entry.key == otherEntry.key) continue;
+
+          final direction = position - otherEntry.value;
+          final distance = max(direction.distance, 1.0);
+          final repulsion =
+              direction / distance * repulsionForce / (distance * distance);
+
+          force += repulsion;
+        }
+
+        forces[entry.key] = force;
+      }
+
+      for (var entry in positions.entries) {
+        final force = forces[entry.key]!;
+        final velocity =
+            (this.velocity[entry.key] ?? Offset.zero) + force * springForce;
+
+        positions[entry.key] = entry.value + velocity;
+        this.velocity[entry.key] = velocity * 0.95;
+      }
+    }
+
+    return positions;
   }
 
   @override
