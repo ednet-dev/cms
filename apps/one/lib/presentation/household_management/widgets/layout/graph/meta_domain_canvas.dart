@@ -5,6 +5,264 @@ import 'dart:ui';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
+class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
+  final double nodeWidth = 100.0;
+  final double nodeHeight = 50.0;
+  final double verticalGap = 80.0;
+  final double horizontalGap = 30.0;
+
+  @override
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
+    final positions = <String, Offset>{};
+
+    for (var domain in domains) {
+      final root = TreeNode(domain.code, Offset(size.width / 2, verticalGap));
+      positions[domain.code] = root.position;
+      _calculatePositions(
+          root, domain.models.toList(), 0, size.width, positions);
+    }
+
+    return positions;
+  }
+
+  void _calculatePositions(TreeNode parent, List<Entity> collection,
+      double xMin, double xMax, Map<String, Offset> positions) {
+    if (collection.isEmpty) return;
+
+    final y = parent.position.dy + verticalGap;
+    final width = (xMax - xMin) / max(1, collection.length);
+
+    for (var i = 0; i < collection.length; i++) {
+      final item = collection[i];
+      final x = xMin + i * width + width / 2;
+      final childNode = TreeNode(item.code, Offset(x, y));
+      parent.children.add(childNode);
+      positions[childNode.key] = childNode.position;
+      _calculatePositions(childNode, item.concept.children.toList(),
+          xMin + i * width, xMin + (i + 1) * width, positions);
+    }
+  }
+}
+
+class MetaDomainCanvas extends StatefulWidget {
+  final Domains domains;
+  final LayoutAlgorithm layoutAlgorithm;
+  final List<UXDecorator> decorators;
+
+  MetaDomainCanvas({
+    required this.domains,
+    required this.layoutAlgorithm,
+    required this.decorators,
+  });
+
+  @override
+  _MetaDomainCanvasState createState() => _MetaDomainCanvasState();
+}
+
+class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
+  late TransformationController _transformationController;
+  late LayoutAlgorithm _currentAlgorithm;
+  bool _isDragging = false;
+  late GameLoop _gameLoop;
+  late System _system;
+  late AnimationManager _animationManager;
+
+  @override
+  void initState() {
+    super.initState();
+    _transformationController = TransformationController();
+    _currentAlgorithm = widget.layoutAlgorithm;
+    _system = System();
+    _animationManager = AnimationManager();
+    _gameLoop = GameLoop(
+      system: _system,
+      animationManager: _animationManager,
+    );
+    _gameLoop.start();
+  }
+
+  void _onInteractionStart(ScaleStartDetails details) {
+    setState(() {
+      _isDragging = true;
+    });
+  }
+
+  void _onInteractionEnd(ScaleEndDetails details) {
+    setState(() {
+      _isDragging = false;
+    });
+  }
+
+  void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
+    setState(() {
+      _currentAlgorithm = algorithm;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LayoutAlgorithmIcon(
+                icon: Icons.auto_fix_high,
+                name: 'Force Directed',
+                onTap: () =>
+                    _changeLayoutAlgorithm(ForceDirectedLayoutAlgorithm()),
+              ),
+              LayoutAlgorithmIcon(
+                icon: Icons.grid_on,
+                name: 'Grid',
+                onTap: () => _changeLayoutAlgorithm(GridLayoutAlgorithm()),
+              ),
+              LayoutAlgorithmIcon(
+                icon: Icons.circle,
+                name: 'Circular',
+                onTap: () => _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
+              ),
+              LayoutAlgorithmIcon(
+                icon: Icons.format_indent_increase,
+                name: 'Master Detail',
+                onTap: () =>
+                    _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
+              ),
+              LayoutAlgorithmIcon(
+                icon: Icons.account_tree,
+                name: 'Ranked Tree',
+                onTap: () =>
+                    _changeLayoutAlgorithm(RankedEmbeddingLayoutAlgorithm()),
+              ),
+            ],
+          ),
+          Expanded(
+            child: GestureDetector(
+              onScaleStart: _onInteractionStart,
+              onScaleEnd: _onInteractionEnd,
+              child: InteractiveViewer(
+                transformationController: _transformationController,
+                onInteractionUpdate: (details) {
+                  setState(() {
+                    _transformationController.value =
+                        _transformationController.value
+                          ..translate(details.focalPointDelta.dx,
+                              details.focalPointDelta.dy)
+                          ..scale(details.scale);
+                  });
+                },
+                minScale: 0.1,
+                maxScale: 5.0,
+                child: CustomPaint(
+                  size: Size.infinite,
+                  painter: MetaDomainPainter(
+                    domains: widget.domains,
+                    transformationController: _transformationController,
+                    layoutAlgorithm: _currentAlgorithm,
+                    decorators: widget.decorators,
+                    isDragging: _isDragging,
+                    system: _system,
+                    animationManager: _animationManager,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _gameLoop.stop();
+    super.dispose();
+  }
+}
+
+class MetaDomainPainter extends CustomPainter {
+  final Domains domains;
+  final TransformationController transformationController;
+  final LayoutAlgorithm layoutAlgorithm;
+  final List<UXDecorator> decorators;
+  final bool isDragging;
+  final System system;
+  final AnimationManager animationManager;
+
+  MetaDomainPainter({
+    required this.domains,
+    required this.transformationController,
+    required this.layoutAlgorithm,
+    required this.decorators,
+    required this.isDragging,
+    required this.system,
+    required this.animationManager,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final positions = layoutAlgorithm.calculateLayout(domains, size);
+    system.nodes.clear();
+
+    for (var domain in domains) {
+      _paintDomain(canvas, domain, positions);
+    }
+
+    system.render(canvas);
+  }
+
+  void _paintDomain(
+      Canvas canvas, Domain domain, Map<String, Offset> positions) {
+    Offset domainPosition = positions[domain.code]!;
+    Node domainNode = _createNode(domainPosition, Colors.blue);
+    system.addNode(domainNode);
+
+    for (var model in domain.models) {
+      Offset modelPosition = positions[model.code]!;
+      Node modelNode = _createNode(modelPosition, Colors.green);
+      system.addNode(modelNode);
+
+      for (var entity in model.concepts) {
+        Offset entityPosition = positions[entity.code]!;
+        Node entityNode = _createNode(entityPosition, Colors.red);
+        system.addNode(entityNode);
+
+        for (var child in entity.children) {
+          Offset childPosition = positions[child.code]!;
+          Node childNode = _createNode(childPosition, Colors.red);
+          system.addNode(childNode);
+
+          _drawLine(canvas, entityPosition, childPosition);
+        }
+      }
+    }
+  }
+
+  Node _createNode(Offset position, Color color) {
+    Node node = Node();
+    node.addComponent(PositionComponent(position));
+    node.addComponent(RenderComponent(
+      Paint()..color = color,
+      Rect.fromCenter(center: position, width: 100, height: 50),
+    ));
+    return node;
+  }
+
+  void _drawLine(Canvas canvas, Offset start, Offset end) {
+    canvas.drawLine(
+      start,
+      end,
+      Paint()..color = Colors.black,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
 // AVL Tree Node class
 class TreeNode {
   String key;
@@ -12,8 +270,11 @@ class TreeNode {
   TreeNode? left;
   TreeNode? right;
   int height;
+  List<TreeNode> children;
 
-  TreeNode(this.key, this.position) : height = 1;
+  TreeNode(this.key, this.position)
+      : height = 1,
+        children = [];
 }
 
 // AVL Tree implementation for balanced search tree
@@ -274,88 +535,6 @@ class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
   }
 }
 
-class MetaDomainPainter extends CustomPainter {
-  final Domains domains;
-  final TransformationController transformationController;
-  final LayoutAlgorithm layoutAlgorithm;
-  final List<UXDecorator> decorators;
-  final bool isDragging;
-  final System system;
-  final AnimationManager animationManager;
-
-  MetaDomainPainter({
-    required this.domains,
-    required this.transformationController,
-    required this.layoutAlgorithm,
-    required this.decorators,
-    required this.isDragging,
-    required this.system,
-    required this.animationManager,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final positions = layoutAlgorithm.calculateLayout(domains, size);
-    system.nodes.clear();
-
-    for (var domain in domains) {
-      _paintDomain(canvas, domain, positions);
-    }
-
-    system.render(canvas);
-  }
-
-  void _paintDomain(
-      Canvas canvas, Domain domain, Map<String, Offset> positions) {
-    Offset domainPosition = positions[domain.code]!;
-    Node domainNode = _createNode(domainPosition, Colors.blue);
-    system.addNode(domainNode);
-
-    for (var model in domain.models) {
-      Offset modelPosition = positions[model.code]!;
-      Node modelNode = _createNode(modelPosition, Colors.green);
-      system.addNode(modelNode);
-
-      for (var entity in model.concepts) {
-        Offset entityPosition = positions[entity.code]!;
-        Node entityNode = _createNode(entityPosition, Colors.red);
-        system.addNode(entityNode);
-
-        for (var child in entity.children) {
-          Offset childPosition = positions[child.code]!;
-          Node childNode = _createNode(childPosition, Colors.red);
-          system.addNode(childNode);
-
-          _drawLine(canvas, entityPosition, childPosition);
-        }
-      }
-    }
-  }
-
-  Node _createNode(Offset position, Color color) {
-    Node node = Node();
-    node.addComponent(PositionComponent(position));
-    node.addComponent(RenderComponent(
-      Paint()..color = color,
-      Rect.fromCenter(center: position, width: 100, height: 50),
-    ));
-    return node;
-  }
-
-  void _drawLine(Canvas canvas, Offset start, Offset end) {
-    canvas.drawLine(
-      start,
-      end,
-      Paint()..color = Colors.black,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
 class GameLoop {
   final System system;
   final AnimationManager animationManager;
@@ -501,137 +680,6 @@ class System {
     for (var node in nodes) {
       node.render(canvas);
     }
-  }
-}
-
-class MetaDomainCanvas extends StatefulWidget {
-  final Domains domains;
-  final LayoutAlgorithm layoutAlgorithm;
-  final List<UXDecorator> decorators;
-
-  MetaDomainCanvas({
-    required this.domains,
-    required this.layoutAlgorithm,
-    required this.decorators,
-  });
-
-  @override
-  _MetaDomainCanvasState createState() => _MetaDomainCanvasState();
-}
-
-class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
-  late TransformationController _transformationController;
-  late LayoutAlgorithm _currentAlgorithm;
-  bool _isDragging = false;
-  late GameLoop _gameLoop;
-  late System _system;
-  late AnimationManager _animationManager;
-
-  @override
-  void initState() {
-    super.initState();
-    _transformationController = TransformationController();
-    _currentAlgorithm = ForceDirectedLayoutAlgorithm();
-    _system = System();
-    _animationManager = AnimationManager();
-    _gameLoop = GameLoop(
-      system: _system,
-      animationManager: _animationManager,
-    );
-    _gameLoop.start();
-  }
-
-  void _onInteractionStart(ScaleStartDetails details) {
-    setState(() {
-      _isDragging = true;
-    });
-  }
-
-  void _onInteractionEnd(ScaleEndDetails details) {
-    setState(() {
-      _isDragging = false;
-    });
-  }
-
-  void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
-    setState(() {
-      _currentAlgorithm = algorithm;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LayoutAlgorithmIcon(
-                icon: Icons.auto_fix_high,
-                name: 'Force Directed',
-                onTap: () =>
-                    _changeLayoutAlgorithm(ForceDirectedLayoutAlgorithm()),
-              ),
-              LayoutAlgorithmIcon(
-                icon: Icons.grid_on,
-                name: 'Grid',
-                onTap: () => _changeLayoutAlgorithm(GridLayoutAlgorithm()),
-              ),
-              LayoutAlgorithmIcon(
-                icon: Icons.circle,
-                name: 'Circular',
-                onTap: () => _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
-              ),
-              LayoutAlgorithmIcon(
-                icon: Icons.format_indent_increase,
-                name: 'Master Detail',
-                onTap: () =>
-                    _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
-              ),
-            ],
-          ),
-          Expanded(
-            child: GestureDetector(
-              onScaleStart: _onInteractionStart,
-              onScaleEnd: _onInteractionEnd,
-              child: InteractiveViewer(
-                transformationController: _transformationController,
-                onInteractionUpdate: (details) {
-                  setState(() {
-                    _transformationController.value =
-                        _transformationController.value
-                          ..translate(details.focalPointDelta.dx,
-                              details.focalPointDelta.dy)
-                          ..scale(details.scale);
-                  });
-                },
-                minScale: 0.1,
-                maxScale: 5.0,
-                child: CustomPaint(
-                  size: Size.infinite,
-                  painter: MetaDomainPainter(
-                    domains: widget.domains,
-                    transformationController: _transformationController,
-                    layoutAlgorithm: _currentAlgorithm,
-                    decorators: widget.decorators,
-                    isDragging: _isDragging,
-                    system: _system,
-                    animationManager: _animationManager,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _gameLoop.stop();
-    super.dispose();
   }
 }
 
