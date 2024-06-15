@@ -29,8 +29,9 @@ class AVLTree {
   }
 
   TreeNode? rightRotate(TreeNode y) {
+    if (y.left == null) return y; // Added null check
     TreeNode x = y.left!;
-    TreeNode T2 = x.right!;
+    TreeNode? T2 = x.right;
 
     x.right = y;
     y.left = T2;
@@ -42,8 +43,9 @@ class AVLTree {
   }
 
   TreeNode? leftRotate(TreeNode x) {
+    if (x.right == null) return x; // Added null check
     TreeNode y = x.right!;
-    TreeNode T2 = y.left!;
+    TreeNode? T2 = y.left;
 
     y.left = x;
     x.right = T2;
