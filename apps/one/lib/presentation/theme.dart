@@ -1,39 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Define a cheerful light theme
-final ThemeData cheerfulLightTheme = ThemeData(
-  colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: Colors.yellow,
-    accentColor: Colors.orange,
-    backgroundColor: Colors.lightBlue[50]!,
-  ).copyWith(
-    surface: Colors.lightBlue[50],
-  ),
-  scaffoldBackgroundColor: Colors.lightBlue[50],
-  appBarTheme: AppBarTheme(
-    backgroundColor: Colors.yellow[700],
-    titleTextStyle: TextStyle(
-      color: Colors.white,
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    ),
-    iconTheme: IconThemeData(color: Colors.white),
-    actionsIconTheme: IconThemeData(color: Colors.white),
-  ),
-  textTheme: _buildTextTheme(Colors.black87),
-  inputDecorationTheme: InputDecorationTheme(
-    border: OutlineInputBorder(),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.orange),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.orange[700]!),
-    ),
-    labelStyle: TextStyle(color: Colors.orange),
-  ),
-);
-
-// Define a cheerful dark theme
 final ThemeData cheerfulDarkTheme = ThemeData(
   colorScheme: ColorScheme.fromSwatch(
     primarySwatch: Colors.yellow,
@@ -67,6 +33,39 @@ final ThemeData cheerfulDarkTheme = ThemeData(
   ),
 );
 
+final ThemeData cheerfulLightTheme = ThemeData(
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: Colors.blue,
+    accentColor: Colors.blueAccent,
+    brightness: Brightness.light,
+    backgroundColor: Colors.white,
+  ).copyWith(
+    surface: Colors.white,
+  ),
+  scaffoldBackgroundColor: Colors.white,
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.blue[700],
+    titleTextStyle: TextStyle(
+      color: Colors.white,
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    ),
+    iconTheme: IconThemeData(color: Colors.white),
+    actionsIconTheme: IconThemeData(color: Colors.white),
+  ),
+  textTheme: _buildTextTheme(Colors.black),
+  inputDecorationTheme: InputDecorationTheme(
+    border: OutlineInputBorder(),
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.blue),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.blue[700]!),
+    ),
+    labelStyle: TextStyle(color: Colors.blue),
+  ),
+);
+
 TextTheme _buildTextTheme(Color color) {
   return TextTheme(
     displayLarge: TextStyle(color: color, fontSize: 24),
@@ -86,3 +85,4 @@ TextTheme _buildTextTheme(Color color) {
     labelSmall: TextStyle(color: color, fontSize: 10),
   );
 }
+

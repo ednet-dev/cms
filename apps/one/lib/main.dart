@@ -3,8 +3,10 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'presentation/household_management/pages/my_home_page.dart';
+import 'presentation/blocs/theme_block.dart';
+import 'presentation/screens/home_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,9 +41,17 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EDNet One',
-      home: MyHomePage(title: 'One Home', appLinks: _appLinks),
+    return BlocProvider(
+      create: (context) => ThemeBloc(),
+      child: BlocBuilder<ThemeBloc, ThemeData>(
+        builder: (context, theme) {
+          return MaterialApp(
+            title: 'EDNet One',
+            theme: theme,
+            home: HomePage(title: 'One Home', appLinks: _appLinks),
+          );
+        },
+      ),
     );
   }
 }

@@ -17,16 +17,23 @@ class HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       children: [
         Row(
           children: [
             DropdownButton<String>(
-              hint: Text('Attribute'),
+              hint: Text('Attribute',
+                  style: TextStyle(color: colorScheme.onSurface)),
+              dropdownColor: colorScheme.surface, // Dropdown background color
               items: ['name', 'age', 'type']
                   .map((attribute) => DropdownMenuItem<String>(
                         value: attribute,
-                        child: Text(attribute),
+                        child: Text(attribute,
+                            style: TextStyle(
+                                color: colorScheme.onSurface)), // Text color
                       ))
                   .toList(),
               onChanged: (value) {
@@ -34,11 +41,15 @@ class HeaderWidget extends StatelessWidget {
               },
             ),
             DropdownButton<String>(
-              hint: Text('Operator'),
+              hint: Text('Operator',
+                  style: TextStyle(color: colorScheme.onSurface)),
+              dropdownColor: colorScheme.surface, // Dropdown background color
               items: ['=', '!=', '>', '<']
                   .map((operator) => DropdownMenuItem<String>(
                         value: operator,
-                        child: Text(operator),
+                        child: Text(operator,
+                            style: TextStyle(
+                                color: colorScheme.onSurface)), // Text color
                       ))
                   .toList(),
               onChanged: (value) {
@@ -47,14 +58,29 @@ class HeaderWidget extends StatelessWidget {
             ),
             Expanded(
               child: TextField(
-                decoration: InputDecoration(hintText: 'Value'),
+                style: TextStyle(color: colorScheme.onSurface),
+                // Input text color
+                decoration: InputDecoration(
+                  hintText: 'Value',
+                  hintStyle:
+                      TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                  // Hint text color
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: colorScheme.secondary), // Border color
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: colorScheme.secondary), // Focused border color
+                  ),
+                ),
                 onSubmitted: (value) {
                   // Handle value input
                 },
               ),
             ),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(Icons.add, color: colorScheme.onSurface),
               onPressed: () {
                 onAddFilter(FilterCriteria(
                   attribute: 'name',
@@ -64,7 +90,7 @@ class HeaderWidget extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: Icon(Icons.bookmark),
+              icon: Icon(Icons.bookmark, color: colorScheme.onSurface),
               onPressed: onBookmark,
             ),
           ],
