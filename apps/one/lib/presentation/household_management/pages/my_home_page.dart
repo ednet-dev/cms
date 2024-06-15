@@ -160,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: MetaDomainCanvas(
                       domains: app.domains,
-                      layoutAlgorithm: _selectedAlgorithm as LayoutAlgorithm,
+                      layoutAlgorithm: _selectedAlgorithm,
                       decorators: [],
                     ),
                   ),
