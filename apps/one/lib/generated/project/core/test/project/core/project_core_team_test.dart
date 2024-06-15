@@ -129,7 +129,7 @@ void testProjectCoreTeams(
       var teamsCount = teams.length; 
  
       var team = Team(teams.concept); 
-      team.name = 'ticket'; 
+      team.name = 'objective'; 
       var added = selectedTeams.add(team); 
       expect(added, isTrue); 
       expect(teams.length, equals(++teamsCount)); 
@@ -222,8 +222,8 @@ void testProjectCoreTeams(
     test("Update team non id attribute with failure", () { 
       var randomTeam = coreModel.teams.random(); 
       var afterUpdateEntity = randomTeam.copy(); 
-      afterUpdateEntity.name = 'plate'; 
-      expect(afterUpdateEntity.name, equals('plate')); 
+      afterUpdateEntity.name = 'opinion'; 
+      expect(afterUpdateEntity.name, equals('opinion')); 
       // teams.update can only be used if oid, code or id is set. 
       expect(() => teams.update(randomTeam, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectCoreTeams(
     test("team action undo and redo", () { 
       var teamCount = teams.length; 
       var team = Team(teams.concept); 
-        team.name = 'algorithm'; 
+        team.name = 'place'; 
     var teamProject = coreModel.projects.random(); 
     team.project = teamProject; 
       teams.add(team); 
@@ -266,7 +266,7 @@ void testProjectCoreTeams(
     test("team session undo and redo", () { 
       var teamCount = teams.length; 
       var team = Team(teams.concept); 
-        team.name = 'beach'; 
+        team.name = 'ball'; 
     var teamProject = coreModel.projects.random(); 
     team.project = teamProject; 
       teams.add(team); 
@@ -288,7 +288,7 @@ void testProjectCoreTeams(
  
     test("Team update undo and redo", () { 
       var team = coreModel.teams.random(); 
-      var action = SetAttributeCommand(session, team, "name", 'concern'); 
+      var action = SetAttributeCommand(session, team, "name", 'music'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -389,7 +389,7 @@ void testProjectCoreTeams(
  
       projectDomain.startCommandReaction(reaction); 
       var team = Team(teams.concept); 
-        team.name = 'performance'; 
+        team.name = 'college'; 
     var teamProject = coreModel.projects.random(); 
     team.project = teamProject; 
       teams.add(team); 
@@ -405,7 +405,7 @@ void testProjectCoreTeams(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, team, "name", 'advisor'); 
+        session, team, "name", 'output'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

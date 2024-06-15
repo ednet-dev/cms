@@ -176,7 +176,6 @@ class EntityDetailScreen extends StatelessWidget {
   }
 }
 
-// Widgets for rendering entity attributes
 class EntityWidget extends StatelessWidget {
   final Entity entity;
   final void Function(Entity entity)? onEntitySelected;
@@ -185,6 +184,21 @@ class EntityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    try {
+      // access concept
+      entity.concept;
+      print('Concept ${entity.concept} is set for entity: ${entity}');
+    } catch (e) {
+      print('Error: Concept is not set for entity: ${entity}');
+      return Center(
+        child: Text(
+          "*** concept is not set ***\nSee also: https://flutter.dev/docs/testing/errors",
+          style: TextStyle(color: Colors.yellow, fontSize: 16),
+        ),
+      );
+    }
+    print('Rendering entity with concept: ${entity.concept?.code}');
+
     return Card(
       margin: EdgeInsets.all(16.0),
       child: Padding(

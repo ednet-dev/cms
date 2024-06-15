@@ -115,11 +115,7 @@ class AttributeType extends Entity<AttributeType> {
     return true;
   }
 
-  /// Compares two values based on their type.
-  /// If the result is less than 0 then the first id is less than the second,
-  /// if it is equal to 0 they are equal and
-  /// if the result is greater than 0 then the first is greater than the second.
-  int compare(var value1, var value2) {
+int compare(var value1, var value2) {
     var compare = 0;
     if (base == 'String') {
       compare = value1.compareTo(value2);

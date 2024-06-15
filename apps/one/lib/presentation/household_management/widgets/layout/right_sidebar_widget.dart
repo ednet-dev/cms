@@ -2,14 +2,12 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
 class RightSidebarWidget extends StatelessWidget {
-  final Domains domains;
-  final void Function(Domain domain)? onDomainSelected;
-  final void Function(Model model)? onModelSelected;
+  final Models models;
+  final void Function(Model model) onModelSelected;
 
   RightSidebarWidget({
-    required this.domains,
-    this.onDomainSelected,
-    this.onModelSelected,
+    required this.models,
+    required this.onModelSelected,
   });
 
   @override
@@ -17,19 +15,10 @@ class RightSidebarWidget extends StatelessWidget {
     return Container(
       width: 200,
       child: ListView(
-        children: domains.map((domain) {
-          return ExpansionTile(
-            title: Text(domain.code),
-            children: domain.models.map((model) {
-              return ListTile(
-                title: Text(model.code),
-                onTap: () {
-                  if (onModelSelected != null) {
-                    onModelSelected!(model);
-                  }
-                },
-              );
-            }).toList(),
+        children: models.map((model) {
+          return ListTile(
+            title: Text(model.code),
+            onTap: () => onModelSelected(model),
           );
         }).toList(),
       ),

@@ -129,12 +129,12 @@ void testProjectSchedulingExecutionPhases(
       var executionPhasesCount = executionPhases.length; 
  
       var executionPhase = ExecutionPhase(executionPhases.concept); 
-      executionPhase.TaskAssignment = 'computer'; 
-      executionPhase.ResourceAllocation = 'pencil'; 
-      executionPhase.ProjectManagement = 'lifespan'; 
-      executionPhase.QualityAssurance = 'service'; 
-      executionPhase.Communication = 'policeman'; 
-      executionPhase.RiskMonitoring = 'knowledge'; 
+      executionPhase.TaskAssignment = 'center'; 
+      executionPhase.ResourceAllocation = 'hell'; 
+      executionPhase.ProjectManagement = 'down'; 
+      executionPhase.QualityAssurance = 'software'; 
+      executionPhase.Communication = 'chairman'; 
+      executionPhase.RiskMonitoring = 'series'; 
       var added = selectedExecutionPhases.add(executionPhase); 
       expect(added, isTrue); 
       expect(executionPhases.length, equals(++executionPhasesCount)); 
@@ -227,8 +227,8 @@ void testProjectSchedulingExecutionPhases(
     test("Update executionPhase non id attribute with failure", () { 
       var randomExecutionPhase = schedulingModel.executionPhases.random(); 
       var afterUpdateEntity = randomExecutionPhase.copy(); 
-      afterUpdateEntity.TaskAssignment = 'explanation'; 
-      expect(afterUpdateEntity.TaskAssignment, equals('explanation')); 
+      afterUpdateEntity.TaskAssignment = 'feeling'; 
+      expect(afterUpdateEntity.TaskAssignment, equals('feeling')); 
       // executionPhases.update can only be used if oid, code or id is set. 
       expect(() => executionPhases.update(randomExecutionPhase, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -253,12 +253,12 @@ void testProjectSchedulingExecutionPhases(
     test("executionPhase action undo and redo", () { 
       var executionPhaseCount = executionPhases.length; 
       var executionPhase = ExecutionPhase(executionPhases.concept); 
-        executionPhase.TaskAssignment = 'season'; 
-      executionPhase.ResourceAllocation = 'software'; 
-      executionPhase.ProjectManagement = 'hot'; 
-      executionPhase.QualityAssurance = 'walking'; 
-      executionPhase.Communication = 'notch'; 
-      executionPhase.RiskMonitoring = 'coffee'; 
+        executionPhase.TaskAssignment = 'done'; 
+      executionPhase.ResourceAllocation = 'wife'; 
+      executionPhase.ProjectManagement = 'concern'; 
+      executionPhase.QualityAssurance = 'agreement'; 
+      executionPhase.Communication = 'grading'; 
+      executionPhase.RiskMonitoring = 'truck'; 
     var executionPhasePlanningPhase = schedulingModel.planningPhases.random(); 
     executionPhase.planningPhase = executionPhasePlanningPhase; 
       executionPhases.add(executionPhase); 
@@ -281,12 +281,12 @@ void testProjectSchedulingExecutionPhases(
     test("executionPhase session undo and redo", () { 
       var executionPhaseCount = executionPhases.length; 
       var executionPhase = ExecutionPhase(executionPhases.concept); 
-        executionPhase.TaskAssignment = 'output'; 
-      executionPhase.ResourceAllocation = 'distance'; 
-      executionPhase.ProjectManagement = 'service'; 
-      executionPhase.QualityAssurance = 'agile'; 
-      executionPhase.Communication = 'universe'; 
-      executionPhase.RiskMonitoring = 'energy'; 
+        executionPhase.TaskAssignment = 'hat'; 
+      executionPhase.ResourceAllocation = 'finger'; 
+      executionPhase.ProjectManagement = 'dvd'; 
+      executionPhase.QualityAssurance = 'umbrella'; 
+      executionPhase.Communication = 'blue'; 
+      executionPhase.RiskMonitoring = 'left'; 
     var executionPhasePlanningPhase = schedulingModel.planningPhases.random(); 
     executionPhase.planningPhase = executionPhasePlanningPhase; 
       executionPhases.add(executionPhase); 
@@ -308,7 +308,7 @@ void testProjectSchedulingExecutionPhases(
  
     test("ExecutionPhase update undo and redo", () { 
       var executionPhase = schedulingModel.executionPhases.random(); 
-      var action = SetAttributeCommand(session, executionPhase, "TaskAssignment", 'policeman'); 
+      var action = SetAttributeCommand(session, executionPhase, "TaskAssignment", 'element'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -409,12 +409,12 @@ void testProjectSchedulingExecutionPhases(
  
       projectDomain.startCommandReaction(reaction); 
       var executionPhase = ExecutionPhase(executionPhases.concept); 
-        executionPhase.TaskAssignment = 'small'; 
-      executionPhase.ResourceAllocation = 'highway'; 
-      executionPhase.ProjectManagement = 'objective'; 
-      executionPhase.QualityAssurance = 'theme'; 
-      executionPhase.Communication = 'family'; 
-      executionPhase.RiskMonitoring = 'heating'; 
+        executionPhase.TaskAssignment = 'software'; 
+      executionPhase.ResourceAllocation = 'cloud'; 
+      executionPhase.ProjectManagement = 'house'; 
+      executionPhase.QualityAssurance = 'music'; 
+      executionPhase.Communication = 'oil'; 
+      executionPhase.RiskMonitoring = 'agile'; 
     var executionPhasePlanningPhase = schedulingModel.planningPhases.random(); 
     executionPhase.planningPhase = executionPhasePlanningPhase; 
       executionPhases.add(executionPhase); 

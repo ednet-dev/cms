@@ -129,7 +129,7 @@ void testProjectCoreTimes(
       var timesCount = times.length; 
  
       var time = Time(times.concept); 
-      time.hours = 5073; 
+      time.hours = 1303; 
       var added = selectedTimes.add(time); 
       expect(added, isTrue); 
       expect(times.length, equals(++timesCount)); 
@@ -222,8 +222,8 @@ void testProjectCoreTimes(
     test("Update time non id attribute with failure", () { 
       var randomTime = coreModel.times.random(); 
       var afterUpdateEntity = randomTime.copy(); 
-      afterUpdateEntity.hours = 5974; 
-      expect(afterUpdateEntity.hours, equals(5974)); 
+      afterUpdateEntity.hours = 7052; 
+      expect(afterUpdateEntity.hours, equals(7052)); 
       // times.update can only be used if oid, code or id is set. 
       expect(() => times.update(randomTime, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectCoreTimes(
     test("time action undo and redo", () { 
       var timeCount = times.length; 
       var time = Time(times.concept); 
-        time.hours = 4042; 
+        time.hours = 6572; 
     var timeProject = coreModel.projects.random(); 
     time.project = timeProject; 
       times.add(time); 
@@ -266,7 +266,7 @@ void testProjectCoreTimes(
     test("time session undo and redo", () { 
       var timeCount = times.length; 
       var time = Time(times.concept); 
-        time.hours = 8554; 
+        time.hours = 6355; 
     var timeProject = coreModel.projects.random(); 
     time.project = timeProject; 
       times.add(time); 
@@ -288,7 +288,7 @@ void testProjectCoreTimes(
  
     test("Time update undo and redo", () { 
       var time = coreModel.times.random(); 
-      var action = SetAttributeCommand(session, time, "hours", 223); 
+      var action = SetAttributeCommand(session, time, "hours", 5626); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -389,7 +389,7 @@ void testProjectCoreTimes(
  
       projectDomain.startCommandReaction(reaction); 
       var time = Time(times.concept); 
-        time.hours = 149; 
+        time.hours = 9207; 
     var timeProject = coreModel.projects.random(); 
     time.project = timeProject; 
       times.add(time); 
@@ -405,7 +405,7 @@ void testProjectCoreTimes(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, time, "hours", 5275); 
+        session, time, "hours", 4315); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

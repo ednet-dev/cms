@@ -56,36 +56,36 @@ class GtdModel extends GtdEntries {
  
   void initInboxes() { 
     var inbox1 = Inbox(inboxes.concept); 
-    inbox1.items = 'organization'; 
+    inbox1.items = 'grading'; 
     inboxes.add(inbox1); 
  
     var inbox2 = Inbox(inboxes.concept); 
-    inbox2.items = 'selfie'; 
+    inbox2.items = 'objective'; 
     inboxes.add(inbox2); 
  
     var inbox3 = Inbox(inboxes.concept); 
-    inbox3.items = 'wave'; 
+    inbox3.items = 'distance'; 
     inboxes.add(inbox3); 
  
   } 
  
   void initClarifiedItems() { 
     var clarifiedItem1 = ClarifiedItem(clarifiedItems.concept); 
-    clarifiedItem1.nextAction = 'body'; 
+    clarifiedItem1.nextAction = 'answer'; 
     var clarifiedItem1Inbox = inboxes.random(); 
     clarifiedItem1.inbox = clarifiedItem1Inbox; 
     clarifiedItems.add(clarifiedItem1); 
     clarifiedItem1Inbox.clarifiedItems.add(clarifiedItem1); 
  
     var clarifiedItem2 = ClarifiedItem(clarifiedItems.concept); 
-    clarifiedItem2.nextAction = 'employer'; 
+    clarifiedItem2.nextAction = 'crisis'; 
     var clarifiedItem2Inbox = inboxes.random(); 
     clarifiedItem2.inbox = clarifiedItem2Inbox; 
     clarifiedItems.add(clarifiedItem2); 
     clarifiedItem2Inbox.clarifiedItems.add(clarifiedItem2); 
  
     var clarifiedItem3 = ClarifiedItem(clarifiedItems.concept); 
-    clarifiedItem3.nextAction = 'offence'; 
+    clarifiedItem3.nextAction = 'hunting'; 
     var clarifiedItem3Inbox = inboxes.random(); 
     clarifiedItem3.inbox = clarifiedItem3Inbox; 
     clarifiedItems.add(clarifiedItem3); 
@@ -95,7 +95,7 @@ class GtdModel extends GtdEntries {
  
   void initTasks() { 
     var task1 = Task(tasks.concept); 
-    task1.description = 'university'; 
+    task1.description = 'security'; 
     var task1ClarifiedItem = clarifiedItems.random(); 
     task1.clarifiedItem = task1ClarifiedItem; 
     var task1Review = reviews.random(); 
@@ -108,7 +108,7 @@ class GtdModel extends GtdEntries {
     task1Action.tasks.add(task1); 
  
     var task2 = Task(tasks.concept); 
-    task2.description = 'marriage'; 
+    task2.description = 'tag'; 
     var task2ClarifiedItem = clarifiedItems.random(); 
     task2.clarifiedItem = task2ClarifiedItem; 
     var task2Review = reviews.random(); 
@@ -121,7 +121,7 @@ class GtdModel extends GtdEntries {
     task2Action.tasks.add(task2); 
  
     var task3 = Task(tasks.concept); 
-    task3.description = 'month'; 
+    task3.description = 'lifespan'; 
     var task3ClarifiedItem = clarifiedItems.random(); 
     task3.clarifiedItem = task3ClarifiedItem; 
     var task3Review = reviews.random(); 
@@ -137,21 +137,21 @@ class GtdModel extends GtdEntries {
  
   void initProjects() { 
     var project1 = Project(projects.concept); 
-    project1.tasks = 'lake'; 
+    project1.tasks = 'cloud'; 
     var project1Task = tasks.random(); 
     project1.task = project1Task; 
     projects.add(project1); 
     project1Task.projects.add(project1); 
  
     var project2 = Project(projects.concept); 
-    project2.tasks = 'beans'; 
+    project2.tasks = 'undo'; 
     var project2Task = tasks.random(); 
     project2.task = project2Task; 
     projects.add(project2); 
     project2Task.projects.add(project2); 
  
     var project3 = Project(projects.concept); 
-    project3.tasks = 'authority'; 
+    project3.tasks = 'pencil'; 
     var project3Task = tasks.random(); 
     project3.task = project3Task; 
     projects.add(project3); 
@@ -161,21 +161,21 @@ class GtdModel extends GtdEntries {
  
   void initCalendars() { 
     var calendar1 = Calendar(calendars.concept); 
-    calendar1.events = 'entertainment'; 
+    calendar1.events = 'slate'; 
     var calendar1Task = tasks.random(); 
     calendar1.task = calendar1Task; 
     calendars.add(calendar1); 
     calendar1Task.calendar.add(calendar1); 
  
     var calendar2 = Calendar(calendars.concept); 
-    calendar2.events = 'parfem'; 
+    calendar2.events = 'debt'; 
     var calendar2Task = tasks.random(); 
     calendar2.task = calendar2Task; 
     calendars.add(calendar2); 
     calendar2Task.calendar.add(calendar2); 
  
     var calendar3 = Calendar(calendars.concept); 
-    calendar3.events = 'bird'; 
+    calendar3.events = 'house'; 
     var calendar3Task = tasks.random(); 
     calendar3.task = calendar3Task; 
     calendars.add(calendar3); 
@@ -185,21 +185,21 @@ class GtdModel extends GtdEntries {
  
   void initContextLists() { 
     var contextList1 = ContextList(contextLists.concept); 
-    contextList1.contexts = 'kids'; 
+    contextList1.contexts = 'productivity'; 
     var contextList1Task = tasks.random(); 
     contextList1.task = contextList1Task; 
     contextLists.add(contextList1); 
     contextList1Task.contextLists.add(contextList1); 
  
     var contextList2 = ContextList(contextLists.concept); 
-    contextList2.contexts = 'photo'; 
+    contextList2.contexts = 'ship'; 
     var contextList2Task = tasks.random(); 
     contextList2.task = contextList2Task; 
     contextLists.add(contextList2); 
     contextList2Task.contextLists.add(contextList2); 
  
     var contextList3 = ContextList(contextLists.concept); 
-    contextList3.contexts = 'parfem'; 
+    contextList3.contexts = 'candy'; 
     var contextList3Task = tasks.random(); 
     contextList3.task = contextList3Task; 
     contextLists.add(contextList3); 
@@ -209,22 +209,22 @@ class GtdModel extends GtdEntries {
  
   void initReviews() { 
     var review1 = Review(reviews.concept); 
-    review1.assessments = 'ship'; 
+    review1.assessments = 'cardboard'; 
     reviews.add(review1); 
  
     var review2 = Review(reviews.concept); 
-    review2.assessments = 'music'; 
+    review2.assessments = 'tension'; 
     reviews.add(review2); 
  
     var review3 = Review(reviews.concept); 
-    review3.assessments = 'cardboard'; 
+    review3.assessments = 'time'; 
     reviews.add(review3); 
  
   } 
  
   void initNextActions() { 
     var nextAction1 = NextAction(nextActions.concept); 
-    nextAction1.work = 'picture'; 
+    nextAction1.work = 'school'; 
     nextActions.add(nextAction1); 
  
     var nextAction2 = NextAction(nextActions.concept); 
@@ -232,7 +232,7 @@ class GtdModel extends GtdEntries {
     nextActions.add(nextAction2); 
  
     var nextAction3 = NextAction(nextActions.concept); 
-    nextAction3.work = 'truck'; 
+    nextAction3.work = 'wife'; 
     nextActions.add(nextAction3); 
  
   } 

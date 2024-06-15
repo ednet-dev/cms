@@ -129,7 +129,7 @@ void testProjectPlanningPlans(
       var plansCount = plans.length; 
  
       var plan = Plan(plans.concept); 
-      plan.name = 'table'; 
+      plan.name = 'cloud'; 
       var added = selectedPlans.add(plan); 
       expect(added, isTrue); 
       expect(plans.length, equals(++plansCount)); 
@@ -222,8 +222,8 @@ void testProjectPlanningPlans(
     test("Update plan non id attribute with failure", () { 
       var randomPlan = planningModel.plans.random(); 
       var afterUpdateEntity = randomPlan.copy(); 
-      afterUpdateEntity.name = 'wife'; 
-      expect(afterUpdateEntity.name, equals('wife')); 
+      afterUpdateEntity.name = 'selfdo'; 
+      expect(afterUpdateEntity.name, equals('selfdo')); 
       // plans.update can only be used if oid, code or id is set. 
       expect(() => plans.update(randomPlan, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectPlanningPlans(
     test("plan action undo and redo", () { 
       var planCount = plans.length; 
       var plan = Plan(plans.concept); 
-        plan.name = 'revolution'; 
+        plan.name = 'electronic'; 
       plans.add(plan); 
       expect(plans.length, equals(++planCount)); 
       plans.remove(plan); 
@@ -263,7 +263,7 @@ void testProjectPlanningPlans(
     test("plan session undo and redo", () { 
       var planCount = plans.length; 
       var plan = Plan(plans.concept); 
-        plan.name = 'energy'; 
+        plan.name = 'paper'; 
       plans.add(plan); 
       expect(plans.length, equals(++planCount)); 
       plans.remove(plan); 
@@ -282,7 +282,7 @@ void testProjectPlanningPlans(
  
     test("Plan update undo and redo", () { 
       var plan = planningModel.plans.random(); 
-      var action = SetAttributeCommand(session, plan, "name", 'car'); 
+      var action = SetAttributeCommand(session, plan, "name", 'point'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testProjectPlanningPlans(
  
       projectDomain.startCommandReaction(reaction); 
       var plan = Plan(plans.concept); 
-        plan.name = 'life'; 
+        plan.name = 'restaurant'; 
       plans.add(plan); 
       expect(plans.length, equals(++planCount)); 
       plans.remove(plan); 
@@ -396,7 +396,7 @@ void testProjectPlanningPlans(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, plan, "name", 'circle'); 
+        session, plan, "name", 'theme'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

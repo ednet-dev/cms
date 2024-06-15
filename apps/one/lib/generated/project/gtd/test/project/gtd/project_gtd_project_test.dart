@@ -129,7 +129,7 @@ void testProjectGtdProjects(
       var projectsCount = projects.length; 
  
       var project = Project(projects.concept); 
-      project.tasks = 'knowledge'; 
+      project.tasks = 'secretary'; 
       var added = selectedProjects.add(project); 
       expect(added, isTrue); 
       expect(projects.length, equals(++projectsCount)); 
@@ -222,8 +222,8 @@ void testProjectGtdProjects(
     test("Update project non id attribute with failure", () { 
       var randomProject = gtdModel.projects.random(); 
       var afterUpdateEntity = randomProject.copy(); 
-      afterUpdateEntity.tasks = 'home'; 
-      expect(afterUpdateEntity.tasks, equals('home')); 
+      afterUpdateEntity.tasks = 'guest'; 
+      expect(afterUpdateEntity.tasks, equals('guest')); 
       // projects.update can only be used if oid, code or id is set. 
       expect(() => projects.update(randomProject, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectGtdProjects(
     test("project action undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        project.tasks = 'head'; 
+        project.tasks = 'health'; 
     var projectTask = gtdModel.tasks.random(); 
     project.task = projectTask; 
       projects.add(project); 
@@ -266,7 +266,7 @@ void testProjectGtdProjects(
     test("project session undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        project.tasks = 'void'; 
+        project.tasks = 'city'; 
     var projectTask = gtdModel.tasks.random(); 
     project.task = projectTask; 
       projects.add(project); 
@@ -288,7 +288,7 @@ void testProjectGtdProjects(
  
     test("Project update undo and redo", () { 
       var project = gtdModel.projects.random(); 
-      var action = SetAttributeCommand(session, project, "tasks", 'capacity'); 
+      var action = SetAttributeCommand(session, project, "tasks", 'notch'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -389,7 +389,7 @@ void testProjectGtdProjects(
  
       projectDomain.startCommandReaction(reaction); 
       var project = Project(projects.concept); 
-        project.tasks = 'vacation'; 
+        project.tasks = 'lifespan'; 
     var projectTask = gtdModel.tasks.random(); 
     project.task = projectTask; 
       projects.add(project); 
@@ -405,7 +405,7 @@ void testProjectGtdProjects(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, project, "tasks", 'objective'); 
+        session, project, "tasks", 'deep'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

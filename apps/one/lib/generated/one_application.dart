@@ -32,8 +32,7 @@ class OneApplication {
         .getModelEntries("Scheduling") as ptsg.SchedulingModel;
     schedulingModel.init();
 
-    _domains.add(projectSchedulingDomain.domain);
-
+    _domains..add(projectSchedulingDomain.domain);
     // project core
     final projectCoreRepo = ptce.ProjectCoreRepo();
     ptce.ProjectDomain projectCoreDomain =
@@ -42,8 +41,7 @@ class OneApplication {
         projectCoreDomain.getModelEntries("Core") as ptce.CoreModel;
     coreModel.init();
 
-    _domains.add(projectCoreDomain.domain);
-
+    _domains..add(projectCoreDomain.domain);
     // project brainstorming
     final projectBrainstormingRepo = ptbg.ProjectBrainstormingRepo();
     ptbg.ProjectDomain projectBrainstormingDomain = projectBrainstormingRepo
@@ -52,8 +50,7 @@ class OneApplication {
         .getModelEntries("Brainstorming") as ptbg.BrainstormingModel;
     brainstormingModel.init();
 
-    _domains.add(projectBrainstormingDomain.domain);
-
+    _domains..add(projectBrainstormingDomain.domain);
     // project planning
     final projectPlanningRepo = ptpg.ProjectPlanningRepo();
     ptpg.ProjectDomain projectPlanningDomain =
@@ -62,8 +59,7 @@ class OneApplication {
         projectPlanningDomain.getModelEntries("Planning") as ptpg.PlanningModel;
     planningModel.init();
 
-    _domains.add(projectPlanningDomain.domain);
-
+    _domains..add(projectPlanningDomain.domain);
     // project kanban
     final projectKanbanRepo = ptkn.ProjectKanbanRepo();
     ptkn.ProjectDomain projectKanbanDomain =
@@ -72,8 +68,7 @@ class OneApplication {
         projectKanbanDomain.getModelEntries("Kanban") as ptkn.KanbanModel;
     kanbanModel.init();
 
-    _domains.add(projectKanbanDomain.domain);
-
+    _domains..add(projectKanbanDomain.domain);
     // project user
     final projectUserRepo = ptur.ProjectUserRepo();
     ptur.ProjectDomain projectUserDomain =
@@ -82,8 +77,7 @@ class OneApplication {
         projectUserDomain.getModelEntries("User") as ptur.UserModel;
     userModel.init();
 
-    _domains.add(projectUserDomain.domain);
-
+    _domains..add(projectUserDomain.domain);
     // project gtd
     final projectGtdRepo = ptgd.ProjectGtdRepo();
     ptgd.ProjectDomain projectGtdDomain =
@@ -92,8 +86,7 @@ class OneApplication {
         projectGtdDomain.getModelEntries("Gtd") as ptgd.GtdModel;
     gtdModel.init();
 
-    _domains.add(projectGtdDomain.domain);
-
+    _domains..add(projectGtdDomain.domain);
     // household finance
     final householdFinanceRepo = hdfe.HouseholdFinanceRepo();
     hdfe.HouseholdDomain householdFinanceDomain = householdFinanceRepo
@@ -102,8 +95,7 @@ class OneApplication {
         householdFinanceDomain.getModelEntries("Finance") as hdfe.FinanceModel;
     financeModel.init();
 
-    _domains.add(householdFinanceDomain.domain);
-
+    _domains..add(householdFinanceDomain.domain);
     // household member
     final householdMemberRepo = hdmr.HouseholdMemberRepo();
     hdmr.HouseholdDomain householdMemberDomain = householdMemberRepo
@@ -112,18 +104,8 @@ class OneApplication {
         householdMemberDomain.getModelEntries("Member") as hdmr.MemberModel;
     memberModel.init();
 
-    _domains.add(householdMemberDomain.domain);
-
-    // Log domain initialization
-    for (var domain in _domains) {
-      print('Initialized Domain: ${domain.code}');
-      for (var model in domain.models) {
-        print('Model: ${model.code}');
-        for (var concept in model.entryConcepts) {
-          print('Concept: ${concept.code}');
-        }
-      }
-    }
+    _domains..add(householdMemberDomain.domain);
+// INIT PLACEHOLDER
   }
 
   Domains get domains => _domains;

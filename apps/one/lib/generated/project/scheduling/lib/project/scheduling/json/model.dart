@@ -36,6 +36,27 @@ concepts:
         type: List
         essential: true
         sensitive: false
+    commands:
+      - name: CreateProject
+        tooltip: Initiate the project.
+      - name: IdentifyStakeholders
+        tooltip: Determine stakeholders involved in the project.
+      - name: ConductFeasibilityStudy
+        tooltip: Assess the feasibility of the project.
+      - name: DefineProjectGoals
+        tooltip: Establish clear objectives for the project.
+    policies:
+      - name: InitiationPolicy
+        tooltip: Ensure all initiation activities are completed before the project proceeds.
+    events:
+      - name: ProjectCreated
+        tooltip: The project has been initiated.
+      - name: StakeholdersIdentified
+        tooltip: Stakeholders have been identified.
+      - name: FeasibilityStudyCompleted
+        tooltip: The feasibility study has been completed.
+      - name: ProjectGoalsDefined
+        tooltip: Project goals have been established.
 
   - name: PlanningPhase
     entry: true
@@ -82,6 +103,39 @@ concepts:
         type: Document
         essential: true
         sensitive: false
+    commands:
+      - name: DefineScope
+        tooltip: Establish project scope.
+      - name: CreateWBS
+        tooltip: Develop the work breakdown structure.
+      - name: DevelopSchedule
+        tooltip: Create the project schedule.
+      - name: PlanResources
+        tooltip: Allocate resources to tasks.
+      - name: EstimateBudget
+        tooltip: Estimate the project costs.
+      - name: IdentifyRisks
+        tooltip: Identify potential project risks.
+      - name: CreateCommunicationPlan
+        tooltip: Define communication strategies.
+    policies:
+      - name: PlanningPolicy
+        tooltip: Ensure all planning activities are comprehensive and complete before execution.
+    events:
+      - name: ScopeDefined
+        tooltip: Project scope has been defined.
+      - name: WBSCreated
+        tooltip: Work breakdown structure has been created.
+      - name: ScheduleDeveloped
+        tooltip: Project schedule has been developed.
+      - name: ResourcesPlanned
+        tooltip: Resources have been allocated.
+      - name: BudgetEstimated
+        tooltip: Budget has been estimated.
+      - name: RisksIdentified
+        tooltip: Risks have been identified.
+      - name: CommunicationPlanCreated
+        tooltip: Communication plan has been created.
 
   - name: ExecutionPhase
     entry: true
@@ -122,6 +176,31 @@ concepts:
         type: Document
         essential: true
         sensitive: false
+    commands:
+      - name: AssignTasks
+        tooltip: Allocate tasks to team members.
+      - name: AllocateResources
+        tooltip: Ensure resources are available for tasks.
+      - name: ManageProject
+        tooltip: Oversee project execution.
+      - name: EnsureQuality
+        tooltip: Monitor deliverables for quality.
+      - name: CommunicateProgress
+        tooltip: Update stakeholders on project progress.
+    policies:
+      - name: ExecutionPolicy
+        tooltip: Guide the execution process to ensure adherence to the project plan.
+    events:
+      - name: TasksAssigned
+        tooltip: Tasks have been assigned to team members.
+      - name: ResourcesAllocated
+        tooltip: Resources have been allocated.
+      - name: ProjectManaged
+        tooltip: Project management activities are ongoing.
+      - name: QualityEnsured
+        tooltip: Quality checks have been performed.
+      - name: ProgressCommunicated
+        tooltip: Progress updates have been communicated.
 
   - name: MonitoringAndControllingPhase
     entry: true
@@ -156,6 +235,33 @@ concepts:
         type: Document
         essential: true
         sensitive: false
+    commands:
+      - name: MeasurePerformance
+        tooltip: Track project performance using metrics.
+      - name: ProcessChangeRequest
+        tooltip: Handle requests for changes.
+      - name: ControlQuality
+        tooltip: Ensure deliverables meet quality standards.
+      - name: ResolveIssues
+        tooltip: Address and resolve project issues.
+      - name: GenerateReports
+        tooltip: Create reports on project status.
+    policies:
+      - name: MonitoringPolicy
+        tooltip: Ensure continuous tracking and assessment of project performance.
+      - name: ChangeControlPolicy
+        tooltip: Manage changes to the project systematically.
+    events:
+      - name: PerformanceMeasured
+        tooltip: Performance metrics have been tracked.
+      - name: ChangeRequestProcessed
+        tooltip: Change request has been handled.
+      - name: QualityControlled
+        tooltip: Quality control has been performed.
+      - name: IssuesResolved
+        tooltip: Issues have been resolved.
+      - name: ReportsGenerated
+        tooltip: Reports have been generated.
 
   - name: ClosingPhase
     entry: true
@@ -196,6 +302,35 @@ concepts:
         type: Document
         essential: true
         sensitive: false
+    commands:
+      - name: HandoverDeliverable
+        tooltip: Deliver final project output to stakeholders.
+      - name: CompleteDocumentation
+        tooltip: Finalize project documentation.
+      - name: ObtainSignOff
+        tooltip: Get formal acceptance from stakeholders.
+      - name: ConductProjectReview
+        tooltip: Review project performance and capture lessons learned.
+      - name: ReleaseResources
+        tooltip: Release project resources back to the organization.
+      - name: CelebrateCompletion
+        tooltip: Acknowledge the completion and success of the project.
+    policies:
+      - name: ClosingPolicy
+        tooltip: Ensure all closing activities are properly completed.
+    events:
+      - name: DeliverableHandedOver
+        tooltip: Final deliverable has been handed over.
+      - name: DocumentationCompleted
+        tooltip: Project documentation is complete.
+      - name: SignOffObtained
+        tooltip: Stakeholders have formally accepted the project deliverables.
+      - name: ProjectReviewed
+        tooltip: Project review has been conducted.
+      - name: ResourcesReleased
+        tooltip: Resources have been released.
+      - name: CompletionCelebrated
+        tooltip: Project completion has been acknowledged.
 
 relations:
   - from: InitiationPhase

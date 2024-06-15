@@ -12,12 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
-import '../widgets/layout/alternative_layout.dart';
-import '../widgets/layout/footer_widget.dart';
 import '../widgets/layout/header_widget.dart';
-import '../widgets/layout/layout_template.dart';
 import '../widgets/layout/left_sidebar_widget.dart';
-import '../widgets/layout/main_content_widget.dart';
 import '../widgets/layout/right_sidebar_widget.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -34,8 +30,9 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> path = ['Home'];
 
   late OneApplication app;
-  late Domain selectedDomain;
-  late Model selectedModel;
+  Domain? selectedDomain;
+  Model? selectedModel;
+  Entities? selectedEntries;
   Entity? selectedEntity;
 
   List<Bookmark> bookmarks = [];
@@ -48,15 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (app.domains.isNotEmpty) {
       selectedDomain = app.domains.first;
-      if (selectedDomain.models.isNotEmpty) {
-        selectedModel = selectedDomain.models.first;
-        if (selectedModel.concepts.isNotEmpty) {
-          selectedEntity = null;
+      if (selectedDomain!.models.isNotEmpty) {
+        selectedModel = selectedDomain!.models.first;
+        if (selectedModel!.concepts.isNotEmpty) {
+          selectedEntries = selectedModel!.concepts;
         }
       }
     }
 
-    _loadBookmarks();
     widget.appLinks.uriLinkStream.listen((Uri? uri) {
       if (uri != null) {
         _handleBookmarkSelected(uri.toString());
@@ -64,31 +60,26 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _loadBookmarks() async {
-    final loadedBookmarks = await bookmarkManager.getBookmarks();
+  void _handleDomainSelected(Domain domain) {
     setState(() {
-      bookmarks = loadedBookmarks;
+      selectedDomain = domain;
+      selectedModel = domain.models.isNotEmpty ? domain.models.first : null;
+      selectedEntries = selectedModel?.concepts.isNotEmpty ?? false
+          ? selectedModel!.concepts
+          : null;
     });
   }
 
-  void _handleBookmarkCreated(Bookmark bookmark) {
+  void _handleModelSelected(Model model) {
     setState(() {
-      bookmarks.add(bookmark);
+      selectedModel = model;
+      selectedEntries =
+          model.concepts.isNotEmpty ? model.concepts : null;
     });
   }
 
   void _handleBookmarkSelected(String bookmark) {
-    final uri = Uri.parse(bookmark);
-    final filters = uri.queryParameters['filters']?.split(',') ?? [];
-    // Restore filters, domain, and model based on the bookmark
-    // This part needs implementation based on your specific logic
-  }
-
-  void _handleRemoveBookmark(Bookmark bookmark) async {
-    await bookmarkManager.removeBookmark(bookmark.url);
-    setState(() {
-      bookmarks.remove(bookmark);
-    });
+    // Implement bookmark selection logic here
   }
 
   @override
@@ -116,131 +107,27 @@ class _MyHomePageState extends State<MyHomePage> {
         create: (context) => LayoutBloc(),
         child: BlocBuilder<LayoutBloc, LayoutState>(
           builder: (context, state) {
-            if (state.layoutType == LayoutType.defaultLayout) {
-              return LayoutTemplate(
-                header: HeaderWidget(
-                  path: path,
-                  onPathSegmentTapped: (index) {
-                    _handlePathSegmentTapped(context, index);
-                  },
-                  filters: [],
-                  onAddFilter: (FilterCriteria filter) {},
-                  onBookmark: () {},
-                ),
-                leftSidebar: LeftSidebarWidget(
-                  items: selectedModel.concepts,
-                  onEntitySelected: (entity) {
-                    setState(() {
-                      path.add(
-                          entity.getStringFromAttribute('name') ?? 'Entity');
-                    });
-                    BlocProvider.of<LayoutBloc>(context)
-                        .add(SelectEntityEvent(entity: entity));
-                  },
-                  model: selectedModel,
-                  domain: selectedDomain,
-                ),
-                rightSidebar: RightSidebarWidget(
+            return Row(
+              children: [
+                LeftSidebarWidget(
                   domains: app.domains,
-                  onDomainSelected: (domain) {
-                    setState(() {
-                      path = ['Home', domain.code];
-                    });
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DomainDetailScreen(
-                          domain: domain,
-                          onModelSelected: _handleModelSelected,
-                        ),
-                      ),
-                    );
-                  },
-                  onModelSelected: (model) {
-                    setState(() {
-                      path = ['Home', model.domain.code, model.code];
-                    });
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ModelDetailScreen(
-                          domain: model.domain,
-                          model: model,
-                          path: path,
-                          onEntitySelected: _handleEntitySelected,
-                        ),
-                      ),
-                    );
-                  },
+                  onDomainSelected: _handleDomainSelected,
                 ),
-                mainContent: !selectedModel.concepts.isEmpty
-                    ? MainContentWidget(
-                        entity: state.selectedEntity ??
-                            selectedModel.concepts.first,
-                        onEntitySelected: (entity) {
-                          setState(() {
-                            path.add(entity.getStringFromAttribute('name') ??
-                                'Entity');
-                          });
-                          BlocProvider.of<LayoutBloc>(context)
-                              .add(SelectEntityEvent(entity: entity));
-                        },
-                      )
-                    : Text('Empty collection.'),
-                footer: const FooterWidget(),
-              );
-            } else {
-              return AlternativeLayout(
-                domains: app.domains,
-                selectedEntity: state.selectedEntity,
-                onEntitySelected: (entity) {
-                  setState(() {
-                    path.add(entity.getStringFromAttribute('name') ?? 'Entity');
-                  });
-                  BlocProvider.of<LayoutBloc>(context)
-                      .add(SelectEntityEvent(entity: entity));
-                },
-              );
-            }
+                if (selectedDomain != null)
+                  RightSidebarWidget(
+                    models: selectedDomain!.models,
+                    onModelSelected: _handleModelSelected,
+                  ),
+                if (selectedEntries != null)
+                  EntriesSidebarWidget(
+                    entries: selectedEntries!,
+                  ),
+              ],
+            );
           },
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Wrap(
-          children: bookmarks
-              .map((bookmark) => ListTile(
-                    title: Text(bookmark.title ?? ''),
-                    onTap: () => _handleBookmarkSelected(bookmark.url),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () => _handleRemoveBookmark(bookmark),
-                    ),
-                  ))
-              .toList(),
-        ),
-      ),
     );
-  }
-
-  void _handlePathSegmentTapped(BuildContext context, int index) {
-    if (index < path.length - 1) {
-      setState(() {
-        path = path.sublist(0, index + 1);
-      });
-      Navigator.popUntil(context, ModalRoute.withName('/'));
-    }
-  }
-
-  void _handleModelSelected(Model model) {
-    setState(() {
-      path.add(model.code);
-    });
-  }
-
-  void _handleEntitySelected(Entity entity) {
-    setState(() {
-      path.add(entity.getStringFromAttribute('name') ?? 'Entity');
-    });
   }
 }
 
@@ -371,173 +258,29 @@ class DomainsWidget extends StatelessWidget {
   }
 }
 
-// class EntitiesWidget extends StatefulWidget {
-//   final Entities<Concept> entities;
-//   final void Function(Bookmark bookmark) onBookmarkCreated;
-//   final BookmarkManager bookmarkManager;
-//
-//   EntitiesWidget(
-//       {required this.entities,
-//       required this.onBookmarkCreated,
-//       required this.bookmarkManager,
-//       required void Function(Entity<Entity> entity) onEntitySelected});
-//
-//   @override
-//   _EntitiesWidgetState createState() => _EntitiesWidgetState();
-// }
-//
-// class _EntitiesWidgetState extends State<EntitiesWidget> {
-//   List<FilterCriteria> _filters = [];
-//   List<Entity> _filteredEntities = [];
-//   ScrollController _scrollController = ScrollController();
-//   bool _isBookmarking = false;
-//   TextEditingController _bookmarkTitleController = TextEditingController();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _applyFilters();
-//     _scrollController.addListener(_onScroll);
-//   }
-//
-//   void _onScroll() {
-//     if (_scrollController.position.pixels ==
-//         _scrollController.position.maxScrollExtent) {
-//       _loadMoreEntities();
-//     }
-//   }
-//
-//   void _applyFilters() {
-//     setState(() {
-//       _filteredEntities = widget.entities.where((entity) {
-//         for (var filter in _filters) {
-//           if (!_matchesFilter(entity, filter)) {
-//             return false;
-//           }
-//         }
-//         return true;
-//       }).toList();
-//     });
-//   }
-//
-//   bool _matchesFilter(Entity entity, FilterCriteria filter) {
-//     final attributeValue = entity.getAttribute(filter.attribute)?.getValue();
-//     switch (filter.operator) {
-//       case '=':
-//         return attributeValue == filter.value;
-//       case '!=':
-//         return attributeValue != filter.value;
-//       case '>':
-//         return attributeValue > filter.value;
-//       case '<':
-//         return attributeValue < filter.value;
-//       // Add more operators as needed
-//       default:
-//         return false;
-//     }
-//   }
-//
-//   void _loadMoreEntities() {
-//     // Implement logic to load more entities if available
-//   }
-//
-//   void _addFilter(FilterCriteria filter) {
-//     setState(() {
-//       _filters.add(filter);
-//       _applyFilters();
-//     });
-//   }
-//
-//   void _createBookmark() async {
-//     setState(() {
-//       _isBookmarking = true;
-//     });
-//   }
-//
-//   void _saveBookmark() async {
-//     final bookmarkTitle = _bookmarkTitleController.text;
-//     if (bookmarkTitle.isNotEmpty) {
-//       final bookmark = Bookmark(
-//           title: bookmarkTitle,
-//           url: '/entities?filters=' +
-//               _filters
-//                   .map((filter) =>
-//                       '${filter.attribute}:${filter.operator}:${filter.value}')
-//                   .join(','));
-//
-//       await widget.bookmarkManager.addBookmark(bookmark);
-//       widget.onBookmarkCreated(bookmark);
-//     }
-//     setState(() {
-//       _isBookmarking = false;
-//       _bookmarkTitleController.clear();
-//     });
-//   }
-//
-//   void _cancelBookmark() {
-//     setState(() {
-//       _isBookmarking = false;
-//       _bookmarkTitleController.clear();
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SingleChildScrollView(
-//       child: Column(
-//         children: [
-//           HeaderWidget(
-//             filters: _filters,
-//             onAddFilter: _addFilter,
-//             onBookmark: _createBookmark,
-//             path: [
-//               'Home',
-//             ],
-//             onPathSegmentTapped: (index) {
-//               // Handle path segment tap
-//             },
-//           ),
-//           if (_isBookmarking)
-//             Padding(
-//               padding: const EdgeInsets.all(8.0),
-//               child: Row(
-//                 children: [
-//                   Expanded(
-//                     child: TextField(
-//                       controller: _bookmarkTitleController,
-//                       decoration: InputDecoration(hintText: 'Bookmark Title'),
-//                     ),
-//                   ),
-//                   IconButton(
-//                     icon: Icon(Icons.check),
-//                     onPressed: _saveBookmark,
-//                   ),
-//                   IconButton(
-//                     icon: Icon(Icons.cancel),
-//                     onPressed: _cancelBookmark,
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           Expanded(
-//             child: ListView.builder(
-//               controller: _scrollController,
-//               itemCount: _filteredEntities.length,
-//               itemBuilder: (context, index) {
-//                 final entity = _filteredEntities[index];
-//                 return ListTile(
-//                   title: Text(entity.getStringFromAttribute('name') ??
-//                       'Unnamed Entity'),
-//                   subtitle: Text(entity.toString()),
-//                   onTap: () {
-//                     // Handle entity selection if needed
-//                   },
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+class EntriesSidebarWidget extends StatelessWidget {
+  final Entities entries;
+
+  EntriesSidebarWidget({
+    required this.entries,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      child: ListView.builder(
+        itemCount: entries.length,
+        itemBuilder: (context, index) {
+          final entity = entries.elementAt(index);
+          return ListTile(
+            title: Text(entity.code),
+            onTap: () {
+              // Handle entity selection
+            },
+          );
+        },
+      ),
+    );
+  }
+}

@@ -21,15 +21,15 @@ class MemberModel extends MemberEntries {
  
   void initMembers() { 
     var member1 = Member(members.concept); 
-    member1.name = 'element'; 
+    member1.name = 'team'; 
     members.add(member1); 
  
     var member2 = Member(members.concept); 
-    member2.name = 'girl'; 
+    member2.name = 'vacation'; 
     members.add(member2); 
  
     var member3 = Member(members.concept); 
-    member3.name = 'vessel'; 
+    member3.name = 'distance'; 
     members.add(member3); 
  
   } 

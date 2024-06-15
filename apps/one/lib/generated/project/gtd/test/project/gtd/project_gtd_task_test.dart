@@ -129,7 +129,7 @@ void testProjectGtdTasks(
       var tasksCount = tasks.length; 
  
       var task = Task(tasks.concept); 
-      task.description = 'tent'; 
+      task.description = 'text'; 
       var added = selectedTasks.add(task); 
       expect(added, isTrue); 
       expect(tasks.length, equals(++tasksCount)); 
@@ -222,8 +222,8 @@ void testProjectGtdTasks(
     test("Update task non id attribute with failure", () { 
       var randomTask = gtdModel.tasks.random(); 
       var afterUpdateEntity = randomTask.copy(); 
-      afterUpdateEntity.description = 'line'; 
-      expect(afterUpdateEntity.description, equals('line')); 
+      afterUpdateEntity.description = 'plate'; 
+      expect(afterUpdateEntity.description, equals('plate')); 
       // tasks.update can only be used if oid, code or id is set. 
       expect(() => tasks.update(randomTask, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectGtdTasks(
     test("task action undo and redo", () { 
       var taskCount = tasks.length; 
       var task = Task(tasks.concept); 
-        task.description = 'heaven'; 
+        task.description = 'marriage'; 
     var taskClarifiedItem = gtdModel.clarifiedItems.random(); 
     task.clarifiedItem = taskClarifiedItem; 
     var taskReview = gtdModel.reviews.random(); 
@@ -272,7 +272,7 @@ void testProjectGtdTasks(
     test("task session undo and redo", () { 
       var taskCount = tasks.length; 
       var task = Task(tasks.concept); 
-        task.description = 'course'; 
+        task.description = 'flower'; 
     var taskClarifiedItem = gtdModel.clarifiedItems.random(); 
     task.clarifiedItem = taskClarifiedItem; 
     var taskReview = gtdModel.reviews.random(); 
@@ -300,7 +300,7 @@ void testProjectGtdTasks(
  
     test("Task update undo and redo", () { 
       var task = gtdModel.tasks.random(); 
-      var action = SetAttributeCommand(session, task, "description", 'vacation'); 
+      var action = SetAttributeCommand(session, task, "description", 'brad'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -401,7 +401,7 @@ void testProjectGtdTasks(
  
       projectDomain.startCommandReaction(reaction); 
       var task = Task(tasks.concept); 
-        task.description = 'darts'; 
+        task.description = 'call'; 
     var taskClarifiedItem = gtdModel.clarifiedItems.random(); 
     task.clarifiedItem = taskClarifiedItem; 
     var taskReview = gtdModel.reviews.random(); 
@@ -423,7 +423,7 @@ void testProjectGtdTasks(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, task, "description", 'chairman'); 
+        session, task, "description", 'test'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 
