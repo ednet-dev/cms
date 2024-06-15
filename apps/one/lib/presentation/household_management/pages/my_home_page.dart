@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
+import '../widgets/layout/graph/meta_domain_canvas.dart';
 import '../widgets/layout/header_widget.dart';
 import '../widgets/layout/left_sidebar_widget.dart';
 import '../widgets/layout/right_sidebar_widget.dart';
@@ -37,6 +38,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Bookmark> bookmarks = [];
   BookmarkManager bookmarkManager = BookmarkManager();
+
+  bool _isDiagramView = false;
 
   @override
   void initState() {
@@ -73,13 +76,18 @@ class _MyHomePageState extends State<MyHomePage> {
   void _handleModelSelected(Model model) {
     setState(() {
       selectedModel = model;
-      selectedEntries =
-          model.concepts.isNotEmpty ? model.concepts : null;
+      selectedEntries = model.concepts.isNotEmpty ? model.concepts : null;
     });
   }
 
   void _handleBookmarkSelected(String bookmark) {
     // Implement bookmark selection logic here
+  }
+
+  void _toggleViewMode() {
+    setState(() {
+      _isDiagramView = !_isDiagramView;
+    });
   }
 
   @override
@@ -89,6 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
         actions: [
+          IconButton(
+            icon: Icon(_isDiagramView ? Icons.list : Icons.graphic_eq),
+            onPressed: _toggleViewMode,
+          ),
           IconButton(
             icon: Icon(Icons.swap_horiz),
             onPressed: () {
@@ -107,23 +119,28 @@ class _MyHomePageState extends State<MyHomePage> {
         create: (context) => LayoutBloc(),
         child: BlocBuilder<LayoutBloc, LayoutState>(
           builder: (context, state) {
-            return Row(
-              children: [
-                LeftSidebarWidget(
-                  domains: app.domains,
-                  onDomainSelected: _handleDomainSelected,
-                ),
-                if (selectedDomain != null)
-                  RightSidebarWidget(
-                    models: selectedDomain!.models,
-                    onModelSelected: _handleModelSelected,
+            if (_isDiagramView) {
+              return MetaDomainCanvas(
+                  domains: app.domains);
+            } else {
+              return Row(
+                children: [
+                  LeftSidebarWidget(
+                    domains: app.domains,
+                    onDomainSelected: _handleDomainSelected,
                   ),
-                if (selectedEntries != null)
-                  EntriesSidebarWidget(
-                    entries: selectedEntries!,
-                  ),
-              ],
-            );
+                  if (selectedDomain != null)
+                    RightSidebarWidget(
+                      models: selectedDomain!.models,
+                      onModelSelected: _handleModelSelected,
+                    ),
+                  if (selectedEntries != null)
+                    EntriesSidebarWidget(
+                      entries: selectedEntries!,
+                    ),
+                ],
+              );
+            }
           },
         ),
       ),
