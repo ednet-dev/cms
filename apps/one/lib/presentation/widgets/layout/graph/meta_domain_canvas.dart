@@ -1,9 +1,392 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
+
+// Assume necessary packages and other classes are already imported
+
+class MSTLayoutAlgorithm extends LayoutAlgorithm {
+  @override
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
+    final positions = <String, Offset>{};
+    final edges = <Edge>[];
+
+    for (var domain in domains) {
+      final domainPosition = Offset(size.width / 2, size.height / 2);
+      positions[domain.code] = domainPosition;
+
+      for (var model in domain.models) {
+        final modelPosition = Offset(size.width * 0.25, size.height * 0.25);
+        positions[model.code] = modelPosition;
+        edges.add(Edge(
+            domain.code, model.code, _distance(domainPosition, modelPosition)));
+
+        for (var entity in model.concepts) {
+          final entityPosition = Offset(size.width * 0.75, size.height * 0.75);
+          positions[entity.code] = entityPosition;
+          edges.add(Edge(model.code, entity.code,
+              _distance(modelPosition, entityPosition)));
+
+          for (var child in entity.children) {
+            final childPosition = Offset(size.width * 0.5, size.height * 0.5);
+            positions[child.code] = childPosition;
+            edges.add(Edge(entity.code, child.code,
+                _distance(entityPosition, childPosition)));
+          }
+        }
+      }
+    }
+
+    final mst = _kruskalMST(edges, positions);
+    return mst;
+  }
+
+  double _distance(Offset a, Offset b) {
+    return (a - b).distance;
+  }
+
+  Map<String, Offset> _kruskalMST(
+      List<Edge> edges, Map<String, Offset> positions) {
+    edges.sort((a, b) => a.weight.compareTo(b.weight));
+    final parent = <String, String>{};
+    final rank = <String, int>{};
+
+    String find(String u) {
+      if (parent[u] != u) {
+        parent[u] = find(parent[u]!);
+      }
+      return parent[u]!;
+    }
+
+    void union(String u, String v) {
+      final rootU = find(u);
+      final rootV = find(v);
+      if (rootU != rootV) {
+        if (rank[rootU]! > rank[rootV]!) {
+          parent[rootV] = rootU;
+        } else if (rank[rootU]! < rank[rootV]!) {
+          parent[rootU] = rootV;
+        } else {
+          parent[rootV] = rootU;
+          rank[rootU] = rank[rootU]! + 1;
+        }
+      }
+    }
+
+    for (var key in positions.keys) {
+      parent[key] = key;
+      rank[key] = 0;
+    }
+
+    final mst = <Edge>[];
+    for (var edge in edges) {
+      if (find(edge.u) != find(edge.v)) {
+        mst.add(edge);
+        union(edge.u, edge.v);
+      }
+    }
+
+    final mstPositions = <String, Offset>{};
+    for (var edge in mst) {
+      mstPositions[edge.u] = positions[edge.u]!;
+      mstPositions[edge.v] = positions[edge.v]!;
+    }
+
+    return mstPositions;
+  }
+}
+
+class DijkstraLayoutAlgorithm extends LayoutAlgorithm {
+  @override
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
+    final positions = <String, Offset>{};
+    final graph = <String, Map<String, double>>{};
+
+    for (var domain in domains) {
+      positions[domain.code] = Offset(size.width / 2, size.height / 2);
+      graph[domain.code] = {};
+
+      for (var model in domain.models) {
+        final modelPosition = Offset(size.width * 0.25, size.height * 0.25);
+        positions[model.code] = modelPosition;
+        graph[domain.code]![model.code] =
+            _distance(positions[domain.code]!, modelPosition);
+
+        for (var entity in model.concepts) {
+          final entityPosition = Offset(size.width * 0.75, size.height * 0.75);
+          positions[entity.code] = entityPosition;
+          graph[model.code]![entity.code] =
+              _distance(modelPosition, entityPosition);
+
+          for (var child in entity.children) {
+            final childPosition = Offset(size.width * 0.5, size.height * 0.5);
+            positions[child.code] = childPosition;
+            graph[entity.code]![child.code] =
+                _distance(entityPosition, childPosition);
+          }
+        }
+      }
+    }
+
+    final dijkstraPositions = _dijkstra(graph, domains.first.code, positions);
+    return dijkstraPositions;
+  }
+
+  double _distance(Offset a, Offset b) {
+    return (a - b).distance;
+  }
+
+  Map<String, Offset> _dijkstra(Map<String, Map<String, double>> graph,
+      String start, Map<String, Offset> positions) {
+    final distances = <String, double>{};
+    final previous = <String, String?>{};
+    final pq = SplayTreeMap<double, List<String>>();
+
+    for (var node in graph.keys) {
+      distances[node] = double.infinity;
+      previous[node] = null;
+      pq.putIfAbsent(double.infinity, () => []).add(node);
+    }
+
+    distances[start] = 0;
+    pq.putIfAbsent(0, () => []).add(start);
+
+    while (pq.isNotEmpty) {
+      final u = pq[pq.firstKey()]!.removeAt(0);
+      if (pq[pq.firstKey()]!.isEmpty) {
+        pq.remove(pq.firstKey());
+      }
+
+      for (var neighbor in graph[u]!.keys) {
+        final alt = distances[u]! + graph[u]![neighbor]!;
+        if (alt < distances[neighbor]!) {
+          pq[distances[neighbor]!]!.remove(neighbor);
+          if (pq[distances[neighbor]!]!.isEmpty) {
+            pq.remove(distances[neighbor]!);
+          }
+          distances[neighbor] = alt;
+          previous[neighbor] = u;
+          pq.putIfAbsent(alt, () => []).add(neighbor);
+        }
+      }
+    }
+
+    final dijkstraPositions = <String, Offset>{};
+    for (var node in positions.keys) {
+      dijkstraPositions[node] = positions[node]!;
+    }
+
+    return dijkstraPositions;
+  }
+}
+
+class NetworkFlowLayoutAlgorithm extends LayoutAlgorithm {
+  @override
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
+    final positions = <String, Offset>{};
+    final graph = <String, Map<String, double>>{};
+
+    for (var domain in domains) {
+      positions[domain.code] = Offset(size.width / 2, size.height / 2);
+      graph[domain.code] = {};
+
+      for (var model in domain.models) {
+        final modelPosition = Offset(size.width * 0.25, size.height * 0.25);
+        positions[model.code] = modelPosition;
+        graph[domain.code]![model.code] =
+            _distance(positions[domain.code]!, modelPosition);
+
+        for (var entity in model.concepts) {
+          final entityPosition = Offset(size.width * 0.75, size.height * 0.75);
+          positions[entity.code] = entityPosition;
+          graph[model.code]![entity.code] =
+              _distance(modelPosition, entityPosition);
+
+          for (var child in entity.children) {
+            final childPosition = Offset(size.width * 0.5, size.height * 0.5);
+            positions[child.code] = childPosition;
+            graph[entity.code]![child.code] =
+                _distance(entityPosition, childPosition);
+          }
+        }
+      }
+    }
+
+    final maxFlow = _edmondsKarp(graph, domains.first.code, domains.last.code);
+    // You can use the maxFlow result to adjust positions if needed
+
+    return positions;
+  }
+
+  double _distance(Offset a, Offset b) {
+    return (a - b).distance;
+  }
+
+  double _edmondsKarp(
+      Map<String, Map<String, double>> graph, String source, String sink) {
+    final residualGraph = <String, Map<String, double>>{};
+    for (var u in graph.keys) {
+      residualGraph[u] = {};
+      for (var v in graph[u]!.keys) {
+        residualGraph[u]![v] = graph[u]![v]!;
+      }
+    }
+
+    final parent = <String?, String?>{};
+    double maxFlow = 0;
+
+    bool bfs(String source, String sink) {
+      final visited = <String>{};
+      final queue = Queue<String>();
+      queue.add(source);
+      visited.add(source);
+      parent[source] = null;
+
+      while (queue.isNotEmpty) {
+        final u = queue.removeFirst();
+        for (var v in residualGraph[u]!.keys) {
+          if (!visited.contains(v) && residualGraph[u]![v]! > 0) {
+            queue.add(v);
+            visited.add(v);
+            parent[v] = u;
+            if (v == sink) return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    while (bfs(source, sink)) {
+      double pathFlow = double.infinity;
+      for (var v = sink; v != source; v = parent[v]!) {
+        final u = parent[v]!;
+        pathFlow = min(pathFlow, residualGraph[u]![v]!);
+      }
+
+      for (var v = sink; v != source; v = parent[v]!) {
+        final u = parent[v]!;
+        residualGraph[u]![v] = residualGraph[u]![v]! - pathFlow;
+        residualGraph[v]!.putIfAbsent(u, () => 0);
+        residualGraph[v]![u] = residualGraph[v]![u]! + pathFlow;
+      }
+
+      maxFlow += pathFlow;
+    }
+
+    return maxFlow;
+  }
+}
+
+class Edge {
+  final String u;
+  final String v;
+  final double weight;
+
+  Edge(this.u, this.v, this.weight);
+}
+
+// Update the UI to include new layout algorithms
+class MetaDomainCanvas extends StatefulWidget {
+  final Domains domains;
+  final LayoutAlgorithm layoutAlgorithm;
+  final List<UXDecorator> decorators;
+
+  MetaDomainCanvas({
+    required this.domains,
+    required this.layoutAlgorithm,
+    required this.decorators,
+  });
+
+  @override
+  _MetaDomainCanvasState createState() => _MetaDomainCanvasState();
+}
+
+// Implement MetaDomainPainter and other required classes here
+
+class MetaDomainPainter extends CustomPainter {
+  final Domains domains;
+  final TransformationController transformationController;
+  final LayoutAlgorithm layoutAlgorithm;
+  final List<UXDecorator> decorators;
+  final bool isDragging;
+  final System system;
+  final AnimationManager animationManager;
+
+  MetaDomainPainter({
+    required this.domains,
+    required this.transformationController,
+    required this.layoutAlgorithm,
+    required this.decorators,
+    required this.isDragging,
+    required this.system,
+    required this.animationManager,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final positions = layoutAlgorithm.calculateLayout(domains, size);
+    system.nodes.clear();
+
+    for (var domain in domains) {
+      _paintDomain(canvas, domain, positions);
+    }
+
+    system.render(canvas);
+  }
+
+  void _paintDomain(
+      Canvas canvas, Domain domain, Map<String, Offset> positions) {
+    Offset domainPosition = positions[domain.code]!;
+    Node domainNode = _createNode(domainPosition, Colors.blue);
+    system.addNode(domainNode);
+
+    for (var model in domain.models) {
+      Offset modelPosition = positions[model.code]!;
+      Node modelNode = _createNode(modelPosition, Colors.green);
+      system.addNode(modelNode);
+
+      for (var entity in model.concepts) {
+        Offset entityPosition = positions[entity.code]!;
+        Node entityNode = _createNode(entityPosition, Colors.red);
+        system.addNode(entityNode);
+
+        for (var child in entity.children) {
+          Offset childPosition = positions[child.code]!;
+          Node childNode = _createNode(childPosition, Colors.red);
+          system.addNode(childNode);
+
+          _drawLine(canvas, entityPosition, childPosition);
+        }
+      }
+    }
+  }
+
+  Node _createNode(Offset position, Color color) {
+    Node node = Node();
+    node.addComponent(PositionComponent(position));
+    node.addComponent(RenderComponent(
+      Paint()..color = color,
+      Rect.fromCenter(center: position, width: 100, height: 50),
+    ));
+    return node;
+  }
+
+  void _drawLine(Canvas canvas, Offset start, Offset end) {
+    canvas.drawLine(
+      start,
+      end,
+      Paint()..color = Colors.black,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
 
 class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
   final double nodeWidth = 100.0;
@@ -42,21 +425,6 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
           xMin + i * width, xMin + (i + 1) * width, positions);
     }
   }
-}
-
-class MetaDomainCanvas extends StatefulWidget {
-  final Domains domains;
-  final LayoutAlgorithm layoutAlgorithm;
-  final List<UXDecorator> decorators;
-
-  MetaDomainCanvas({
-    required this.domains,
-    required this.layoutAlgorithm,
-    required this.decorators,
-  });
-
-  @override
-  _MetaDomainCanvasState createState() => _MetaDomainCanvasState();
 }
 
 class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
@@ -178,88 +546,6 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
   void dispose() {
     _gameLoop.stop();
     super.dispose();
-  }
-}
-
-class MetaDomainPainter extends CustomPainter {
-  final Domains domains;
-  final TransformationController transformationController;
-  final LayoutAlgorithm layoutAlgorithm;
-  final List<UXDecorator> decorators;
-  final bool isDragging;
-  final System system;
-  final AnimationManager animationManager;
-
-  MetaDomainPainter({
-    required this.domains,
-    required this.transformationController,
-    required this.layoutAlgorithm,
-    required this.decorators,
-    required this.isDragging,
-    required this.system,
-    required this.animationManager,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final positions = layoutAlgorithm.calculateLayout(domains, size);
-    system.nodes.clear();
-
-    for (var domain in domains) {
-      _paintDomain(canvas, domain, positions);
-    }
-
-    system.render(canvas);
-  }
-
-  void _paintDomain(
-      Canvas canvas, Domain domain, Map<String, Offset> positions) {
-    Offset domainPosition = positions[domain.code]!;
-    Node domainNode = _createNode(domainPosition, Colors.blue);
-    system.addNode(domainNode);
-
-    for (var model in domain.models) {
-      Offset modelPosition = positions[model.code]!;
-      Node modelNode = _createNode(modelPosition, Colors.green);
-      system.addNode(modelNode);
-
-      for (var entity in model.concepts) {
-        Offset entityPosition = positions[entity.code]!;
-        Node entityNode = _createNode(entityPosition, Colors.red);
-        system.addNode(entityNode);
-
-        for (var child in entity.children) {
-          Offset childPosition = positions[child.code]!;
-          Node childNode = _createNode(childPosition, Colors.red);
-          system.addNode(childNode);
-
-          _drawLine(canvas, entityPosition, childPosition);
-        }
-      }
-    }
-  }
-
-  Node _createNode(Offset position, Color color) {
-    Node node = Node();
-    node.addComponent(PositionComponent(position));
-    node.addComponent(RenderComponent(
-      Paint()..color = color,
-      Rect.fromCenter(center: position, width: 100, height: 50),
-    ));
-    return node;
-  }
-
-  void _drawLine(Canvas canvas, Offset start, Offset end) {
-    canvas.drawLine(
-      start,
-      end,
-      Paint()..color = Colors.black,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
   }
 }
 
@@ -878,4 +1164,47 @@ enum LayoutAlgorithmType {
 
 abstract class LayoutAlgorithm {
   Map<String, Offset> calculateLayout(Domains domains, Size size);
+}
+
+// Add BFS and DFS traversal algorithms
+
+class GraphTraversal {
+  final Graph graph;
+
+  GraphTraversal(this.graph);
+
+  List<String> bfs(String start) {
+    List<String> visited = [];
+    Queue<String> queue = Queue();
+    queue.add(start);
+
+    while (queue.isNotEmpty) {
+      String node = queue.removeFirst();
+      if (!visited.contains(node)) {
+        visited.add(node);
+        graph.getNeighbors(node)?.forEach((neighbor) {
+          if (!visited.contains(neighbor)) {
+            queue.add(neighbor);
+          }
+        });
+      }
+    }
+    return visited;
+  }
+
+  List<String> dfs(String start) {
+    List<String> visited = [];
+    _dfsHelper(start, visited);
+    return visited;
+  }
+
+  void _dfsHelper(String node, List<String> visited) {
+    if (visited.contains(node)) return;
+    visited.add(node);
+    graph.getNeighbors(node)?.forEach((neighbor) {
+      if (!visited.contains(neighbor)) {
+        _dfsHelper(neighbor, visited);
+      }
+    });
+  }
 }
