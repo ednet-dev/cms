@@ -5,8 +5,12 @@ import 'package:flutter/material.dart';
 
 class MetaDomainCanvas extends StatefulWidget {
   final Domains domains;
+  final LayoutAlgorithm layoutAlgorithm;
 
-  MetaDomainCanvas({required this.domains});
+  MetaDomainCanvas({
+    required this.domains,
+    required this.layoutAlgorithm,
+  });
 
   @override
   _MetaDomainCanvasState createState() => _MetaDomainCanvasState();
@@ -14,19 +18,38 @@ class MetaDomainCanvas extends StatefulWidget {
 
 class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
   Offset _dragOffset = Offset.zero;
+  double _scale = 1.0;
+  late TransformationController _transformationController;
+  late LayoutAlgorithm _currentAlgorithm;
+
+  @override
+  void initState() {
+    super.initState();
+    _transformationController = TransformationController();
+    _currentAlgorithm = widget.layoutAlgorithm;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanUpdate: (details) {
+    return InteractiveViewer(
+      transformationController: _transformationController,
+      onInteractionUpdate: (details) {
         setState(() {
-          _dragOffset += details.delta;
+          _transformationController.value = Matrix4.identity()
+            ..translate(details.focalPointDelta.dx, details.focalPointDelta.dy)
+            ..scale(details.scale);
         });
       },
+      minScale: 0.1,
+      maxScale: 5.0,
       child: CustomPaint(
         size: Size.infinite,
-        painter:
-            MetaDomainPainter(domains: widget.domains, offset: _dragOffset),
+        painter: MetaDomainPainter(
+          domains: widget.domains,
+          offset: _dragOffset,
+          scale: _scale,
+          layoutAlgorithm: _currentAlgorithm,
+        ),
       ),
     );
   }
@@ -35,17 +58,24 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
 class MetaDomainPainter extends CustomPainter {
   final Domains domains;
   final Offset offset;
-  final Map<String, Offset> velocity = {};
+  final double scale;
+  final LayoutAlgorithm layoutAlgorithm;
 
-  MetaDomainPainter({required this.domains, required this.offset});
+  MetaDomainPainter({
+    required this.domains,
+    required this.offset,
+    required this.scale,
+    required this.layoutAlgorithm,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.blue
-      ..strokeWidth = 2;
+      ..strokeWidth = 2 / scale;
 
-    Map<String, Offset> positions = _applyForceDirectedLayout(size);
+    Map<String, Offset> positions =
+        layoutAlgorithm.calculateLayout(domains, size);
 
     for (var domain in domains) {
       Offset domainPosition = positions[domain.code]!;
@@ -74,7 +104,7 @@ class MetaDomainPainter extends CustomPainter {
   }
 
   void _drawText(Canvas canvas, String text, Offset position, Color color) {
-    final textStyle = TextStyle(color: color, fontSize: 16);
+    final textStyle = TextStyle(color: color, fontSize: 16 / scale);
     final textSpan = TextSpan(text: text, style: textStyle);
     final textPainter = TextPainter(
       text: textSpan,
@@ -85,7 +115,21 @@ class MetaDomainPainter extends CustomPainter {
         position - Offset(textPainter.width / 2, textPainter.height / 2));
   }
 
-  Map<String, Offset> _applyForceDirectedLayout(Size size) {
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+abstract class LayoutAlgorithm {
+  Map<String, Offset> calculateLayout(Domains domains, Size size);
+}
+
+class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
+  final Map<String, Offset> velocity = {};
+
+  @override
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
     final positions = <String, Offset>{};
     final forces = <String, Offset>{};
 
@@ -145,9 +189,38 @@ class MetaDomainPainter extends CustomPainter {
 
     return positions;
   }
+}
 
+class GridLayoutAlgorithm extends LayoutAlgorithm {
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
+    final positions = <String, Offset>{};
+
+    double x = 50;
+    double y = 50;
+    const double stepX = 200;
+    const double stepY = 100;
+
+    for (var domain in domains) {
+      positions[domain.code] = Offset(x, y);
+      y += stepY;
+
+      for (var model in domain.models) {
+        positions[model.code] = Offset(x + stepX, y);
+        y += stepY;
+
+        for (var entity in model.concepts) {
+          positions[entity.code] = Offset(x + 2 * stepX, y);
+          y += stepY;
+        }
+
+        y += stepY;
+      }
+
+      x += 3 * stepX;
+      y = 50;
+    }
+
+    return positions;
   }
 }

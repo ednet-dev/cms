@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   BookmarkManager bookmarkManager = BookmarkManager();
 
   bool showMetaCanvas = false;
+  LayoutAlgorithm _selectedAlgorithm = ForceDirectedLayoutAlgorithm();
 
   @override
   void initState() {
@@ -84,6 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // Implement bookmark selection logic here
   }
 
+  void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
+    setState(() {
+      _selectedAlgorithm = algorithm;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +125,31 @@ class _MyHomePageState extends State<MyHomePage> {
         child: BlocBuilder<LayoutBloc, LayoutState>(
           builder: (context, state) {
             if (showMetaCanvas) {
-              return Expanded(child: MetaDomainCanvas(domains: app.domains));
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.auto_fix_high),
+                        onPressed: () => _changeLayoutAlgorithm(
+                            ForceDirectedLayoutAlgorithm()),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.grid_on),
+                        onPressed: () =>
+                            _changeLayoutAlgorithm(GridLayoutAlgorithm()),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: MetaDomainCanvas(
+                      domains: app.domains,
+                      layoutAlgorithm: _selectedAlgorithm,
+                    ),
+                  ),
+                ],
+              );
             } else {
               return Row(
                 children: [
@@ -298,3 +329,5 @@ class EntriesSidebarWidget extends StatelessWidget {
     );
   }
 }
+
+
