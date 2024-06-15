@@ -129,10 +129,10 @@ void testProjectCoreTasks(
       var tasksCount = tasks.length; 
  
       var task = Task(tasks.concept); 
-      task.title = 'present'; 
+      task.title = 'question'; 
       task.dueDate = new DateTime.now(); 
-      task.status = 'observation'; 
-      task.priority = 'plate'; 
+      task.status = 'park'; 
+      task.priority = 'abstract'; 
       var added = selectedTasks.add(task); 
       expect(added, isTrue); 
       expect(tasks.length, equals(++tasksCount)); 
@@ -225,8 +225,8 @@ void testProjectCoreTasks(
     test("Update task non id attribute with failure", () { 
       var randomTask = coreModel.tasks.random(); 
       var afterUpdateEntity = randomTask.copy(); 
-      afterUpdateEntity.title = 'productivity'; 
-      expect(afterUpdateEntity.title, equals('productivity')); 
+      afterUpdateEntity.title = 'word'; 
+      expect(afterUpdateEntity.title, equals('word')); 
       // tasks.update can only be used if oid, code or id is set. 
       expect(() => tasks.update(randomTask, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -249,10 +249,10 @@ void testProjectCoreTasks(
     test("task action undo and redo", () { 
       var taskCount = tasks.length; 
       var task = Task(tasks.concept); 
-        task.title = 'security'; 
+        task.title = 'revolution'; 
       task.dueDate = new DateTime.now(); 
-      task.status = 'grading'; 
-      task.priority = 'theme'; 
+      task.status = 'beer'; 
+      task.priority = 'chemist'; 
     var taskProject = coreModel.projects.random(); 
     task.project = taskProject; 
       tasks.add(task); 
@@ -275,10 +275,10 @@ void testProjectCoreTasks(
     test("task session undo and redo", () { 
       var taskCount = tasks.length; 
       var task = Task(tasks.concept); 
-        task.title = 'accident'; 
+        task.title = 'professor'; 
       task.dueDate = new DateTime.now(); 
-      task.status = 'tent'; 
-      task.priority = 'plate'; 
+      task.status = 'text'; 
+      task.priority = 'electronic'; 
     var taskProject = coreModel.projects.random(); 
     task.project = taskProject; 
       tasks.add(task); 
@@ -300,7 +300,7 @@ void testProjectCoreTasks(
  
     test("Task update undo and redo", () { 
       var task = coreModel.tasks.random(); 
-      var action = SetAttributeCommand(session, task, "title", 'body'); 
+      var action = SetAttributeCommand(session, task, "title", 'video'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -401,10 +401,10 @@ void testProjectCoreTasks(
  
       projectDomain.startCommandReaction(reaction); 
       var task = Task(tasks.concept); 
-        task.title = 'cup'; 
+        task.title = 'east'; 
       task.dueDate = new DateTime.now(); 
-      task.status = 'top'; 
-      task.priority = 'center'; 
+      task.status = 'tape'; 
+      task.priority = 'big'; 
     var taskProject = coreModel.projects.random(); 
     task.project = taskProject; 
       tasks.add(task); 
@@ -420,7 +420,7 @@ void testProjectCoreTasks(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, task, "title", 'text'); 
+        session, task, "title", 'auto'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

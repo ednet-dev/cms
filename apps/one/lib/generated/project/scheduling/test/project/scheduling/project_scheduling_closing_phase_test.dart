@@ -129,12 +129,12 @@ void testProjectSchedulingClosingPhases(
       var closingPhasesCount = closingPhases.length; 
  
       var closingPhase = ClosingPhase(closingPhases.concept); 
-      closingPhase.FinalDeliverableHandover = 'walking'; 
-      closingPhase.ProjectDocumentation = 'teaching'; 
-      closingPhase.StakeholderSignOff = 'dinner'; 
-      closingPhase.ProjectReview = 'hospital'; 
-      closingPhase.ResourceRelease = 'head'; 
-      closingPhase.CelebrateSuccess = 'future'; 
+      closingPhase.FinalDeliverableHandover = 'end'; 
+      closingPhase.ProjectDocumentation = 'debt'; 
+      closingPhase.StakeholderSignOff = 'celebration'; 
+      closingPhase.ProjectReview = 'tall'; 
+      closingPhase.ResourceRelease = 'point'; 
+      closingPhase.CelebrateSuccess = 'algorithm'; 
       var added = selectedClosingPhases.add(closingPhase); 
       expect(added, isTrue); 
       expect(closingPhases.length, equals(++closingPhasesCount)); 
@@ -227,8 +227,8 @@ void testProjectSchedulingClosingPhases(
     test("Update closingPhase non id attribute with failure", () { 
       var randomClosingPhase = schedulingModel.closingPhases.random(); 
       var afterUpdateEntity = randomClosingPhase.copy(); 
-      afterUpdateEntity.FinalDeliverableHandover = 'room'; 
-      expect(afterUpdateEntity.FinalDeliverableHandover, equals('room')); 
+      afterUpdateEntity.FinalDeliverableHandover = 'economy'; 
+      expect(afterUpdateEntity.FinalDeliverableHandover, equals('economy')); 
       // closingPhases.update can only be used if oid, code or id is set. 
       expect(() => closingPhases.update(randomClosingPhase, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -253,12 +253,12 @@ void testProjectSchedulingClosingPhases(
     test("closingPhase action undo and redo", () { 
       var closingPhaseCount = closingPhases.length; 
       var closingPhase = ClosingPhase(closingPhases.concept); 
-        closingPhase.FinalDeliverableHandover = 'discount'; 
-      closingPhase.ProjectDocumentation = 'entertainment'; 
-      closingPhase.StakeholderSignOff = 'brave'; 
-      closingPhase.ProjectReview = 'end'; 
-      closingPhase.ResourceRelease = 'cardboard'; 
-      closingPhase.CelebrateSuccess = 'park'; 
+        closingPhase.FinalDeliverableHandover = 'country'; 
+      closingPhase.ProjectDocumentation = 'cable'; 
+      closingPhase.StakeholderSignOff = 'team'; 
+      closingPhase.ProjectReview = 'oil'; 
+      closingPhase.ResourceRelease = 'thing'; 
+      closingPhase.CelebrateSuccess = 'vacation'; 
     var closingPhaseMonitoringAndControllingPhase = schedulingModel.monitoringAndControllingPhases.random(); 
     closingPhase.monitoringAndControllingPhase = closingPhaseMonitoringAndControllingPhase; 
       closingPhases.add(closingPhase); 
@@ -281,12 +281,12 @@ void testProjectSchedulingClosingPhases(
     test("closingPhase session undo and redo", () { 
       var closingPhaseCount = closingPhases.length; 
       var closingPhase = ClosingPhase(closingPhases.concept); 
-        closingPhase.FinalDeliverableHandover = 'plaho'; 
-      closingPhase.ProjectDocumentation = 'redo'; 
-      closingPhase.StakeholderSignOff = 'economy'; 
-      closingPhase.ProjectReview = 'service'; 
-      closingPhase.ResourceRelease = 'home'; 
-      closingPhase.CelebrateSuccess = 'architecture'; 
+        closingPhase.FinalDeliverableHandover = 'down'; 
+      closingPhase.ProjectDocumentation = 'effort'; 
+      closingPhase.StakeholderSignOff = 'present'; 
+      closingPhase.ProjectReview = 'down'; 
+      closingPhase.ResourceRelease = 'architecture'; 
+      closingPhase.CelebrateSuccess = 'sailing'; 
     var closingPhaseMonitoringAndControllingPhase = schedulingModel.monitoringAndControllingPhases.random(); 
     closingPhase.monitoringAndControllingPhase = closingPhaseMonitoringAndControllingPhase; 
       closingPhases.add(closingPhase); 
@@ -308,7 +308,7 @@ void testProjectSchedulingClosingPhases(
  
     test("ClosingPhase update undo and redo", () { 
       var closingPhase = schedulingModel.closingPhases.random(); 
-      var action = SetAttributeCommand(session, closingPhase, "FinalDeliverableHandover", 'effort'); 
+      var action = SetAttributeCommand(session, closingPhase, "FinalDeliverableHandover", 'sand'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -409,12 +409,12 @@ void testProjectSchedulingClosingPhases(
  
       projectDomain.startCommandReaction(reaction); 
       var closingPhase = ClosingPhase(closingPhases.concept); 
-        closingPhase.FinalDeliverableHandover = 'wave'; 
-      closingPhase.ProjectDocumentation = 'text'; 
-      closingPhase.StakeholderSignOff = 'slate'; 
-      closingPhase.ProjectReview = 'point'; 
-      closingPhase.ResourceRelease = 'east'; 
-      closingPhase.CelebrateSuccess = 'authority'; 
+        closingPhase.FinalDeliverableHandover = 'computer'; 
+      closingPhase.ProjectDocumentation = 'call'; 
+      closingPhase.StakeholderSignOff = 'fish'; 
+      closingPhase.ProjectReview = 'privacy'; 
+      closingPhase.ResourceRelease = 'observation'; 
+      closingPhase.CelebrateSuccess = 'cream'; 
     var closingPhaseMonitoringAndControllingPhase = schedulingModel.monitoringAndControllingPhases.random(); 
     closingPhase.monitoringAndControllingPhase = closingPhaseMonitoringAndControllingPhase; 
       closingPhases.add(closingPhase); 
@@ -430,7 +430,7 @@ void testProjectSchedulingClosingPhases(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, closingPhase, "FinalDeliverableHandover", 'energy'); 
+        session, closingPhase, "FinalDeliverableHandover", 'house'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

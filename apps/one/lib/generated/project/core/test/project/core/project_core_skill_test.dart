@@ -129,8 +129,8 @@ void testProjectCoreSkills(
       var skillsCount = skills.length; 
  
       var skill = Skill(skills.concept); 
-      skill.name = 'video'; 
-      skill.level = 'account'; 
+      skill.name = 'opinion'; 
+      skill.level = 'umbrella'; 
       var added = selectedSkills.add(skill); 
       expect(added, isTrue); 
       expect(skills.length, equals(++skillsCount)); 
@@ -223,8 +223,8 @@ void testProjectCoreSkills(
     test("Update skill non id attribute with failure", () { 
       var randomSkill = coreModel.skills.random(); 
       var afterUpdateEntity = randomSkill.copy(); 
-      afterUpdateEntity.name = 'energy'; 
-      expect(afterUpdateEntity.name, equals('energy')); 
+      afterUpdateEntity.name = 'salary'; 
+      expect(afterUpdateEntity.name, equals('salary')); 
       // skills.update can only be used if oid, code or id is set. 
       expect(() => skills.update(randomSkill, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -245,8 +245,8 @@ void testProjectCoreSkills(
     test("skill action undo and redo", () { 
       var skillCount = skills.length; 
       var skill = Skill(skills.concept); 
-        skill.name = 'restaurant'; 
-      skill.level = 'drink'; 
+        skill.name = 'organization'; 
+      skill.level = 'hot'; 
     var skillResource = coreModel.resources.random(); 
     skill.resource = skillResource; 
       skills.add(skill); 
@@ -269,8 +269,8 @@ void testProjectCoreSkills(
     test("skill session undo and redo", () { 
       var skillCount = skills.length; 
       var skill = Skill(skills.concept); 
-        skill.name = 'book'; 
-      skill.level = 'slate'; 
+        skill.name = 'tax'; 
+      skill.level = 'marriage'; 
     var skillResource = coreModel.resources.random(); 
     skill.resource = skillResource; 
       skills.add(skill); 
@@ -292,7 +292,7 @@ void testProjectCoreSkills(
  
     test("Skill update undo and redo", () { 
       var skill = coreModel.skills.random(); 
-      var action = SetAttributeCommand(session, skill, "name", 'software'); 
+      var action = SetAttributeCommand(session, skill, "name", 'secretary'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -393,8 +393,8 @@ void testProjectCoreSkills(
  
       projectDomain.startCommandReaction(reaction); 
       var skill = Skill(skills.concept); 
-        skill.name = 'finger'; 
-      skill.level = 'chemist'; 
+        skill.name = 'bird'; 
+      skill.level = 'message'; 
     var skillResource = coreModel.resources.random(); 
     skill.resource = skillResource; 
       skills.add(skill); 
@@ -410,7 +410,7 @@ void testProjectCoreSkills(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, skill, "name", 'grading'); 
+        session, skill, "name", 'university'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

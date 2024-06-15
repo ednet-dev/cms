@@ -129,7 +129,7 @@ void testProjectGtdContextLists(
       var contextListsCount = contextLists.length; 
  
       var contextList = ContextList(contextLists.concept); 
-      contextList.contexts = 'walking'; 
+      contextList.contexts = 'thing'; 
       var added = selectedContextLists.add(contextList); 
       expect(added, isTrue); 
       expect(contextLists.length, equals(++contextListsCount)); 
@@ -222,8 +222,8 @@ void testProjectGtdContextLists(
     test("Update contextList non id attribute with failure", () { 
       var randomContextList = gtdModel.contextLists.random(); 
       var afterUpdateEntity = randomContextList.copy(); 
-      afterUpdateEntity.contexts = 'brave'; 
-      expect(afterUpdateEntity.contexts, equals('brave')); 
+      afterUpdateEntity.contexts = 'undo'; 
+      expect(afterUpdateEntity.contexts, equals('undo')); 
       // contextLists.update can only be used if oid, code or id is set. 
       expect(() => contextLists.update(randomContextList, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectGtdContextLists(
     test("contextList action undo and redo", () { 
       var contextListCount = contextLists.length; 
       var contextList = ContextList(contextLists.concept); 
-        contextList.contexts = 'privacy'; 
+        contextList.contexts = 'top'; 
     var contextListTask = gtdModel.tasks.random(); 
     contextList.task = contextListTask; 
       contextLists.add(contextList); 
@@ -266,7 +266,7 @@ void testProjectGtdContextLists(
     test("contextList session undo and redo", () { 
       var contextListCount = contextLists.length; 
       var contextList = ContextList(contextLists.concept); 
-        contextList.contexts = 'energy'; 
+        contextList.contexts = 'lake'; 
     var contextListTask = gtdModel.tasks.random(); 
     contextList.task = contextListTask; 
       contextLists.add(contextList); 
@@ -288,7 +288,7 @@ void testProjectGtdContextLists(
  
     test("ContextList update undo and redo", () { 
       var contextList = gtdModel.contextLists.random(); 
-      var action = SetAttributeCommand(session, contextList, "contexts", 'book'); 
+      var action = SetAttributeCommand(session, contextList, "contexts", 'lifespan'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -389,7 +389,7 @@ void testProjectGtdContextLists(
  
       projectDomain.startCommandReaction(reaction); 
       var contextList = ContextList(contextLists.concept); 
-        contextList.contexts = 'television'; 
+        contextList.contexts = 'do'; 
     var contextListTask = gtdModel.tasks.random(); 
     contextList.task = contextListTask; 
       contextLists.add(contextList); 
@@ -405,7 +405,7 @@ void testProjectGtdContextLists(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, contextList, "contexts", 'privacy'); 
+        session, contextList, "contexts", 'room'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 
