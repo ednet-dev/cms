@@ -1,7 +1,241 @@
+import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
+
+class MetaDomainPainter extends CustomPainter {
+  final Domains domains;
+  final TransformationController transformationController;
+  final LayoutAlgorithm layoutAlgorithm;
+  final List<UXDecorator> decorators;
+  final bool isDragging;
+  final System system;
+  final AnimationManager animationManager;
+
+  MetaDomainPainter({
+    required this.domains,
+    required this.transformationController,
+    required this.layoutAlgorithm,
+    required this.decorators,
+    required this.isDragging,
+    required this.system,
+    required this.animationManager,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final positions = layoutAlgorithm.calculateLayout(domains, size);
+
+    system.nodes.clear();
+
+    for (var domain in domains) {
+      Offset domainPosition = positions[domain.code]!;
+      Node domainNode = Node();
+      domainNode.addComponent(PositionComponent(domainPosition));
+      domainNode.addComponent(RenderComponent(
+        Paint()..color = Colors.blue,
+        Rect.fromCenter(center: domainPosition, width: 100, height: 50),
+      ));
+      system.addNode(domainNode);
+
+      for (var model in domain.models) {
+        Offset modelPosition = positions[model.code]!;
+        Node modelNode = Node();
+        modelNode.addComponent(PositionComponent(modelPosition));
+        modelNode.addComponent(RenderComponent(
+          Paint()..color = Colors.green,
+          Rect.fromCenter(center: modelPosition, width: 100, height: 50),
+        ));
+        system.addNode(modelNode);
+
+        for (var entity in model.concepts) {
+          Offset entityPosition = positions[entity.code]!;
+          Node entityNode = Node();
+          entityNode.addComponent(PositionComponent(entityPosition));
+          entityNode.addComponent(RenderComponent(
+            Paint()..color = Colors.red,
+            Rect.fromCenter(center: entityPosition, width: 100, height: 50),
+          ));
+          system.addNode(entityNode);
+
+          for (var child in entity.children) {
+            Offset childPosition = positions[child.code]!;
+            Node childNode = Node();
+            childNode.addComponent(PositionComponent(childPosition));
+            childNode.addComponent(RenderComponent(
+              Paint()..color = Colors.red,
+              Rect.fromCenter(center: childPosition, width: 100, height: 50),
+            ));
+            system.addNode(childNode);
+
+            canvas.drawLine(
+              entityPosition,
+              childPosition,
+              Paint()..color = Colors.black,
+            );
+          }
+        }
+      }
+    }
+
+    system.render(canvas);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class GameLoop {
+  final System system;
+  final AnimationManager animationManager;
+  final double updateInterval;
+  late Timer _timer;
+
+  GameLoop({
+    required this.system,
+    required this.animationManager,
+    this.updateInterval = 1 / 60, // 60 FPS
+  });
+
+  void start() {
+    _timer = Timer.periodic(
+        Duration(milliseconds: (updateInterval * 1000).round()), _update);
+  }
+
+  void _update(Timer timer) {
+    double dt = updateInterval;
+    animationManager.update(dt);
+    system.update(dt);
+    system
+        .render(Canvas(PictureRecorder())); // Replace with your rendering logic
+  }
+
+  void stop() {
+    _timer.cancel();
+  }
+}
+
+class Animation {
+  final double duration;
+  double elapsedTime = 0;
+  final void Function(double progress) onUpdate;
+  final void Function() onComplete;
+
+  Animation({
+    required this.duration,
+    required this.onUpdate,
+    required this.onComplete,
+  });
+
+  void update(double dt) {
+    elapsedTime += dt;
+    double progress = (elapsedTime / duration).clamp(0.0, 1.0);
+    onUpdate(progress);
+    if (elapsedTime >= duration) {
+      onComplete();
+    }
+  }
+}
+
+class AnimationManager {
+  final List<Animation> animations = [];
+
+  void addAnimation(Animation animation) {
+    animations.add(animation);
+  }
+
+  void update(double dt) {
+    for (var animation in List.from(animations)) {
+      animation.update(dt);
+      if (animation.elapsedTime >= animation.duration) {
+        animations.remove(animation);
+      }
+    }
+  }
+}
+
+abstract class Component {
+  void update(double dt);
+
+  void render(Canvas canvas);
+}
+
+class PositionComponent extends Component {
+  Offset position;
+
+  PositionComponent(this.position);
+
+  @override
+  void update(double dt) {
+    // Update logic for position
+  }
+
+  @override
+  void render(Canvas canvas) {
+    // Render logic for position (e.g., drawing a marker)
+  }
+}
+
+class RenderComponent extends Component {
+  final Paint paint;
+  final Rect rect;
+
+  RenderComponent(this.paint, this.rect);
+
+  @override
+  void update(double dt) {
+    // Update logic for rendering
+  }
+
+  @override
+  void render(Canvas canvas) {
+    canvas.drawRect(rect, paint);
+  }
+}
+
+class Node {
+  final List<Component> components = [];
+
+  void addComponent(Component component) {
+    components.add(component);
+  }
+
+  void update(double dt) {
+    for (var component in components) {
+      component.update(dt);
+    }
+  }
+
+  void render(Canvas canvas) {
+    for (var component in components) {
+      component.render(canvas);
+    }
+  }
+}
+
+class System {
+  final List<Node> nodes = [];
+
+  void addNode(Node node) {
+    nodes.add(node);
+  }
+
+  void update(double dt) {
+    for (var node in nodes) {
+      node.update(dt);
+    }
+  }
+
+  void render(Canvas canvas) {
+    for (var node in nodes) {
+      node.render(canvas);
+    }
+  }
+}
 
 class MetaDomainCanvas extends StatefulWidget {
   final Domains domains;
@@ -22,12 +256,22 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
   late TransformationController _transformationController;
   late LayoutAlgorithm _currentAlgorithm;
   bool _isDragging = false;
+  late GameLoop _gameLoop;
+  late System _system;
+  late AnimationManager _animationManager;
 
   @override
   void initState() {
     super.initState();
     _transformationController = TransformationController();
     _currentAlgorithm = widget.layoutAlgorithm;
+    _system = System();
+    _animationManager = AnimationManager();
+    _gameLoop = GameLoop(
+      system: _system,
+      animationManager: _animationManager,
+    );
+    _gameLoop.start();
   }
 
   void _onInteractionStart(ScaleStartDetails details) {
@@ -67,170 +311,18 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
             layoutAlgorithm: _currentAlgorithm,
             decorators: widget.decorators,
             isDragging: _isDragging,
+            system: _system,
+            animationManager: _animationManager,
           ),
         ),
       ),
     );
   }
-}
-
-class MetaDomainPainter extends CustomPainter {
-  final Domains domains;
-  final TransformationController transformationController;
-  final LayoutAlgorithm layoutAlgorithm;
-  final List<UXDecorator> decorators;
-  final bool isDragging;
-
-  MetaDomainPainter({
-    required this.domains,
-    required this.transformationController,
-    required this.layoutAlgorithm,
-    required this.decorators,
-    required this.isDragging,
-  });
 
   @override
-  void paint(Canvas canvas, Size size) {
-    if (isDragging) {
-      // Skip layout recalculation during drag
-      canvas.save();
-      canvas.transform(transformationController.value.storage);
-      _drawNodes(canvas, size);
-      canvas.restore();
-    } else {
-      // Normal painting process
-      final positions = layoutAlgorithm.calculateLayout(domains, size);
-
-      canvas.save();
-      canvas.transform(transformationController.value.storage);
-
-      for (var domain in domains) {
-        Offset domainPosition = positions[domain.code]!;
-        _drawNode(
-            canvas, domain.code, domainPosition, Colors.blue, NodeType.domain);
-
-        for (var model in domain.models) {
-          Offset modelPosition = positions[model.code]!;
-          _drawNode(
-              canvas, model.code, modelPosition, Colors.green, NodeType.model);
-
-          for (var entity in model.concepts) {
-            Offset entityPosition = positions[entity.code]!;
-            _drawNode(canvas, entity.code, entityPosition, Colors.red,
-                NodeType.entity);
-
-            for (var child in entity.children) {
-              Offset childPosition = positions[child.code]!;
-              _drawNode(canvas, child.code, childPosition, Colors.red,
-                  NodeType.entity);
-              canvas.drawLine(
-                  entityPosition, childPosition, Paint()..color = Colors.black);
-            }
-          }
-        }
-      }
-
-      canvas.restore();
-    }
-  }
-
-  void _drawNodes(Canvas canvas, Size size) {
-    for (var domain in domains) {
-      final domainPosition = _calculatePosition(domain.code, size);
-      _drawNode(
-          canvas, domain.code, domainPosition, Colors.blue, NodeType.domain);
-
-      for (var model in domain.models) {
-        final modelPosition = _calculatePosition(model.code, size);
-        _drawNode(
-            canvas, model.code, modelPosition, Colors.green, NodeType.model);
-
-        for (var entity in model.concepts) {
-          final entityPosition = _calculatePosition(entity.code, size);
-          _drawNode(
-              canvas, entity.code, entityPosition, Colors.red, NodeType.entity);
-
-          for (var child in entity.children) {
-            final childPosition = _calculatePosition(child.code, size);
-            _drawNode(
-                canvas, child.code, childPosition, Colors.red, NodeType.entity);
-            canvas.drawLine(
-                entityPosition, childPosition, Paint()..color = Colors.black);
-          }
-        }
-      }
-    }
-  }
-
-  Offset _calculatePosition(String code, Size size) {
-    // Calculate position for the given code (placeholder implementation)
-    return Offset(size.width / 2, size.height / 2);
-  }
-
-  void _drawNode(
-      Canvas canvas, String text, Offset position, Color color, NodeType type) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    switch (type) {
-      case NodeType.domain:
-        _drawRectangleNode(canvas, text, position, paint);
-        break;
-      case NodeType.model:
-        _drawEllipseNode(canvas, text, position, paint);
-        break;
-      case NodeType.entity:
-        _drawDiamondNode(canvas, text, position, paint);
-        break;
-    }
-
-    for (var decorator in decorators) {
-      decorator.apply(canvas, position, 1.0);
-    }
-  }
-
-  void _drawRectangleNode(
-      Canvas canvas, String text, Offset position, Paint paint) {
-    final rect = Rect.fromCenter(center: position, width: 100, height: 50);
-    canvas.drawRect(rect, paint);
-    _drawText(canvas, text, position, Colors.white);
-  }
-
-  void _drawEllipseNode(
-      Canvas canvas, String text, Offset position, Paint paint) {
-    final rect = Rect.fromCenter(center: position, width: 100, height: 50);
-    canvas.drawOval(rect, paint);
-    _drawText(canvas, text, position, Colors.white);
-  }
-
-  void _drawDiamondNode(
-      Canvas canvas, String text, Offset position, Paint paint) {
-    final path = Path()
-      ..moveTo(position.dx, position.dy - 50)
-      ..lineTo(position.dx + 50, position.dy)
-      ..lineTo(position.dx, position.dy + 50)
-      ..lineTo(position.dx - 50, position.dy)
-      ..close();
-    canvas.drawPath(path, paint);
-    _drawText(canvas, text, position, Colors.white);
-  }
-
-  void _drawText(Canvas canvas, String text, Offset position, Color color) {
-    final textStyle = TextStyle(color: color, fontSize: 16);
-    final textSpan = TextSpan(text: text, style: textStyle);
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    textPainter.paint(canvas,
-        position - Offset(textPainter.width / 2, textPainter.height / 2));
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  void dispose() {
+    _gameLoop.stop();
+    super.dispose();
   }
 }
 
@@ -381,5 +473,108 @@ class TooltipDecorator implements UXDecorator {
     );
     textPainter.layout();
     textPainter.paint(canvas, position + Offset(0, -50 / scale));
+  }
+}
+
+class CircularLayoutAlgorithm extends LayoutAlgorithm {
+  final double rootRadius;
+  final double levelDistance;
+  final double nodeSize;
+
+  CircularLayoutAlgorithm({
+    this.rootRadius = 100.0,
+    this.levelDistance = 150.0,
+    this.nodeSize = 50.0,
+  });
+
+  @override
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
+    final positions = <String, Offset>{};
+    final center = Offset(size.width / 2, size.height / 2);
+
+    // Position roots in a circle
+    final rootCount = domains.length;
+    final rootAngleStep = 2 * pi / rootCount;
+    for (int i = 0; i < rootCount; i++) {
+      final domain = domains.elementAt(i);
+      final angle = i * rootAngleStep;
+      final rootPosition =
+          center + Offset(rootRadius * cos(angle), rootRadius * sin(angle));
+      positions[domain.code] = rootPosition;
+
+      // Position children recursively
+      _positionChildren(
+          domain, rootPosition, positions, 1, angle, rootAngleStep / 2);
+    }
+
+    return positions;
+  }
+
+  void _positionChildren(
+      Entity parent,
+      Offset parentPosition,
+      Map<String, Offset> positions,
+      int level,
+      double angle,
+      double angleRange) {
+    final children = parent.concept.children;
+    if (children.isEmpty) return;
+
+    final angleStep = angleRange / children.length;
+    for (int i = 0; i < children.length; i++) {
+      final child = children.elementAt(i);
+      final childAngle = angle - angleRange / 2 + i * angleStep + angleStep / 2;
+      final childPosition = parentPosition +
+          Offset(
+              levelDistance * cos(childAngle), levelDistance * sin(childAngle));
+      positions[child.code] = childPosition;
+
+      _positionChildren(child, childPosition, positions, level + 1, childAngle,
+          angleStep / 2);
+    }
+  }
+}
+
+class MasterDetailLayoutAlgorithm extends LayoutAlgorithm {
+  final double nodeWidth;
+  final double nodeHeight;
+  final double levelGap;
+
+  MasterDetailLayoutAlgorithm({
+    this.nodeWidth = 200.0,
+    this.nodeHeight = 100.0,
+    this.levelGap = 50.0,
+  });
+
+  @override
+  Map<String, Offset> calculateLayout(Domains domains, Size size) {
+    final positions = <String, Offset>{};
+    double currentX = levelGap;
+    double currentY = levelGap;
+
+    for (var domain in domains) {
+      positions[domain.code] = Offset(currentX, currentY);
+
+      for (var model in domain.models) {
+        currentY += nodeHeight + levelGap;
+        positions[model.code] = Offset(currentX, currentY);
+
+        for (var entity in model.concepts) {
+          currentY += nodeHeight + levelGap;
+          positions[entity.code] =
+              Offset(currentX + nodeWidth + levelGap, currentY);
+
+          for (var child in entity.children) {
+            currentY += nodeHeight + levelGap;
+            positions[child.code] =
+                Offset(currentX + 2 * (nodeWidth + levelGap), currentY);
+          }
+        }
+      }
+      currentX += 3 * (nodeWidth + levelGap);
+      currentY = levelGap;
+    }
+
+    return positions;
   }
 }
