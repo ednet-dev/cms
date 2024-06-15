@@ -21,6 +21,7 @@ class MetaDomainCanvas extends StatefulWidget {
 class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
   late TransformationController _transformationController;
   late LayoutAlgorithm _currentAlgorithm;
+  bool _isDragging = false;
 
   @override
   void initState() {
@@ -29,26 +30,44 @@ class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
     _currentAlgorithm = widget.layoutAlgorithm;
   }
 
+  void _onInteractionStart(ScaleStartDetails details) {
+    setState(() {
+      _isDragging = true;
+    });
+  }
+
+  void _onInteractionEnd(ScaleEndDetails details) {
+    setState(() {
+      _isDragging = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return InteractiveViewer(
-      transformationController: _transformationController,
-      onInteractionUpdate: (details) {
-        setState(() {
-          _transformationController.value = _transformationController.value
-            ..translate(details.focalPointDelta.dx, details.focalPointDelta.dy)
-            ..scale(details.scale);
-        });
-      },
-      minScale: 0.1,
-      maxScale: 5.0,
-      child: CustomPaint(
-        size: Size.infinite,
-        painter: MetaDomainPainter(
-          domains: widget.domains,
-          transformationController: _transformationController,
-          layoutAlgorithm: _currentAlgorithm,
-          decorators: widget.decorators,
+    return GestureDetector(
+      onScaleStart: _onInteractionStart,
+      onScaleEnd: _onInteractionEnd,
+      child: InteractiveViewer(
+        transformationController: _transformationController,
+        onInteractionUpdate: (details) {
+          setState(() {
+            _transformationController.value = _transformationController.value
+              ..translate(
+                  details.focalPointDelta.dx, details.focalPointDelta.dy)
+              ..scale(details.scale);
+          });
+        },
+        minScale: 0.1,
+        maxScale: 5.0,
+        child: CustomPaint(
+          size: Size.infinite,
+          painter: MetaDomainPainter(
+            domains: widget.domains,
+            transformationController: _transformationController,
+            layoutAlgorithm: _currentAlgorithm,
+            decorators: widget.decorators,
+            isDragging: _isDragging,
+          ),
         ),
       ),
     );
@@ -60,109 +79,145 @@ class MetaDomainPainter extends CustomPainter {
   final TransformationController transformationController;
   final LayoutAlgorithm layoutAlgorithm;
   final List<UXDecorator> decorators;
+  final bool isDragging;
 
   MetaDomainPainter({
     required this.domains,
     required this.transformationController,
     required this.layoutAlgorithm,
     required this.decorators,
+    required this.isDragging,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 2;
+    if (isDragging) {
+      // Skip layout recalculation during drag
+      canvas.save();
+      canvas.transform(transformationController.value.storage);
+      _drawNodes(canvas, size);
+      canvas.restore();
+    } else {
+      // Normal painting process
+      final positions = layoutAlgorithm.calculateLayout(domains, size);
 
-    final scale = transformationController.value.getMaxScaleOnAxis();
-    final positions = layoutAlgorithm.calculateLayout(domains, size);
+      canvas.save();
+      canvas.transform(transformationController.value.storage);
 
-    canvas.save();
-    canvas.transform(transformationController.value.storage);
+      for (var domain in domains) {
+        Offset domainPosition = positions[domain.code]!;
+        _drawNode(
+            canvas, domain.code, domainPosition, Colors.blue, NodeType.domain);
 
+        for (var model in domain.models) {
+          Offset modelPosition = positions[model.code]!;
+          _drawNode(
+              canvas, model.code, modelPosition, Colors.green, NodeType.model);
+
+          for (var entity in model.concepts) {
+            Offset entityPosition = positions[entity.code]!;
+            _drawNode(canvas, entity.code, entityPosition, Colors.red,
+                NodeType.entity);
+
+            for (var child in entity.children) {
+              Offset childPosition = positions[child.code]!;
+              _drawNode(canvas, child.code, childPosition, Colors.red,
+                  NodeType.entity);
+              canvas.drawLine(
+                  entityPosition, childPosition, Paint()..color = Colors.black);
+            }
+          }
+        }
+      }
+
+      canvas.restore();
+    }
+  }
+
+  void _drawNodes(Canvas canvas, Size size) {
     for (var domain in domains) {
-      Offset domainPosition = positions[domain.code]!;
-      _drawNode(canvas, domain.code, domainPosition, Colors.blue,
-          NodeType.domain, scale);
+      final domainPosition = _calculatePosition(domain.code, size);
+      _drawNode(
+          canvas, domain.code, domainPosition, Colors.blue, NodeType.domain);
 
       for (var model in domain.models) {
-        Offset modelPosition = positions[model.code]!;
-        _drawNode(canvas, model.code, modelPosition, Colors.green,
-            NodeType.model, scale);
+        final modelPosition = _calculatePosition(model.code, size);
+        _drawNode(
+            canvas, model.code, modelPosition, Colors.green, NodeType.model);
 
         for (var entity in model.concepts) {
-          Offset entityPosition = positions[entity.code]!;
-          _drawNode(canvas, entity.code, entityPosition, Colors.red,
-              NodeType.entity, scale);
+          final entityPosition = _calculatePosition(entity.code, size);
+          _drawNode(
+              canvas, entity.code, entityPosition, Colors.red, NodeType.entity);
 
           for (var child in entity.children) {
-            Offset childPosition = positions[child.code]!;
-            _drawNode(canvas, child.code, childPosition, Colors.red,
-                NodeType.entity, scale);
-            canvas.drawLine(entityPosition, childPosition, paint);
+            final childPosition = _calculatePosition(child.code, size);
+            _drawNode(
+                canvas, child.code, childPosition, Colors.red, NodeType.entity);
+            canvas.drawLine(
+                entityPosition, childPosition, Paint()..color = Colors.black);
           }
         }
       }
     }
-
-    canvas.restore();
   }
 
-  void _drawNode(Canvas canvas, String text, Offset position, Color color,
-      NodeType type, double scale) {
+  Offset _calculatePosition(String code, Size size) {
+    // Calculate position for the given code (placeholder implementation)
+    return Offset(size.width / 2, size.height / 2);
+  }
+
+  void _drawNode(
+      Canvas canvas, String text, Offset position, Color color, NodeType type) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
 
     switch (type) {
       case NodeType.domain:
-        _drawRectangleNode(canvas, text, position, paint, scale);
+        _drawRectangleNode(canvas, text, position, paint);
         break;
       case NodeType.model:
-        _drawEllipseNode(canvas, text, position, paint, scale);
+        _drawEllipseNode(canvas, text, position, paint);
         break;
       case NodeType.entity:
-        _drawDiamondNode(canvas, text, position, paint, scale);
+        _drawDiamondNode(canvas, text, position, paint);
         break;
     }
 
-    // Apply decorators
     for (var decorator in decorators) {
-      decorator.apply(canvas, position, scale);
+      decorator.apply(canvas, position, 1.0);
     }
   }
 
   void _drawRectangleNode(
-      Canvas canvas, String text, Offset position, Paint paint, double scale) {
-    final rect = Rect.fromCenter(
-        center: position, width: 100 / scale, height: 50 / scale);
+      Canvas canvas, String text, Offset position, Paint paint) {
+    final rect = Rect.fromCenter(center: position, width: 100, height: 50);
     canvas.drawRect(rect, paint);
-    _drawText(canvas, text, position, Colors.white, scale);
+    _drawText(canvas, text, position, Colors.white);
   }
 
   void _drawEllipseNode(
-      Canvas canvas, String text, Offset position, Paint paint, double scale) {
-    final rect = Rect.fromCenter(
-        center: position, width: 100 / scale, height: 50 / scale);
+      Canvas canvas, String text, Offset position, Paint paint) {
+    final rect = Rect.fromCenter(center: position, width: 100, height: 50);
     canvas.drawOval(rect, paint);
-    _drawText(canvas, text, position, Colors.white, scale);
+    _drawText(canvas, text, position, Colors.white);
   }
 
   void _drawDiamondNode(
-      Canvas canvas, String text, Offset position, Paint paint, double scale) {
+      Canvas canvas, String text, Offset position, Paint paint) {
     final path = Path()
-      ..moveTo(position.dx, position.dy - 50 / scale)
-      ..lineTo(position.dx + 50 / scale, position.dy)
-      ..lineTo(position.dx, position.dy + 50 / scale)
-      ..lineTo(position.dx - 50 / scale, position.dy)
+      ..moveTo(position.dx, position.dy - 50)
+      ..lineTo(position.dx + 50, position.dy)
+      ..lineTo(position.dx, position.dy + 50)
+      ..lineTo(position.dx - 50, position.dy)
       ..close();
     canvas.drawPath(path, paint);
-    _drawText(canvas, text, position, Colors.white, scale);
+    _drawText(canvas, text, position, Colors.white);
   }
 
-  void _drawText(
-      Canvas canvas, String text, Offset position, Color color, double scale) {
-    final textStyle = TextStyle(color: color, fontSize: 16 / scale);
+  void _drawText(Canvas canvas, String text, Offset position, Color color) {
+    final textStyle = TextStyle(color: color, fontSize: 16);
     final textSpan = TextSpan(text: text, style: textStyle);
     final textPainter = TextPainter(
       text: textSpan,
