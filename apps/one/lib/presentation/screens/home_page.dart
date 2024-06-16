@@ -88,12 +88,15 @@ class HomePageState extends State<HomePage> {
 
   void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
     setState(() {
+      _savedTransformation = _savedTransformation ?? Matrix4.identity();
       _selectedAlgorithm = algorithm;
     });
   }
 
   void _saveTransformation(Matrix4 transformation) {
-    _savedTransformation = transformation;
+    setState(() {
+      _savedTransformation = transformation;
+    });
   }
 
   @override
@@ -133,6 +136,9 @@ class HomePageState extends State<HomePage> {
                 domains: app.domains,
                 layoutAlgorithm: _selectedAlgorithm,
                 decorators: const [],
+                initialTransformation: _savedTransformation,
+                onTransformationChanged: _saveTransformation,
+                onChangeLayoutAlgorithm: _changeLayoutAlgorithm,
               );
             } else {
               return Row(

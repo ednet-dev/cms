@@ -18,12 +18,19 @@ class MetaDomainCanvas extends StatefulWidget {
   final Domains domains;
   final LayoutAlgorithm layoutAlgorithm;
   final List<UXDecorator> decorators;
+  final Matrix4? initialTransformation;
+  final ValueChanged<Matrix4> onTransformationChanged;
+
+  final onChangeLayoutAlgorithm;
 
   const MetaDomainCanvas({
     super.key,
     required this.domains,
     required this.layoutAlgorithm,
     required this.decorators,
+    this.initialTransformation,
+    required this.onTransformationChanged,
+    required this.onChangeLayoutAlgorithm,
   });
 
   @override
@@ -55,9 +62,20 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_isInitialLoad) {
-        _centerAndZoom();
+        if (widget.initialTransformation != null) {
+          _transformationController.value = widget.initialTransformation!;
+          setState(() {
+            _zoomLevel = _transformationController.value.getMaxScaleOnAxis();
+          });
+        } else {
+          _centerAndZoom();
+        }
         _isInitialLoad = false;
       }
+    });
+
+    _transformationController.addListener(() {
+      widget.onTransformationChanged(_transformationController.value);
     });
   }
 
@@ -76,6 +94,7 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
   void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
     setState(() {
       _currentAlgorithm = algorithm;
+      widget.onChangeLayoutAlgorithm(algorithm);
     });
   }
 
