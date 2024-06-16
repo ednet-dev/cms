@@ -94,6 +94,7 @@ class OneApplication {
 
   OneApplication() {
     _initializeDomains();
+    _groupDomains();
   }
 
   void _initializeDomains() {
