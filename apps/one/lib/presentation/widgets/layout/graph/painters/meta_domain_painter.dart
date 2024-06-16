@@ -56,13 +56,13 @@ class MetaDomainPainter extends CustomPainter {
       _drawText(canvas, model.code, modelPosition);
 
       for (var entity in model.concepts) {
-        Offset entityPosition = positions[entity.code]!;
+        final safeEntity = Concept.safeGetConcept(model, entity);
+        Offset entityPosition = positions[safeEntity.code]!;
         Node entityNode = _createNode(entityPosition, Colors.red);
         system.addNode(entityNode);
+        _drawText(canvas, safeEntity.code, entityPosition);
 
-        _drawText(canvas, entity.concept.code, entityPosition);
-
-        for (var child in entity.concept.children) {
+        for (var child in safeEntity.concept.children) {
           Offset childPosition = positions[child.code]!;
           Node childNode = _createNode(childPosition, Colors.red);
           system.addNode(childNode);

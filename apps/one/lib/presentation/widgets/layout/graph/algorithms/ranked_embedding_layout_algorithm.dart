@@ -56,8 +56,52 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
       final childNode = TreeNode(concept.code, Offset(x, y));
       parent.children.add(childNode);
       positions[childNode.key] = childNode.position;
-      _calculateConceptPositions(childNode, concept.children, xMin + i * width,
-          xMin + (i + 1) * width, positions);
+      _calculateConceptChildrenPositions(childNode, concept.children,
+          xMin + i * width, xMin + (i + 1) * width, positions);
+      _calculateAttributePositions(childNode, concept.attributes,
+          xMin + i * width, xMin + (i + 1) * width, positions);
+    }
+  }
+
+  void _calculateConceptChildrenPositions(TreeNode parent, Children children,
+      double xMin, double xMax, Map<String, Offset> positions) {
+    if (children.isEmpty) return;
+
+    final y = parent.position.dy + verticalGap;
+    final width = (xMax - xMin) / max(1, children.length);
+
+    for (var i = 0; i < children.length; i++) {
+      final child = children.at(i);
+      final x = xMin + i * width + width / 2;
+      final childNode = TreeNode(child.code, Offset(x, y));
+      parent.children.add(childNode);
+      positions[childNode.key] = childNode.position;
+
+      // If the child can navigate, calculate the positions of its children
+      if ((child as Child).navigate) {
+        _calculateConceptChildrenPositions(
+            childNode,
+            child.destinationConcept.children,
+            xMin + i * width,
+            xMin + (i + 1) * width,
+            positions);
+      }
+    }
+  }
+
+  void _calculateAttributePositions(TreeNode parent, Attributes attributes,
+      double xMin, double xMax, Map<String, Offset> positions) {
+    if (attributes.isEmpty) return;
+
+    final y = parent.position.dy + verticalGap;
+    final width = (xMax - xMin) / max(1, attributes.length);
+
+    for (var i = 0; i < attributes.length; i++) {
+      final attribute = attributes.at(i);
+      final x = xMin + i * width + width / 2;
+      final childNode = TreeNode(attribute.code, Offset(x, y));
+      parent.children.add(childNode);
+      positions[childNode.key] = childNode.position;
     }
   }
 }

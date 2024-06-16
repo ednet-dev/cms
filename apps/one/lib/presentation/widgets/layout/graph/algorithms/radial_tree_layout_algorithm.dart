@@ -80,7 +80,7 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
         angle - (childAngleStep * (model.concepts.length - 1)) / 2;
 
     for (var entity in model.concepts) {
-      _calculatePositionsForEntity(entity.code, entity, x, y, level + 1,
+      _calculatePositionsForEntity(entity.code, model, entity, x, y, level + 1,
           currentChildAngle, childAngleStep, positions);
       currentChildAngle += childAngleStep;
     }
@@ -88,6 +88,7 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
 
   void _calculatePositionsForEntity(
       String entityId,
+      Model model,
       Entity entity,
       double centerX,
       double centerY,
@@ -101,15 +102,30 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
 
     positions[entityId] = Offset(x, y);
 
-    double childAngleStep = angleStep / max(entity.concept.children.length, 1);
-    double currentChildAngle =
-        angle - (childAngleStep * (entity.concept.children.length - 1)) / 2;
+    final safeEntity = Concept.safeGetConcept(model, entity);
 
-    for (var child in entity.concept.children) {
+    double childAngleStep =
+        angleStep / max(safeEntity.concept.children.length, 1);
+    double currentChildAngle =
+        angle - (childAngleStep * (safeEntity.concept.children.length - 1)) / 2;
+
+    for (var child in safeEntity.concept.children) {
       _calculatePositionsForConceptChild(child.code, child as Child, x, y,
           level + 1, currentChildAngle, childAngleStep, positions);
       currentChildAngle += childAngleStep;
     }
+    // } catch (e) {
+    //   double childAngleStep =
+    //       angleStep / max((entity as Concept).children.length, 1);
+    //   double currentChildAngle =
+    //       angle - (childAngleStep * (entity.children.length - 1)) / 2;
+    //
+    //   for (var child in entity.children) {
+    //     _calculatePositionsForConceptChild(child.code, child as Child, x, y,
+    //         level + 1, currentChildAngle, childAngleStep, positions);
+    //     currentChildAngle += childAngleStep;
+    //   }
+    // }
   }
 
   void _calculatePositionsForConceptChild(

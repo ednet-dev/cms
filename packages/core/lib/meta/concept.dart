@@ -357,4 +357,15 @@ class Concept extends Entity<Concept> {
     }
     return childList;
   }
+
+  static Concept safeGetConcept(Model model, Entity entity,
+      {Concept? defaultValue}) {
+    try {
+      return entity.concept;
+    } catch (EDNetException) {
+      return defaultValue ??
+          Concept(model,
+              '*** concept is not set ***'); // return a default Concept object or null
+    }
+  }
 }
