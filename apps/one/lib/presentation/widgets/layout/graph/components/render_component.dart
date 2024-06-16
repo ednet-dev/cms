@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:ednet_one/presentation/widgets/layout/graph/component.dart';
+
+import 'component.dart';
 
 class RenderComponent extends Component {
   final Paint paint;

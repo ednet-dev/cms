@@ -1,4 +1,4 @@
-import 'package:ednet_one/presentation/widgets/layout/graph/animation.dart';
+import 'animation.dart';
 
 class AnimationManager {
   final List<Animation> animations = [];

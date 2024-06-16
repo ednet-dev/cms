@@ -1,5 +1,6 @@
 import 'dart:collection';
-import 'package:ednet_one/presentation/widgets/layout/graph/graph.dart';
+
+import 'graph.dart';
 
 class GraphTraversal {
   final Graph graph;

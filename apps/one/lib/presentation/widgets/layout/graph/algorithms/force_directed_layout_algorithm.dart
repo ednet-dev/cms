@@ -1,9 +1,11 @@
 import 'dart:math';
 import 'dart:ui';
+
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/a_v_l_tree.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/layout_algorithm.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/tree_node.dart';
+
+import '../components/tree_node.dart';
+import '../layout/layout_algorithm.dart';
+import 'a_v_l_tree.dart';
 
 class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {
   final AVLTree avlTree = AVLTree();

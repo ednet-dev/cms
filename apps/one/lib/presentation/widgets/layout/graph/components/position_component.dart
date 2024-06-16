@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:ednet_one/presentation/widgets/layout/graph/component.dart';
+
+import 'component.dart';
 
 class PositionComponent extends Component {
   Offset position;

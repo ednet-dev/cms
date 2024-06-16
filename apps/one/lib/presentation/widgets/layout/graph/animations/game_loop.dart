@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:ednet_one/presentation/widgets/layout/graph/animation_manager.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/system.dart';
+
+import '../components/system.dart';
+import 'animation_manager.dart';
 
 class GameLoop {
   final System system;

@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:ednet_one/presentation/widgets/layout/graph/tree_node.dart';
+
+import '../components/tree_node.dart';
 
 class AVLTree {
   TreeNode? root;

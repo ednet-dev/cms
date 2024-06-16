@@ -1,5 +1,6 @@
-import 'package:ednet_one/presentation/widgets/layout/graph/u_x_decorator.dart';
 import 'package:flutter/material.dart';
+
+import 'u_x_decorator.dart';
 
 class TooltipDecorator implements UXDecorator {
   final String tooltip;

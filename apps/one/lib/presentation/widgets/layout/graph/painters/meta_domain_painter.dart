@@ -1,13 +1,13 @@
-import 'dart:ui';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/animation_manager.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/layout_algorithm.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/node.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/position_component.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/render_component.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/system.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/u_x_decorator.dart';
+import 'package:ednet_one/presentation/widgets/layout/graph/animations/animation_manager.dart';
 import 'package:flutter/material.dart';
+
+import '../components/node.dart';
+import '../components/position_component.dart';
+import '../components/render_component.dart';
+import '../components/system.dart';
+import '../decorators/u_x_decorator.dart';
+import '../layout/layout_algorithm.dart';
 
 class MetaDomainPainter extends CustomPainter {
   final Domains domains;

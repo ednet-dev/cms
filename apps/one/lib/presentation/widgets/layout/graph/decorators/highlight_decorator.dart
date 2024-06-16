@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:ednet_one/presentation/widgets/layout/graph/u_x_decorator.dart';
+
+import 'u_x_decorator.dart';
 
 class HighlightDecorator implements UXDecorator {
   final Color color;

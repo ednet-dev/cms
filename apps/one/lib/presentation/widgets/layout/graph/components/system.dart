@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:ednet_one/presentation/widgets/layout/graph/node.dart';
+
+import 'node.dart';
 
 class System {
   final List<Node> nodes = [];

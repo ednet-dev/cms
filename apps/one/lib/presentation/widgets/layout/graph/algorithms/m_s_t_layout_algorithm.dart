@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/edge.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/layout_algorithm.dart';
+
+import '../components/edge.dart';
+import '../layout/layout_algorithm.dart';
 
 class MSTLayoutAlgorithm extends LayoutAlgorithm {
   @override
