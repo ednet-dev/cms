@@ -46,22 +46,29 @@ class MetaDomainPainter extends CustomPainter {
     Node domainNode = _createNode(domainPosition, Colors.blue);
     system.addNode(domainNode);
 
+    _drawText(canvas, domain.code, domainPosition);
+
     for (var model in domain.models) {
       Offset modelPosition = positions[model.code]!;
       Node modelNode = _createNode(modelPosition, Colors.green);
       system.addNode(modelNode);
+
+      _drawText(canvas, model.code, modelPosition);
 
       for (var entity in model.concepts) {
         Offset entityPosition = positions[entity.code]!;
         Node entityNode = _createNode(entityPosition, Colors.red);
         system.addNode(entityNode);
 
-        for (var child in entity.children) {
+        _drawText(canvas, entity.concept.code, entityPosition);
+
+        for (var child in entity.concept.children) {
           Offset childPosition = positions[child.code]!;
           Node childNode = _createNode(childPosition, Colors.red);
           system.addNode(childNode);
 
           _drawLine(canvas, entityPosition, childPosition);
+          _drawText(canvas, child.code, childPosition);
         }
       }
     }
@@ -83,6 +90,29 @@ class MetaDomainPainter extends CustomPainter {
       end,
       Paint()..color = Colors.black,
     );
+  }
+
+  void _drawText(Canvas canvas, String text, Offset position) {
+    final textStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 12,
+    );
+    final textSpan = TextSpan(
+      text: text,
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: 100,
+    );
+    final offset = Offset(position.dx - textPainter.width / 2,
+        position.dy - textPainter.height / 2);
+    textPainter.paint(canvas, offset);
   }
 
   @override

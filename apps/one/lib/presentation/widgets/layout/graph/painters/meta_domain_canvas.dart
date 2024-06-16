@@ -5,6 +5,7 @@ import '../algorithms/circular_layout_algorithm.dart';
 import '../algorithms/force_directed_layout_algorithm.dart';
 import '../algorithms/grid_layout_algorithm.dart';
 import '../algorithms/master_detail_layout_algorithm.dart';
+import '../algorithms/radial_tree_layout_algorithm.dart'; // New algorithm import
 import '../algorithms/ranked_embedding_layout_algorithm.dart';
 import '../animations/animation_manager.dart';
 import '../animations/game_loop.dart';
@@ -190,6 +191,15 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
                   onTap: () =>
                       _changeLayoutAlgorithm(RankedEmbeddingLayoutAlgorithm()),
                   isActive: _currentAlgorithm is RankedEmbeddingLayoutAlgorithm,
+                ),
+                LayoutAlgorithmIcon(
+                  icon: Icons.bubble_chart,
+                  name: 'Radial Tree',
+                  // New icon
+                  onTap: () =>
+                      _changeLayoutAlgorithm(RadialTreeLayoutAlgorithm()),
+                  // New algorithm
+                  isActive: _currentAlgorithm is RadialTreeLayoutAlgorithm,
                 ),
               ],
             ),

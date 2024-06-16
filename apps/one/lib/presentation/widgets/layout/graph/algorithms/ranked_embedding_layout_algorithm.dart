@@ -19,28 +19,45 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
     for (var domain in domains) {
       final root = TreeNode(domain.code, Offset(size.width / 2, verticalGap));
       positions[domain.code] = root.position;
-      _calculatePositions(
-          root, domain.models.toList(), 0, size.width, positions);
+      _calculateModelPositions(root, domain.models, 0, size.width, positions);
     }
 
     return positions;
   }
 
-  void _calculatePositions(TreeNode parent, List<Entity> collection,
-      double xMin, double xMax, Map<String, Offset> positions) {
-    if (collection.isEmpty) return;
+  void _calculateModelPositions(TreeNode parent, Models models, double xMin,
+      double xMax, Map<String, Offset> positions) {
+    if (models.isEmpty) return;
 
     final y = parent.position.dy + verticalGap;
-    final width = (xMax - xMin) / max(1, collection.length);
+    final width = (xMax - xMin) / max(1, models.length);
 
-    for (var i = 0; i < collection.length; i++) {
-      final item = collection[i];
+    for (var i = 0; i < models.length; i++) {
+      final model = models.at(i);
       final x = xMin + i * width + width / 2;
-      final childNode = TreeNode(item.code, Offset(x, y));
+      final childNode = TreeNode(model.code, Offset(x, y));
       parent.children.add(childNode);
       positions[childNode.key] = childNode.position;
-      _calculatePositions(childNode, item.concept.children.toList(),
-          xMin + i * width, xMin + (i + 1) * width, positions);
+      _calculateConceptPositions(childNode, model.concepts, xMin + i * width,
+          xMin + (i + 1) * width, positions);
+    }
+  }
+
+  void _calculateConceptPositions(TreeNode parent, Concepts concepts,
+      double xMin, double xMax, Map<String, Offset> positions) {
+    if (concepts.isEmpty) return;
+
+    final y = parent.position.dy + verticalGap;
+    final width = (xMax - xMin) / max(1, concepts.length);
+
+    for (var i = 0; i < concepts.length; i++) {
+      final concept = concepts.at(i);
+      final x = xMin + i * width + width / 2;
+      final childNode = TreeNode(concept.code, Offset(x, y));
+      parent.children.add(childNode);
+      positions[childNode.key] = childNode.position;
+      _calculateConceptPositions(childNode, concept.children, xMin + i * width,
+          xMin + (i + 1) * width, positions);
     }
   }
 }
