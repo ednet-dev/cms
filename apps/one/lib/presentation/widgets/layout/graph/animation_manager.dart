@@ -1,5 +1,4 @@
 import 'package:ednet_one/presentation/widgets/layout/graph/animation.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/meta_domain_canvas.dart';
 
 class AnimationManager {
   final List<Animation> animations = [];

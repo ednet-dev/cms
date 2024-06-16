@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class LayoutAlgorithmIcon extends StatelessWidget {
@@ -6,7 +5,8 @@ class LayoutAlgorithmIcon extends StatelessWidget {
   final String name;
   final VoidCallback onTap;
 
-  LayoutAlgorithmIcon({
+  const LayoutAlgorithmIcon({
+    super.key,
     required this.icon,
     required this.name,
     required this.onTap,
@@ -20,7 +20,7 @@ class LayoutAlgorithmIcon extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 40.0),
-          Text(name, style: TextStyle(fontSize: 12.0)),
+          Text(name, style: const TextStyle(fontSize: 12.0)),
         ],
       ),
     );

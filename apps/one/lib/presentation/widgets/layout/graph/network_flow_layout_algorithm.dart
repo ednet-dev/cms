@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/layout_algorithm.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/meta_domain_canvas.dart';
 
 class NetworkFlowLayoutAlgorithm extends LayoutAlgorithm {
   @override

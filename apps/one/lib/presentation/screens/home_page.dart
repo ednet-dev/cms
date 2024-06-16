@@ -30,10 +30,10 @@ class HomePage extends StatefulWidget {
   final AppLinks appLinks;
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   List<String> path = ['Home'];
 
   late OneApplication app;
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
           title: Text(widget.title),
           actions: [
             IconButton(
-              icon: Icon(Icons.view_quilt),
+              icon: const Icon(Icons.view_quilt),
               onPressed: () {
                 setState(() {
                   showMetaCanvas = !showMetaCanvas;
@@ -113,13 +113,13 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.swap_horiz),
+              icon: const Icon(Icons.swap_horiz),
               onPressed: () {
                 context.read<LayoutBloc>().add(ToggleLayoutEvent());
               },
             ),
             IconButton(
-              icon: Icon(Icons.brightness_6),
+              icon: const Icon(Icons.brightness_6),
               onPressed: () {
                 BlocProvider.of<ThemeBloc>(context).toggleTheme();
               },
@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                       child: MetaDomainCanvas(
                         domains: app.domains,
                         layoutAlgorithm: _selectedAlgorithm,
-                        decorators: [],
+                        decorators: const [],
                       ),
                     ),
                   ],
@@ -203,16 +203,16 @@ class _HomePageState extends State<HomePage> {
               },
               backgroundColor: Colors.transparent,
               elevation: 0,
-              child: Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
-            SizedBox(width: 16.0),
+            const SizedBox(width: 16.0),
             FloatingActionButton(
               onPressed: () {
                 // Handle zoom out
               },
               backgroundColor: Colors.transparent,
               elevation: 0,
-              child: Icon(Icons.remove, color: Colors.white),
+              child: const Icon(Icons.remove, color: Colors.white),
             ),
           ],
         ));

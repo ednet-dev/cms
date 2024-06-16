@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:ednet_one/presentation/widgets/layout/graph/meta_domain_canvas.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/node.dart';
 
 class System {

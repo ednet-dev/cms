@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/a_v_l_tree.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/layout_algorithm.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/meta_domain_canvas.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/tree_node.dart';
 
 class ForceDirectedLayoutAlgorithm extends LayoutAlgorithm {

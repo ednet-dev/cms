@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'package:ednet_one/presentation/widgets/layout/graph/graph.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/meta_domain_canvas.dart';
 
 class GraphTraversal {
   final Graph graph;

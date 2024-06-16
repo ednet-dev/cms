@@ -207,7 +207,7 @@ packages:
     source: hosted
     version: "2.3.6"
   ednet_cms:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       path: "../../packages/ednet_cms"
       relative: true
