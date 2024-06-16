@@ -12,6 +12,8 @@ dependencies:
   bloc: ^8.1.4
   flutter_bloc: ^8.1.5
   app_links: ^6.1.1
+  ednet_core:
+    path: ../../packages/core
 
 dev_dependencies:
   ednet_cms:

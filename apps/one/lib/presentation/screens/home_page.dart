@@ -5,6 +5,12 @@ import 'package:app_links/app_links.dart';
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/generated/one_application.dart';
+import 'package:ednet_one/presentation/widgets/layout/graph/circular_layout_algorithm.dart';
+import 'package:ednet_one/presentation/widgets/layout/graph/force_directed_layout_algorithm.dart';
+import 'package:ednet_one/presentation/widgets/layout/graph/grid_layout_algorithm.dart';
+import 'package:ednet_one/presentation/widgets/layout/graph/layout_algorithm.dart';
+import 'package:ednet_one/presentation/widgets/layout/graph/layout_algorithm_icon.dart';
+import 'package:ednet_one/presentation/widgets/layout/graph/master_detail_layout_algorithm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -221,7 +221,7 @@ packages:
     source: path
     version: "0.0.5"
   ednet_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "../../packages/core"
       relative: true
