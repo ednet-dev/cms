@@ -51,6 +51,10 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
       animationManager: _animationManager,
     );
     _gameLoop.start();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _centerAndZoom();
+    });
   }
 
   void _onInteractionStart(ScaleStartDetails details) {
@@ -68,6 +72,7 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
   void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
     setState(() {
       _currentAlgorithm = algorithm;
+      _centerAndZoom();
     });
   }
 
@@ -75,6 +80,49 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
     setState(() {
       _zoomLevel *= scaleFactor;
       _transformationController.value = Matrix4.identity()..scale(_zoomLevel);
+    });
+  }
+
+  void _centerAndZoom() {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final Size canvasSize = renderBox.size;
+
+    final layoutPositions =
+        _currentAlgorithm.calculateLayout(widget.domains, canvasSize);
+    final double minX = layoutPositions.values
+        .map((offset) => offset.dx)
+        .reduce((a, b) => a < b ? a : b);
+    final double maxX = layoutPositions.values
+        .map((offset) => offset.dx)
+        .reduce((a, b) => a > b ? a : b);
+    final double minY = layoutPositions.values
+        .map((offset) => offset.dy)
+        .reduce((a, b) => a < b ? a : b);
+    final double maxY = layoutPositions.values
+        .map((offset) => offset.dy)
+        .reduce((a, b) => a > b ? a : b);
+
+    final double graphWidth = maxX - minX;
+    final double graphHeight = maxY - minY;
+
+    final double scaleX =
+        canvasSize.width / (graphWidth + 2 * 100); // Add some padding
+    final double scaleY =
+        canvasSize.height / (graphHeight + 2 * 100); // Add some padding
+
+    final double scale = scaleX < scaleY ? scaleX : scaleY;
+
+    final double offsetX =
+        (canvasSize.width - graphWidth * scale) / 2 - minX * scale;
+    final double offsetY =
+        (canvasSize.height - graphHeight * scale) / 2 - minY * scale;
+
+    _transformationController.value = Matrix4.identity()
+      ..translate(offsetX, offsetY)
+      ..scale(scale);
+
+    setState(() {
+      _zoomLevel = scale;
     });
   }
 
