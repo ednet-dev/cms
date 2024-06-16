@@ -90,6 +90,7 @@ $importsPlaceholder
 
 class OneApplication {
   final Domains _domains = Domains();
+  final Domains _groupedDomains = Domains();
 
   OneApplication() {
     _initializeDomains();
@@ -99,7 +100,40 @@ class OneApplication {
     $initPlaceholder
   }
 
+    void _groupDomains() {
+    for (var domain in _domains) {
+      var existingDomain = _groupedDomains.singleWhereCode(domain.code);
+      if (existingDomain == null) {
+        _groupedDomains.add(domain);
+      } else {
+        _mergeDomainModels(existingDomain, domain);
+      }
+    }
+  }
+
+  void _mergeDomainModels(Domain targetDomain, Domain sourceDomain) {
+    for (var model in sourceDomain.models) {
+      if (!targetDomain.models.any((m) => m.code == model.code)) {
+        targetDomain.models.add(model);
+      } else {
+        var targetModel =
+            targetDomain.models.singleWhere((m) => m.code == model.code);
+        _mergeModelEntries(targetModel, model);
+      }
+    }
+  }
+
+  void _mergeModelEntries(Model targetModel, Model sourceModel) {
+    for (var concept in sourceModel.concepts) {
+      if (!targetModel.concepts.any((c) => c.code == concept.code)) {
+        targetModel.concepts.add(concept);
+      }
+    }
+  }
+
   Domains get domains => _domains;
+
+  Domains get groupedDomains => _groupedDomains;
 }
 """);
     }

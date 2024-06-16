@@ -15,14 +15,71 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
     final positions = <String, Offset>{};
+    final domainSizes = <String, Size>{};
 
     for (var domain in domains) {
-      final root = TreeNode(domain.code, Offset(size.width / 2, verticalGap));
+      final domainSize = _calculateDomainSize(domain);
+      domainSizes[domain.code] = domainSize;
+    }
+
+    double currentX = 0.0;
+    for (var domain in domains) {
+      final domainSize = domainSizes[domain.code]!;
+      final rootX = currentX + domainSize.width / 2;
+      final rootY = domainSize.height / 2 + verticalGap;
+      final root = TreeNode(domain.code, Offset(rootX, rootY));
       positions[domain.code] = root.position;
-      _calculateModelPositions(root, domain.models, 0, size.width, positions);
+      _calculateModelPositions(root, domain.models, currentX,
+          currentX + domainSize.width, positions);
+      currentX += domainSize.width + horizontalGap;
     }
 
     return positions;
+  }
+
+  Size _calculateDomainSize(Domain domain) {
+    double maxWidth = 0.0;
+    double totalHeight = 0.0;
+
+    for (var model in domain.models) {
+      final modelSize = _calculateModelSize(model);
+      maxWidth = max(maxWidth, modelSize.width);
+      totalHeight += modelSize.height + verticalGap;
+    }
+
+    return Size(maxWidth, totalHeight);
+  }
+
+  Size _calculateModelSize(Model model) {
+    double maxWidth = 0.0;
+    double totalHeight = 0.0;
+
+    for (var concept in model.concepts) {
+      final conceptSize = _calculateConceptSize(concept);
+      maxWidth = max(maxWidth, conceptSize.width);
+      totalHeight += conceptSize.height + verticalGap;
+    }
+
+    return Size(maxWidth, totalHeight);
+  }
+
+  Size _calculateConceptSize(Concept concept) {
+    double maxWidth = 0.0;
+    double totalHeight = 0.0;
+
+    for (var child in concept.children) {
+      final childSize =
+          _calculateConceptSize((child as Child).destinationConcept);
+      maxWidth = max(maxWidth, childSize.width);
+      totalHeight += childSize.height + verticalGap;
+    }
+
+    for (var attribute in concept.attributes) {
+      maxWidth = max(maxWidth, nodeWidth);
+      totalHeight += nodeHeight + verticalGap;
+    }
+
+    return Size(maxWidth, totalHeight);
   }
 
   void _calculateModelPositions(TreeNode parent, Models models, double xMin,
@@ -78,7 +135,7 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
       positions[childNode.key] = childNode.position;
 
       // If the child can navigate, calculate the positions of its children
-      if ((child as Child).navigate) {
+      if (child is Child && child.navigate) {
         _calculateConceptChildrenPositions(
             childNode,
             child.destinationConcept.children,

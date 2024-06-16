@@ -48,8 +48,8 @@ class HomePageState extends State<HomePage> {
     super.initState();
     app = OneApplication();
 
-    if (app.domains.isNotEmpty) {
-      selectedDomain = app.domains.first;
+    if (app.groupedDomains.isNotEmpty) {
+      selectedDomain = app.groupedDomains.first;
       if (selectedDomain!.models.isNotEmpty) {
         selectedModel = selectedDomain!.models.first;
         if (selectedModel!.concepts.isNotEmpty) {
@@ -133,7 +133,7 @@ class HomePageState extends State<HomePage> {
           builder: (context, state) {
             if (showMetaCanvas) {
               return MetaDomainCanvas(
-                domains: app.domains,
+                domains: app.groupedDomains,
                 layoutAlgorithm: _selectedAlgorithm,
                 decorators: const [],
                 initialTransformation: _savedTransformation,
@@ -144,7 +144,7 @@ class HomePageState extends State<HomePage> {
               return Row(
                 children: [
                   LeftSidebarWidget(
-                    domains: app.domains,
+                    domains: app.groupedDomains,
                     onDomainSelected: _handleDomainSelected,
                   ),
                   if (selectedDomain != null)
