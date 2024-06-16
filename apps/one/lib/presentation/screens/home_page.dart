@@ -12,9 +12,10 @@ import '../blocs/theme_block.dart';
 import '../widgets/layout/graph/algorithms/force_directed_layout_algorithm.dart';
 import '../widgets/layout/graph/layout/layout_algorithm.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
+import '../widgets/layout/web/footer_widget.dart';
 import '../widgets/layout/web/left_sidebar_widget.dart';
+import '../widgets/layout/web/main_content_widget.dart';
 import '../widgets/layout/web/right_sidebar_widget.dart';
-import 'entries_sidebar_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title, required this.appLinks});
@@ -86,6 +87,12 @@ class HomePageState extends State<HomePage> {
     // Implement bookmark selection logic here
   }
 
+  void _handleEntitySelected(Entity entity) {
+    setState(() {
+      selectedEntity = entity;
+    });
+  }
+
   void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
     setState(() {
       _savedTransformation = _savedTransformation ?? Matrix4.identity();
@@ -103,29 +110,39 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.view_quilt),
-            onPressed: () {
-              setState(() {
-                showMetaCanvas = !showMetaCanvas;
-              });
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.swap_horiz),
-            onPressed: () {
-              context.read<LayoutBloc>().add(ToggleLayoutEvent());
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: () {
-              BlocProvider.of<ThemeBloc>(context).toggleTheme();
-            },
-          ),
-        ],
+        title: Row(
+          children: [
+            for (var domain in app.groupedDomains)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: GestureDetector(
+                  onTap: () => _handleDomainSelected(domain),
+                  child: Text(domain.code),
+                ),
+              ),
+            Spacer(),
+            IconButton(
+              icon: const Icon(Icons.view_quilt),
+              onPressed: () {
+                setState(() {
+                  showMetaCanvas = !showMetaCanvas;
+                });
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.swap_horiz),
+              onPressed: () {
+                context.read<LayoutBloc>().add(ToggleLayoutEvent());
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.brightness_6),
+              onPressed: () {
+                BlocProvider.of<ThemeBloc>(context).toggleTheme();
+              },
+            ),
+          ],
+        ),
       ),
       body: BlocProvider(
         create: (context) => LayoutBloc(),
@@ -143,18 +160,26 @@ class HomePageState extends State<HomePage> {
             } else {
               return Row(
                 children: [
-                  LeftSidebarWidget(
-                    domains: app.groupedDomains,
-                    onDomainSelected: _handleDomainSelected,
+                  Expanded(
+                    flex: 2,
+                    child: LeftSidebarWidget(
+                      entries: selectedEntries!,
+                      onEntitySelected: _handleEntitySelected,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 8,
+                    child: MainContentWidget(
+                      entity: selectedEntity,
+                    ),
                   ),
                   if (selectedDomain != null)
-                    RightSidebarWidget(
-                      models: selectedDomain!.models,
-                      onModelSelected: _handleModelSelected,
-                    ),
-                  if (selectedEntries != null)
-                    EntriesSidebarWidget(
-                      entries: selectedEntries!,
+                    Expanded(
+                      flex: 2,
+                      child: RightSidebarWidget(
+                        models: selectedDomain!.models,
+                        onModelSelected: _handleModelSelected,
+                      ),
                     ),
                 ],
               );
@@ -162,6 +187,7 @@ class HomePageState extends State<HomePage> {
           },
         ),
       ),
+      bottomNavigationBar: const FooterWidget(),
     );
   }
 }

@@ -1,25 +1,18 @@
-// main_content_widget.dart
-import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
 class MainContentWidget extends StatelessWidget {
   final Entity? entity;
-  final void Function(Entity entity)? onEntitySelected;
 
-  const MainContentWidget(
-      {super.key, required this.entity, this.onEntitySelected});
+  const MainContentWidget({super.key, required this.entity});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Center(
         child: entity != null
-            ? EntityWidget(
-                entity: entity!,
-                onEntitySelected: onEntitySelected,
-              )
-            : Text('Entity not loaded'),
+            ? Text('Displaying: ${entity?.code}')
+            : Text('No entity selected'),
       ),
     );
   }

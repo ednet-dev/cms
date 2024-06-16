@@ -14,13 +14,15 @@ class RightSidebarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 200,
-      child: ListView(
-        children: models.map((model) {
+      child: ListView.builder(
+        itemCount: models.length,
+        itemBuilder: (context, index) {
+          final model = models.elementAt(index);
           return ListTile(
             title: Text(model.code),
             onTap: () => onModelSelected(model),
           );
-        }).toList(),
+        },
       ),
     );
   }
