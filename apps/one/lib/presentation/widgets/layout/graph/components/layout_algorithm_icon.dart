@@ -4,12 +4,14 @@ class LayoutAlgorithmIcon extends StatefulWidget {
   final IconData icon;
   final String name;
   final VoidCallback onTap;
+  final bool isActive;
 
   const LayoutAlgorithmIcon({
     super.key,
     required this.icon,
     required this.name,
     required this.onTap,
+    required this.isActive,
   });
 
   @override
@@ -37,8 +39,8 @@ class _LayoutAlgorithmIconState extends State<LayoutAlgorithmIcon> {
                 children: [
                   Icon(
                     widget.icon,
-                    size: 20,
-                    color: _isHovering
+                    size: 17,
+                    color: widget.isActive || _isHovering
                         ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.secondary,
                   ),

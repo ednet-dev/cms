@@ -83,28 +83,33 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
                 name: 'Force Directed',
                 onTap: () =>
                     _changeLayoutAlgorithm(ForceDirectedLayoutAlgorithm()),
+                isActive: _currentAlgorithm is ForceDirectedLayoutAlgorithm,
               ),
               LayoutAlgorithmIcon(
                 icon: Icons.grid_on,
                 name: 'Grid',
                 onTap: () => _changeLayoutAlgorithm(GridLayoutAlgorithm()),
+                isActive: _currentAlgorithm is GridLayoutAlgorithm,
               ),
               LayoutAlgorithmIcon(
                 icon: Icons.circle,
                 name: 'Circular',
                 onTap: () => _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
+                isActive: _currentAlgorithm is CircularLayoutAlgorithm,
               ),
               LayoutAlgorithmIcon(
                 icon: Icons.format_indent_increase,
                 name: 'Master Detail',
                 onTap: () =>
                     _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
+                isActive: _currentAlgorithm is MasterDetailLayoutAlgorithm,
               ),
               LayoutAlgorithmIcon(
                 icon: Icons.account_tree,
                 name: 'Ranked Tree',
                 onTap: () =>
                     _changeLayoutAlgorithm(RankedEmbeddingLayoutAlgorithm()),
+                isActive: _currentAlgorithm is RankedEmbeddingLayoutAlgorithm,
               ),
             ],
           ),
