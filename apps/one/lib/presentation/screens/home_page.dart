@@ -1,6 +1,3 @@
-// my_home_page.dart
-// ednet core
-// ednet cms
 import 'package:app_links/app_links.dart';
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
@@ -97,90 +94,63 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.view_quilt),
-              onPressed: () {
-                setState(() {
-                  showMetaCanvas = !showMetaCanvas;
-                });
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.swap_horiz),
-              onPressed: () {
-                context.read<LayoutBloc>().add(ToggleLayoutEvent());
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.brightness_6),
-              onPressed: () {
-                BlocProvider.of<ThemeBloc>(context).toggleTheme();
-              },
-            ),
-          ],
-        ),
-        body: BlocProvider(
-          create: (context) => LayoutBloc(),
-          child: BlocBuilder<LayoutBloc, LayoutState>(
-            builder: (context, state) {
-              if (showMetaCanvas) {
-                return Column(
-                  children: [
-                    Expanded(
-                      child: MetaDomainCanvas(
-                        domains: app.domains,
-                        layoutAlgorithm: _selectedAlgorithm,
-                        decorators: const [],
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Row(
-                  children: [
-                    LeftSidebarWidget(
-                      domains: app.domains,
-                      onDomainSelected: _handleDomainSelected,
-                    ),
-                    if (selectedDomain != null)
-                      RightSidebarWidget(
-                        models: selectedDomain!.models,
-                        onModelSelected: _handleModelSelected,
-                      ),
-                    if (selectedEntries != null)
-                      EntriesSidebarWidget(
-                        entries: selectedEntries!,
-                      ),
-                  ],
-                );
-              }
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.view_quilt),
+            onPressed: () {
+              setState(() {
+                showMetaCanvas = !showMetaCanvas;
+              });
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.swap_horiz),
+            onPressed: () {
+              context.read<LayoutBloc>().add(ToggleLayoutEvent());
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.brightness_6),
+            onPressed: () {
+              BlocProvider.of<ThemeBloc>(context).toggleTheme();
+            },
+          ),
+        ],
+      ),
+      body: BlocProvider(
+        create: (context) => LayoutBloc(),
+        child: BlocBuilder<LayoutBloc, LayoutState>(
+          builder: (context, state) {
+            if (showMetaCanvas) {
+              return MetaDomainCanvas(
+                domains: app.domains,
+                layoutAlgorithm: _selectedAlgorithm,
+                decorators: const [],
+              );
+            } else {
+              return Row(
+                children: [
+                  LeftSidebarWidget(
+                    domains: app.domains,
+                    onDomainSelected: _handleDomainSelected,
+                  ),
+                  if (selectedDomain != null)
+                    RightSidebarWidget(
+                      models: selectedDomain!.models,
+                      onModelSelected: _handleModelSelected,
+                    ),
+                  if (selectedEntries != null)
+                    EntriesSidebarWidget(
+                      entries: selectedEntries!,
+                    ),
+                ],
+              );
+            }
+          },
         ),
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              onPressed: () {
-                // Handle zoom in
-              },
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-            const SizedBox(width: 16.0),
-            FloatingActionButton(
-              onPressed: () {
-                // Handle zoom out
-              },
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              child: const Icon(Icons.remove, color: Colors.white),
-            ),
-          ],
-        ));
+      ),
+    );
   }
 }

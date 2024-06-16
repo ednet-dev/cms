@@ -37,6 +37,7 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
   late GameLoop _gameLoop;
   late System _system;
   late AnimationManager _animationManager;
+  double _zoomLevel = 1.0;
 
   @override
   void initState() {
@@ -70,83 +71,126 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
     });
   }
 
+  void _zoom(double scaleFactor) {
+    setState(() {
+      _zoomLevel *= scaleFactor;
+      _transformationController.value = Matrix4.identity()..scale(_zoomLevel);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              LayoutAlgorithmIcon(
-                icon: Icons.auto_fix_high,
-                name: 'Force Directed',
-                onTap: () =>
-                    _changeLayoutAlgorithm(ForceDirectedLayoutAlgorithm()),
-                isActive: _currentAlgorithm is ForceDirectedLayoutAlgorithm,
-              ),
-              LayoutAlgorithmIcon(
-                icon: Icons.grid_on,
-                name: 'Grid',
-                onTap: () => _changeLayoutAlgorithm(GridLayoutAlgorithm()),
-                isActive: _currentAlgorithm is GridLayoutAlgorithm,
-              ),
-              LayoutAlgorithmIcon(
-                icon: Icons.circle,
-                name: 'Circular',
-                onTap: () => _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
-                isActive: _currentAlgorithm is CircularLayoutAlgorithm,
-              ),
-              LayoutAlgorithmIcon(
-                icon: Icons.format_indent_increase,
-                name: 'Master Detail',
-                onTap: () =>
-                    _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
-                isActive: _currentAlgorithm is MasterDetailLayoutAlgorithm,
-              ),
-              LayoutAlgorithmIcon(
-                icon: Icons.account_tree,
-                name: 'Ranked Tree',
-                onTap: () =>
-                    _changeLayoutAlgorithm(RankedEmbeddingLayoutAlgorithm()),
-                isActive: _currentAlgorithm is RankedEmbeddingLayoutAlgorithm,
-              ),
-            ],
-          ),
-          Expanded(
-            child: GestureDetector(
-              onScaleStart: _onInteractionStart,
-              onScaleEnd: _onInteractionEnd,
-              child: InteractiveViewer(
-                transformationController: _transformationController,
-                onInteractionUpdate: (details) {
-                  setState(() {
-                    _transformationController.value =
-                        _transformationController.value
-                          ..translate(details.focalPointDelta.dx,
-                              details.focalPointDelta.dy)
-                          ..scale(details.scale);
-                  });
-                },
-                minScale: 0.1,
-                maxScale: 5.0,
-                child: CustomPaint(
-                  size: Size.infinite,
-                  painter: MetaDomainPainter(
-                    domains: widget.domains,
-                    transformationController: _transformationController,
-                    layoutAlgorithm: _currentAlgorithm,
-                    decorators: widget.decorators,
-                    isDragging: _isDragging,
-                    system: _system,
-                    animationManager: _animationManager,
+    return Stack(
+      children: [
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                LayoutAlgorithmIcon(
+                  icon: Icons.auto_fix_high,
+                  name: 'Force Directed',
+                  onTap: () =>
+                      _changeLayoutAlgorithm(ForceDirectedLayoutAlgorithm()),
+                  isActive: _currentAlgorithm is ForceDirectedLayoutAlgorithm,
+                ),
+                LayoutAlgorithmIcon(
+                  icon: Icons.grid_on,
+                  name: 'Grid',
+                  onTap: () => _changeLayoutAlgorithm(GridLayoutAlgorithm()),
+                  isActive: _currentAlgorithm is GridLayoutAlgorithm,
+                ),
+                LayoutAlgorithmIcon(
+                  icon: Icons.circle,
+                  name: 'Circular',
+                  onTap: () =>
+                      _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
+                  isActive: _currentAlgorithm is CircularLayoutAlgorithm,
+                ),
+                LayoutAlgorithmIcon(
+                  icon: Icons.format_indent_increase,
+                  name: 'Master Detail',
+                  onTap: () =>
+                      _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
+                  isActive: _currentAlgorithm is MasterDetailLayoutAlgorithm,
+                ),
+                LayoutAlgorithmIcon(
+                  icon: Icons.account_tree,
+                  name: 'Ranked Tree',
+                  onTap: () =>
+                      _changeLayoutAlgorithm(RankedEmbeddingLayoutAlgorithm()),
+                  isActive: _currentAlgorithm is RankedEmbeddingLayoutAlgorithm,
+                ),
+              ],
+            ),
+            Expanded(
+              child: GestureDetector(
+                onScaleStart: _onInteractionStart,
+                onScaleEnd: _onInteractionEnd,
+                child: InteractiveViewer(
+                  transformationController: _transformationController,
+                  onInteractionUpdate: (details) {
+                    setState(() {
+                      _transformationController.value =
+                          _transformationController.value
+                            ..translate(details.focalPointDelta.dx,
+                                details.focalPointDelta.dy)
+                            ..scale(details.scale);
+                    });
+                  },
+                  minScale: 0.1,
+                  maxScale: 5.0,
+                  child: CustomPaint(
+                    size: Size.infinite,
+                    painter: MetaDomainPainter(
+                      domains: widget.domains,
+                      transformationController: _transformationController,
+                      layoutAlgorithm: _currentAlgorithm,
+                      decorators: widget.decorators,
+                      isDragging: _isDragging,
+                      system: _system,
+                      animationManager: _animationManager,
+                    ),
                   ),
                 ),
               ),
             ),
+          ],
+        ),
+        Positioned(
+          bottom: 16.0,
+          right: 16.0,
+          child: Row(
+            children: [
+              FloatingActionButton(
+                onPressed: () => _zoom(1.1),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+              const SizedBox(width: 16.0),
+              FloatingActionButton(
+                onPressed: () => _zoom(0.9),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                child: const Icon(Icons.remove, color: Colors.white),
+              ),
+              const SizedBox(width: 16.0),
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                child: Text(
+                  'Zoom: ${(_zoomLevel * 100).toInt()}%',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
