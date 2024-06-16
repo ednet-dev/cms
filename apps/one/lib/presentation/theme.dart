@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Define the cheerful themes
 final ThemeData cheerfulDarkTheme = ThemeData(
   colorScheme: ColorScheme.fromSwatch(
     primarySwatch: Colors.yellow,
@@ -85,4 +86,3 @@ TextTheme _buildTextTheme(Color color) {
     labelSmall: TextStyle(color: color, fontSize: 10),
   );
 }
-

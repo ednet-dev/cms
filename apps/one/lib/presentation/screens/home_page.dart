@@ -12,11 +12,7 @@ import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
 import '../blocs/theme_block.dart';
-import '../widgets/layout/graph/algorithms/circular_layout_algorithm.dart';
 import '../widgets/layout/graph/algorithms/force_directed_layout_algorithm.dart';
-import '../widgets/layout/graph/algorithms/grid_layout_algorithm.dart';
-import '../widgets/layout/graph/algorithms/master_detail_layout_algorithm.dart';
-import '../widgets/layout/graph/components/layout_algorithm_icon.dart';
 import '../widgets/layout/graph/layout/layout_algorithm.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
 import '../widgets/layout/web/left_sidebar_widget.dart';
@@ -133,36 +129,6 @@ class HomePageState extends State<HomePage> {
               if (showMetaCanvas) {
                 return Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        LayoutAlgorithmIcon(
-                          icon: Icons.auto_fix_high,
-                          name: 'Force Directed',
-                          onTap: () => _changeLayoutAlgorithm(
-                              ForceDirectedLayoutAlgorithm()
-                                  as LayoutAlgorithm),
-                        ),
-                        LayoutAlgorithmIcon(
-                          icon: Icons.grid_on,
-                          name: 'Grid',
-                          onTap: () => _changeLayoutAlgorithm(
-                              GridLayoutAlgorithm() as LayoutAlgorithm),
-                        ),
-                        LayoutAlgorithmIcon(
-                          icon: Icons.circle,
-                          name: 'Circular',
-                          onTap: () => _changeLayoutAlgorithm(
-                              CircularLayoutAlgorithm() as LayoutAlgorithm),
-                        ),
-                        LayoutAlgorithmIcon(
-                          icon: Icons.format_indent_increase,
-                          name: 'Master Detail',
-                          onTap: () => _changeLayoutAlgorithm(
-                              MasterDetailLayoutAlgorithm() as LayoutAlgorithm),
-                        ),
-                      ],
-                    ),
                     Expanded(
                       child: MetaDomainCanvas(
                         domains: app.domains,

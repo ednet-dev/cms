@@ -76,7 +76,7 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
       body: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               LayoutAlgorithmIcon(
                 icon: Icons.auto_fix_high,
