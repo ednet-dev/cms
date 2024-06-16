@@ -41,6 +41,7 @@ class HomePageState extends State<HomePage> {
   bool showMetaCanvas = false;
   LayoutAlgorithm _selectedAlgorithm =
       ForceDirectedLayoutAlgorithm() as LayoutAlgorithm;
+  Matrix4? _savedTransformation;
 
   @override
   void initState() {
@@ -89,6 +90,10 @@ class HomePageState extends State<HomePage> {
     setState(() {
       _selectedAlgorithm = algorithm;
     });
+  }
+
+  void _saveTransformation(Matrix4 transformation) {
+    _savedTransformation = transformation;
   }
 
   @override

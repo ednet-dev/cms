@@ -38,6 +38,7 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
   late System _system;
   late AnimationManager _animationManager;
   double _zoomLevel = 1.0;
+  bool _isInitialLoad = true;
 
   @override
   void initState() {
@@ -52,8 +53,11 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
     );
     _gameLoop.start();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _centerAndZoom();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_isInitialLoad) {
+        _centerAndZoom();
+        _isInitialLoad = false;
+      }
     });
   }
 
@@ -72,7 +76,6 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
   void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
     setState(() {
       _currentAlgorithm = algorithm;
-      _centerAndZoom();
     });
   }
 
@@ -222,6 +225,14 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 child: const Icon(Icons.remove, color: Colors.white),
+              ),
+              const SizedBox(width: 16.0),
+              FloatingActionButton(
+                onPressed: _centerAndZoom,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                child:
+                    const Icon(Icons.center_focus_strong, color: Colors.white),
               ),
               const SizedBox(width: 16.0),
               Container(
