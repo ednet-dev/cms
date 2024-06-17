@@ -19,6 +19,7 @@ import 'package:ednet_one/generated/project/user/lib/project_user.dart' as ptur;
 class OneApplication {
   final Domains _domains = Domains();
   final Domains _groupedDomains = Domains();
+  final Map<String, DomainModels> _domainModelsTable = {};
 
   OneApplication() {
     _initializeDomains();
@@ -35,6 +36,8 @@ class OneApplication {
     schedulingModel.init();
 
     _domains..add(projectSchedulingDomain.domain);
+    _domainModelsTable['project_scheduling'] = projectSchedulingDomain;
+
     // project core
     final projectCoreRepo = ptce.ProjectCoreRepo();
     ptce.ProjectDomain projectCoreDomain =
@@ -44,6 +47,8 @@ class OneApplication {
     coreModel.init();
 
     _domains..add(projectCoreDomain.domain);
+    _domainModelsTable['project_core'] = projectCoreDomain;
+
     // project brainstorming
     final projectBrainstormingRepo = ptbg.ProjectBrainstormingRepo();
     ptbg.ProjectDomain projectBrainstormingDomain = projectBrainstormingRepo
@@ -53,6 +58,8 @@ class OneApplication {
     brainstormingModel.init();
 
     _domains..add(projectBrainstormingDomain.domain);
+    _domainModelsTable['project_brainstorming'] = projectBrainstormingDomain;
+
     // project planning
     final projectPlanningRepo = ptpg.ProjectPlanningRepo();
     ptpg.ProjectDomain projectPlanningDomain =
@@ -62,6 +69,8 @@ class OneApplication {
     planningModel.init();
 
     _domains..add(projectPlanningDomain.domain);
+    _domainModelsTable['project_planning'] = projectPlanningDomain;
+
     // project kanban
     final projectKanbanRepo = ptkn.ProjectKanbanRepo();
     ptkn.ProjectDomain projectKanbanDomain =
@@ -71,6 +80,8 @@ class OneApplication {
     kanbanModel.init();
 
     _domains..add(projectKanbanDomain.domain);
+    _domainModelsTable['project_kanban'] = projectKanbanDomain;
+
     // project user
     final projectUserRepo = ptur.ProjectUserRepo();
     ptur.ProjectDomain projectUserDomain =
@@ -80,6 +91,8 @@ class OneApplication {
     userModel.init();
 
     _domains..add(projectUserDomain.domain);
+    _domainModelsTable['project_user'] = projectUserDomain;
+
     // project gtd
     final projectGtdRepo = ptgd.ProjectGtdRepo();
     ptgd.ProjectDomain projectGtdDomain =
@@ -89,6 +102,8 @@ class OneApplication {
     gtdModel.init();
 
     _domains..add(projectGtdDomain.domain);
+    _domainModelsTable['project_gtd'] = projectGtdDomain;
+
     // household finance
     final householdFinanceRepo = hdfe.HouseholdFinanceRepo();
     hdfe.HouseholdDomain householdFinanceDomain = householdFinanceRepo
@@ -98,6 +113,8 @@ class OneApplication {
     financeModel.init();
 
     _domains..add(householdFinanceDomain.domain);
+    _domainModelsTable['household_finance'] = householdFinanceDomain;
+
     // household member
     final householdMemberRepo = hdmr.HouseholdMemberRepo();
     hdmr.HouseholdDomain householdMemberDomain = householdMemberRepo
@@ -107,7 +124,20 @@ class OneApplication {
     memberModel.init();
 
     _domains..add(householdMemberDomain.domain);
+    _domainModelsTable['household_member'] = householdMemberDomain;
+
 // INIT PLACEHOLDER
+  }
+
+  DomainModels getDomainModels(String domain, String model) {
+    final domainModel =
+        _domainModelsTable['${domain.toLowerCase()}_${model.toLowerCase()}'];
+
+    if (domainModel == null) {
+      throw Exception('Domain model not found: $domain, $model');
+    }
+
+    return domainModel;
   }
 
   void _groupDomains() {
@@ -144,4 +174,6 @@ class OneApplication {
   Domains get domains => _domains;
 
   Domains get groupedDomains => _groupedDomains;
+
+  Map<String, DomainModels> get domainModels => _domainModelsTable;
 }
