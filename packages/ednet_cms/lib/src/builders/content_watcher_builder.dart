@@ -50,6 +50,8 @@ class YamlReader {
 }
 
 class CodeGenerator {
+  final Map<String, String> _domainModelsTable = {};
+
   Future<void> generateCode({
     required String sourceDir,
     required String targetDir,
@@ -81,6 +83,8 @@ class CodeGenerator {
     const importsPlaceholder = '// IMPORTS PLACEHOLDER';
     // Placeholder for the initialization section
     const initPlaceholder = '// INIT PLACEHOLDER';
+    // Placeholder for the lookup table section
+    const lookupTablePlaceholder = '// LOOKUP TABLE PLACEHOLDER';
 
     if (!oneApplicationFile.existsSync()) {
       oneApplicationFile.writeAsStringSync("""
@@ -91,6 +95,7 @@ $importsPlaceholder
 class OneApplication {
   final Domains _domains = Domains();
   final Domains _groupedDomains = Domains();
+  final Map<String, DomainModels> _domainModelsTable = {};
 
   OneApplication() {
     _initializeDomains();
@@ -100,8 +105,18 @@ class OneApplication {
   void _initializeDomains() {
     $initPlaceholder
   }
+  
+  DomainModels getDomainModels(String domain, String model) {
+    final domainModel = _domainModelsTable['\${domain}_\$model'];
+  
+    if (domainModel == null) {
+      throw Exception('Domain model not found: \$domain, \$model');
+    }
+  
+    return domainModel;
+  }
 
-    void _groupDomains() {
+  void _groupDomains() {
     for (var domain in _domains) {
       var existingDomain = _groupedDomains.singleWhereCode(domain.code);
       if (existingDomain == null) {
@@ -133,8 +148,8 @@ class OneApplication {
   }
 
   Domains get domains => _domains;
-
   Domains get groupedDomains => _groupedDomains;
+  Map<String, DomainModels> get domainModels => _domainModelsTable;
 }
 """);
     }
@@ -164,12 +179,20 @@ class OneApplication {
     $modelVarName.init();
 
     _domains..add($domainVarName.domain);
+    _domainModelsTable['${meta.domain}_${meta.model}'] = $domainVarName;
 """;
 
     // Add initialization if it doesn't already exist
     if (!content.contains(initCode.trim())) {
       content =
-          content.replaceFirst(initPlaceholder, "$initCode$initPlaceholder");
+          content.replaceFirst(initPlaceholder, "$initCode\n$initPlaceholder");
+    }
+
+    // Add to the lookup table
+    final lookupEntry = "'${meta.domain}${meta.model}': $domainVarName";
+    if (!content.contains(lookupEntry.trim())) {
+      content = content.replaceFirst(lookupTablePlaceholder,
+          "'${meta.domain}${meta.model}': $domainVarName,\n$lookupTablePlaceholder");
     }
 
     // Write the updated content back to the file
