@@ -2,6 +2,7 @@ import 'package:app_links/app_links.dart';
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/generated/one_application.dart';
+import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,10 +10,12 @@ import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
 import '../blocs/theme_block.dart';
+import '../blocs/theme_event.dart';
 import '../widgets/layout/graph/algorithms/force_directed_layout_algorithm.dart';
 import '../widgets/layout/graph/layout/layout_algorithm.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
 import '../widgets/layout/web/footer_widget.dart';
+import '../widgets/layout/web/layout_template.dart';
 import '../widgets/layout/web/left_sidebar_widget.dart';
 import '../widgets/layout/web/main_content_widget.dart';
 import '../widgets/layout/web/right_sidebar_widget.dart';
@@ -34,7 +37,8 @@ class HomePageState extends State<HomePage> {
   Domain? selectedDomain;
   Model? selectedModel;
   Entities? selectedEntries;
-  Entity? selectedEntity;
+  Entities? selectedEntities;
+  Concept? selectedConcept;
 
   List<Bookmark> bookmarks = [];
   BookmarkManager bookmarkManager = BookmarkManager();
@@ -47,55 +51,57 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    initializeApp();
+    widget.appLinks.uriLinkStream.listen(_handleBookmarkSelected);
+  }
+
+  void initializeApp() {
     app = OneApplication();
 
     if (app.groupedDomains.isNotEmpty) {
       selectedDomain = app.groupedDomains.first;
       if (selectedDomain!.models.isNotEmpty) {
         selectedModel = selectedDomain!.models.first;
-        if (selectedModel!.concepts.isNotEmpty) {
-          selectedEntries = selectedModel!.concepts;
-        }
+        selectedEntries = selectedModel!.concepts;
       }
     }
-
-    widget.appLinks.uriLinkStream.listen((Uri? uri) {
-      if (uri != null) {
-        _handleBookmarkSelected(uri.toString());
-      }
-    });
   }
 
   void _handleDomainSelected(Domain domain) {
     setState(() {
       selectedDomain = domain;
       selectedModel = domain.models.isNotEmpty ? domain.models.first : null;
-      selectedEntries = selectedModel?.concepts.isNotEmpty ?? false
-          ? selectedModel!.concepts
-          : null;
+      selectedEntries = selectedModel?.concepts;
     });
   }
 
   void _handleModelSelected(Model model) {
     setState(() {
       selectedModel = model;
-      selectedEntries = model.concepts.isNotEmpty ? model.concepts : null;
+      selectedEntries = model.concepts;
     });
   }
 
-  void _handleBookmarkSelected(String bookmark) {
-    // Implement bookmark selection logic here
+  void _handleBookmarkSelected(Uri? uri) {
+    if (uri != null) {
+      // Implement bookmark selection logic here
+    }
   }
 
-  void _handleEntitySelected(Entity entity) {
+  void _handleConceptSelected(Concept concept) {
+    var domainModel =
+        app.getDomainModels(selectedDomain!.code, selectedModel!.code);
+    var modelEntries = domainModel.getModelEntries(concept.model.code);
+    var entry = modelEntries?.getEntry(concept.code);
     setState(() {
-      selectedEntity = entity;
+      selectedConcept = concept;
+      selectedEntities = entry;
     });
   }
 
   void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
     setState(() {
-      _savedTransformation = _savedTransformation ?? Matrix4.identity();
+      _savedTransformation ??= Matrix4.identity();
       _selectedAlgorithm = algorithm;
     });
   }
@@ -109,85 +115,121 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            for (var domain in app.groupedDomains)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: GestureDetector(
-                  onTap: () => _handleDomainSelected(domain),
-                  child: Text(domain.code),
-                ),
-              ),
-            Spacer(),
-            IconButton(
-              icon: const Icon(Icons.view_quilt),
-              onPressed: () {
-                setState(() {
-                  showMetaCanvas = !showMetaCanvas;
-                });
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.swap_horiz),
-              onPressed: () {
-                context.read<LayoutBloc>().add(ToggleLayoutEvent());
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.brightness_6),
-              onPressed: () {
-                BlocProvider.of<ThemeBloc>(context).toggleTheme();
-              },
-            ),
-          ],
-        ),
+      appBar: buildAppBar(context),
+      body: buildBody(context),
+    );
+  }
+
+  AppBar buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Row(
+        children: [
+          for (var domain in app.groupedDomains) buildDomainButton(domain),
+          const Spacer(),
+          buildIconButton(Icons.view_quilt, () {
+            setState(() {
+              showMetaCanvas = !showMetaCanvas;
+            });
+          }),
+          buildIconButton(Icons.swap_horiz, () {
+            context.read<LayoutBloc>().add(ToggleLayoutEvent());
+          }),
+          buildIconButton(Icons.brightness_6, () {
+            context.read<ThemeBloc>().add(ToggleThemeEvent());
+          }),
+        ],
       ),
-      body: BlocProvider(
-        create: (context) => LayoutBloc(),
-        child: BlocBuilder<LayoutBloc, LayoutState>(
-          builder: (context, state) {
-            if (showMetaCanvas) {
-              return MetaDomainCanvas(
-                domains: app.groupedDomains,
-                layoutAlgorithm: _selectedAlgorithm,
-                decorators: const [],
-                initialTransformation: _savedTransformation,
-                onTransformationChanged: _saveTransformation,
-                onChangeLayoutAlgorithm: _changeLayoutAlgorithm,
-              );
-            } else {
-              return Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: LeftSidebarWidget(
-                      entries: selectedEntries!,
-                      onEntitySelected: _handleEntitySelected,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 8,
-                    child: MainContentWidget(
-                      entity: selectedEntity,
-                    ),
-                  ),
-                  if (selectedDomain != null)
-                    Expanded(
-                      flex: 2,
-                      child: RightSidebarWidget(
-                        models: selectedDomain!.models,
-                        onModelSelected: _handleModelSelected,
-                      ),
-                    ),
-                ],
-              );
-            }
-          },
-        ),
+    );
+  }
+
+  Widget buildDomainButton(Domain domain) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: GestureDetector(
+        onTap: () => _handleDomainSelected(domain),
+        child: Text(domain.code),
       ),
-      bottomNavigationBar: const FooterWidget(),
+    );
+  }
+
+  IconButton buildIconButton(IconData icon, VoidCallback onPressed) {
+    return IconButton(icon: Icon(icon), onPressed: onPressed);
+  }
+
+  Widget buildBody(BuildContext context) {
+    return BlocProvider(
+      create: (context) => LayoutBloc(),
+      child: BlocBuilder<LayoutBloc, LayoutState>(
+        builder: (context, state) {
+          return showMetaCanvas
+              ? buildMetaDomainCanvas()
+              : buildLayoutTemplate();
+        },
+      ),
+    );
+  }
+
+  MetaDomainCanvas buildMetaDomainCanvas() {
+    return MetaDomainCanvas(
+      domains: app.groupedDomains,
+      layoutAlgorithm: _selectedAlgorithm,
+      decorators: const [],
+      initialTransformation: _savedTransformation,
+      onTransformationChanged: _saveTransformation,
+      onChangeLayoutAlgorithm: _changeLayoutAlgorithm,
+    );
+  }
+
+  LayoutTemplate buildLayoutTemplate() {
+    return LayoutTemplate(
+      leftSidebar: buildLeftSidebar(),
+      mainContent: buildMainContent(),
+      rightSidebar: buildRightSidebar(),
+      header: buildHeader(),
+      footer: const FooterWidget(),
+    );
+  }
+
+  Widget buildLeftSidebar() {
+    return Expanded(
+      flex: 2,
+      child: LeftSidebarWidget(
+        entries: selectedEntries as Concepts,
+        onConceptSelected: _handleConceptSelected,
+      ),
+    );
+  }
+
+  Widget buildMainContent() {
+    return Expanded(
+      flex: 8,
+      child: selectedConcept != null
+          ? MainContentWidget(
+              entities: selectedEntities ?? Entities<Concept>(),
+            )
+          : const Text('No Concept selected'),
+    );
+  }
+
+  Widget buildRightSidebar() {
+    return selectedDomain != null
+        ? Expanded(
+            flex: 2,
+            child: RightSidebarWidget(
+              models: selectedDomain!.models,
+              onModelSelected: _handleModelSelected,
+            ),
+          )
+        : const Text('No Domain selected');
+  }
+
+  HeaderWidget buildHeader() {
+    return HeaderWidget(
+      filters: [],
+      onAddFilter: (criteria) => print(criteria),
+      onBookmark: () => print('onBookmark'),
+      onPathSegmentTapped: print,
+      path: path,
     );
   }
 }

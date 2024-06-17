@@ -57,8 +57,13 @@ class ModelEntries implements IModelEntries {
   }
 
   @override
-  Entities getEntry(String entryConceptCode) =>
-      _entryEntitiesMap[entryConceptCode]!;
+  Entities getEntry(String entryConceptCode) {
+    if (!_entryEntitiesMap.containsKey(entryConceptCode)) {
+      throw ConceptException(
+          'Entry concept with code does not exist: ' + entryConceptCode);
+    }
+    return _entryEntitiesMap[entryConceptCode]!;
+  }
 
   @override
   Entity? single(Oid oid) {

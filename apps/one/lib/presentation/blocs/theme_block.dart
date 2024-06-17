@@ -3,14 +3,14 @@ import 'package:ednet_one/presentation/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ThemeBloc extends Cubit<ThemeData> {
-  ThemeBloc() : super(cheerfulDarkTheme);
+import 'theme_event.dart';
 
-  void toggleTheme() {
-    if (state.brightness == Brightness.dark) {
-      emit(cheerfulLightTheme);
-    } else {
-      emit(cheerfulDarkTheme);
-    }
+class ThemeBloc extends Bloc<ThemeEvent, ThemeData> {
+  ThemeBloc() : super(cheerfulDarkTheme) {
+    on<ToggleThemeEvent>((event, emit) {
+      emit(state.brightness == Brightness.dark
+          ? cheerfulLightTheme
+          : cheerfulDarkTheme);
+    });
   }
 }

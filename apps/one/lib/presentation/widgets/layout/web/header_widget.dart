@@ -11,7 +11,7 @@ class HeaderWidget extends StatelessWidget {
     required this.onAddFilter,
     required this.onBookmark,
     required List<String> path,
-    required Null Function(dynamic index) onPathSegmentTapped,
+    required void Function(dynamic index) onPathSegmentTapped,
   });
 
   @override

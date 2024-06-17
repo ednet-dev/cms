@@ -12,7 +12,7 @@ class Concept extends Entity<Concept> {
   bool updateWhen = false;
   bool canAdd = true;
   bool remove = true;
-  late String description;
+  String description = 'I am Entity of Concept';
 
   // to allow for a specific plural name, different from
   // the plural name derivation in Entity

@@ -3,12 +3,12 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
 class LeftSidebarWidget extends StatelessWidget {
-  final Entities entries;
-  final void Function(Entity entity) onEntitySelected;
+  final Concepts entries;
+  final void Function(Concept concept) onConceptSelected;
 
   LeftSidebarWidget({
     required this.entries,
-    required this.onEntitySelected,
+    required this.onConceptSelected,
   });
 
   @override
@@ -18,10 +18,10 @@ class LeftSidebarWidget extends StatelessWidget {
       child: ListView.builder(
         itemCount: entries.length,
         itemBuilder: (context, index) {
-          final entity = entries.elementAt(index);
+          final concept = entries.elementAt(index);
           return ListTile(
-            title: Text(entity.code),
-            onTap: () => onEntitySelected(entity as Entity),
+            title: Text(concept.code),
+            onTap: () => onConceptSelected(concept),
           );
         },
       ),
