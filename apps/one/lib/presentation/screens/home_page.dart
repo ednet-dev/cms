@@ -180,13 +180,17 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  LayoutTemplate buildLayoutTemplate() {
-    return LayoutTemplate(
-      leftSidebar: buildLeftSidebar(),
-      mainContent: buildMainContent(),
-      rightSidebar: buildRightSidebar(),
-      header: buildHeader(),
-      footer: const FooterWidget(),
+  Scaffold buildLayoutTemplate() {
+    return Scaffold(
+      appBar: AppBar(
+        title: buildHeader(),
+      ),
+      body: LayoutTemplate(
+        leftSidebar: buildLeftSidebar(),
+        mainContent: buildMainContent(),
+        rightSidebar: buildRightSidebar(),
+        footer: const FooterWidget(),
+      ),
     );
   }
 

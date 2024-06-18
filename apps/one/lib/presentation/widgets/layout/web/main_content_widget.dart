@@ -1,3 +1,4 @@
+import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
@@ -41,8 +42,7 @@ class _MainContentWidgetState extends State<MainContentWidget> {
           ),
         ),
         mainContent: Center(
-          child: Text(selectedEntity?.getAttribute('meniDosadno') ??
-              'Select an entity'),
+          child: EntityWidget(entity: selectedEntity as Entity),
         ),
         footer: Text('actions'),
         rightSidebar: Text('Entity navigation?'));
