@@ -10,15 +10,9 @@ class YamlSource {
     var exists = await Directory(localPath).exists();
     if (exists) {
       yamlPath = localPath;
-    } else {
-      // await GitProcess.run(
-      //   "clone",
-      //   [remoteUrl],
-      //   workingDirectory: ".",
-      //   runInShell: true,
-      // );
-      // yamlPath = localPath;
+
+      return yamlPath;
     }
-    return yamlPath;
+
+    throw FileSystemException('Yaml file not found in local path');
   }
-}
