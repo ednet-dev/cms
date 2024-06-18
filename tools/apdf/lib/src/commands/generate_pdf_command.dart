@@ -15,7 +15,7 @@ class GeneratePdfCommand extends Command<int> {
         abbr: 's',
         help: 'The source directory to traverse.',
         valueHelp: 'path',
-        defaultsTo: '.',
+        defaultsTo: './',
       )
       ..addOption(
         'output',
@@ -36,8 +36,6 @@ class GeneratePdfCommand extends Command<int> {
         abbr: 'e',
         help: 'Glob pattern for files to exclude.',
         valueHelp: 'exclude',
-        // Defaults to an empty pattern to exclude no files
-        // unless specified by the user
         defaultsTo: '',
       )
       ..addOption(
@@ -46,11 +44,10 @@ class GeneratePdfCommand extends Command<int> {
         help: 'The format of the output file (pdf or text).',
         valueHelp: 'format',
         allowed: ['pdf', 'text'],
-        defaultsTo: 'text',
+        defaultsTo: 'pdf',
       );
   }
 
-  @override
   @override
   String get description =>
       'Generates a file with the concatenated source code from files matching '
@@ -64,7 +61,7 @@ class GeneratePdfCommand extends Command<int> {
 
   @override
   Future<int> run() async {
-    final sourcePath = argResults?['source'] as String? ?? '.';
+    final sourcePath = argResults?['source'] as String? ?? './';
     final outputFileName =
         argResults?['output'] as String? ?? 'source_code.pdf';
     final includePatterns = argResults?['include'] as String? ?? '**/*.dart';
@@ -76,7 +73,7 @@ class GeneratePdfCommand extends Command<int> {
             .map((pattern) => Glob(pattern, recursive: true))
             .toList()
         : [
-            Glob('**/*.dart', recursive: true),
+            Glob('**/*.dart', recursive: true)
           ]; // Default to Dart files if empty
 
     final excludeGlobs = excludePatterns.isNotEmpty
@@ -85,6 +82,7 @@ class GeneratePdfCommand extends Command<int> {
             .map((pattern) => Glob(pattern, recursive: true))
             .toList()
         : <Glob>[]; // Default to an empty list if exclude pattern is empty
+
     final sourceDirectory = Directory(sourcePath);
     final codeBuffer = StringBuffer();
 
@@ -94,30 +92,23 @@ class GeneratePdfCommand extends Command<int> {
       includeGlobs,
       excludeGlobs,
     );
-    final allCode = codeBuffer.toString();
 
+    final filteredCode = filterCode(codeBuffer.toString());
     final outputFormat = argResults?['outputFormat'] as String? ?? 'pdf';
 
     // Check and update the output file name based on the output format
-    String updatedOutputFileName;
-    if (outputFileName.endsWith('.pdf') || outputFileName.endsWith('.txt')) {
-      updatedOutputFileName =
-          outputFileName.replaceAll(RegExp(r'\.pdf$|\.txt$'), '');
-    } else {
-      updatedOutputFileName = outputFileName;
-    }
-
+    String updatedOutputFileName =
+        outputFileName.replaceAll(RegExp(r'\.pdf$|\.txt$'), '');
     updatedOutputFileName += outputFormat == 'pdf' ? '.pdf' : '.txt';
 
     if (outputFormat == 'pdf') {
-      await generatePdf(allCode, updatedOutputFileName);
+      await generatePdf(filteredCode, updatedOutputFileName);
       _logger.success('PDF generated: $updatedOutputFileName');
     } else if (outputFormat == 'text') {
-      await generateTextFile(allCode, updatedOutputFileName);
+      await generateTextFile(filteredCode, updatedOutputFileName);
       _logger.success('Text file generated: $updatedOutputFileName');
     }
 
-    _logger.success('PDF generated: $outputFileName');
     return ExitCode.success.code;
   }
 
@@ -132,7 +123,6 @@ class GeneratePdfCommand extends Command<int> {
     await for (final entity
         in directory.list(recursive: true, followLinks: false)) {
       final filePath = entity.absolute.path;
-      // Compute the relative file path using rootPath to ensure consistency
       final relativeFilePath = path.relative(filePath, from: rootPath);
 
       if (entity is File) {
@@ -142,14 +132,23 @@ class GeneratePdfCommand extends Command<int> {
             excludeGlobs.any((glob) => glob.matches(relativeFilePath));
 
         if (isIncluded && !isExcluded) {
-          _logger.info('Adding file: $relativeFilePath');
+          _logger.info('Adding file: $relativeFilePath'); // Debug print
           final code = await entity.readAsString();
           codeBuffer
             ..write(code.trim())
             ..write('\n\n\n'); // Add some space between files in the PDF.
+        } else {
+          _logger.info('Skipping file: $relativeFilePath'); // Debug print
         }
       }
     }
+  }
+
+  String filterCode(String code) {
+    final lines = code.split('\n');
+    final filteredLines = lines.where((line) =>
+        !line.trim().startsWith('import') && !line.trim().startsWith('//'));
+    return filteredLines.join('\n');
   }
 
   Future<void> generateTextFile(String allCode, String outputFileName) async {
