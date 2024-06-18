@@ -31,15 +31,13 @@ class _MainContentWidgetState extends State<MainContentWidget> {
     return LayoutTemplate(
         header: Text('Filters of its children?'),
         // list all entities with title
-        leftSidebar: SingleChildScrollView(
-          child: Column(
-            children: widget.entities.map((entity) {
-              return ListTile(
-                title: Text(entity.id.toString()),
-                onTap: () => _handleEntitySelected(entity as Entity),
-              );
-            }).toList(),
-          ),
+        leftSidebar: Column(
+          children: widget.entities.map((entity) {
+            return ListTile(
+              title: Text(entity.id.toString()),
+              onTap: () => _handleEntitySelected(entity as Entity),
+            );
+          }).toList(),
         ),
         mainContent: Center(
           child: EntityWidget(entity: selectedEntity as Entity),
