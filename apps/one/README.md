@@ -6,66 +6,74 @@ Our core domains are generalized interactions and behaviors of `Project Manageme
 
 The core orchestrates human-centric processes by integrating with a wide range of web-exposed APIs from various service providers. These include calendar management, email, project management, event booking, transport, accounting and tax submission, education and skill development, self-care, social networks, and other relevant domains.
 
-
 ## 🚀 Features
 
-- **Master-Detail UX Pattern**: Simplifies navigation through domain models.
-- **Breadcrumb Navigation**: Easily navigate back to previous states using breadcrumb trails.
-- **Path Management**: Maintain and manage navigation paths seamlessly.
-- **Entity Filtering**: Filter entities dynamically based on various attributes.
-- **Bookmarking**: Save and quickly access important entities.
-- **Multiplatform**: Runs on Android, iOS, Web, and Desktop.
+- **Master-Detail UX Pattern**: Simplifies navigation through domain models, allowing you to drill down from domains to models to entities seamlessly.
+- **Breadcrumb Navigation**: Easily navigate back to previous states using breadcrumb trails, providing a clear sense of your location within the application.
+- **Path Management**: Maintain and manage navigation paths seamlessly, ensuring a smooth and intuitive user experience.
+- **Entity Filtering**: Filter entities dynamically based on various attributes, allowing you to quickly find the information you need.
+- **Bookmarking**: Save and quickly access important entities, streamlining your workflow.
+- **Multiplatform**: Runs on Android, iOS, Web, and Desktop, providing flexibility and accessibility.
+- **Web Layout**: A traditional web-style layout with left and right sidebars for efficient navigation and information display.
+- **Meta Domain Canvas**: An interactive canvas for visualizing entity relationships across domains, offering a unique perspective on your data.
+    - **Layout Algorithms**: Choose from various layout algorithms (force-directed, grid, circular, master-detail) to optimize the visualization for your needs.
+    - **Pan and Zoom**: Explore the canvas with ease using pan and zoom functionality.
+- **Theme Support**: Switch between light and dark themes to personalize your experience.
 
 ## 🌐 Core Domains
 
 ### Project Management
-Generalized interactions and behaviors for managing projects effectively.
+Generalized interactions and behaviors for managing projects effectively, including task management, resource allocation, and progress tracking.
 
 ### Direct Democracy
-Tools and functionalities supporting transparent and democratic decision-making processes.
+Tools and functionalities supporting transparent and democratic decision-making processes, enabling collaborative governance and community engagement.
 
 ## 🛠️ Integration
 
 EDNet One integrates with a wide range of web-exposed APIs to enhance user value by leveraging services like:
 
-- Calendar Management
-- E-mail Communication
-- Event Booking
-- Transport Management
-- Accounting and Tax Submission
-- Education and Competence Development
-- Self-Care and Social Networks
+- **Calendar Management**: Synchronize your schedule and events across platforms.
+- **E-mail Communication**: Streamline your communication workflows.
+- **Event Booking**: Easily manage event registrations and attendance.
+- **Transport Management**: Optimize your travel and logistics.
+- **Accounting and Tax Submission**: Simplify financial management and compliance.
+- **Education and Competence Development**: Access and track your learning progress.
+- **Self-Care and Social Networks**: Stay connected and maintain your well-being.
 
 ## 📱 Platforms
 
-- **Android**
-- **iOS**
-- **Web**
-- **Desktop**
+- **Android**: Reach a wide audience with the most popular mobile platform.
+- **iOS**: Deliver a premium experience on Apple devices.
+- **Web**: Provide universal access through any web browser.
+- **Desktop**: Offer a powerful and feature-rich experience on desktop computers.
 
 ## 📝 Usage
 
-Clone the repository:
+1. **Clone the repository:**
 
-```bash
+
+```kotlin
 git clone https://github.com/ednet-dev/cms.git
 ```
 
-Navigate to the project directory:
+2. **Navigate to the project directory:**
 
-```bash
+
+```
 cd cms/apps/one
 ```
 
-Install dependencies:
+3. **Install dependencies:**
 
-```bash
+
+```
 flutter pub get
 ```
 
-Run the application:
+4. **Run the application:**
 
-```bash
+
+```
 flutter run
 ```
 
