@@ -16,3 +16,4 @@ class YamlSource {
 
     throw FileSystemException('Yaml file not found in local path');
   }
+}
