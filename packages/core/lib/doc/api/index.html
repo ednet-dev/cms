@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="ednet_core API docs, for the Dart programming language.">
+  <title>ednet_core - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/ednet-dev/cms/tree/main/packages/core">ednet_core package</a></li>
+  </ol>
+  <div class="self-name">ednet_core</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="ednet-core">EDNet Core</h1>
+<p><strong>Version:</strong> 1.0.0</p>
+<h2 id="overview">Overview</h2>
+<p>EDNet Core is a meta framework for rapid definition of domain models, built on top of Domain-Driven
+Design (DDD) and EventStorming methodologies. It encapsulates reusable parts of semantic
+implementation for generic repositories and UI default renderings, aiming to democratize the no-code
+approach to software development.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Domain-Driven Design (DDD)</strong></li>
+<li><strong>EventStorming Methodologies</strong></li>
+<li><strong>Rapid Domain Model Definition</strong></li>
+<li><strong>Reusable Implementation</strong></li>
+<li><strong>UI Default Renderings</strong></li>
+<li><strong>Cross-Platform Deployment</strong></li>
+</ul>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#setting-up-the-environment">Setting Up the Environment</a></li>
+<li><a href="#defining-domain-models">Defining Domain Models</a></li>
+<li><a href="#creating-a-core-repository">Creating a Core Repository</a></li>
+<li><a href="#creating-models">Creating Models</a></li>
+<li><a href="#defining-entities">Defining Entities</a></li>
+<li><a href="#initializing-data">Initializing Data</a></li>
+<li><a href="#generating-code">Generating Code</a></li>
+<li><a href="#writing-tests">Writing Tests</a></li>
+<li><a href="#example-projects">Example Projects</a></li>
+<li><a href="#best-practices">Best Practices</a></li>
+<li><a href="#contribution">Contribution</a></li>
+</ol>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Ensure you have the following installed:</p>
+<ul>
+<li>Dart SDK</li>
+<li>Flutter SDK (if working on a Flutter project)</li>
+<li>An IDE or text editor (e.g., VS Code, IntelliJ IDEA)</li>
+</ul>
+<h2 id="setting-up-the-environment">Setting Up the Environment</h2>
+<ol>
+<li><strong>Install Dart and Flutter</strong>: Follow the official <a href="https://dart.dev/get-dart">Dart</a>
+and <a href="https://flutter.dev/docs/get-started/install">Flutter</a> installation guides.</li>
+<li><strong>Create a new Dart/Flutter project</strong>:
+<pre class="language-bash"><code class="language-bash">dart create my_project
+# or for Flutter
+flutter create my_project
+</code></pre>
+</li>
+<li><strong>Add ednet_core to your project</strong>:
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  ednet_core: latest_version
+</code></pre>
+</li>
+<li><strong>Install dependencies</strong>:
+<pre class="language-bash"><code class="language-bash">dart pub get
+# or for Flutter
+flutter pub get
+</code></pre>
+</li>
+</ol>
+<h2 id="defining-domain-models">Defining Domain Models</h2>
+<ol>
+<li><strong>Create domain model files</strong>: Create a file for your domain model,
+e.g., <code>household_domain.dart</code>.</li>
+<li><strong>Define domain and model structure</strong>:
+<pre class="language-dart"><code class="language-dart">import 'package:ednet_core/ednet_core.dart';
+
+class HouseholdDomain extends Domain {
+  HouseholdDomain(String name) : super(name);
+}
+
+class ProjectModel extends ModelEntries {
+  Projects projects;
+
+  ProjectModel(Domain domain) : super(domain, "Project") {
+    projects = Projects(this);
+    addEntry("Project", projects);
+  }
+}
+</code></pre>
+</li>
+</ol>
+<h2 id="creating-a-core-repository">Creating a Core Repository</h2>
+<ol>
+<li><strong>Create a repository</strong>:
+<pre class="language-dart"><code class="language-dart">var repository = CoreRepository();
+</code></pre>
+</li>
+<li><strong>Register the domain and models with the repository</strong>:
+<pre class="language-dart"><code class="language-dart">var householdDomain = HouseholdDomain("Household");
+repository.addDomain(householdDomain);
+
+var projectModel = ProjectModel(householdDomain);
+householdDomain.addModelEntries(projectModel);
+</code></pre>
+</li>
+</ol>
+<h2 id="creating-models">Creating Models</h2>
+<ol>
+<li><strong>Create a model</strong>:
+<pre class="language-dart"><code class="language-dart">ProjectModel projectModel = ProjectModel(householdDomain);
+householdDomain.addModelEntries(projectModel);
+</code></pre>
+</li>
+</ol>
+<h2 id="defining-entities">Defining Entities</h2>
+<ol>
+<li><strong>Define an entity</strong> within your model:
+<pre class="language-dart"><code class="language-dart">class Project extends Entity {
+  String name;
+
+  Project(Concept concept) : super(concept);
+
+  @override
+  String toString() =&gt; 'Project: $name';
+}
+
+class Projects extends Entities&lt;Project&gt; {
+  Projects(ModelEntries modelEntries) : super(modelEntries);
+}
+
+class ProjectModel extends ModelEntries {
+  Projects projects;
+
+  ProjectModel(Domain domain) : super(domain, "Project") {
+    projects = Projects(this);
+    addEntry("Project", projects);
+  }
+}
+</code></pre>
+</li>
+</ol>
+<h2 id="initializing-data">Initializing Data</h2>
+<ol>
+<li><strong>Initialize data</strong>:
+<pre class="language-dart"><code class="language-dart">void initData(CoreRepository repository) {
+   var householdDomain = repository.getDomainModels("Household");
+   ProjectModel? projectModel = householdDomain?.getModelEntries("Project") as ProjectModel?;
+   projectModel?.init();
+}
+</code></pre>
+</li>
+</ol>
+<h2 id="generating-code">Generating Code</h2>
+<ol>
+<li><strong>Generate code</strong>:
+<pre class="language-dart"><code class="language-dart">void genCode(CoreRepository repository) {
+  repository.gen("household_project");
+}
+</code></pre>
+</li>
+</ol>
+<h2 id="writing-tests">Writing Tests</h2>
+<ol>
+<li><strong>Write tests</strong>:
+<pre class="language-dart"><code class="language-dart">void testHouseholdProjectProjects(HouseholdDomain householdDomain, ProjectModel projectModel, Projects projects) {
+  DomainSession session;
+  group("Testing Household.Project.Project", () {
+    session = householdDomain.newSession();
+    setUp(() { projectModel.init(); });
+    tearDown(() { projectModel.clear(); });
+
+    test("Not empty model", () {
+      expect(projectModel.isEmpty, isFalse);
+      expect(projects.isEmpty, isFalse);
+    });
+
+    // Other tests...
+  });
+}
+</code></pre>
+</li>
+</ol>
+<h1 id="alternatives">Alternatives</h1>
+<h2 id="ednetdsl">EDNetDSL</h2>
+<p>is used to describe any domain model.
+EDNetCMS interprets it on various platforms using appropriate default model interpreters,
+by only manipulating a YAML file of user stories high-level concepts and their basic relationships,
+as not more complex as a basic ER diagram, we can generate an entire well-structured, evolveable MVP
+of domain model in
+discussion and deploy it on the platform of our choosing.</p>
+<pre class="language-yaml"><code class="language-yaml">concepts:
+  - name: User
+    entry: true
+    attributes:
+      - sequence: 1
+        name: username
+
+      - sequence: 2
+        name: password
+        sensitive: true
+
+      - sequence: 3
+        name: email
+
+      - sequence: 4
+        name: name
+
+  - name: Address
+    attributes:
+      - sequence: 1
+        name: zip
+
+      - sequence: 2
+        name: city
+
+      - sequence: 3
+        name: street
+
+      - sequence: 4
+        name: number
+
+  - name: Country
+    attributes:
+      - sequence: 1
+        name: name
+
+      - sequence: 2
+        name: iso
+
+relations:
+  - from: Address
+    fromToName: country
+    to: Country
+    toFromName: addresses
+    id:
+      from: false
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+    toFromCardinality:
+      min: 0
+      max: N
+    category: relationship
+    internal: false
+
+  - from: User
+    fromToName: company
+    to: Company
+    toFromName: employees
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+
+    toFromCardinality:
+      min: 0
+      max: N
+    category: relationship
+    internal: false
+</code></pre>
+<h3 id="ednet_code_generation">ednet_code_generation</h3>
+<h3 id="ednetcms">EDNetCMS</h3>
+<ol>
+<li>Create your e.g. flutter app with <code>flutter create my_app</code></li>
+<li>Add <code>ednet_cms</code> to your <code>pubspec.yaml</code> file:
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  ednet_cms: latest_version
+</code></pre>
+</li>
+<li>Put your DSL yaml files in <code>lib/requriements</code> folder like e.g:
+<pre class="language-bash"><code class="language-bash">lib/requirements/
+├── user_management
+│   ├── user.ednet.yaml
+│   └── role.ednet.yaml
+├── voting
+│   ├── vote.ednet.yaml
+│   └── ballot.ednet.yaml
+├── legislation_proposal
+│   ├── proposal.ednet.yaml
+│   └── amendment.ednet.yaml
+└── discussion_forum
+    ├── thread.ednet.yaml
+    └── comment.ednet.yaml
+</code></pre>
+</li>
+<li>Run <code>dart run build_runner watch --delete-conflicting-outputs</code> to generate the code.</li>
+<li></li>
+</ol>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Modularize your code</strong>: Keep your domains, models, and entities well-organized and align
+boundaries against business language.</li>
+<li><strong>Write comprehensive tests</strong>: Ensure all critical paths are tested.</li>
+<li><strong>Follow Dart and Flutter best practices</strong>: Adhere to recommended coding standards and
+conventions.</li>
+</ol>
+<h2 id="contribution">Contribution</h2>
+<p>Start your collaboration by participating in our <a href="https://github.com/ednet-dev/cms/pull/6">RFC</a>.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>EDNetCore aims to democratize the no-code approach to software development by focusing on domain
+models. With the combination of DDD and EventStorming methodologies, it offers a powerful framework
+for rapid domain model definition and reusable implementation.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://github.com/ednet-dev/cms/tree/main/packages/core">ednet_core package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">ednet_core</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    ednet_core
+      0.0.1+10
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
