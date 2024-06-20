@@ -1,0 +1,17 @@
+name: democracy_direct
+version: 1.0.0
+
+description: democracy_direct application that uses ednet_core for its model.
+
+homepage: https://ednet.one/
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  
+dependencies:
+  ednet_core: 
+    path: ../../../../../../packages/core
+  yaml:
+  # ednet_core_default_app:
+  
+  

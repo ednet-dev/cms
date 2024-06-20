@@ -129,7 +129,7 @@ void testProjectCoreMilestones(
       var milestonesCount = milestones.length; 
  
       var milestone = Milestone(milestones.concept); 
-      milestone.name = 'big'; 
+      milestone.name = 'picture'; 
       milestone.date = new DateTime.now(); 
       var added = selectedMilestones.add(milestone); 
       expect(added, isTrue); 
@@ -223,8 +223,8 @@ void testProjectCoreMilestones(
     test("Update milestone non id attribute with failure", () { 
       var randomMilestone = coreModel.milestones.random(); 
       var afterUpdateEntity = randomMilestone.copy(); 
-      afterUpdateEntity.name = 'lake'; 
-      expect(afterUpdateEntity.name, equals('lake')); 
+      afterUpdateEntity.name = 'price'; 
+      expect(afterUpdateEntity.name, equals('price')); 
       // milestones.update can only be used if oid, code or id is set. 
       expect(() => milestones.update(randomMilestone, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -245,7 +245,7 @@ void testProjectCoreMilestones(
     test("milestone action undo and redo", () { 
       var milestoneCount = milestones.length; 
       var milestone = Milestone(milestones.concept); 
-        milestone.name = 'country'; 
+        milestone.name = 'month'; 
       milestone.date = new DateTime.now(); 
     var milestoneProject = coreModel.projects.random(); 
     milestone.project = milestoneProject; 
@@ -269,7 +269,7 @@ void testProjectCoreMilestones(
     test("milestone session undo and redo", () { 
       var milestoneCount = milestones.length; 
       var milestone = Milestone(milestones.concept); 
-        milestone.name = 'accident'; 
+        milestone.name = 'kids'; 
       milestone.date = new DateTime.now(); 
     var milestoneProject = coreModel.projects.random(); 
     milestone.project = milestoneProject; 
@@ -292,7 +292,7 @@ void testProjectCoreMilestones(
  
     test("Milestone update undo and redo", () { 
       var milestone = coreModel.milestones.random(); 
-      var action = SetAttributeCommand(session, milestone, "name", 'grading'); 
+      var action = SetAttributeCommand(session, milestone, "name", 'ball'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -393,7 +393,7 @@ void testProjectCoreMilestones(
  
       projectDomain.startCommandReaction(reaction); 
       var milestone = Milestone(milestones.concept); 
-        milestone.name = 'policeman'; 
+        milestone.name = 'tent'; 
       milestone.date = new DateTime.now(); 
     var milestoneProject = coreModel.projects.random(); 
     milestone.project = milestoneProject; 
@@ -410,7 +410,7 @@ void testProjectCoreMilestones(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, milestone, "name", 'candy'); 
+        session, milestone, "name", 'discount'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

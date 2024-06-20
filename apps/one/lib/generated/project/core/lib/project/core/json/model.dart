@@ -9,6 +9,34 @@ var projectCoreModelJson = r'''
 domain: 'project'
 model: 'core'
 concepts:
+  - name: Task
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: title
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 2
+        category: attribute
+        name: dueDate
+        type: DateTime
+        essential: true
+        sensitive: false
+      - sequence: 3
+        category: attribute
+        name: status
+        type: String
+        essential: true
+        sensitive: false
+      - sequence: 4
+        category: attribute
+        name: priority
+        type: String
+        essential: false
+        sensitive: false
+
   - name: Project
     entry: true
     attributes:
@@ -40,34 +68,6 @@ concepts:
         category: attribute
         name: budget
         type: double
-        essential: false
-        sensitive: false
-
-  - name: Task
-    entry: true
-    attributes:
-      - sequence: 1
-        category: attribute
-        name: title
-        type: String
-        essential: true
-        sensitive: false
-      - sequence: 2
-        category: attribute
-        name: dueDate
-        type: DateTime
-        essential: true
-        sensitive: false
-      - sequence: 3
-        category: attribute
-        name: status
-        type: String
-        essential: true
-        sensitive: false
-      - sequence: 4
-        category: attribute
-        name: priority
-        type: String
         essential: false
         sensitive: false
 

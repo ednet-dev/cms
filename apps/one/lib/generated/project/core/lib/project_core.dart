@@ -45,10 +45,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     part "project/core/json/data.dart";
     part "project/core/json/model.dart";
     
-part "project/core/projects.dart";
-
-
 part "project/core/tasks.dart";
+
+
+part "project/core/projects.dart";
 
 
 part "project/core/milestones.dart";
@@ -75,10 +75,10 @@ part "project/core/budgets.dart";
 part "project/core/initiatives.dart";
 
     
-part "gen/project/core/projects.dart";
-
-
 part "gen/project/core/tasks.dart";
+
+
+part "gen/project/core/projects.dart";
 
 
 part "gen/project/core/milestones.dart";

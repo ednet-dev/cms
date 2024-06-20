@@ -129,11 +129,11 @@ void testProjectUserUsers(
       var usersCount = users.length; 
  
       var user = User(users.concept); 
-      user.name = 'holiday'; 
-      user.email = 'office'; 
-      user.password = 'element'; 
-      user.role = 'cardboard'; 
-      user.status = 'body'; 
+      user.name = 'head'; 
+      user.email = 'answer'; 
+      user.password = 'time'; 
+      user.role = 'privacy'; 
+      user.status = 'ticket'; 
       var added = selectedUsers.add(user); 
       expect(added, isTrue); 
       expect(users.length, equals(++usersCount)); 
@@ -226,8 +226,8 @@ void testProjectUserUsers(
     test("Update user non id attribute with failure", () { 
       var randomUser = userModel.users.random(); 
       var afterUpdateEntity = randomUser.copy(); 
-      afterUpdateEntity.name = 'consciousness'; 
-      expect(afterUpdateEntity.name, equals('consciousness')); 
+      afterUpdateEntity.name = 'beginning'; 
+      expect(afterUpdateEntity.name, equals('beginning')); 
       // users.update can only be used if oid, code or id is set. 
       expect(() => users.update(randomUser, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -251,11 +251,11 @@ void testProjectUserUsers(
     test("user action undo and redo", () { 
       var userCount = users.length; 
       var user = User(users.concept); 
-        user.name = 'boat'; 
-      user.email = 'edition'; 
-      user.password = 'small'; 
-      user.role = 'opinion'; 
-      user.status = 'table'; 
+        user.name = 'future'; 
+      user.email = 'body'; 
+      user.password = 'wheat'; 
+      user.role = 'salad'; 
+      user.status = 'consulting'; 
       users.add(user); 
       expect(users.length, equals(++userCount)); 
       users.remove(user); 
@@ -275,11 +275,11 @@ void testProjectUserUsers(
     test("user session undo and redo", () { 
       var userCount = users.length; 
       var user = User(users.concept); 
-        user.name = 'brad'; 
-      user.email = 'agreement'; 
-      user.password = 'video'; 
-      user.role = 'price'; 
-      user.status = 'revolution'; 
+        user.name = 'money'; 
+      user.email = 'executive'; 
+      user.password = 'marriage'; 
+      user.role = 'algorithm'; 
+      user.status = 'accident'; 
       users.add(user); 
       expect(users.length, equals(++userCount)); 
       users.remove(user); 
@@ -298,7 +298,7 @@ void testProjectUserUsers(
  
     test("User update undo and redo", () { 
       var user = userModel.users.random(); 
-      var action = SetAttributeCommand(session, user, "name", 'call'); 
+      var action = SetAttributeCommand(session, user, "name", 'heating'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -399,11 +399,11 @@ void testProjectUserUsers(
  
       projectDomain.startCommandReaction(reaction); 
       var user = User(users.concept); 
-        user.name = 'explanation'; 
-      user.email = 'down'; 
-      user.password = 'policeman'; 
-      user.role = 'sailing'; 
-      user.status = 'enquiry'; 
+        user.name = 'mind'; 
+      user.email = 'nothingness'; 
+      user.password = 'parfem'; 
+      user.role = 'job'; 
+      user.status = 'month'; 
       users.add(user); 
       expect(users.length, equals(++userCount)); 
       users.remove(user); 
@@ -416,7 +416,7 @@ void testProjectUserUsers(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, user, "name", 'east'); 
+        session, user, "name", 'test'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

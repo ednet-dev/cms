@@ -129,7 +129,7 @@ void testHouseholdMemberMembers(
       var membersCount = members.length; 
  
       var member = Member(members.concept); 
-      member.name = 'do'; 
+      member.name = 'small'; 
       var added = selectedMembers.add(member); 
       expect(added, isTrue); 
       expect(members.length, equals(++membersCount)); 
@@ -222,8 +222,8 @@ void testHouseholdMemberMembers(
     test("Update member non id attribute with failure", () { 
       var randomMember = memberModel.members.random(); 
       var afterUpdateEntity = randomMember.copy(); 
-      afterUpdateEntity.name = 'chemist'; 
-      expect(afterUpdateEntity.name, equals('chemist')); 
+      afterUpdateEntity.name = 'plate'; 
+      expect(afterUpdateEntity.name, equals('plate')); 
       // members.update can only be used if oid, code or id is set. 
       expect(() => members.update(randomMember, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testHouseholdMemberMembers(
     test("member action undo and redo", () { 
       var memberCount = members.length; 
       var member = Member(members.concept); 
-        member.name = 'test'; 
+        member.name = 'concern'; 
       members.add(member); 
       expect(members.length, equals(++memberCount)); 
       members.remove(member); 
@@ -263,7 +263,7 @@ void testHouseholdMemberMembers(
     test("member session undo and redo", () { 
       var memberCount = members.length; 
       var member = Member(members.concept); 
-        member.name = 'policeman'; 
+        member.name = 'craving'; 
       members.add(member); 
       expect(members.length, equals(++memberCount)); 
       members.remove(member); 
@@ -282,7 +282,7 @@ void testHouseholdMemberMembers(
  
     test("Member update undo and redo", () { 
       var member = memberModel.members.random(); 
-      var action = SetAttributeCommand(session, member, "name", 'pencil'); 
+      var action = SetAttributeCommand(session, member, "name", 'distance'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testHouseholdMemberMembers(
  
       householdDomain.startCommandReaction(reaction); 
       var member = Member(members.concept); 
-        member.name = 'discount'; 
+        member.name = 'theme'; 
       members.add(member); 
       expect(members.length, equals(++memberCount)); 
       members.remove(member); 
@@ -396,7 +396,7 @@ void testHouseholdMemberMembers(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, member, "name", 'ship'); 
+        session, member, "name", 'test'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       householdDomain.cancelCommandReaction(reaction); 

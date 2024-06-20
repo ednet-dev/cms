@@ -129,7 +129,7 @@ void testProjectKanbanLibraries(
       var librariesCount = libraries.length; 
  
       var library = Library(libraries.concept); 
-      library.name = 'account'; 
+      library.name = 'pub'; 
       var added = selectedLibraries.add(library); 
       expect(added, isTrue); 
       expect(libraries.length, equals(++librariesCount)); 
@@ -222,8 +222,8 @@ void testProjectKanbanLibraries(
     test("Update library non id attribute with failure", () { 
       var randomLibrary = kanbanModel.libraries.random(); 
       var afterUpdateEntity = randomLibrary.copy(); 
-      afterUpdateEntity.name = 'cloud'; 
-      expect(afterUpdateEntity.name, equals('cloud')); 
+      afterUpdateEntity.name = 'economy'; 
+      expect(afterUpdateEntity.name, equals('economy')); 
       // libraries.update can only be used if oid, code or id is set. 
       expect(() => libraries.update(randomLibrary, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectKanbanLibraries(
     test("library action undo and redo", () { 
       var libraryCount = libraries.length; 
       var library = Library(libraries.concept); 
-        library.name = 'ball'; 
+        library.name = 'seed'; 
       libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
@@ -263,7 +263,7 @@ void testProjectKanbanLibraries(
     test("library session undo and redo", () { 
       var libraryCount = libraries.length; 
       var library = Library(libraries.concept); 
-        library.name = 'autobus'; 
+        library.name = 'debt'; 
       libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
@@ -282,7 +282,7 @@ void testProjectKanbanLibraries(
  
     test("Library update undo and redo", () { 
       var library = kanbanModel.libraries.random(); 
-      var action = SetAttributeCommand(session, library, "name", 'debt'); 
+      var action = SetAttributeCommand(session, library, "name", 'element'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testProjectKanbanLibraries(
  
       projectDomain.startCommandReaction(reaction); 
       var library = Library(libraries.concept); 
-        library.name = 'account'; 
+        library.name = 'bird'; 
       libraries.add(library); 
       expect(libraries.length, equals(++libraryCount)); 
       libraries.remove(library); 
@@ -396,7 +396,7 @@ void testProjectKanbanLibraries(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, library, "name", 'course'); 
+        session, library, "name", 'judge'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

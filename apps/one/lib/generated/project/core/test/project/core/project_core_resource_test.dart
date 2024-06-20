@@ -129,9 +129,9 @@ void testProjectCoreResources(
       var resourcesCount = resources.length; 
  
       var resource = Resource(resources.concept); 
-      resource.name = 'seed'; 
-      resource.type = 'discount'; 
-      resource.cost = 76.69686067011963; 
+      resource.name = 'call'; 
+      resource.type = 'pattern'; 
+      resource.cost = 8.401237002224871; 
       var added = selectedResources.add(resource); 
       expect(added, isTrue); 
       expect(resources.length, equals(++resourcesCount)); 
@@ -224,8 +224,8 @@ void testProjectCoreResources(
     test("Update resource non id attribute with failure", () { 
       var randomResource = coreModel.resources.random(); 
       var afterUpdateEntity = randomResource.copy(); 
-      afterUpdateEntity.name = 'house'; 
-      expect(afterUpdateEntity.name, equals('house')); 
+      afterUpdateEntity.name = 'beer'; 
+      expect(afterUpdateEntity.name, equals('beer')); 
       // resources.update can only be used if oid, code or id is set. 
       expect(() => resources.update(randomResource, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -247,9 +247,9 @@ void testProjectCoreResources(
     test("resource action undo and redo", () { 
       var resourceCount = resources.length; 
       var resource = Resource(resources.concept); 
-        resource.name = 'coffee'; 
-      resource.type = 'lake'; 
-      resource.cost = 65.36615496413643; 
+        resource.name = 'employer'; 
+      resource.type = 'output'; 
+      resource.cost = 94.42297385116711; 
     var resourceTask = coreModel.tasks.random(); 
     resource.task = resourceTask; 
       resources.add(resource); 
@@ -272,9 +272,9 @@ void testProjectCoreResources(
     test("resource session undo and redo", () { 
       var resourceCount = resources.length; 
       var resource = Resource(resources.concept); 
-        resource.name = 'teacher'; 
-      resource.type = 'account'; 
-      resource.cost = 15.827580446339296; 
+        resource.name = 'celebration'; 
+      resource.type = 'question'; 
+      resource.cost = 30.267335827024834; 
     var resourceTask = coreModel.tasks.random(); 
     resource.task = resourceTask; 
       resources.add(resource); 
@@ -397,9 +397,9 @@ void testProjectCoreResources(
  
       projectDomain.startCommandReaction(reaction); 
       var resource = Resource(resources.concept); 
-        resource.name = 'salary'; 
-      resource.type = 'enquiry'; 
-      resource.cost = 39.10619644458714; 
+        resource.name = 'notch'; 
+      resource.type = 'present'; 
+      resource.cost = 12.12739210345205; 
     var resourceTask = coreModel.tasks.random(); 
     resource.task = resourceTask; 
       resources.add(resource); 
@@ -415,7 +415,7 @@ void testProjectCoreResources(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, resource, "name", 'mile'); 
+        session, resource, "name", 'hell'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

@@ -4,11 +4,11 @@ part of project_core;
 // http://jsonformatter.curiousconcept.com/ 
  
 // lib/project/core/json/data.dart 
-var projectCoreProjectEntry = r""" 
+var projectCoreTaskEntry = r""" 
  
 """; 
  
-var projectCoreTaskEntry = r""" 
+var projectCoreProjectEntry = r""" 
  
 """; 
  

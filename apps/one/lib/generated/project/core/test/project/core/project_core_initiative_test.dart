@@ -129,7 +129,7 @@ void testProjectCoreInitiatives(
       var initiativesCount = initiatives.length; 
  
       var initiative = Initiative(initiatives.concept); 
-      initiative.name = 'electronic'; 
+      initiative.name = 'future'; 
       var added = selectedInitiatives.add(initiative); 
       expect(added, isTrue); 
       expect(initiatives.length, equals(++initiativesCount)); 
@@ -222,8 +222,8 @@ void testProjectCoreInitiatives(
     test("Update initiative non id attribute with failure", () { 
       var randomInitiative = coreModel.initiatives.random(); 
       var afterUpdateEntity = randomInitiative.copy(); 
-      afterUpdateEntity.name = 'algorithm'; 
-      expect(afterUpdateEntity.name, equals('algorithm')); 
+      afterUpdateEntity.name = 'explanation'; 
+      expect(afterUpdateEntity.name, equals('explanation')); 
       // initiatives.update can only be used if oid, code or id is set. 
       expect(() => initiatives.update(randomInitiative, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectCoreInitiatives(
     test("initiative action undo and redo", () { 
       var initiativeCount = initiatives.length; 
       var initiative = Initiative(initiatives.concept); 
-        initiative.name = 'ball'; 
+        initiative.name = 'train'; 
     var initiativeProject = coreModel.projects.random(); 
     initiative.project = initiativeProject; 
       initiatives.add(initiative); 
@@ -266,7 +266,7 @@ void testProjectCoreInitiatives(
     test("initiative session undo and redo", () { 
       var initiativeCount = initiatives.length; 
       var initiative = Initiative(initiatives.concept); 
-        initiative.name = 'boat'; 
+        initiative.name = 'word'; 
     var initiativeProject = coreModel.projects.random(); 
     initiative.project = initiativeProject; 
       initiatives.add(initiative); 
@@ -288,7 +288,7 @@ void testProjectCoreInitiatives(
  
     test("Initiative update undo and redo", () { 
       var initiative = coreModel.initiatives.random(); 
-      var action = SetAttributeCommand(session, initiative, "name", 'debt'); 
+      var action = SetAttributeCommand(session, initiative, "name", 'body'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -389,7 +389,7 @@ void testProjectCoreInitiatives(
  
       projectDomain.startCommandReaction(reaction); 
       var initiative = Initiative(initiatives.concept); 
-        initiative.name = 'electronic'; 
+        initiative.name = 'milk'; 
     var initiativeProject = coreModel.projects.random(); 
     initiative.project = initiativeProject; 
       initiatives.add(initiative); 
@@ -405,7 +405,7 @@ void testProjectCoreInitiatives(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, initiative, "name", 'call'); 
+        session, initiative, "name", 'abstract'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

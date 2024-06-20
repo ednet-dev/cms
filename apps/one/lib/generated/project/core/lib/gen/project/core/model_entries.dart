@@ -9,10 +9,10 @@ class CoreEntries extends ModelEntries {
   Map<String, Entities> newEntries() {
     var entries = Map<String, Entities>();
     var concept;
-    concept = model.concepts.singleWhereCode("Project");
-    entries["Project"] = Projects(concept);
     concept = model.concepts.singleWhereCode("Task");
     entries["Task"] = Tasks(concept);
+    concept = model.concepts.singleWhereCode("Project");
+    entries["Project"] = Projects(concept);
     concept = model.concepts.singleWhereCode("Milestone");
     entries["Milestone"] = Milestones(concept);
     concept = model.concepts.singleWhereCode("Resource");
@@ -38,11 +38,11 @@ class CoreEntries extends ModelEntries {
     if (concept == null) {
       throw ConceptError("${conceptCode} concept does not exist.");
     }
-    if (concept.code == "Project") {
-      return Projects(concept);
-    }
     if (concept.code == "Task") {
       return Tasks(concept);
+    }
+    if (concept.code == "Project") {
+      return Projects(concept);
     }
     if (concept.code == "Milestone") {
       return Milestones(concept);
@@ -77,11 +77,11 @@ class CoreEntries extends ModelEntries {
     if (concept == null) {
       throw ConceptError("${conceptCode} concept does not exist.");
     }
-    if (concept.code == "Project") {
-      return Project(concept);
-    }
     if (concept.code == "Task") {
       return Task(concept);
+    }
+    if (concept.code == "Project") {
+      return Project(concept);
     }
     if (concept.code == "Milestone") {
       return Milestone(concept);
@@ -109,8 +109,8 @@ class CoreEntries extends ModelEntries {
     }
     return null;
   }
-  Projects get projects => getEntry("Project") as Projects;
   Tasks get tasks => getEntry("Task") as Tasks;
+  Projects get projects => getEntry("Project") as Projects;
   Milestones get milestones => getEntry("Milestone") as Milestones;
   Resources get resources => getEntry("Resource") as Resources;
   Roles get roles => getEntry("Role") as Roles;
