@@ -82,7 +82,7 @@ void main(List<String> args) async {
 
   print(result);
 
-  final domainModel = dartlingCodegen(
+  final domainModel = ednetCoreCodegen(
     path: inputPath,
     domain: name,
     out: outputPath,
@@ -146,7 +146,7 @@ Future<void> buildDomainModel(
   bool watch = false,
 }) async {
   print('Building $name domain model...');
-  final domainModel = await dartlingCodegen(
+  final domainModel = await ednetCoreCodegen(
     path: yamlDir,
     domain: name,
     out: outputDir,
@@ -161,7 +161,7 @@ Future<void> buildDomainModel(
     watcher.events.listen((event) async {
       print(
           'Detected change in ${event.path}. Rebuilding $name domain model...');
-      await dartlingCodegen(
+      await ednetCoreCodegen(
         path: yamlDir,
         domain: name,
         out: outputDir,
@@ -174,5 +174,5 @@ Future<void> buildDomainModel(
   }
 }
 
-dartlingCodegen(
+ednetCoreCodegen(
     {required String path, required String domain, required String out}) {}
