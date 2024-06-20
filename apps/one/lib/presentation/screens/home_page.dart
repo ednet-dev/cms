@@ -90,7 +90,7 @@ class HomePageState extends State<HomePage> {
 
   void _handleConceptSelected(Concept concept) {
     var domainModel =
-        app.getDomainModels(selectedDomain!.code, selectedModel!.code);
+        app.getDomainModels(selectedDomain!.codeFirstLetterLower, selectedModel!.codeFirstLetterLower);
     var modelEntries = domainModel.getModelEntries(concept.model.code);
     var entry = modelEntries?.getEntry(concept.code);
     setState(() {

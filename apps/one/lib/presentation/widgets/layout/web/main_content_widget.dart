@@ -17,13 +17,17 @@ class _MainContentWidgetState extends State<MainContentWidget> {
   Entity? selectedEntity;
 
   _handleEntitySelected(Entity entity) {
-    selectedEntity = entity;
+    setState(() {
+      selectedEntity = entity;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    selectedEntity?.setAttribute('meniDosadno', 'Meni dosadno');
+    setState(() {
+      selectedEntity = widget.entities.first as Entity;
+    });
   }
 
   @override
@@ -40,7 +44,9 @@ class _MainContentWidgetState extends State<MainContentWidget> {
           }).toList(),
         ),
         mainContent: Center(
-          child: EntityWidget(entity: selectedEntity as Entity),
+          child: selectedEntity != null
+              ? EntityWidget(entity: selectedEntity as Entity)
+              : Text('Select an entity'),
         ),
         footer: Text('actions'),
         rightSidebar: Text('Entity navigation?'));
