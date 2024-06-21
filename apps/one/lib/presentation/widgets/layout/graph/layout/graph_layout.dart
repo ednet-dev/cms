@@ -30,6 +30,12 @@ class GraphLayout {
           graph.addNode(entityNode);
           graph.addEdge(modelNode, entityNode);
 
+          for (var attribute in entity.attributes) {
+            final attributeNode = Node.Id(attribute.code);
+            graph.addNode(attributeNode);
+            graph.addEdge(entityNode, attributeNode);
+          }
+
           for (var child in entity.children) {
             final childNode = Node.Id(child.code);
             graph.addNode(childNode);
@@ -41,12 +47,35 @@ class GraphLayout {
     return graph;
   }
 
+  bool checkForCycles(Graph graph) {
+    final visited = <Node>{};
+    final stack = <Node>{};
+
+    bool hasCycle(Node node) {
+      if (stack.contains(node)) return true;
+      if (visited.contains(node)) return false;
+      visited.add(node);
+      stack.add(node);
+
+      for (final neighbor in graph.successorsOf(node)) {
+        if (hasCycle(neighbor)) return true;
+      }
+      stack.remove(node);
+      return false;
+    }
+
+    for (final node in graph.nodes) {
+      if (hasCycle(node)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Map<String, Offset> calculateLayout(Size size) {
     final positions = <String, Offset>{};
     final random = Random();
 
-    // Distribute nodes randomly within the available space,
-    // considering the default node size to avoid overlaps.
     for (var domain in domains) {
       positions[domain.code] = Offset(
         random.nextDouble() * (size.width - defaultNodeWidth),
@@ -64,6 +93,13 @@ class GraphLayout {
             random.nextDouble() * (size.width - defaultNodeWidth),
             random.nextDouble() * (size.height - defaultNodeHeight),
           );
+
+          for (var attribute in entity.attributes) {
+            positions[attribute.code] = Offset(
+              random.nextDouble() * (size.width - defaultNodeWidth),
+              random.nextDouble() * (size.height - defaultNodeHeight),
+            );
+          }
 
           for (var child in entity.children) {
             positions[child.code] = Offset(

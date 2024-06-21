@@ -2,6 +2,7 @@ import 'package:app_links/app_links.dart';
 import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/generated/one_application.dart';
+import 'package:ednet_one/presentation/widgets/layout/graph/algorithms/master_detail_layout_algorithm.dart';
 import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -172,10 +173,12 @@ class HomePageState extends State<HomePage> {
   MetaDomainCanvas buildMetaDomainCanvas() {
     return MetaDomainCanvas(
       domains: app.groupedDomains,
-      configuration: _selectedAlgorithm,
+      // configuration: _selectedAlgorithm,
       initialTransformation: _savedTransformation,
       onTransformationChanged: _saveTransformation,
       onChangeLayoutAlgorithm: _changeLayoutAlgorithm,
+      layoutAlgorithm: MasterDetailLayoutAlgorithm(),
+      decorators: [],
     );
   }
 
