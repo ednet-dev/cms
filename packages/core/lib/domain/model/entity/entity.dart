@@ -84,8 +84,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
             _attributeMap[a.code] = double.parse(a.init);
           } on FormatException catch (e2) {
             throw TypeException(
-                '${a
-                    .code} attribute init (default) value is not num: $e1; $e2');
+                '${a.code} attribute init (default) value is not num: $e1; $e2');
           }
         }
       } else if (a.type?.code == 'Uri') {
@@ -312,7 +311,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       throw new ConceptException('Entity concept is not defined.');
     }
     Attribute? attribute =
-    _concept?.attributes.singleWhereCode(name) as Attribute?;
+        _concept?.attributes.singleWhereCode(name) as Attribute?;
     if (attribute == null) {
       String msg = '${_concept?.code}.$name is not correct attribute name.';
       throw UpdateException(msg);
@@ -633,10 +632,12 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   /// Displays (prints) an entity with its attributes, parents and children.
-  void display({String prefix = '',
+  void display({
+    String prefix = '',
     bool withOid = true,
     bool withChildren = true,
-    bool withInternalChildren = true}) {
+    bool withInternalChildren = true,
+  }) {
     if (_concept == null) {
       throw new ConceptException('Entity concept is not defined.');
     }
@@ -845,9 +846,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         if (entityMap[parent.code]['parent'] != null &&
             parentOidString != null &&
             entryConceptCode != null) {
-          Reference reference =
-          Reference(parentOidString, entityMap[parent.code]['parent'],
-              entryConceptCode);
+          Reference reference = Reference(parentOidString,
+              entityMap[parent.code]['parent'], entryConceptCode);
           Oid parentOid = reference.oid;
           setReference(parent.code, reference);
           if (parent.internal) {
