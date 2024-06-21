@@ -15,7 +15,7 @@ for multiple models with yaml
 
 Example:
 
---genall C:/Users/johns/dart/demo_projects demo projects
+--genall C:/Users/user_name/dart/demo_projects demo projects
 
 or
 
