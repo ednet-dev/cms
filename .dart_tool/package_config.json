@@ -141,7 +141,7 @@
     },
     {
       "name": "meta",
-      "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/meta-1.15.0",
+      "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/meta-1.14.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -161,7 +161,7 @@
       "name": "path_provider_linux",
       "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.5"
     },
     {
       "name": "path_provider_platform_interface",
@@ -173,7 +173,7 @@
       "name": "path_provider_windows",
       "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/path_provider_windows-2.2.1",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.5"
     },
     {
       "name": "platform",
@@ -251,7 +251,7 @@
       "name": "shared_preferences_linux",
       "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.3.2",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.5"
     },
     {
       "name": "shared_preferences_platform_interface",
@@ -269,7 +269,7 @@
       "name": "shared_preferences_windows",
       "rootUri": "file:///Users/slavisam/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.3.2",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.5"
     },
     {
       "name": "sky_engine",
@@ -365,13 +365,13 @@
       "name": "ednet_cms",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-06-09T15:33:39.009577Z",
+  "generated": "2024-06-21T15:40:17.498350Z",
   "generator": "pub",
-  "generatorVersion": "3.5.0-236.0.dev",
+  "generatorVersion": "3.5.0-180.3.beta",
   "flutterRoot": "file:///Users/slavisam/bin/flutter",
-  "flutterVersion": "3.23.0-13.0.pre.168",
+  "flutterVersion": "3.23.0-0.1.pre",
   "pubCache": "file:///Users/slavisam/.pub-cache"
 }
