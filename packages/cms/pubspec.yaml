@@ -4,13 +4,13 @@ version: 0.0.3-dev.6
 homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_cms
 
 environment:
-  sdk: '>=3.5.0-169.0.dev <4.0.0'
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   ednet_code_generation:
-    path: ../ednet_code_generation
+    path: ../code_generation
   ednet_core:
     path: ../core
   watcher: ^1.0.2
