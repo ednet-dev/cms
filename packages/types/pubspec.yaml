@@ -1,0 +1,16 @@
+name: ednet_core_types
+
+homepage: https://ednet.dev/
+version: 0.0.1
+
+description: a generic Flutter component done by meta-programming in EDNetCore.
+
+environment:
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
+
+dependencies:
+  ednet_core:
+    path: ../core
+  ednet_core_default_app:
+    path: ../../../ednet_core_default_app
+  

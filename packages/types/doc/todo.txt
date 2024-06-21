@@ -1,0 +1,24 @@
+Done
+
++ use the web component with another concept
++ use not increment attributes in entity table
++ use '' instead of null in fields
++ validate value type 
++ add in EDNetCore meta:
+  + attribute length
+  + concept singular and plural labels
+  + property label
++ display field with its length
++ display labels
+
+To do
+
+- field validations: email
+- field masks: telephone
+- field display: date without time 
+- add in Model Concepts: 
+  - field length
+  - concept singular and plural labels
+  - property label
+- display error messages 
+- support i18n

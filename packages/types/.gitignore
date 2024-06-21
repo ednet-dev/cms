@@ -1,0 +1,8 @@
+.DS_Store
+.pub
+build
+packages
+pubspec.lock
+*~
+  
+/ednet_core_types.iml
