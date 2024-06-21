@@ -1,65 +1,43 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
+import 'package:graphview/GraphView.dart';
 
-import '../algorithms/circular_layout_algorithm.dart';
-import '../algorithms/force_directed_layout_algorithm.dart';
-import '../algorithms/grid_layout_algorithm.dart';
-import '../algorithms/master_detail_layout_algorithm.dart';
-import '../algorithms/radial_tree_layout_algorithm.dart'; // New algorithm import
-import '../algorithms/ranked_embedding_layout_algorithm.dart';
-import '../animations/animation_manager.dart';
-import '../animations/game_loop.dart';
-import '../components/layout_algorithm_icon.dart';
-import '../components/system.dart';
-import '../decorators/u_x_decorator.dart';
-import '../layout/layout_algorithm.dart';
-import 'meta_domain_painter.dart';
+import '../layout/graph_layout.dart';
 
 class MetaDomainCanvas extends StatefulWidget {
   final Domains domains;
-  final LayoutAlgorithm layoutAlgorithm;
-  final List<UXDecorator> decorators;
+  final BuchheimWalkerConfiguration configuration;
   final Matrix4? initialTransformation;
   final ValueChanged<Matrix4> onTransformationChanged;
-
-  final onChangeLayoutAlgorithm;
+  final void Function(BuchheimWalkerConfiguration algorithm)
+      onChangeLayoutAlgorithm;
 
   const MetaDomainCanvas({
-    super.key,
+    Key? key,
     required this.domains,
-    required this.layoutAlgorithm,
-    required this.decorators,
+    required this.configuration,
     this.initialTransformation,
     required this.onTransformationChanged,
     required this.onChangeLayoutAlgorithm,
-  });
+  }) : super(key: key);
 
   @override
-  MetaDomainCanvasStateState createState() => MetaDomainCanvasStateState();
+  _MetaDomainCanvasState createState() => _MetaDomainCanvasState();
 }
 
-class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
+class _MetaDomainCanvasState extends State<MetaDomainCanvas> {
   late TransformationController _transformationController;
-  late LayoutAlgorithm _currentAlgorithm;
-  bool _isDragging = false;
-  late GameLoop _gameLoop;
-  late System _system;
-  late AnimationManager _animationManager;
+  late BuchheimWalkerAlgorithm _currentAlgorithm;
   double _zoomLevel = 1.0;
   bool _isInitialLoad = true;
+  bool _isGraphAcyclic = true;
 
   @override
   void initState() {
     super.initState();
     _transformationController = TransformationController();
-    _currentAlgorithm = widget.layoutAlgorithm;
-    _system = System();
-    _animationManager = AnimationManager();
-    _gameLoop = GameLoop(
-      system: _system,
-      animationManager: _animationManager,
-    );
-    _gameLoop.start();
+    _currentAlgorithm = BuchheimWalkerAlgorithm(
+        widget.configuration, TreeEdgeRenderer(widget.configuration));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_isInitialLoad) {
@@ -78,25 +56,36 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
     _transformationController.addListener(() {
       widget.onTransformationChanged(_transformationController.value);
     });
+
+    _checkForCycles();
   }
 
-  void _onInteractionStart(ScaleStartDetails details) {
-    setState(() {
-      _isDragging = true;
-    });
-  }
+  void _checkForCycles() {
+    final graph = GraphLayout(domains: widget.domains).buildGraph();
+    final visited = <Node>{};
+    final stack = <Node>{};
 
-  void _onInteractionEnd(ScaleEndDetails details) {
-    setState(() {
-      _isDragging = false;
-    });
-  }
+    bool hasCycle(Node node) {
+      if (stack.contains(node)) return true;
+      if (visited.contains(node)) return false;
+      visited.add(node);
+      stack.add(node);
 
-  void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
-    setState(() {
-      _currentAlgorithm = algorithm;
-      widget.onChangeLayoutAlgorithm(algorithm);
-    });
+      for (final neighbor in graph.successorsOf(node)) {
+        if (hasCycle(neighbor)) return true;
+      }
+      stack.remove(node);
+      return false;
+    }
+
+    for (final node in graph.nodes) {
+      if (hasCycle(node)) {
+        setState(() {
+          _isGraphAcyclic = false;
+        });
+        return;
+      }
+    }
   }
 
   void _zoom(double scaleFactor) {
@@ -111,7 +100,7 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
     final Size canvasSize = renderBox.size;
 
     final layoutPositions =
-        _currentAlgorithm.calculateLayout(widget.domains, canvasSize);
+        GraphLayout(domains: widget.domains).calculateLayout(canvasSize);
     final double minX = layoutPositions.values
         .map((offset) => offset.dx)
         .reduce((a, b) => a < b ? a : b);
@@ -151,6 +140,16 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isGraphAcyclic) {
+      return Center(
+        child:
+            Text('Error: The graph contains cycles and cannot be displayed.'),
+      );
+    }
+
+    final graph = GraphLayout(domains: widget.domains).buildGraph();
+    final builder = _currentAlgorithm;
+
     return Stack(
       children: [
         Column(
@@ -158,80 +157,53 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                LayoutAlgorithmIcon(
-                  icon: Icons.auto_fix_high,
-                  name: 'Force Directed',
-                  onTap: () =>
-                      _changeLayoutAlgorithm(ForceDirectedLayoutAlgorithm()),
-                  isActive: _currentAlgorithm is ForceDirectedLayoutAlgorithm,
+                IconButton(
+                  icon: Icon(Icons.auto_fix_high),
+                  onPressed: () => widget
+                      .onChangeLayoutAlgorithm(BuchheimWalkerConfiguration()),
                 ),
-                LayoutAlgorithmIcon(
-                  icon: Icons.grid_on,
-                  name: 'Grid',
-                  onTap: () => _changeLayoutAlgorithm(GridLayoutAlgorithm()),
-                  isActive: _currentAlgorithm is GridLayoutAlgorithm,
+                IconButton(
+                  icon: Icon(Icons.grid_on),
+                  onPressed: () => widget
+                      .onChangeLayoutAlgorithm(BuchheimWalkerConfiguration()),
                 ),
-                LayoutAlgorithmIcon(
-                  icon: Icons.circle,
-                  name: 'Circular',
-                  onTap: () =>
-                      _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
-                  isActive: _currentAlgorithm is CircularLayoutAlgorithm,
+                IconButton(
+                  icon: Icon(Icons.circle),
+                  onPressed: () => widget
+                      .onChangeLayoutAlgorithm(BuchheimWalkerConfiguration()),
                 ),
-                LayoutAlgorithmIcon(
-                  icon: Icons.format_indent_increase,
-                  name: 'Master Detail',
-                  onTap: () =>
-                      _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
-                  isActive: _currentAlgorithm is MasterDetailLayoutAlgorithm,
-                ),
-                LayoutAlgorithmIcon(
-                  icon: Icons.account_tree,
-                  name: 'Ranked Tree',
-                  onTap: () =>
-                      _changeLayoutAlgorithm(RankedEmbeddingLayoutAlgorithm()),
-                  isActive: _currentAlgorithm is RankedEmbeddingLayoutAlgorithm,
-                ),
-                LayoutAlgorithmIcon(
-                  icon: Icons.bubble_chart,
-                  name: 'Radial Tree',
-                  // New icon
-                  onTap: () =>
-                      _changeLayoutAlgorithm(RadialTreeLayoutAlgorithm()),
-                  // New algorithm
-                  isActive: _currentAlgorithm is RadialTreeLayoutAlgorithm,
+                IconButton(
+                  icon: Icon(Icons.format_indent_increase),
+                  onPressed: () => widget
+                      .onChangeLayoutAlgorithm(BuchheimWalkerConfiguration()),
                 ),
               ],
             ),
             Expanded(
-              child: GestureDetector(
-                onScaleStart: _onInteractionStart,
-                onScaleEnd: _onInteractionEnd,
-                child: InteractiveViewer(
-                  transformationController: _transformationController,
-                  onInteractionUpdate: (details) {
-                    setState(() {
-                      _transformationController.value =
-                          _transformationController.value
-                            ..translate(details.focalPointDelta.dx,
-                                details.focalPointDelta.dy)
-                            ..scale(details.scale);
-                    });
+              child: InteractiveViewer(
+                transformationController: _transformationController,
+                onInteractionUpdate: (details) {
+                  setState(() {
+                    _transformationController.value =
+                        _transformationController.value
+                          ..translate(details.focalPointDelta.dx,
+                              details.focalPointDelta.dy)
+                          ..scale(details.scale);
+                  });
+                },
+                minScale: 0.1,
+                maxScale: 5.0,
+                child: GraphView(
+                  graph: graph,
+                  algorithm: builder,
+                  builder: (Node node) {
+                    final id = node.key?.value;
+                    return Container(
+                      padding: EdgeInsets.all(8.0),
+                      color: Colors.blue,
+                      child: Text('$id', style: TextStyle(color: Colors.white)),
+                    );
                   },
-                  minScale: 0.1,
-                  maxScale: 5.0,
-                  child: CustomPaint(
-                    size: Size.infinite,
-                    painter: MetaDomainPainter(
-                      domains: widget.domains,
-                      transformationController: _transformationController,
-                      layoutAlgorithm: _currentAlgorithm,
-                      decorators: widget.decorators,
-                      isDragging: _isDragging,
-                      system: _system,
-                      animationManager: _animationManager,
-                    ),
-                  ),
                 ),
               ),
             ),
@@ -280,11 +252,5 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    _gameLoop.stop();
-    super.dispose();
   }
 }

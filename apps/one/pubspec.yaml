@@ -16,6 +16,7 @@ dependencies:
     path: ../../packages/core
   ednet_cms:
     path: ../../packages/cms
+  graphview: ^1.2.0
 
 dev_dependencies:
   flutter_test:

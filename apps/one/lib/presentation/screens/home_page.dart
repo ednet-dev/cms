@@ -5,17 +5,15 @@ import 'package:ednet_one/generated/one_application.dart';
 import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graphview/GraphView.dart';
 
 import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
 import '../blocs/theme_block.dart';
 import '../blocs/theme_event.dart';
-import '../widgets/layout/graph/algorithms/force_directed_layout_algorithm.dart';
-import '../widgets/layout/graph/layout/layout_algorithm.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
 import '../widgets/layout/web/footer_widget.dart';
-import '../widgets/layout/web/layout_template.dart';
 import '../widgets/layout/web/left_sidebar_widget.dart';
 import '../widgets/layout/web/main_content_widget.dart';
 import '../widgets/layout/web/right_sidebar_widget.dart';
@@ -44,8 +42,8 @@ class HomePageState extends State<HomePage> {
   BookmarkManager bookmarkManager = BookmarkManager();
 
   bool showMetaCanvas = false;
-  LayoutAlgorithm _selectedAlgorithm =
-      ForceDirectedLayoutAlgorithm() as LayoutAlgorithm;
+  BuchheimWalkerConfiguration _selectedAlgorithm =
+      BuchheimWalkerConfiguration();
   Matrix4? _savedTransformation;
 
   @override
@@ -71,14 +69,16 @@ class HomePageState extends State<HomePage> {
     setState(() {
       selectedDomain = domain;
       selectedModel = domain.models.isNotEmpty ? domain.models.first : null;
-      selectedEntries = selectedModel?.concepts;
+      selectedEntries = selectedModel?.concepts.isNotEmpty ?? false
+          ? selectedModel!.concepts
+          : null;
     });
   }
 
   void _handleModelSelected(Model model) {
     setState(() {
       selectedModel = model;
-      selectedEntries = model.concepts;
+      selectedEntries = model.concepts.isNotEmpty ? model.concepts : null;
     });
   }
 
@@ -89,8 +89,8 @@ class HomePageState extends State<HomePage> {
   }
 
   void _handleConceptSelected(Concept concept) {
-    var domainModel =
-        app.getDomainModels(selectedDomain!.codeFirstLetterLower, selectedModel!.codeFirstLetterLower);
+    var domainModel = app.getDomainModels(selectedDomain!.codeFirstLetterLower,
+        selectedModel!.codeFirstLetterLower);
     var modelEntries = domainModel.getModelEntries(concept.model.code);
     var entry = modelEntries?.getEntry(concept.code);
     setState(() {
@@ -99,10 +99,10 @@ class HomePageState extends State<HomePage> {
     });
   }
 
-  void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
+  void _changeLayoutAlgorithm(BuchheimWalkerConfiguration configuration) {
     setState(() {
       _savedTransformation ??= Matrix4.identity();
-      _selectedAlgorithm = algorithm;
+      _selectedAlgorithm = configuration;
     });
   }
 
@@ -172,8 +172,7 @@ class HomePageState extends State<HomePage> {
   MetaDomainCanvas buildMetaDomainCanvas() {
     return MetaDomainCanvas(
       domains: app.groupedDomains,
-      layoutAlgorithm: _selectedAlgorithm,
-      decorators: const [],
+      configuration: _selectedAlgorithm,
       initialTransformation: _savedTransformation,
       onTransformationChanged: _saveTransformation,
       onChangeLayoutAlgorithm: _changeLayoutAlgorithm,
@@ -185,12 +184,14 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: buildHeader(),
       ),
-      body: LayoutTemplate(
-        leftSidebar: buildLeftSidebar(),
-        mainContent: buildMainContent(),
-        rightSidebar: buildRightSidebar(),
-        footer: const FooterWidget(),
+      body: Row(
+        children: [
+          buildLeftSidebar(),
+          buildMainContent(),
+          buildRightSidebar(),
+        ],
       ),
+      bottomNavigationBar: const FooterWidget(),
     );
   }
 
