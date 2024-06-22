@@ -59,6 +59,8 @@ class HomePageState extends State<HomePage> {
 
     if (app.groupedDomains.isNotEmpty) {
       selectedDomain = app.groupedDomains.first;
+
+      var graph = selectedDomain?.toGraph();
       if (selectedDomain!.models.isNotEmpty) {
         selectedModel = selectedDomain!.models.first;
         selectedEntries = selectedModel!.concepts;

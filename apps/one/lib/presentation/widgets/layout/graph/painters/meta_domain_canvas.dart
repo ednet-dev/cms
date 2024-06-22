@@ -1,20 +1,18 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
-import 'package:graphview/GraphView.dart';
 
 import '../algorithms/circular_layout_algorithm.dart';
 import '../algorithms/force_directed_layout_algorithm.dart';
 import '../algorithms/grid_layout_algorithm.dart';
 import '../algorithms/master_detail_layout_algorithm.dart';
-import '../algorithms/radial_tree_layout_algorithm.dart'; // New algorithm import
 import '../algorithms/ranked_embedding_layout_algorithm.dart';
 import '../animations/animation_manager.dart';
 import '../animations/game_loop.dart';
 import '../components/layout_algorithm_icon.dart';
 import '../components/system.dart';
 import '../decorators/u_x_decorator.dart';
-import '../layout/graph_layout.dart';
 import '../layout/layout_algorithm.dart';
+import 'meta_domain_painter.dart';
 
 class MetaDomainCanvas extends StatefulWidget {
   final Domains domains;
@@ -41,22 +39,19 @@ class MetaDomainCanvas extends StatefulWidget {
 
 class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
   late TransformationController _transformationController;
-  var _currentAlgorithm;
+  late LayoutAlgorithm _currentAlgorithm;
   bool _isDragging = false;
   late GameLoop _gameLoop;
   late System _system;
   late AnimationManager _animationManager;
   double _zoomLevel = 1.0;
   bool _isInitialLoad = true;
-  final BuchheimWalkerConfiguration configuration =
-      BuchheimWalkerConfiguration();
 
   @override
   void initState() {
     super.initState();
     _transformationController = TransformationController();
-    _currentAlgorithm = BuchheimWalkerAlgorithm(
-        this.configuration, TreeEdgeRenderer(this.configuration));
+    _currentAlgorithm = widget.layoutAlgorithm;
     _system = System();
     _animationManager = AnimationManager();
     _gameLoop = GameLoop(
@@ -196,15 +191,6 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
                       _changeLayoutAlgorithm(RankedEmbeddingLayoutAlgorithm()),
                   isActive: _currentAlgorithm is RankedEmbeddingLayoutAlgorithm,
                 ),
-                LayoutAlgorithmIcon(
-                  icon: Icons.bubble_chart,
-                  name: 'Radial Tree',
-                  // New icon
-                  onTap: () =>
-                      _changeLayoutAlgorithm(RadialTreeLayoutAlgorithm()),
-                  // New algorithm
-                  isActive: _currentAlgorithm is RadialTreeLayoutAlgorithm,
-                ),
               ],
             ),
             Expanded(
@@ -224,30 +210,17 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
                   },
                   minScale: 0.1,
                   maxScale: 5.0,
-                  // child: CustomPaint(
-                  //   size: Size.infinite,
-                  //   painter: MetaDomainPainter(
-                  //     domains: widget.domains,
-                  //     transformationController: _transformationController,
-                  //     layoutAlgorithm: _currentAlgorithm,
-                  //     decorators: widget.decorators,
-                  //     isDragging: _isDragging,
-                  //     system: _system,
-                  //     animationManager: _animationManager,
-                  //   ),
-                  // ),
-                  child: GraphView(
-                    graph: GraphLayout(domains: widget.domains).buildGraph(),
-                    algorithm: this._currentAlgorithm,
-                    builder: (Node node) {
-                      final id = node.key?.value;
-                      return Container(
-                        padding: EdgeInsets.all(8.0),
-                        color: Colors.blue,
-                        child:
-                            Text('$id', style: TextStyle(color: Colors.white)),
-                      );
-                    },
+                  child: CustomPaint(
+                    size: Size.infinite,
+                    painter: MetaDomainPainter(
+                      domains: widget.domains,
+                      transformationController: _transformationController,
+                      layoutAlgorithm: _currentAlgorithm,
+                      decorators: widget.decorators,
+                      isDragging: _isDragging,
+                      system: _system,
+                      animationManager: _animationManager,
+                    ),
                   ),
                 ),
               ),

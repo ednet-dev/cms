@@ -17,6 +17,9 @@ dependencies:
   ednet_cms:
     path: ../../packages/cms
   graphview: ^1.2.0
+  flame: ^1.18.0
+  flutter_svg:
+  flame_svg: ^1.10.2
 
 dev_dependencies:
   flutter_test:
