@@ -171,8 +171,11 @@ class HomePageState extends State<HomePage> {
   }
 
   MetaDomainCanvas buildMetaDomainCanvas() {
+    final transitDomains = Domains();
+    transitDomains.add(selectedDomain!);
+
     return MetaDomainCanvas(
-      domains: app.groupedDomains,
+      domains: transitDomains,
       initialTransformation: _savedTransformation,
       onTransformationChanged: _saveTransformation,
       onChangeLayoutAlgorithm: _changeLayoutAlgorithm,

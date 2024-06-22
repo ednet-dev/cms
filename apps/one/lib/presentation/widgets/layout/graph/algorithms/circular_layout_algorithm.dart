@@ -6,102 +6,182 @@ import 'package:ednet_core/ednet_core.dart';
 import '../layout/layout_algorithm.dart';
 
 class CircularLayoutAlgorithm extends LayoutAlgorithm {
-  final double rootRadius;
-  final double initialLevelDistance;
-  final double nodeSize;
-  final double levelDistanceIncrement = 200.0;
+  final double nodeWidth;
+  final double nodeHeight;
+  final double levelDistanceIncrement;
 
   CircularLayoutAlgorithm({
-    this.rootRadius = 1000.0,
-    this.initialLevelDistance = 500.0, // Further increased initial distance
-    this.nodeSize = 300.0,
+    this.nodeWidth = 600.0,
+    this.nodeHeight = 300.0,
+    this.levelDistanceIncrement = 200.0,
   });
 
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
     final positions = <String, Offset>{};
     final center = Offset(size.width / 2, size.height / 2);
-    print(size);
-    print(center);
 
-    _positionRoots(domains, center, positions);
+    if (domains.isEmpty) {
+      return positions;
+    }
+
+    final domain = domains.first; // Only consider the first domain
+
+    // Calculate the space requirement for the domain
+    final requiredSpace = _calculateDomainSpace(domain);
+
+    // Position the root domain
+    _positionRoot(domain, center, positions, requiredSpace);
 
     return positions;
   }
 
-  void _positionRoots(
-      Domains domains, Offset center, Map<String, Offset> positions) {
-    final rootCount = domains.length;
-    print(rootCount);
-    final rootAngleStep = pi / rootCount;
-    for (int i = 0; i < rootCount; i++) {
-      final domain = domains.elementAt(i);
-      final angle = i * rootAngleStep;
-      print('Angle: $angle of $rootAngleStep of $i');
-      final rootPosition =
-          center + Offset(rootRadius * cos(angle), rootRadius * sin(angle));
-      positions[domain.code] = rootPosition;
-
-      _positionModels(domain, rootPosition, positions, 1, angle);
+  // Calculate the required space for the domain and propagate upwards
+  double _calculateDomainSpace(Domain domain) {
+    double maxSpace = nodeWidth;
+    for (var model in domain.models) {
+      maxSpace = max(maxSpace, _calculateModelSpace(model));
     }
+    return maxSpace;
   }
 
-  void _positionModels(Domain domain, Offset parentPosition,
-      Map<String, Offset> positions, int level, double angle) {
+  double _calculateModelSpace(Model model) {
+    double maxSpace = nodeWidth;
+    for (var concept in model.concepts) {
+      maxSpace = max(maxSpace, _calculateConceptSpace(concept));
+    }
+    return maxSpace;
+  }
+
+  double _calculateConceptSpace(Concept concept) {
+    double maxSpace = nodeWidth;
+    for (var child in concept.children.whereType<Child>()) {
+      maxSpace =
+          max(maxSpace, _calculateConceptSpace(child.destinationConcept));
+    }
+    return maxSpace;
+  }
+
+  void _positionRoot(Domain domain, Offset center,
+      Map<String, Offset> positions, double requiredSpace) {
+    final rootRadius = requiredSpace / (2 * pi);
+
+    // Position the root domain
+    positions[domain.code] = center;
+
+    // Position the models
+    _positionModels(domain, center, positions, requiredSpace, 1, 0.0, 2 * pi);
+  }
+
+  void _positionModels(
+      Domain domain,
+      Offset parentPosition,
+      Map<String, Offset> positions,
+      double requiredSpace,
+      int level,
+      double startAngle,
+      double angleRange) {
     final models = domain.models.toList();
     if (models.isEmpty) return;
 
-    final levelDistance = initialLevelDistance +
-        (level - 1) * levelDistanceIncrement; // Increased increment
-    final angleStep = 2 * pi / models.length;
-    for (int i = 0; i < models.length; i++) {
-      final model = models[i];
-      final modelAngle = i * angleStep;
+    final totalSpace =
+        models.map((model) => requiredSpace).reduce((a, b) => a + b);
+    final levelDistance = totalSpace / (2 * pi) + levelDistanceIncrement;
+
+    double currentAngle = startAngle;
+    for (var model in models) {
+      final angleStep = (requiredSpace / totalSpace) * angleRange;
       final modelPosition = parentPosition +
-          Offset(
-              levelDistance * cos(modelAngle), levelDistance * sin(modelAngle));
+          Offset(levelDistance * cos(currentAngle + angleStep / 2),
+              levelDistance * sin(currentAngle + angleStep / 2));
       positions[model.code] = modelPosition;
 
-      _positionConcepts(model, modelPosition, positions, level + 1, modelAngle);
+      _positionConcepts(model, modelPosition, positions, requiredSpace,
+          level + 1, currentAngle, angleStep);
+
+      currentAngle += angleStep;
     }
   }
 
-  void _positionConcepts(Model model, Offset parentPosition,
-      Map<String, Offset> positions, int level, double angle) {
+  void _positionConcepts(
+      Model model,
+      Offset parentPosition,
+      Map<String, Offset> positions,
+      double requiredSpace,
+      int level,
+      double startAngle,
+      double angleRange) {
     final concepts = model.concepts.toList();
     if (concepts.isEmpty) return;
 
-    final levelDistance = initialLevelDistance +
-        (level - 1) * levelDistanceIncrement; // Increased increment
-    final angleStep = 2 * pi / concepts.length;
-    for (int i = 0; i < concepts.length; i++) {
-      final concept = concepts[i];
-      final conceptAngle = i * angleStep;
+    final totalSpace =
+        concepts.map((concept) => requiredSpace).reduce((a, b) => a + b);
+    final levelDistance = totalSpace / (2 * pi) + levelDistanceIncrement;
+
+    double currentAngle = startAngle;
+    for (var concept in concepts) {
+      final angleStep = (requiredSpace / totalSpace) * angleRange;
       final conceptPosition = parentPosition +
-          Offset(levelDistance * cos(conceptAngle),
-              levelDistance * sin(conceptAngle));
+          Offset(levelDistance * cos(currentAngle + angleStep / 2),
+              levelDistance * sin(currentAngle + angleStep / 2));
       positions[concept.code] = conceptPosition;
 
-      _positionConceptChildren(
-          concept, conceptPosition, positions, level + 1, conceptAngle);
+      _positionConceptChildren(concept, conceptPosition, positions,
+          requiredSpace, level + 1, currentAngle, angleStep);
+
+      currentAngle += angleStep;
     }
   }
 
-  void _positionConceptChildren(Concept concept, Offset parentPosition,
-      Map<String, Offset> positions, int level, double angle) {
-    final children = concept.children.toList();
-    if (children.isEmpty) return;
-
-    final levelDistance = initialLevelDistance +
-        (level - 1) * levelDistanceIncrement; // Increased increment
-    final angleStep = 2 * pi / children.length;
-    for (int i = 0; i < children.length; i++) {
-      final child = children[i];
-      final childAngle = i * angleStep;
-      final childPosition = parentPosition +
-          Offset(
-              levelDistance * cos(childAngle), levelDistance * sin(childAngle));
-      positions[child.code] = childPosition;
+  void _positionConceptChildren(
+      Concept concept,
+      Offset parentPosition,
+      Map<String, Offset> positions,
+      double requiredSpace,
+      int level,
+      double startAngle,
+      double angleRange) {
+    // Process children of type Child
+    final childNodes = concept.children.whereType<Child>().toList();
+    if (childNodes.isNotEmpty) {
+      _positionChildNodes(childNodes, parentPosition, positions, requiredSpace,
+          level, startAngle, angleRange);
     }
+
+    // Process attributes
+    for (var attribute in concept.attributes.whereType<Attribute>()) {
+      _positionAttribute(attribute, parentPosition, positions);
+    }
+  }
+
+  void _positionChildNodes(
+      List<Child> children,
+      Offset parentPosition,
+      Map<String, Offset> positions,
+      double requiredSpace,
+      int level,
+      double startAngle,
+      double angleRange) {
+    final totalSpace =
+        children.map((child) => requiredSpace).reduce((a, b) => a + b);
+    final levelDistance = totalSpace / (2 * pi) + levelDistanceIncrement;
+
+    double currentAngle = startAngle;
+    for (var child in children) {
+      final angleStep = (requiredSpace / totalSpace) * angleRange;
+      final childPosition = parentPosition +
+          Offset(levelDistance * cos(currentAngle + angleStep / 2),
+              levelDistance * sin(currentAngle + angleStep / 2));
+      positions[child.destinationConcept.code] = childPosition;
+
+      currentAngle += angleStep;
+    }
+  }
+
+  void _positionAttribute(Attribute attribute, Offset parentPosition,
+      Map<String, Offset> positions) {
+    final attributePosition = parentPosition +
+        Offset(-nodeWidth, 0); // Example positioning for attributes
+    positions[attribute.code] = attributePosition;
   }
 }

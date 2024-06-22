@@ -117,6 +117,10 @@ class MetaDomainPainter extends CustomPainter {
 
   double _getChildLevel(Property child, double currentLevel) {
     double maxLevel = currentLevel;
+    if (child is Child) {
+      maxLevel = max(maxLevel,
+          _getConceptLevel(child.destinationConcept, currentLevel + 1));
+    }
     return maxLevel;
   }
 

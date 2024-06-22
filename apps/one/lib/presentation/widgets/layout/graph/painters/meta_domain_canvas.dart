@@ -127,9 +127,9 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
     final double graphHeight = maxY - minY;
 
     final double scaleX =
-        canvasSize.width / (graphWidth + 2 * 100); // Add some padding
+        canvasSize.width / (graphWidth + 2 * 400); // Add some padding
     final double scaleY =
-        canvasSize.height / (graphHeight + 2 * 100); // Add some padding
+        canvasSize.height / (graphHeight + 2 * 400); // Add some padding
 
     final double scale = scaleX < scaleY ? scaleX : scaleY;
 
