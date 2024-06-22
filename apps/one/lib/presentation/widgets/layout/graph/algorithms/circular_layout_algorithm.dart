@@ -19,7 +19,7 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
     final positions = <String, Offset>{};
-    final center = Offset(size.width / 2, size.height / 2);
+    final center = Offset(size.width * 2, size.height * 2);
 
     if (domains.isEmpty) {
       return positions;
@@ -47,7 +47,9 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
 
   double _calculateModelSpace(Model model) {
     double maxSpace = nodeWidth;
-    for (var concept in model.concepts) {
+    final entryConcepts =
+        model.concepts.where((concept) => concept.entry).toList();
+    for (var concept in entryConcepts) {
       maxSpace = max(maxSpace, _calculateConceptSpace(concept));
     }
     return maxSpace;
@@ -111,7 +113,7 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
       int level,
       double startAngle,
       double angleRange) {
-    final concepts = model.concepts.toList();
+    final concepts = model.concepts.where((concept) => concept.entry).toList();
     if (concepts.isEmpty) return;
 
     final totalSpace =
