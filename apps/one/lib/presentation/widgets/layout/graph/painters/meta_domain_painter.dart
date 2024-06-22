@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/animations/animation_manager.dart';
 import 'package:flutter/material.dart';
@@ -69,24 +71,62 @@ class MetaDomainPainter extends CustomPainter {
     textPainter.paint(canvas, offset);
   }
 
+  Color _getColorForDomain(Domain domain, int level, double maxLevel) {
+    double hue = (domain.hashCode % 360)
+        .toDouble(); // Generate a base hue for each domain
+    double saturation = 0.7; // Fixed saturation
+    double brightness = (0.9 - (level / maxLevel) * 0.5).clamp(
+        0.0, 1.0); // Adjust brightness based on level and clamp to valid range
+    return HSVColor.fromAHSV(1.0, hue, saturation, brightness).toColor();
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     final positions = layoutAlgorithm.calculateLayout(domains, size);
     system.nodes.clear();
 
+    double maxLevel = _calculateMaxLevel(
+        domains); // Calculate the maximum level for brightness adjustment
+
     for (var domain in domains) {
-      _paintDomain(canvas, domain, positions);
+      _paintDomain(canvas, domain, positions, 1, maxLevel);
     }
 
     system.render(canvas);
   }
 
-  void _paintDomain(
-      Canvas canvas, Domain domain, Map<String, Offset> positions) {
+  double _calculateMaxLevel(Domains domains) {
+    double maxLevel = 1.0;
+    for (var domain in domains) {
+      for (var model in domain.models) {
+        for (var concept in model.concepts) {
+          maxLevel = max(maxLevel, _getConceptLevel(concept, 1));
+        }
+      }
+    }
+    return maxLevel;
+  }
+
+  double _getConceptLevel(Concept concept, double currentLevel) {
+    double maxLevel = currentLevel;
+    for (var child in concept.children) {
+      maxLevel = max(maxLevel, _getChildLevel(child, currentLevel + 1));
+    }
+    return maxLevel;
+  }
+
+  double _getChildLevel(Property child, double currentLevel) {
+    double maxLevel = currentLevel;
+    return maxLevel;
+  }
+
+  void _paintDomain(Canvas canvas, Domain domain, Map<String, Offset> positions,
+      int level, double maxLevel) {
     final domainPosition = positions[domain.code];
     if (domainPosition == null) return;
 
-    Node domainNode = _createNode(domainPosition, Colors.orange);
+    Color domainColor = _getColorForDomain(domain, level, maxLevel);
+    Node domainNode = _createNode(domainPosition, domainColor);
     system.addNode(domainNode);
     _drawText(canvas, domain.code, domainPosition);
 
@@ -94,7 +134,8 @@ class MetaDomainPainter extends CustomPainter {
       final modelPosition = positions[model.code];
       if (modelPosition == null) continue;
 
-      Node modelNode = _createNode(modelPosition, Colors.lightBlue);
+      Color modelColor = _getColorForDomain(domain, level + 1, maxLevel);
+      Node modelNode = _createNode(modelPosition, modelColor);
       system.addNode(modelNode);
       _drawText(canvas, model.code, modelPosition);
 
@@ -102,7 +143,8 @@ class MetaDomainPainter extends CustomPainter {
         final entityPosition = positions[concept.code];
         if (entityPosition == null) continue;
 
-        Node entityNode = _createNode(entityPosition, Colors.red);
+        Color conceptColor = _getColorForDomain(domain, level + 2, maxLevel);
+        Node entityNode = _createNode(entityPosition, conceptColor);
         system.addNode(entityNode);
         _drawText(canvas, concept.code, entityPosition);
 
@@ -110,7 +152,8 @@ class MetaDomainPainter extends CustomPainter {
           final childPosition = positions[child.code];
           if (childPosition == null) continue;
 
-          Node childNode = _createNode(childPosition, Colors.black);
+          Color childColor = _getColorForDomain(domain, level + 3, maxLevel);
+          Node childNode = _createNode(childPosition, childColor);
           system.addNode(childNode);
           _drawText(canvas, child.code, childPosition);
 
