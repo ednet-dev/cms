@@ -9,6 +9,16 @@ import '../components/system.dart';
 import '../decorators/u_x_decorator.dart';
 import '../layout/layout_algorithm.dart';
 
+Node _createNode(Offset position, Color color) {
+  Node node = Node();
+  node.addComponent(PositionComponent(position));
+  node.addComponent(RenderComponent(
+    Paint()..color = color,
+    Rect.fromCenter(center: position, width: 100, height: 50),
+  ));
+  return node;
+}
+
 class MetaDomainPainter extends CustomPainter {
   final Domains domains;
   final TransformationController transformationController;
@@ -27,62 +37,6 @@ class MetaDomainPainter extends CustomPainter {
     required this.system,
     required this.animationManager,
   });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final positions = layoutAlgorithm.calculateLayout(domains, size);
-    system.nodes.clear();
-
-    for (var domain in domains) {
-      _paintDomain(canvas, domain, positions);
-    }
-
-    system.render(canvas);
-  }
-
-  void _paintDomain(
-      Canvas canvas, Domain domain, Map<String, Offset> positions) {
-    Offset domainPosition = positions[domain.code]!;
-    Node domainNode = _createNode(domainPosition, Colors.blue);
-    system.addNode(domainNode);
-
-    _drawText(canvas, domain.code, domainPosition);
-
-    for (var model in domain.models) {
-      Offset modelPosition = positions[model.code]!;
-      Node modelNode = _createNode(modelPosition, Colors.green);
-      system.addNode(modelNode);
-
-      _drawText(canvas, model.code, modelPosition);
-
-      for (var entity in model.concepts) {
-        final safeEntity = Concept.safeGetConcept(model, entity);
-        Offset entityPosition = positions[safeEntity.code]!;
-        Node entityNode = _createNode(entityPosition, Colors.red);
-        system.addNode(entityNode);
-        _drawText(canvas, safeEntity.code, entityPosition);
-
-        for (var child in safeEntity.concept.children) {
-          Offset childPosition = positions[child.code]!;
-          Node childNode = _createNode(childPosition, Colors.red);
-          system.addNode(childNode);
-
-          _drawLine(canvas, entityPosition, childPosition);
-          _drawText(canvas, child.code, childPosition);
-        }
-      }
-    }
-  }
-
-  Node _createNode(Offset position, Color color) {
-    Node node = Node();
-    node.addComponent(PositionComponent(position));
-    node.addComponent(RenderComponent(
-      Paint()..color = color,
-      Rect.fromCenter(center: position, width: 100, height: 50),
-    ));
-    return node;
-  }
 
   void _drawLine(Canvas canvas, Offset start, Offset end) {
     canvas.drawLine(
@@ -113,6 +67,59 @@ class MetaDomainPainter extends CustomPainter {
     final offset = Offset(position.dx - textPainter.width / 2,
         position.dy - textPainter.height / 2);
     textPainter.paint(canvas, offset);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final positions = layoutAlgorithm.calculateLayout(domains, size);
+    system.nodes.clear();
+
+    for (var domain in domains) {
+      _paintDomain(canvas, domain, positions);
+    }
+
+    system.render(canvas);
+  }
+
+  void _paintDomain(
+      Canvas canvas, Domain domain, Map<String, Offset> positions) {
+    final domainPosition = positions[domain.code];
+    if (domainPosition == null) return;
+
+    Node domainNode = _createNode(domainPosition, Colors.orange);
+    system.addNode(domainNode);
+    _drawText(canvas, domain.code, domainPosition);
+
+    for (var model in domain.models) {
+      final modelPosition = positions[model.code];
+      if (modelPosition == null) continue;
+
+      Node modelNode = _createNode(modelPosition, Colors.lightBlue);
+      system.addNode(modelNode);
+      _drawText(canvas, model.code, modelPosition);
+
+      for (var concept in model.concepts) {
+        final entityPosition = positions[concept.code];
+        if (entityPosition == null) continue;
+
+        Node entityNode = _createNode(entityPosition, Colors.red);
+        system.addNode(entityNode);
+        _drawText(canvas, concept.code, entityPosition);
+
+        for (var child in concept.children) {
+          final childPosition = positions[child.code];
+          if (childPosition == null) continue;
+
+          Node childNode = _createNode(childPosition, Colors.black);
+          system.addNode(childNode);
+          _drawText(canvas, child.code, childPosition);
+
+          _drawLine(canvas, entityPosition, childPosition);
+        }
+
+        _drawLine(canvas, modelPosition, entityPosition);
+      }
+    }
   }
 
   @override

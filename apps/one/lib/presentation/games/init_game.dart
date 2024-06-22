@@ -96,3 +96,46 @@ class Entity {
     required this.children,
   });
 }
+
+// class MyGame extends FlameGame {
+//   @override
+//   Future<void> onLoad() async {
+//     super.onLoad();
+//
+//     final domain = Artefact(label: 'Domain', width: 200, height: 100, color: Colors.green)
+//       ..position = Vector2(100, 100);
+//     add(domain);
+//
+//     final model = Artefact(label: 'Model', width: 150, height: 75, color: Colors.red)
+//       ..position = Vector2(150, 250);
+//     add(model);
+//
+//     final entity = Artefact(label: 'Entity', width: 100, height: 50, color: Colors.blue)
+//       ..position = Vector2(175, 350);
+//     add(entity);
+//
+//     // Add lines between artefacts
+//     add(LineComponent(start: domain.position + Vector2(domain.width / 2, domain.height), end: model.position + Vector2(model.width / 2, 0)));
+//     add(LineComponent(start: model.position + Vector2(model.width / 2, model.height), end: entity.position + Vector2(entity.width / 2, 0)));
+//   }
+// }
+//
+// class LineComponent extends PositionComponent {
+//   final Vector2 start;
+//   final Vector2 end;
+//   final Paint _paint;
+//
+//   LineComponent({
+//     required this.start,
+//     required this.end,
+//     Color color = Colors.black,
+//   }) : _paint = Paint()
+//     ..color = color
+//     ..strokeWidth = 2;
+//
+//   @override
+//   void render(Canvas canvas) {
+//     super.render(canvas);
+//     canvas.drawLine(start.toOffset(), end.toOffset(), _paint);
+//   }
+// }

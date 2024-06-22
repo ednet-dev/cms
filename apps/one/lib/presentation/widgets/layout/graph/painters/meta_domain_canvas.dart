@@ -20,8 +20,7 @@ class MetaDomainCanvas extends StatefulWidget {
   final List<UXDecorator> decorators;
   final Matrix4? initialTransformation;
   final ValueChanged<Matrix4> onTransformationChanged;
-
-  final onChangeLayoutAlgorithm;
+  final ValueChanged<LayoutAlgorithm> onChangeLayoutAlgorithm;
 
   const MetaDomainCanvas({
     super.key,
@@ -34,10 +33,10 @@ class MetaDomainCanvas extends StatefulWidget {
   });
 
   @override
-  MetaDomainCanvasStateState createState() => MetaDomainCanvasStateState();
+  MetaDomainCanvasState createState() => MetaDomainCanvasState();
 }
 
-class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
+class MetaDomainCanvasState extends State<MetaDomainCanvas> {
   late TransformationController _transformationController;
   late LayoutAlgorithm _currentAlgorithm;
   bool _isDragging = false;
@@ -216,7 +215,7 @@ class MetaDomainCanvasStateState extends State<MetaDomainCanvas> {
                       domains: widget.domains,
                       transformationController: _transformationController,
                       layoutAlgorithm: _currentAlgorithm,
-                      decorators: widget.decorators,
+                      decorators: [],
                       isDragging: _isDragging,
                       system: _system,
                       animationManager: _animationManager,

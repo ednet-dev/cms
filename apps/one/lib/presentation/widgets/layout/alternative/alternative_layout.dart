@@ -46,7 +46,7 @@ class _AlternativeLayoutState extends State<AlternativeLayout> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ...widget.domains.map((domain) {
+                    ...widget.domains.toList().map((domain) {
                       return ListTile(
                         title: Text(domain.code),
                         onTap: () {

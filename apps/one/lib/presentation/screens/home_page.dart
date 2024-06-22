@@ -6,13 +6,13 @@ import 'package:ednet_one/presentation/widgets/layout/graph/algorithms/master_de
 import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graphview/GraphView.dart';
 
 import '../blocs/layout_block.dart';
 import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
 import '../blocs/theme_block.dart';
 import '../blocs/theme_event.dart';
+import '../widgets/layout/graph/layout/layout_algorithm.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
 import '../widgets/layout/web/footer_widget.dart';
 import '../widgets/layout/web/left_sidebar_widget.dart';
@@ -43,8 +43,7 @@ class HomePageState extends State<HomePage> {
   BookmarkManager bookmarkManager = BookmarkManager();
 
   bool showMetaCanvas = false;
-  BuchheimWalkerConfiguration _selectedAlgorithm =
-      BuchheimWalkerConfiguration();
+  LayoutAlgorithm _selectedAlgorithm = MasterDetailLayoutAlgorithm();
   Matrix4? _savedTransformation;
 
   @override
@@ -60,7 +59,6 @@ class HomePageState extends State<HomePage> {
     if (app.groupedDomains.isNotEmpty) {
       selectedDomain = app.groupedDomains.first;
 
-      var graph = selectedDomain?.toGraph();
       if (selectedDomain!.models.isNotEmpty) {
         selectedModel = selectedDomain!.models.first;
         selectedEntries = selectedModel!.concepts;
@@ -102,10 +100,10 @@ class HomePageState extends State<HomePage> {
     });
   }
 
-  void _changeLayoutAlgorithm(BuchheimWalkerConfiguration configuration) {
+  void _changeLayoutAlgorithm(LayoutAlgorithm algorithm) {
     setState(() {
       _savedTransformation ??= Matrix4.identity();
-      _selectedAlgorithm = configuration;
+      _selectedAlgorithm = algorithm;
     });
   }
 
@@ -175,11 +173,10 @@ class HomePageState extends State<HomePage> {
   MetaDomainCanvas buildMetaDomainCanvas() {
     return MetaDomainCanvas(
       domains: app.groupedDomains,
-      // configuration: _selectedAlgorithm,
       initialTransformation: _savedTransformation,
       onTransformationChanged: _saveTransformation,
       onChangeLayoutAlgorithm: _changeLayoutAlgorithm,
-      layoutAlgorithm: MasterDetailLayoutAlgorithm(),
+      layoutAlgorithm: _selectedAlgorithm,
       decorators: [],
     );
   }

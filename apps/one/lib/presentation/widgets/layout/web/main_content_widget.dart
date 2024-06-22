@@ -36,7 +36,7 @@ class _MainContentWidgetState extends State<MainContentWidget> {
         header: Text('Filters of its children?'),
         // list all entities with title
         leftSidebar: Column(
-          children: widget.entities.map((entity) {
+          children: widget.entities.toList().map((entity) {
             return ListTile(
               title: Text(entity.id.toString()),
               onTap: () => _handleEntitySelected(entity as Entity),
