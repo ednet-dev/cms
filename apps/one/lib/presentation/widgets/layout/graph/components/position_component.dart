@@ -52,11 +52,12 @@ class PositionComponent extends Component {
   @override
   void render(Canvas canvas) {
     canvas.drawCircle(
-        position,
-        100,
-        Paint()
-          ..color = Colors.orange
-          ..blendMode = BlendMode.colorBurn);
+      position,
+      100,
+      Paint()
+        ..color = Colors.orange
+        ..blendMode = BlendMode.colorBurn,
+    );
   }
 }
 
@@ -81,7 +82,9 @@ class LineComponent extends Component {
   final Paint paint;
   final String fromToName;
   final String toFromName;
-  final TextStyle textStyle;
+  final TextStyle fromTextStyle;
+  final TextStyle toTextStyle;
+  final double margin;
 
   LineComponent({
     required this.start,
@@ -89,10 +92,12 @@ class LineComponent extends Component {
     required this.fromToName,
     required this.toFromName,
     Color color = Colors.black,
-    required this.textStyle,
+    required this.fromTextStyle,
+    required this.toTextStyle,
+    this.margin = 100.0,
   }) : paint = Paint()
           ..color = color
-          ..strokeWidth = 2;
+          ..strokeWidth = 1;
 
   @override
   void update(double dt) {}
@@ -101,27 +106,39 @@ class LineComponent extends Component {
   void render(Canvas canvas) {
     canvas.drawLine(start, end, paint);
 
+    // Calculate the direction vector of the line
+    final direction = (end - start).direction;
+
+    // Draw fromToName near the start of the line
+    _drawText(canvas, fromToName, start, fromTextStyle, direction, margin);
+
+    // Draw toFromName near the end of the line
+    _drawText(canvas, toFromName, end, toTextStyle, direction + pi, margin);
+  }
+
+  void _drawText(Canvas canvas, String text, Offset position, TextStyle style,
+      double direction, double offset) {
     final textPainter = TextPainter(
       text: TextSpan(
-        text: fromToName,
-        style: textStyle,
+        text: text,
+        style: style,
       ),
       textDirection: TextDirection.ltr,
     );
 
     textPainter.layout();
-    final midpoint = Offset(
-      (start.dx + end.dx) / 2,
-      (start.dy + end.dy) / 2,
-    );
 
-    final angle = atan2(end.dy - start.dy, end.dx - start.dx);
-    canvas.save();
-    canvas.translate(midpoint.dx, midpoint.dy);
-    canvas.rotate(angle);
+    // Calculate the offset position based on the direction of the line
+    final dx = cos(direction) * offset;
+    final dy = sin(direction) * offset;
+
+    // Adjust the position to apply the offset
+    final adjustedPosition = position + Offset(dx, dy);
+
     textPainter.paint(
-        canvas, Offset(-textPainter.width / 2, -textPainter.height / 2));
-    canvas.restore();
+        canvas,
+        Offset(adjustedPosition.dx - textPainter.width / 2,
+            adjustedPosition.dy - textPainter.height / 2));
   }
 }
 

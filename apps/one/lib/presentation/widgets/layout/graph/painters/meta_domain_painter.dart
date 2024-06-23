@@ -114,7 +114,8 @@ class MetaDomainPainter extends CustomPainter {
         system.addNode(conceptNode);
 
         // Add line from model to concept
-        system.addNode(_createLineNode(modelPosition, entityPosition, '111111', '2222222'));
+        system.addNode(_createLineNode(
+            modelPosition, entityPosition, '111111', '2222222'));
 
         for (var child in concept.children) {
           final childPosition = positions[child.code];
@@ -125,8 +126,8 @@ class MetaDomainPainter extends CustomPainter {
           system.addNode(childNode);
 
           // Add line from concept to child
-          system
-              .addNode(_createLineNode(entityPosition, childPosition, 'wqqqqqqqq', 'cccccc'));
+          system.addNode(_createLineNode(
+              entityPosition, childPosition, 'wqqqqqqqq', 'cccccc'));
         }
 
         // Add parent-child relationships within the concept
@@ -169,7 +170,8 @@ class MetaDomainPainter extends CustomPainter {
       end: end,
       fromToName: fromToName,
       toFromName: toFromName,
-      textStyle: Theme.of(context).textTheme.labelLarge!,
+      fromTextStyle: Theme.of(context).textTheme.labelLarge!,
+      toTextStyle: Theme.of(context).textTheme.labelSmall!,
     ));
     return node;
   }
