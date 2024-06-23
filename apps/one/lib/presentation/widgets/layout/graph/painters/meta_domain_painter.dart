@@ -4,7 +4,6 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
 import '../components/node.dart';
-import '../components/position_component.dart' as pc;
 import '../components/position_component.dart';
 import '../components/system.dart';
 import '../decorators/u_x_decorator.dart';
@@ -125,7 +124,7 @@ class MetaDomainPainter extends CustomPainter {
 
   Node _createNode(Offset position, Color color, String label) {
     Node node = Node();
-    node.addComponent(pc.PositionComponent(position));
+    node.addComponent(PositionComponent(position));
     node.addComponent(RenderComponent(
       Paint()..color = color,
       Rect.fromCenter(center: position, width: 100, height: 50),

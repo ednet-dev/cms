@@ -12,7 +12,10 @@ class System {
 
   void render(Canvas canvas) {
     for (var node in nodes) {
-      node.render(canvas);
+      for (var component in node.components
+          .where((component) => component is! TextComponent)) {
+        component.render(canvas);
+      }
     }
   }
 
