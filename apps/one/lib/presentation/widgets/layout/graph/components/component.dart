@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'position_component.dart';
 
-abstract class Component {
-  void update(double dt);
-
-  void render(Canvas canvas);
-}
-
 class DraggableArtefact extends StatefulWidget {
   final Artefact artefact;
 

@@ -19,7 +19,7 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
     final positions = <String, Offset>{};
-    final center = Offset(size.width * 2, size.height * 2);
+    final center = Offset(size.width / 2, size.height / 2);
 
     if (domains.isEmpty) {
       return positions;
@@ -66,40 +66,42 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
 
   void _positionRoot(Domain domain, Offset center,
       Map<String, Offset> positions, double requiredSpace) {
-    final rootRadius = requiredSpace / (2 * pi);
+    final rootRadius = requiredSpace / (0.5 * pi);
 
     // Position the root domain
     positions[domain.code] = center;
 
     // Position the models
-    _positionModels(domain, center, positions, requiredSpace, 1, 0.0, 2 * pi);
+    _positionModels(domain, center, positions, rootRadius, 1, 0, 4 * pi);
   }
 
   void _positionModels(
       Domain domain,
       Offset parentPosition,
       Map<String, Offset> positions,
-      double requiredSpace,
+      double levelDistance,
       int level,
       double startAngle,
       double angleRange) {
     final models = domain.models.toList();
     if (models.isEmpty) return;
 
-    final totalSpace =
-        models.map((model) => requiredSpace).reduce((a, b) => a + b);
-    final levelDistance = totalSpace / (2 * pi) + levelDistanceIncrement;
-
     double currentAngle = startAngle;
     for (var model in models) {
-      final angleStep = (requiredSpace / totalSpace) * angleRange;
+      final angleStep = angleRange / models.length;
       final modelPosition = parentPosition +
           Offset(levelDistance * cos(currentAngle + angleStep / 2),
               levelDistance * sin(currentAngle + angleStep / 2));
       positions[model.code] = modelPosition;
 
-      _positionConcepts(model, modelPosition, positions, requiredSpace,
-          level + 1, currentAngle, angleStep);
+      _positionConcepts(
+          model,
+          modelPosition,
+          positions,
+          levelDistance + levelDistanceIncrement,
+          level + 1,
+          currentAngle,
+          angleStep);
 
       currentAngle += angleStep;
     }
@@ -109,27 +111,29 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
       Model model,
       Offset parentPosition,
       Map<String, Offset> positions,
-      double requiredSpace,
+      double levelDistance,
       int level,
       double startAngle,
       double angleRange) {
     final concepts = model.concepts.where((concept) => concept.entry).toList();
     if (concepts.isEmpty) return;
 
-    final totalSpace =
-        concepts.map((concept) => requiredSpace).reduce((a, b) => a + b);
-    final levelDistance = totalSpace / (2 * pi) + levelDistanceIncrement;
-
     double currentAngle = startAngle;
     for (var concept in concepts) {
-      final angleStep = (requiredSpace / totalSpace) * angleRange;
+      final angleStep = angleRange / concepts.length;
       final conceptPosition = parentPosition +
           Offset(levelDistance * cos(currentAngle + angleStep / 2),
               levelDistance * sin(currentAngle + angleStep / 2));
       positions[concept.code] = conceptPosition;
 
-      _positionConceptChildren(concept, conceptPosition, positions,
-          requiredSpace, level + 1, currentAngle, angleStep);
+      _positionConceptChildren(
+          concept,
+          conceptPosition,
+          positions,
+          levelDistance + levelDistanceIncrement,
+          level + 1,
+          currentAngle,
+          angleStep);
 
       currentAngle += angleStep;
     }
@@ -139,14 +143,14 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
       Concept concept,
       Offset parentPosition,
       Map<String, Offset> positions,
-      double requiredSpace,
+      double levelDistance,
       int level,
       double startAngle,
       double angleRange) {
     // Process children of type Child
     final childNodes = concept.children.whereType<Child>().toList();
     if (childNodes.isNotEmpty) {
-      _positionChildNodes(childNodes, parentPosition, positions, requiredSpace,
+      _positionChildNodes(childNodes, parentPosition, positions, levelDistance,
           level, startAngle, angleRange);
     }
 
@@ -160,17 +164,13 @@ class CircularLayoutAlgorithm extends LayoutAlgorithm {
       List<Child> children,
       Offset parentPosition,
       Map<String, Offset> positions,
-      double requiredSpace,
+      double levelDistance,
       int level,
       double startAngle,
       double angleRange) {
-    final totalSpace =
-        children.map((child) => requiredSpace).reduce((a, b) => a + b);
-    final levelDistance = totalSpace / (2 * pi) + levelDistanceIncrement;
-
     double currentAngle = startAngle;
     for (var child in children) {
-      final angleStep = (requiredSpace / totalSpace) * angleRange;
+      final angleStep = angleRange / children.length;
       final childPosition = parentPosition +
           Offset(levelDistance * cos(currentAngle + angleStep / 2),
               levelDistance * sin(currentAngle + angleStep / 2));

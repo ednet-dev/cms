@@ -218,7 +218,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
                       decorators: [],
                       isDragging: _isDragging,
                       system: _system,
-                      animationManager: _animationManager,
+                      context: context,
                     ),
                   ),
                 ),

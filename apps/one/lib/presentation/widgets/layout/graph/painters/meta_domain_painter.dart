@@ -1,25 +1,14 @@
 import 'dart:math';
 
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/animations/animation_manager.dart';
 import 'package:flutter/material.dart';
 
 import '../components/node.dart';
+import '../components/position_component.dart' as pc;
 import '../components/position_component.dart';
-import '../components/render_component.dart';
 import '../components/system.dart';
 import '../decorators/u_x_decorator.dart';
 import '../layout/layout_algorithm.dart';
-
-Node _createNode(Offset position, Color color) {
-  Node node = Node();
-  node.addComponent(PositionComponent(position));
-  node.addComponent(RenderComponent(
-    Paint()..color = color,
-    Rect.fromCenter(center: position, width: 100, height: 50),
-  ));
-  return node;
-}
 
 class MetaDomainPainter extends CustomPainter {
   final Domains domains;
@@ -28,7 +17,8 @@ class MetaDomainPainter extends CustomPainter {
   final List<UXDecorator> decorators;
   final bool isDragging;
   final System system;
-  final AnimationManager animationManager;
+
+  final BuildContext context;
 
   MetaDomainPainter({
     required this.domains,
@@ -37,46 +27,13 @@ class MetaDomainPainter extends CustomPainter {
     required this.decorators,
     required this.isDragging,
     required this.system,
-    required this.animationManager,
+    required this.context,
   });
 
-  void _drawLine(Canvas canvas, Offset start, Offset end) {
-    canvas.drawLine(
-      start,
-      end,
-      Paint()..color = Colors.black,
-    );
-  }
-
-  void _drawText(Canvas canvas, String text, Offset position) {
-    final textStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 12,
-    );
-    final textSpan = TextSpan(
-      text: text,
-      style: textStyle,
-    );
-    final textPainter = TextPainter(
-      text: textSpan,
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout(
-      minWidth: 0,
-      maxWidth: 100,
-    );
-    final offset = Offset(position.dx - textPainter.width / 2,
-        position.dy - textPainter.height / 2);
-    textPainter.paint(canvas, offset);
-  }
-
   Color _getColorForDomain(Domain domain, int level, double maxLevel) {
-    double hue = (domain.hashCode % 360)
-        .toDouble(); // Generate a base hue for each domain
-    double saturation = 0.7; // Fixed saturation
-    double brightness = (0.9 - (level / maxLevel) * 0.5).clamp(
-        0.0, 1.0); // Adjust brightness based on level and clamp to valid range
+    double hue = (domain.hashCode % 360).toDouble();
+    double saturation = 0.7;
+    double brightness = (0.9 - (level / maxLevel) * 0.5).clamp(0.0, 1.0);
     return HSVColor.fromAHSV(1.0, hue, saturation, brightness).toColor();
   }
 
@@ -85,14 +42,18 @@ class MetaDomainPainter extends CustomPainter {
     final positions = layoutAlgorithm.calculateLayout(domains, size);
     system.nodes.clear();
 
-    double maxLevel = _calculateMaxLevel(
-        domains); // Calculate the maximum level for brightness adjustment
+    double maxLevel = _calculateMaxLevel(domains);
 
+    // Create nodes and add them to the system
     for (var domain in domains) {
-      _paintDomain(canvas, domain, positions, 1, maxLevel);
+      _createDomainNodes(domain, positions, 1, maxLevel);
     }
 
+    // Render lines and rectangles first
     system.render(canvas);
+
+    // Render text nodes last
+    system.renderText(canvas);
   }
 
   double _calculateMaxLevel(Domains domains) {
@@ -124,49 +85,59 @@ class MetaDomainPainter extends CustomPainter {
     return maxLevel;
   }
 
-  void _paintDomain(Canvas canvas, Domain domain, Map<String, Offset> positions,
+  void _createDomainNodes(Domain domain, Map<String, Offset> positions,
       int level, double maxLevel) {
     final domainPosition = positions[domain.code];
     if (domainPosition == null) return;
 
     Color domainColor = _getColorForDomain(domain, level, maxLevel);
-    Node domainNode = _createNode(domainPosition, domainColor);
+    Node domainNode = _createNode(domainPosition, domainColor, domain.code);
     system.addNode(domainNode);
-    _drawText(canvas, domain.code, domainPosition);
 
     for (var model in domain.models) {
       final modelPosition = positions[model.code];
       if (modelPosition == null) continue;
 
       Color modelColor = _getColorForDomain(domain, level + 1, maxLevel);
-      Node modelNode = _createNode(modelPosition, modelColor);
+      Node modelNode = _createNode(modelPosition, modelColor, model.code);
       system.addNode(modelNode);
-      _drawText(canvas, model.code, modelPosition);
 
       for (var concept in model.concepts) {
         final entityPosition = positions[concept.code];
         if (entityPosition == null) continue;
 
         Color conceptColor = _getColorForDomain(domain, level + 2, maxLevel);
-        Node entityNode = _createNode(entityPosition, conceptColor);
-        system.addNode(entityNode);
-        _drawText(canvas, concept.code, entityPosition);
+        Node conceptNode =
+            _createNode(entityPosition, conceptColor, concept.code);
+        system.addNode(conceptNode);
 
         for (var child in concept.children) {
           final childPosition = positions[child.code];
           if (childPosition == null) continue;
 
           Color childColor = _getColorForDomain(domain, level + 3, maxLevel);
-          Node childNode = _createNode(childPosition, childColor);
+          Node childNode = _createNode(childPosition, childColor, child.code);
           system.addNode(childNode);
-          _drawText(canvas, child.code, childPosition);
-
-          _drawLine(canvas, entityPosition, childPosition);
         }
-
-        _drawLine(canvas, modelPosition, entityPosition);
       }
     }
+  }
+
+  Node _createNode(Offset position, Color color, String label) {
+    Node node = Node();
+    node.addComponent(pc.PositionComponent(position));
+    node.addComponent(RenderComponent(
+      Paint()..color = color,
+      Rect.fromCenter(center: position, width: 100, height: 50),
+    ));
+    node.addComponent(TextComponent(
+      text: label,
+      position: position,
+      style:
+          Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
+      backgroundColor: Colors.black.withOpacity(0.5),
+    ));
+    return node;
   }
 
   @override

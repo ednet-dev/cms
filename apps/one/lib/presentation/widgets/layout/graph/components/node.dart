@@ -1,6 +1,6 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
-import 'component.dart';
+import 'position_component.dart';
 
 class Node {
   final List<Component> components = [];

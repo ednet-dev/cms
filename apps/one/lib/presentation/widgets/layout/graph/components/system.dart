@@ -1,6 +1,7 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 import 'node.dart';
+import 'position_component.dart';
 
 class System {
   final List<Node> nodes = [];
@@ -9,15 +10,23 @@ class System {
     nodes.add(node);
   }
 
-  void update(double dt) {
-    for (var node in nodes) {
-      node.update(dt);
-    }
-  }
-
   void render(Canvas canvas) {
     for (var node in nodes) {
       node.render(canvas);
+    }
+  }
+
+  void renderText(Canvas canvas) {
+    for (var node in nodes) {
+      for (var component in node.components.whereType<TextComponent>()) {
+        component.render(canvas);
+      }
+    }
+  }
+
+  void update(double dt) {
+    for (var node in nodes) {
+      node.update(dt);
     }
   }
 }
