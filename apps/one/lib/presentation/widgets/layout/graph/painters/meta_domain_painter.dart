@@ -101,6 +101,9 @@ class MetaDomainPainter extends CustomPainter {
       Node modelNode = _createNode(modelPosition, modelColor, model.code);
       system.addNode(modelNode);
 
+      // Add line from domain to model
+      system.addNode(_createLineNode(domainPosition, modelPosition));
+
       for (var concept in model.concepts) {
         final entityPosition = positions[concept.code];
         if (entityPosition == null) continue;
@@ -110,6 +113,9 @@ class MetaDomainPainter extends CustomPainter {
             _createNode(entityPosition, conceptColor, concept.code);
         system.addNode(conceptNode);
 
+        // Add line from model to concept
+        system.addNode(_createLineNode(modelPosition, entityPosition));
+
         for (var child in concept.children) {
           final childPosition = positions[child.code];
           if (childPosition == null) continue;
@@ -117,6 +123,9 @@ class MetaDomainPainter extends CustomPainter {
           Color childColor = _getColorForDomain(domain, level + 3, maxLevel);
           Node childNode = _createNode(childPosition, childColor, child.code);
           system.addNode(childNode);
+
+          // Add line from concept to child
+          system.addNode(_createLineNode(entityPosition, childPosition));
         }
       }
     }
@@ -124,7 +133,7 @@ class MetaDomainPainter extends CustomPainter {
 
   Node _createNode(Offset position, Color color, String label) {
     Node node = Node();
-    node.addComponent(PositionComponent(position));
+    // node.addComponent(PositionComponent(position));
     node.addComponent(RenderComponent(
       Paint()..color = color,
       Rect.fromCenter(center: position, width: 100, height: 50),
@@ -132,6 +141,32 @@ class MetaDomainPainter extends CustomPainter {
     node.addComponent(TextComponent(
       text: label,
       position: position,
+      style:
+          Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
+      backgroundColor: Colors.black.withOpacity(0.5),
+    ));
+    return node;
+  }
+
+  Node _createLineNode(Offset start, Offset end) {
+    Node node = Node();
+    // node.addComponent(PositionComponent(start));
+    node.addComponent(LineComponent(
+      start: start,
+      end: end,
+    ));
+
+    // write text centred on the line and parallel to it
+    final angle = atan2(end.dy - start.dy, end.dx - start.dx);
+    // take angle in account
+    final textPosition = Offset(
+      (start.dx + end.dx) / 2 + 50 * cos(angle),
+      (start.dy + end.dy) / 2 + 50 * sin(angle),
+    );
+
+    node.addComponent(TextComponent(
+      text: 'Some text',
+      position: textPosition,
       style:
           Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
       backgroundColor: Colors.black.withOpacity(0.5),
