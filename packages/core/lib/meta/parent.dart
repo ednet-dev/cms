@@ -10,4 +10,11 @@ class Parent extends Neighbor {
     minc = '1';
     maxc = '1';
   }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['absorb'] = absorb;
+    return graph;
+  }
 }

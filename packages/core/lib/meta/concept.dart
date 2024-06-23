@@ -368,4 +368,16 @@ class Concept extends Entity<Concept> {
               '*** concept is not set ***'); // return a default Concept object or null
     }
   }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['attributes'] =
+        attributes.toList().map((attribute) => attribute.toGraph()).toList();
+    graph['parents'] =
+        parents.toList().map((parent) => parent.toGraph()).toList();
+    graph['children'] =
+        children.toList().map((child) => child.toGraph()).toList();
+    return graph;
+  }
 }

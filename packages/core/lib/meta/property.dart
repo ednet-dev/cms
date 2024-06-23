@@ -42,5 +42,16 @@ abstract class Property extends Entity<Property> {
     req ? minc = '1' : minc = '0';
   }
 
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['minc'] = minc;
+    graph['maxc'] = maxc;
+    graph['essential'] = essential;
+    graph['update'] = update;
+    graph['sensitive'] = sensitive;
+    graph['label'] = label;
+    return graph;
+  }
 // get external;
 }

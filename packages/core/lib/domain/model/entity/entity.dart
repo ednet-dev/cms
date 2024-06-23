@@ -933,4 +933,31 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       throw UpdateException(msg);
     }
   }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    var graph = <String, dynamic>{};
+    graph['oid'] = oid.toString();
+    graph['code'] = code;
+    graph['whenAdded'] = whenAdded.toString();
+    graph['whenSet'] = whenSet.toString();
+    graph['whenRemoved'] = whenRemoved.toString();
+
+    for (var k in _attributeMap.keys) {
+      graph[k] = getStringFromAttribute(k);
+    }
+
+    for (var k in _internalChildMap.keys) {
+      graph[k] = (getInternalChild(k) as Entities).toGraph();
+    }
+
+    for (var k in _parentMap.keys) {
+      var parent = getParent(k) as Entity;
+      var reference = Reference(parent.oid.toString(), parent.concept.code,
+          parent.concept.entryConcept.code);
+      graph[k] = reference.toGraph();
+    }
+
+    return graph;
+  }
 }

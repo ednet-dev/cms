@@ -84,4 +84,13 @@ class Model extends Entity<Model> {
 
   Concept? getConcept(String conceptCode) =>
       concepts.singleWhereCode(conceptCode);
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['author'] = author;
+    graph['description'] = description;
+    graph['concepts'] = concepts.toList().map((concept) => concept.toGraph()).toList();
+    return graph;
+  }
 }

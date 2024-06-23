@@ -41,4 +41,26 @@ class Domain extends Entity<Domain> {
   Model? getModel(String modelCode) => models.singleWhereCode(modelCode);
 
   AttributeType? getType(String typeCode) => types.singleWhereCode(typeCode);
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['description'] = description;
+    graph['types'] = types.toList().map((type) => type.toGraph()).toList();
+    graph['models'] = models.toList().map((model) => model.toGraph()).toList();
+    return graph;
+  }
 }
+//
+// extension DomainExtension on Domain {
+//   Map<String, dynamic> toGraph() {
+//     return {
+//       'code': code,
+//       'description': description,
+//       'domain': domain.code,
+//       'domains': domains.toGraph(),
+//       'types': types.toGraph(),
+//       'models': models.toGraph(),
+//     };
+//   }
+// }

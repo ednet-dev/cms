@@ -8,6 +8,8 @@ abstract class IEntities<E extends IEntity<E>> implements Iterable<E> {
 
   IEntities<E>? get source;
 
+  get _entityList;
+
   E firstWhereAttribute(String code, Object attribute);
 
   E random();
@@ -68,4 +70,15 @@ abstract class IEntities<E extends IEntity<E>> implements Iterable<E> {
   void integrateSet(IEntities<E> setEntities);
 
   void integrateRemove(IEntities<E> removeEntities);
+
+  Map<String, dynamic> toGraph();
 }
+//
+// extension IEntitiesExtension<E extends IEntity<E>> on IEntities<E> {
+//   Map<String, dynamic> toGraph() {
+//     return {
+//       'type': runtimeType.toString(),
+//       'entities': _entityList.map((entity) => entity.toGraph()).toList(),
+//     };
+//   }
+// }

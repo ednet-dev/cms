@@ -40,4 +40,17 @@ class Attribute extends Property {
       update = false;
     }
   }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['guid'] = guid;
+    graph['init'] = init;
+    graph['increment'] = increment;
+    graph['sequence'] = sequence;
+    graph['derive'] = derive;
+    graph['length'] = length;
+    graph['type'] = type?.toGraph();
+    return graph;
+  }
 }

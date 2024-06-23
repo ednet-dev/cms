@@ -18,14 +18,6 @@ class Reference {
     return Oid.ts(parentTimeStamp);
   }
 
-  /*
-  String toString() {
-    String ref = 'parent oid: ${parentOidString}; ';
-           ref = '${ref}parent concept: ${parentConceptCode}; ';
-           ref = '${ref}entry concept: ${entryConceptCode}';
-    return ref;
-  */
-
   @override
   String toString() {
     return parentOidString;
@@ -36,5 +28,16 @@ class Reference {
     return this.parentOidString == (other as Reference).parentOidString &&
         this.parentConceptCode == other.parentConceptCode &&
         this.entryConceptCode == other.entryConceptCode;
+  }
+
+  @override
+  int get hashCode => parentOidString.hashCode;
+
+  Map<String, dynamic> toGraph() {
+    return {
+      'parentOidString': parentOidString,
+      'parentConceptCode': parentConceptCode,
+      'entryConceptCode': entryConceptCode
+    };
   }
 }

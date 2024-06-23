@@ -5,6 +5,9 @@ class FilterCriteria {
   final String operator;
   final dynamic value;
 
-  FilterCriteria(
-      {required this.attribute, required this.operator, required this.value});
+  FilterCriteria({
+    required this.attribute,
+    required this.operator,
+    required this.value,
+  });
 }

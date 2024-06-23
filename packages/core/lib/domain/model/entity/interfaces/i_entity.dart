@@ -16,6 +16,14 @@ abstract class IEntity<E extends IEntity<E>> implements Comparable {
   DateTime? whenSet;
   DateTime? whenRemoved;
 
+  get _attributeMap;
+
+  get _referenceMap;
+
+  get _parentMap;
+
+  get _childMap;
+
   K? getAttribute<K>(String attributeCode);
 
   bool preSetAttribute(String name, Object value);
@@ -43,4 +51,20 @@ abstract class IEntity<E extends IEntity<E>> implements Comparable {
   String toJson();
 
   void fromJson<K extends Entity<K>>(String entityJson);
+
+  Map<String, dynamic> toGraph();
 }
+
+// extension IEntityExtension<E extends IEntity<E>> on IEntity<E> {
+//   Map<String, dynamic> toGraph() {
+//     return {
+//       'code': code,
+//       'oid': oid.toString(),
+//       'type': runtimeType.toString(),
+//       'attributes': _attributeMap,
+//       'references': _referenceMap,
+//       'parents': _parentMap.map((k, v) => MapEntry(k, v.toGraph())),
+//       'children': _childMap.map((k, v) => MapEntry(k, v.toGraph())),
+//     };
+//   }
+// }

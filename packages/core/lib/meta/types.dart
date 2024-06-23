@@ -115,7 +115,7 @@ class AttributeType extends Entity<AttributeType> {
     return true;
   }
 
-int compare(var value1, var value2) {
+  int compare(var value1, var value2) {
     var compare = 0;
     if (base == 'String') {
       compare = value1.compareTo(value2);
@@ -134,5 +134,13 @@ int compare(var value1, var value2) {
       throw OrderException(msg);
     }
     return compare;
+  }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['base'] = base;
+    graph['length'] = length;
+    return graph;
   }
 }

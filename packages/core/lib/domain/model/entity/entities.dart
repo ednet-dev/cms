@@ -1041,4 +1041,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     // When the returned iterable creates a new object that depends on the type R, e.g., from toList, it will have exactly the type R.
     return it as Iterable<T>;
   }
+
+  Map<String, dynamic> toGraph() {
+    return {
+      'type': runtimeType.toString(),
+      'entities': _entityList.map((entity) => entity.toGraph()).toList(),
+    };
+  }
 }
