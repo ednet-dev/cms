@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 abstract class Component {
@@ -77,11 +79,17 @@ class LineComponent extends Component {
   final Offset start;
   final Offset end;
   final Paint paint;
+  final String fromToName;
+  final String toFromName;
+  final TextStyle textStyle;
 
   LineComponent({
     required this.start,
     required this.end,
+    required this.fromToName,
+    required this.toFromName,
     Color color = Colors.black,
+    required this.textStyle,
   }) : paint = Paint()
           ..color = color
           ..strokeWidth = 2;
@@ -92,6 +100,28 @@ class LineComponent extends Component {
   @override
   void render(Canvas canvas) {
     canvas.drawLine(start, end, paint);
+
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: fromToName,
+        style: textStyle,
+      ),
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout();
+    final midpoint = Offset(
+      (start.dx + end.dx) / 2,
+      (start.dy + end.dy) / 2,
+    );
+
+    final angle = atan2(end.dy - start.dy, end.dx - start.dx);
+    canvas.save();
+    canvas.translate(midpoint.dx, midpoint.dy);
+    canvas.rotate(angle);
+    textPainter.paint(
+        canvas, Offset(-textPainter.width / 2, -textPainter.height / 2));
+    canvas.restore();
   }
 }
 

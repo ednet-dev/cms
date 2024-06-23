@@ -16,7 +16,6 @@ class MetaDomainPainter extends CustomPainter {
   final List<UXDecorator> decorators;
   final bool isDragging;
   final System system;
-
   final BuildContext context;
 
   MetaDomainPainter({
@@ -102,7 +101,8 @@ class MetaDomainPainter extends CustomPainter {
       system.addNode(modelNode);
 
       // Add line from domain to model
-      system.addNode(_createLineNode(domainPosition, modelPosition));
+      system.addNode(
+          _createLineNode(domainPosition, modelPosition, 'sss', 'wwwww'));
 
       for (var concept in model.concepts) {
         final entityPosition = positions[concept.code];
@@ -114,7 +114,7 @@ class MetaDomainPainter extends CustomPainter {
         system.addNode(conceptNode);
 
         // Add line from model to concept
-        system.addNode(_createLineNode(modelPosition, entityPosition));
+        system.addNode(_createLineNode(modelPosition, entityPosition, '111111', '2222222'));
 
         for (var child in concept.children) {
           final childPosition = positions[child.code];
@@ -125,7 +125,21 @@ class MetaDomainPainter extends CustomPainter {
           system.addNode(childNode);
 
           // Add line from concept to child
-          system.addNode(_createLineNode(entityPosition, childPosition));
+          system
+              .addNode(_createLineNode(entityPosition, childPosition, 'wqqqqqqqq', 'cccccc'));
+        }
+
+        // Add parent-child relationships within the concept
+        for (var parent in concept.parents) {
+          final parentPosition = positions[parent.code];
+          if (parentPosition != null) {
+            system.addNode(_createLineNode(
+              parentPosition,
+              entityPosition,
+              'parent',
+              'child',
+            ));
+          }
         }
       }
     }
@@ -133,7 +147,6 @@ class MetaDomainPainter extends CustomPainter {
 
   Node _createNode(Offset position, Color color, String label) {
     Node node = Node();
-    // node.addComponent(PositionComponent(position));
     node.addComponent(RenderComponent(
       Paint()..color = color,
       Rect.fromCenter(center: position, width: 100, height: 50),
@@ -148,28 +161,15 @@ class MetaDomainPainter extends CustomPainter {
     return node;
   }
 
-  Node _createLineNode(Offset start, Offset end) {
+  Node _createLineNode(
+      Offset start, Offset end, String fromToName, String toFromName) {
     Node node = Node();
-    // node.addComponent(PositionComponent(start));
     node.addComponent(LineComponent(
       start: start,
       end: end,
-    ));
-
-    // write text centred on the line and parallel to it
-    final angle = atan2(end.dy - start.dy, end.dx - start.dx);
-    // take angle in account
-    final textPosition = Offset(
-      (start.dx + end.dx) / 2 + 50 * cos(angle),
-      (start.dy + end.dy) / 2 + 50 * sin(angle),
-    );
-
-    node.addComponent(TextComponent(
-      text: 'Some text',
-      position: textPosition,
-      style:
-          Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
-      backgroundColor: Colors.black.withOpacity(0.5),
+      fromToName: fromToName,
+      toFromName: toFromName,
+      textStyle: Theme.of(context).textTheme.labelLarge!,
     ));
     return node;
   }
