@@ -6,3 +6,5 @@ melos_ednetdev.iml
 package_config.json
 pubspec_overrides.yaml
 /.dart_tool/
+.DS_Store
+**/.DS_Store
