@@ -102,20 +102,20 @@ class MetaDomainPainter extends CustomPainter {
 
       // Add line from domain to model
       system.addNode(
-          _createLineNode(domainPosition, modelPosition, 'sss', 'wwwww'));
+          _createLineNode(domainPosition, modelPosition, 'has', 'belongs to'));
 
       for (var concept in model.concepts) {
-        final entityPosition = positions[concept.code];
-        if (entityPosition == null) continue;
+        final conceptPosition = positions[concept.code];
+        if (conceptPosition == null) continue;
 
         Color conceptColor = _getColorForDomain(domain, level + 2, maxLevel);
         Node conceptNode =
-            _createNode(entityPosition, conceptColor, concept.code);
+            _createNode(conceptPosition, conceptColor, concept.code);
         system.addNode(conceptNode);
 
         // Add line from model to concept
         system.addNode(_createLineNode(
-            modelPosition, entityPosition, '111111', '2222222'));
+            modelPosition, conceptPosition, 'contains', 'is part of'));
 
         for (var child in concept.children) {
           final childPosition = positions[child.code];
@@ -126,8 +126,8 @@ class MetaDomainPainter extends CustomPainter {
           system.addNode(childNode);
 
           // Add line from concept to child
-          system.addNode(_createLineNode(
-              entityPosition, childPosition, 'wqqqqqqqq', 'cccccc'));
+          system.addNode(_createLineNode(conceptPosition, childPosition,
+              child.code, ((child as Neighbor).sourceConcept.code)));
         }
 
         // Add parent-child relationships within the concept
@@ -136,14 +136,28 @@ class MetaDomainPainter extends CustomPainter {
           if (parentPosition != null) {
             system.addNode(_createLineNode(
               parentPosition,
-              entityPosition,
-              'parent',
-              'child',
+              conceptPosition,
+              parent.code,
+              parent.sourceConcept.code,
             ));
           }
         }
       }
     }
+  }
+
+  Node _createLineNode(
+      Offset start, Offset end, String fromToName, String toFromName) {
+    Node node = Node();
+    node.addComponent(LineComponent(
+      start: start,
+      end: end,
+      fromToName: fromToName,
+      toFromName: toFromName,
+      fromTextStyle: Theme.of(context).textTheme.labelSmall!,
+      toTextStyle: Theme.of(context).textTheme.labelSmall!,
+    ));
+    return node;
   }
 
   Node _createNode(Offset position, Color color, String label) {
@@ -158,20 +172,6 @@ class MetaDomainPainter extends CustomPainter {
       style:
           Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
       backgroundColor: Colors.black.withOpacity(0.5),
-    ));
-    return node;
-  }
-
-  Node _createLineNode(
-      Offset start, Offset end, String fromToName, String toFromName) {
-    Node node = Node();
-    node.addComponent(LineComponent(
-      start: start,
-      end: end,
-      fromToName: fromToName,
-      toFromName: toFromName,
-      fromTextStyle: Theme.of(context).textTheme.labelLarge!,
-      toTextStyle: Theme.of(context).textTheme.labelSmall!,
     ));
     return node;
   }
