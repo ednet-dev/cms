@@ -17,6 +17,8 @@ class MetaDomainPainter extends CustomPainter {
   final bool isDragging;
   final System system;
   final BuildContext context;
+  final String? selectedNode;
+  final Function(String) onNodeTap;
 
   MetaDomainPainter({
     required this.domains,
@@ -26,6 +28,8 @@ class MetaDomainPainter extends CustomPainter {
     required this.isDragging,
     required this.system,
     required this.context,
+    required this.selectedNode,
+    required this.onNodeTap,
   });
 
   Color _getColorForDomain(Domain domain, int level, double maxLevel) {
@@ -127,19 +131,15 @@ class MetaDomainPainter extends CustomPainter {
 
           // Add line from concept to child
           system.addNode(_createLineNode(conceptPosition, childPosition,
-              child.code, ((child as Neighbor).sourceConcept.code)));
+              child.code, (child as Neighbor).sourceConcept.code));
         }
 
         // Add parent-child relationships within the concept
         for (var parent in concept.parents) {
           final parentPosition = positions[parent.code];
           if (parentPosition != null) {
-            system.addNode(_createLineNode(
-              parentPosition,
-              conceptPosition,
-              parent.code,
-              parent.sourceConcept.code,
-            ));
+            system.addNode(_createLineNode(parentPosition, conceptPosition,
+                parent.code, parent.sourceConcept.code));
           }
         }
       }
@@ -161,10 +161,12 @@ class MetaDomainPainter extends CustomPainter {
   }
 
   Node _createNode(Offset position, Color color, String label) {
+    bool isSelected = label == selectedNode;
     Node node = Node();
     node.addComponent(RenderComponent(
       Paint()..color = color,
       Rect.fromCenter(center: position, width: 100, height: 50),
+      glow: isSelected ? 10.0 : 0.0,
     ));
     node.addComponent(TextComponent(
       text: label,

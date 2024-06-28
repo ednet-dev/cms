@@ -45,6 +45,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
   late AnimationManager _animationManager;
   double _zoomLevel = 1.0;
   bool _isInitialLoad = true;
+  String? _selectedNode;
 
   @override
   void initState() {
@@ -130,7 +131,6 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
         canvasSize.width / (graphWidth + 2 * 400); // Add some padding
     final double scaleY =
         canvasSize.height / (graphHeight + 2 * 400); // Add some padding
-
     final double scale = scaleX < scaleY ? scaleX : scaleY;
 
     final double offsetX =
@@ -145,6 +145,34 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
     setState(() {
       _zoomLevel = scale;
     });
+  }
+
+  void _onNodeTap(String nodeCode) {
+    setState(() {
+      _selectedNode = nodeCode;
+    });
+  }
+
+  void _handleTap(TapUpDetails details) {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final tapPosition = _transformationController
+        .toScene(renderBox.globalToLocal(details.globalPosition));
+
+    final layoutPositions =
+        _currentAlgorithm.calculateLayout(widget.domains, renderBox.size);
+
+    const double margin = 10.0; // Adjust the margin size as needed
+
+    for (var entry in layoutPositions.entries) {
+      final nodeRect = Rect.fromCenter(
+          center: entry.value,
+          width: 100 + margin * 2,
+          height: 50 + margin * 2);
+      if (nodeRect.contains(tapPosition)) {
+        _onNodeTap(entry.key);
+        break;
+      }
+    }
   }
 
   @override
@@ -196,6 +224,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
               child: GestureDetector(
                 onScaleStart: _onInteractionStart,
                 onScaleEnd: _onInteractionEnd,
+                onTapUp: _handleTap,
                 child: InteractiveViewer(
                   transformationController: _transformationController,
                   onInteractionUpdate: (details) {
@@ -219,6 +248,8 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
                       isDragging: _isDragging,
                       system: _system,
                       context: context,
+                      selectedNode: _selectedNode,
+                      onNodeTap: _onNodeTap,
                     ),
                   ),
                 ),

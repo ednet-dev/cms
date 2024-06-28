@@ -64,14 +64,21 @@ class PositionComponent extends Component {
 class RenderComponent extends Component {
   final Paint paint;
   final Rect rect;
+  final double glow;
 
-  RenderComponent(this.paint, this.rect);
+  RenderComponent(this.paint, this.rect, {this.glow = 0.0});
 
   @override
   void update(double dt) {}
 
   @override
   void render(Canvas canvas) {
+    if (glow > 0.0) {
+      final glowPaint = Paint()
+        ..color = paint.color.withOpacity(0.5)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, glow);
+      canvas.drawRect(rect.inflate(glow), glowPaint);
+    }
     canvas.drawRect(rect, paint);
   }
 }
