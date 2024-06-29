@@ -1,203 +1,123 @@
 # EDNet One
+Your Domain Model Explorer 🚀
 
-EDNet One is a multiplatform Flutter application designed to navigate domain models defined by
-the `ednet_core` framework. It employs a master-detail UX pattern, providing a consistent and
-intuitive way to explore and interact with domain entities. This project implements a transparent
-and democratic general-purpose project management tool built on top of the web. It is a
-next-generation semantic web reader focused on the `User` and the different `Roles` that the `User`
-assumes throughout their life.
+Welcome to **EDNet One**, the multiplatform Flutter app that brings your `ednet_core` domain models to life! Whether you're managing projects or exploring complex data relationships, EDNet One has got you covered.
 
-Our core domains are generalized interactions and behaviors of `Project Management`
-and `Direct Democracy`.
+## 🎭 What's EDNet One?
 
-The core orchestrates human-centric processes by integrating with a wide range of web-exposed APIs
-from various service providers. These include calendar management, email, project management, event
-booking, transport, accounting and tax submission, education and skill development, self-care,
-social networks, and other relevant domains.
+**EDNet One** is your trusty sidekick in the world of domain-driven design. It's a next-gen semantic web reader that puts the `User` front and center, adapting to the various `Roles` you play in life. Think of it as a Swiss Army knife for navigating and interacting with your domain entities.
 
-## 🚀 Features
+## 🌟 Why EDNet One?
 
-- **Master-Detail UX Pattern**: Simplifies navigation through domain models, allowing you to drill
-  down from domains to models to entities seamlessly.
-- **Breadcrumb Navigation**: Easily navigate back to previous states using breadcrumb trails,
-  providing a clear sense of your location within the application.
-- **Path Management**: Maintain and manage navigation paths seamlessly, ensuring a smooth and
-  intuitive user experience.
-- **Entity Filtering**: Filter entities dynamically based on various attributes, allowing you to
-  quickly find the information you need.
-- **Bookmarking**: Save and quickly access important entities, streamlining your workflow.
-- **Multiplatform**: Runs on Android, iOS, Web, and Desktop, providing flexibility and
-  accessibility.
-- **Web Layout**: A traditional web-style layout with left and right sidebars for efficient
-  navigation and information display.
-- **Meta Domain Canvas**: An interactive canvas for visualizing entity relationships across domains,
-  offering a unique perspective on your data.
-    - **Layout Algorithms**: Choose from various layout algorithms (force-directed, grid, circular,
-      master-detail) to optimize the visualization for your needs.
-    - **Pan and Zoom**: Explore the canvas with ease using pan and zoom functionality.
-- **Theme Support**: Switch between light and dark themes to personalize your experience.
+- **Master-Detail Magic**: Drill down from domains to models to entities with ease.
+- **Breadcrumbs FTW**: Always know where you are in your data journey.
+- **Filter Frenzy**: Find what you need, when you need it.
+- **Bookmark Bonanza**: Save your favorite spots in your data landscape.
+- **Multiplatform Madness**: Android, iOS, Web, Desktop - we've got 'em all!
+- **Canvas Creativity**: Visualize your domain relationships in style.
+- **Theme Therapy**: Light mode, dark mode, happy mode!
 
-## 🌐 Core Domains
+## 🎨 Core Domains
 
 ### Project Management
 
-Generalized interactions and behaviors for managing projects effectively, including task management,
-resource allocation, and progress tracking.
+Juggling tasks, resources, and progress like a pro? That's our jam!
 
 ### Direct Democracy
 
-Tools and functionalities supporting transparent and democratic decision-making processes, enabling
-collaborative governance and community engagement.
+Making decisions transparent and collaborative? We've got the tools for that!
 
-## 🛠️ Integration
+## 🔌 Integration Station
 
-EDNet One integrates with a wide range of web-exposed APIs to enhance user value by leveraging
-services like:
+**EDNet One** plays nice with a ton of web APIs, helping you:
 
-- **Calendar Management**: Synchronize your schedule and events across platforms.
-- **E-mail Communication**: Streamline your communication workflows.
-- **Event Booking**: Easily manage event registrations and attendance.
-- **Transport Management**: Optimize your travel and logistics.
-- **Accounting and Tax Submission**: Simplify financial management and compliance.
-- **Education and Competence Development**: Access and track your learning progress.
-- **Self-Care and Social Networks**: Stay connected and maintain your well-being.
+- Sync calendars
+- Streamline emails
+- Book events
+- Manage transport
+- Handle finances
+- Level up your skills
+- Take care of yourself
+- Stay social
 
-## 📱 Platforms
+## 🚀 Getting Started
 
-- **Android**: Reach a wide audience with the most popular mobile platform.
-- **iOS**: Deliver a premium experience on Apple devices.
-- **Web**: Provide universal access through any web browser.
-- **Desktop**: Offer a powerful and feature-rich experience on desktop computers.
+1. Clone the mothership:
+   ```bash
+   git clone https://github.com/ednet-dev/cms.git
+   ```
 
-## 📝 Usage
+2. Navigate to EDNet One HQ:
+   ```bash
+   cd cms/apps/one
+   ```
 
-1. **Clone the repository:**
+3. Gather your supplies:
+   ```bash
+   flutter pub get
+   ```
 
-```bash
-git clone https://github.com/ednet-dev/cms.git
-```
+4. Define your domain (it's easier than it sounds!):
+   ```bash
+   cd lib/requirements
+   mkdir -p household/finance
+   touch household/finance/finance.ednet.yaml
+   ```
 
-2. **Navigate to the project directory:**
+5. Craft your domain model:
+   ```yaml
+   # household/finance/finance.ednet.yaml
+   domain: Household
+   model: Finances
+   concepts:
+     - name: Income
+       attributes:
+         - name: amount
+           type: number
+         - name: source
+           type: string
+     - name: Expense
+     - name: Budget
+     - name: Transaction
+   ```
 
+6. Generate your domain model:
+   ```bash
+   dart run build_runner build --delete-conflicting-outputs
+   ```
 
-```
-cd cms/apps/one
-```
+7. Launch the EDNet One spaceship:
+   ```bash
+   flutter run
+   ```
 
-3. **Install dependencies:**
+## 🗺️ The Road Ahead
 
-```
-flutter pub get
-```
-
-4. Use EDNet DSL to define your domain model in the `ednet_core` package.
-```bash
-cd lib/requirements
-# in this folder we will define our domain of interest 
-mkdir household
-# once in the household folder we will define the domain models
-cd household
-# here we create a folder for the finance model
-mkdir finance
-mkdir health
-mkdir education
-mkdir social
-mkdir work
-mkdir leisure
-cd finance
-touch finance.ednet.yaml
-
-```
-create a domain model in the `finance.ednet.yaml` file:
-```yaml
-domain: Household
-model: Finances
-concepts: 
-  - name: Income
-    attributes:
-      - name: amount
-        type: number
-      - name: source
-        type: string
-  - name: Expense
-  - name: Budget
-  - name: Transaction
-```
-Please see here [DSL documentation](DSL.md) for more information on how to define your domain model.
-
-5. **Generate the domain model:**
-
-```bash
- dart run build_runner build --delete-conflicting-outputs
-```
-
-6. **Run the application:**
-
-```
-flutter run
-```
-
-## 🗺️ Roadmap
+We're not just sitting pretty. Here's what's cooking:
 
 ### In-Vivo Domain Model Editing
 
-**Goal:** Empower users to directly modify and extend the domain model within the application,
-fostering a dynamic and adaptable environment.
-
-**Features:**
-
-- **Editable Graph View:** Enable users to add, delete, and modify entities and relationships
-  directly within the interactive graph visualization.
-- **Real-time Synchronization:** Ensure that changes made in the graph view are immediately
-  reflected in the default master-detail view, maintaining consistency across the application.
-- **Intuitive UI Controls:** Provide user-friendly controls for editing the graph, such as
-  drag-and-drop for creating relationships and context menus for node and edge modifications.
-- **Validation and Feedback:** Implement real-time validation to ensure the integrity of the domain
-  model and provide clear feedback to users on any potential errors or conflicts.
+Edit your domain model right in the app. It's like surgery, but for your data!
 
 ### DBpedia and SPARQL Integration
 
-**Goal:** Leverage the vast knowledge base of DBpedia and the querying power of SPARQL to enrich
-the semantic context of EDNet One.
+Tap into the vast knowledge of the web. Your data, but smarter!
 
-**Features:**
+### AI-Powered Evolution
 
-- **DBpedia as a Data Source:** Integrate DBpedia as a primary data source, allowing users to
-  seamlessly access and incorporate information from this extensive knowledge graph.
-- **SPARQL Querying:** Implement SPARQL query capabilities, enabling users to perform complex
-  queries on DBpedia and other linked data sources to retrieve relevant information.
-- **Ednet Core Dialect:** Develop a dialect of Ednet Core criteria that maps to SPARQL queries,
-  providing a unified and intuitive way to interact with semantic data.
-- **Contextual Enrichment:** Utilize DBpedia and SPARQL to automatically enrich the context of
-  entities and relationships within EDNet One, providing users with a deeper understanding of the
-  data.
+Let AI suggest improvements to your domain model and UI. The future is now!
 
-### Generative AI for Domain Model and Interface Evolution
+## 🤝 Join the EDNet One Crew
 
-**Goal:** Harness the power of generative AI to assist users in evolving the domain model and
-optimizing the user interface.
+We love new faces! Check out our [contribution guidelines](CONTRIBUTING.md) and our [issues page](https://github.com/your-username/ednet-one/issues). Don't be shy!
 
-**Features:**
+## 📄 The Fine Print
 
-- **AI-Assisted Modeling:** Employ generative AI to suggest potential enhancements to the domain
-  model based on user interactions and data patterns.
-- **UI Optimization:** Leverage AI to analyze user behavior and preferences to suggest improvements
-  to the user interface, enhancing usability and efficiency.
-- **Personalized Experiences:** Utilize AI to tailor the application experience to individual users,
-  providing customized views and recommendations.
+This project is licensed under the MIT License. Check out the [LICENSE](LICENSE) file for the legal jazz.
 
-## 🤝 Contributing
+## 📧 Holla at Us
 
-Contributions are welcome! Please read the [contribution guidelines](CONTRIBUTING.md) first. You
-can also check the [issues page](https://github.com/your-username/ednet-one/issues).
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📧 Contact
-
-For more information, please contact [dev team](mailto:dev@ednet.dev).
+Questions? Ideas? Just want to chat? Hit up our [dev team](mailto:dev@ednet.dev).
 
 ---
 &nbsp;
