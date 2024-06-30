@@ -77,3 +77,4 @@ part 'meta/parents.dart';
 part 'meta/property.dart';
 part 'meta/types.dart';
 part 'utilities/text/transformation.dart';
+part 'gen/i_one_application.dart';

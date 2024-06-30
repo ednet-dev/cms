@@ -8,8 +8,6 @@ abstract class IEntities<E extends IEntity<E>> implements Iterable<E> {
 
   IEntities<E>? get source;
 
-  get _entityList;
-
   E firstWhereAttribute(String code, Object attribute);
 
   E random();

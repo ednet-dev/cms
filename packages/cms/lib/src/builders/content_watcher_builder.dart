@@ -92,7 +92,7 @@ import 'package:ednet_core/ednet_core.dart';
 
 $importsPlaceholder
 
-class OneApplication {
+class OneApplication implements IOneApplication {
   final Domains _domains = Domains();
   final Domains _groupedDomains = Domains();
   final Map<String, DomainModels> _domainModelsTable = {};
@@ -106,6 +106,7 @@ class OneApplication {
     $initPlaceholder
   }
   
+  @override
   DomainModels getDomainModels(String domain, String model) {
     final domainModel = _domainModelsTable['\${domain}_\$model'];
   
@@ -147,7 +148,9 @@ class OneApplication {
     }
   }
 
+  @override
   Domains get domains => _domains;
+  @override
   Domains get groupedDomains => _groupedDomains;
   Map<String, DomainModels> get domainModels => _domainModelsTable;
 }
