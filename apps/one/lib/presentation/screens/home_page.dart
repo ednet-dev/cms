@@ -12,6 +12,7 @@ import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
 import '../blocs/theme_block.dart';
 import '../blocs/theme_event.dart';
+import '../theme.dart';
 import '../widgets/layout/graph/layout/layout_algorithm.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
 import '../widgets/layout/web/footer_widget.dart';
@@ -127,6 +128,7 @@ class HomePageState extends State<HomePage> {
         children: [
           for (var domain in app.groupedDomains) buildDomainButton(domain),
           const Spacer(),
+          ThemeDropdown(),
           buildIconButton(Icons.view_quilt, () {
             setState(() {
               showMetaCanvas = !showMetaCanvas;
@@ -240,6 +242,34 @@ class HomePageState extends State<HomePage> {
       onBookmark: () => print('onBookmark'),
       onPathSegmentTapped: print,
       path: path,
+    );
+  }
+}
+
+class ThemeDropdown extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeState = context.watch<ThemeBloc>().state;
+    final brightness = themeState.isDarkMode ? 'dark' : 'light';
+    final currentThemeName = themes[brightness]!.keys.firstWhere(
+        (themeName) => themes[brightness]![themeName] == themeState.themeData,
+        orElse: () => themes[brightness]!.keys.first);
+
+    return DropdownButton<String>(
+      value: currentThemeName,
+      hint: Text('Select Theme'),
+      items: themes[brightness]!.keys.map((String themeName) {
+        return DropdownMenuItem<String>(
+          value: themeName,
+          child: Text(themeName),
+        );
+      }).toList(),
+      onChanged: (themeName) {
+        if (themeName != null) {
+          final themeData = themes[brightness]![themeName]!;
+          context.read<ThemeBloc>().add(ChangeThemeEvent(themeData));
+        }
+      },
     );
   }
 }

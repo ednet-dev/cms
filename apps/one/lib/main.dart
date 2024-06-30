@@ -1,4 +1,3 @@
-// main.dart
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
@@ -43,11 +42,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ThemeBloc(),
-      child: BlocBuilder<ThemeBloc, ThemeData>(
-        builder: (context, theme) {
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, themeState) {
           return MaterialApp(
             title: 'EDNet One',
-            theme: theme,
+            theme: themeState.themeData,
             home: HomePage(title: 'One Home', appLinks: _appLinks),
           );
         },
