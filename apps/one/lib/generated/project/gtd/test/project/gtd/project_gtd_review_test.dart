@@ -129,7 +129,7 @@ void testProjectGtdReviews(
       var reviewsCount = reviews.length; 
  
       var review = Review(reviews.concept); 
-      review.assessments = 'dog'; 
+      review.assessments = 'month'; 
       var added = selectedReviews.add(review); 
       expect(added, isTrue); 
       expect(reviews.length, equals(++reviewsCount)); 
@@ -222,8 +222,8 @@ void testProjectGtdReviews(
     test("Update review non id attribute with failure", () { 
       var randomReview = gtdModel.reviews.random(); 
       var afterUpdateEntity = randomReview.copy(); 
-      afterUpdateEntity.assessments = 'instruction'; 
-      expect(afterUpdateEntity.assessments, equals('instruction')); 
+      afterUpdateEntity.assessments = 'interest'; 
+      expect(afterUpdateEntity.assessments, equals('interest')); 
       // reviews.update can only be used if oid, code or id is set. 
       expect(() => reviews.update(randomReview, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectGtdReviews(
     test("review action undo and redo", () { 
       var reviewCount = reviews.length; 
       var review = Review(reviews.concept); 
-        review.assessments = 'consulting'; 
+        review.assessments = 'chemist'; 
       reviews.add(review); 
       expect(reviews.length, equals(++reviewCount)); 
       reviews.remove(review); 
@@ -263,7 +263,7 @@ void testProjectGtdReviews(
     test("review session undo and redo", () { 
       var reviewCount = reviews.length; 
       var review = Review(reviews.concept); 
-        review.assessments = 'universe'; 
+        review.assessments = 'security'; 
       reviews.add(review); 
       expect(reviews.length, equals(++reviewCount)); 
       reviews.remove(review); 
@@ -282,7 +282,7 @@ void testProjectGtdReviews(
  
     test("Review update undo and redo", () { 
       var review = gtdModel.reviews.random(); 
-      var action = SetAttributeCommand(session, review, "assessments", 'milk'); 
+      var action = SetAttributeCommand(session, review, "assessments", 'price'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testProjectGtdReviews(
  
       projectDomain.startCommandReaction(reaction); 
       var review = Review(reviews.concept); 
-        review.assessments = 'revolution'; 
+        review.assessments = 'word'; 
       reviews.add(review); 
       expect(reviews.length, equals(++reviewCount)); 
       reviews.remove(review); 
@@ -396,7 +396,7 @@ void testProjectGtdReviews(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, review, "assessments", 'celebration'); 
+        session, review, "assessments", 'training'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

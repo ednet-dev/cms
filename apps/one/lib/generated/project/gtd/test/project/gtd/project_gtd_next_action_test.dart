@@ -129,7 +129,7 @@ void testProjectGtdNextActions(
       var nextActionsCount = nextActions.length; 
  
       var nextAction = NextAction(nextActions.concept); 
-      nextAction.work = 'email'; 
+      nextAction.work = 'vessel'; 
       var added = selectedNextActions.add(nextAction); 
       expect(added, isTrue); 
       expect(nextActions.length, equals(++nextActionsCount)); 
@@ -222,8 +222,8 @@ void testProjectGtdNextActions(
     test("Update nextAction non id attribute with failure", () { 
       var randomNextAction = gtdModel.nextActions.random(); 
       var afterUpdateEntity = randomNextAction.copy(); 
-      afterUpdateEntity.work = 'candy'; 
-      expect(afterUpdateEntity.work, equals('candy')); 
+      afterUpdateEntity.work = 'salad'; 
+      expect(afterUpdateEntity.work, equals('salad')); 
       // nextActions.update can only be used if oid, code or id is set. 
       expect(() => nextActions.update(randomNextAction, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectGtdNextActions(
     test("nextAction action undo and redo", () { 
       var nextActionCount = nextActions.length; 
       var nextAction = NextAction(nextActions.concept); 
-        nextAction.work = 'output'; 
+        nextAction.work = 'highway'; 
       nextActions.add(nextAction); 
       expect(nextActions.length, equals(++nextActionCount)); 
       nextActions.remove(nextAction); 
@@ -263,7 +263,7 @@ void testProjectGtdNextActions(
     test("nextAction session undo and redo", () { 
       var nextActionCount = nextActions.length; 
       var nextAction = NextAction(nextActions.concept); 
-        nextAction.work = 'series'; 
+        nextAction.work = 'concern'; 
       nextActions.add(nextAction); 
       expect(nextActions.length, equals(++nextActionCount)); 
       nextActions.remove(nextAction); 
@@ -282,7 +282,7 @@ void testProjectGtdNextActions(
  
     test("NextAction update undo and redo", () { 
       var nextAction = gtdModel.nextActions.random(); 
-      var action = SetAttributeCommand(session, nextAction, "work", 'school'); 
+      var action = SetAttributeCommand(session, nextAction, "work", 'consciousness'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testProjectGtdNextActions(
  
       projectDomain.startCommandReaction(reaction); 
       var nextAction = NextAction(nextActions.concept); 
-        nextAction.work = 'notch'; 
+        nextAction.work = 'walking'; 
       nextActions.add(nextAction); 
       expect(nextActions.length, equals(++nextActionCount)); 
       nextActions.remove(nextAction); 
@@ -396,7 +396,7 @@ void testProjectGtdNextActions(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, nextAction, "work", 'sentence'); 
+        session, nextAction, "work", 'head'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

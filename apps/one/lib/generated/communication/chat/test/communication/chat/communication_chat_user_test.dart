@@ -129,8 +129,8 @@ void testCommunicationChatUsers(
       var usersCount = users.length; 
  
       var user = User(users.concept); 
-      user.name = 'ocean'; 
-      user.email = 'umbrella'; 
+      user.name = 'explanation'; 
+      user.email = 'fascination'; 
       var added = selectedUsers.add(user); 
       expect(added, isTrue); 
       expect(users.length, equals(++usersCount)); 
@@ -223,8 +223,8 @@ void testCommunicationChatUsers(
     test("Update user non id attribute with failure", () { 
       var randomUser = chatModel.users.random(); 
       var afterUpdateEntity = randomUser.copy(); 
-      afterUpdateEntity.name = 'performance'; 
-      expect(afterUpdateEntity.name, equals('performance')); 
+      afterUpdateEntity.name = 'bank'; 
+      expect(afterUpdateEntity.name, equals('bank')); 
       // users.update can only be used if oid, code or id is set. 
       expect(() => users.update(randomUser, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -245,8 +245,8 @@ void testCommunicationChatUsers(
     test("user action undo and redo", () { 
       var userCount = users.length; 
       var user = User(users.concept); 
-        user.name = 'top'; 
-      user.email = 'tree'; 
+        user.name = 'head'; 
+      user.email = 'season'; 
       users.add(user); 
       expect(users.length, equals(++userCount)); 
       users.remove(user); 
@@ -266,8 +266,8 @@ void testCommunicationChatUsers(
     test("user session undo and redo", () { 
       var userCount = users.length; 
       var user = User(users.concept); 
-        user.name = 'hell'; 
-      user.email = 'secretary'; 
+        user.name = 'fish'; 
+      user.email = 'bird'; 
       users.add(user); 
       expect(users.length, equals(++userCount)); 
       users.remove(user); 
@@ -286,7 +286,7 @@ void testCommunicationChatUsers(
  
     test("User update undo and redo", () { 
       var user = chatModel.users.random(); 
-      var action = SetAttributeCommand(session, user, "name", 'life'); 
+      var action = SetAttributeCommand(session, user, "name", 'economy'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -387,8 +387,8 @@ void testCommunicationChatUsers(
  
       communicationDomain.startCommandReaction(reaction); 
       var user = User(users.concept); 
-        user.name = 'winter'; 
-      user.email = 'organization'; 
+        user.name = 'message'; 
+      user.email = 'discount'; 
       users.add(user); 
       expect(users.length, equals(++userCount)); 
       users.remove(user); 
@@ -401,7 +401,7 @@ void testCommunicationChatUsers(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, user, "name", 'call'); 
+        session, user, "name", 'body'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       communicationDomain.cancelCommandReaction(reaction); 

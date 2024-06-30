@@ -129,7 +129,7 @@ void testProjectGtdClarifiedItems(
       var clarifiedItemsCount = clarifiedItems.length; 
  
       var clarifiedItem = ClarifiedItem(clarifiedItems.concept); 
-      clarifiedItem.nextAction = 'job'; 
+      clarifiedItem.nextAction = 'election'; 
       var added = selectedClarifiedItems.add(clarifiedItem); 
       expect(added, isTrue); 
       expect(clarifiedItems.length, equals(++clarifiedItemsCount)); 
@@ -222,8 +222,8 @@ void testProjectGtdClarifiedItems(
     test("Update clarifiedItem non id attribute with failure", () { 
       var randomClarifiedItem = gtdModel.clarifiedItems.random(); 
       var afterUpdateEntity = randomClarifiedItem.copy(); 
-      afterUpdateEntity.nextAction = 'candy'; 
-      expect(afterUpdateEntity.nextAction, equals('candy')); 
+      afterUpdateEntity.nextAction = 'concern'; 
+      expect(afterUpdateEntity.nextAction, equals('concern')); 
       // clarifiedItems.update can only be used if oid, code or id is set. 
       expect(() => clarifiedItems.update(randomClarifiedItem, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectGtdClarifiedItems(
     test("clarifiedItem action undo and redo", () { 
       var clarifiedItemCount = clarifiedItems.length; 
       var clarifiedItem = ClarifiedItem(clarifiedItems.concept); 
-        clarifiedItem.nextAction = 'done'; 
+        clarifiedItem.nextAction = 'walking'; 
     var clarifiedItemInbox = gtdModel.inboxes.random(); 
     clarifiedItem.inbox = clarifiedItemInbox; 
       clarifiedItems.add(clarifiedItem); 
@@ -266,7 +266,7 @@ void testProjectGtdClarifiedItems(
     test("clarifiedItem session undo and redo", () { 
       var clarifiedItemCount = clarifiedItems.length; 
       var clarifiedItem = ClarifiedItem(clarifiedItems.concept); 
-        clarifiedItem.nextAction = 'message'; 
+        clarifiedItem.nextAction = 'corner'; 
     var clarifiedItemInbox = gtdModel.inboxes.random(); 
     clarifiedItem.inbox = clarifiedItemInbox; 
       clarifiedItems.add(clarifiedItem); 
@@ -288,7 +288,7 @@ void testProjectGtdClarifiedItems(
  
     test("ClarifiedItem update undo and redo", () { 
       var clarifiedItem = gtdModel.clarifiedItems.random(); 
-      var action = SetAttributeCommand(session, clarifiedItem, "nextAction", 'chairman'); 
+      var action = SetAttributeCommand(session, clarifiedItem, "nextAction", 'abstract'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -389,7 +389,7 @@ void testProjectGtdClarifiedItems(
  
       projectDomain.startCommandReaction(reaction); 
       var clarifiedItem = ClarifiedItem(clarifiedItems.concept); 
-        clarifiedItem.nextAction = 'drink'; 
+        clarifiedItem.nextAction = 'big'; 
     var clarifiedItemInbox = gtdModel.inboxes.random(); 
     clarifiedItem.inbox = clarifiedItemInbox; 
       clarifiedItems.add(clarifiedItem); 
@@ -405,7 +405,7 @@ void testProjectGtdClarifiedItems(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, clarifiedItem, "nextAction", 'judge'); 
+        session, clarifiedItem, "nextAction", 'distance'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

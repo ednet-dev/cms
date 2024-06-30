@@ -129,11 +129,11 @@ void testProjectCoreProjects(
       var projectsCount = projects.length; 
  
       var project = Project(projects.concept); 
-      project.name = 'grading'; 
-      project.description = 'horse'; 
+      project.name = 'theme'; 
+      project.description = 'meter'; 
       project.startDate = new DateTime.now(); 
       project.endDate = new DateTime.now(); 
-      project.budget = 10.278736413245603; 
+      project.budget = 57.994275997058644; 
       var added = selectedProjects.add(project); 
       expect(added, isTrue); 
       expect(projects.length, equals(++projectsCount)); 
@@ -226,8 +226,8 @@ void testProjectCoreProjects(
     test("Update project non id attribute with failure", () { 
       var randomProject = coreModel.projects.random(); 
       var afterUpdateEntity = randomProject.copy(); 
-      afterUpdateEntity.name = 'software'; 
-      expect(afterUpdateEntity.name, equals('software')); 
+      afterUpdateEntity.name = 'restaurant'; 
+      expect(afterUpdateEntity.name, equals('restaurant')); 
       // projects.update can only be used if oid, code or id is set. 
       expect(() => projects.update(randomProject, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -251,11 +251,11 @@ void testProjectCoreProjects(
     test("project action undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        project.name = 'month'; 
-      project.description = 'consulting'; 
+        project.name = 'void'; 
+      project.description = 'yellow'; 
       project.startDate = new DateTime.now(); 
       project.endDate = new DateTime.now(); 
-      project.budget = 41.23394181221649; 
+      project.budget = 15.82199306310269; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -275,11 +275,11 @@ void testProjectCoreProjects(
     test("project session undo and redo", () { 
       var projectCount = projects.length; 
       var project = Project(projects.concept); 
-        project.name = 'universe'; 
-      project.description = 'navigation'; 
+        project.name = 'sand'; 
+      project.description = 'understanding'; 
       project.startDate = new DateTime.now(); 
       project.endDate = new DateTime.now(); 
-      project.budget = 57.571406644560206; 
+      project.budget = 93.36213468561142; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -298,7 +298,7 @@ void testProjectCoreProjects(
  
     test("Project update undo and redo", () { 
       var project = coreModel.projects.random(); 
-      var action = SetAttributeCommand(session, project, "name", 'winter'); 
+      var action = SetAttributeCommand(session, project, "name", 'children'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -399,11 +399,11 @@ void testProjectCoreProjects(
  
       projectDomain.startCommandReaction(reaction); 
       var project = Project(projects.concept); 
-        project.name = 'health'; 
-      project.description = 'hot'; 
+        project.name = 'entertainment'; 
+      project.description = 'car'; 
       project.startDate = new DateTime.now(); 
       project.endDate = new DateTime.now(); 
-      project.budget = 72.72116795988843; 
+      project.budget = 98.40700599676514; 
       projects.add(project); 
       expect(projects.length, equals(++projectCount)); 
       projects.remove(project); 
@@ -416,7 +416,7 @@ void testProjectCoreProjects(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, project, "name", 'judge'); 
+        session, project, "name", 'drink'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

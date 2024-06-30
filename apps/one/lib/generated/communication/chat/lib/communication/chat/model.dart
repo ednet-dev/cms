@@ -21,18 +21,18 @@ class ChatModel extends ChatEntries {
  
   void initUsers() { 
     var user1 = User(users.concept); 
-    user1.name = 'algorithm'; 
-    user1.email = 'dog'; 
+    user1.name = 'winter'; 
+    user1.email = 'tent'; 
     users.add(user1); 
  
     var user2 = User(users.concept); 
-    user2.name = 'electronic'; 
-    user2.email = 'left'; 
+    user2.name = 'computer'; 
+    user2.email = 'college'; 
     users.add(user2); 
  
     var user3 = User(users.concept); 
-    user3.name = 'redo'; 
-    user3.email = 'river'; 
+    user3.name = 'offence'; 
+    user3.email = 'entertainment'; 
     users.add(user3); 
  
   } 

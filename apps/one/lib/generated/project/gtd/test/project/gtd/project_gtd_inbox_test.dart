@@ -129,7 +129,7 @@ void testProjectGtdInboxes(
       var inboxesCount = inboxes.length; 
  
       var inbox = Inbox(inboxes.concept); 
-      inbox.items = 'message'; 
+      inbox.items = 'organization'; 
       var added = selectedInboxes.add(inbox); 
       expect(added, isTrue); 
       expect(inboxes.length, equals(++inboxesCount)); 
@@ -222,8 +222,8 @@ void testProjectGtdInboxes(
     test("Update inbox non id attribute with failure", () { 
       var randomInbox = gtdModel.inboxes.random(); 
       var afterUpdateEntity = randomInbox.copy(); 
-      afterUpdateEntity.items = 'cash'; 
-      expect(afterUpdateEntity.items, equals('cash')); 
+      afterUpdateEntity.items = 'mile'; 
+      expect(afterUpdateEntity.items, equals('mile')); 
       // inboxes.update can only be used if oid, code or id is set. 
       expect(() => inboxes.update(randomInbox, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -243,7 +243,7 @@ void testProjectGtdInboxes(
     test("inbox action undo and redo", () { 
       var inboxCount = inboxes.length; 
       var inbox = Inbox(inboxes.concept); 
-        inbox.items = 'ticket'; 
+        inbox.items = 'pub'; 
       inboxes.add(inbox); 
       expect(inboxes.length, equals(++inboxCount)); 
       inboxes.remove(inbox); 
@@ -263,7 +263,7 @@ void testProjectGtdInboxes(
     test("inbox session undo and redo", () { 
       var inboxCount = inboxes.length; 
       var inbox = Inbox(inboxes.concept); 
-        inbox.items = 'finger'; 
+        inbox.items = 'chairman'; 
       inboxes.add(inbox); 
       expect(inboxes.length, equals(++inboxCount)); 
       inboxes.remove(inbox); 
@@ -282,7 +282,7 @@ void testProjectGtdInboxes(
  
     test("Inbox update undo and redo", () { 
       var inbox = gtdModel.inboxes.random(); 
-      var action = SetAttributeCommand(session, inbox, "items", 'element'); 
+      var action = SetAttributeCommand(session, inbox, "items", 'instruction'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -383,7 +383,7 @@ void testProjectGtdInboxes(
  
       projectDomain.startCommandReaction(reaction); 
       var inbox = Inbox(inboxes.concept); 
-        inbox.items = 'tree'; 
+        inbox.items = 'effort'; 
       inboxes.add(inbox); 
       expect(inboxes.length, equals(++inboxCount)); 
       inboxes.remove(inbox); 
@@ -396,7 +396,7 @@ void testProjectGtdInboxes(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, inbox, "items", 'dog'); 
+        session, inbox, "items", 'offence'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

@@ -13,7 +13,7 @@ import 'package:ednet_one/generated/communication/chat/lib/communication_chat.da
 import 'package:ednet_one/generated/democracy/direct/lib/democracy_direct.dart' as dydt;
 // IMPORTS PLACEHOLDER
 
-class OneApplication {
+class OneApplication implements IOneApplication {
   final Domains _domains = Domains();
   final Domains _groupedDomains = Domains();
   final Map<String, DomainModels> _domainModelsTable = {};
@@ -148,8 +148,9 @@ class OneApplication {
 // INIT PLACEHOLDER
   }
   
+  @override
   DomainModels getDomainModels(String domain, String model) {
-    final domainModel = _domainModelsTable['${domain}_${model}'];
+    final domainModel = _domainModelsTable['${domain}_$model'];
   
     if (domainModel == null) {
       throw Exception('Domain model not found: $domain, $model');
@@ -189,7 +190,9 @@ class OneApplication {
     }
   }
 
+  @override
   Domains get domains => _domains;
+  @override
   Domains get groupedDomains => _groupedDomains;
   Map<String, DomainModels> get domainModels => _domainModelsTable;
 }

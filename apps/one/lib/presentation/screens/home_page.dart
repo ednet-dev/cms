@@ -32,7 +32,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   List<String> path = ['Home'];
 
-  late OneApplication app;
+  late IOneApplication app;
   Domain? selectedDomain;
   Model? selectedModel;
   Entities? selectedEntries;

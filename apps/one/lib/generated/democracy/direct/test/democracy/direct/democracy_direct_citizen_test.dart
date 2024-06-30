@@ -71,7 +71,7 @@ void testDemocracyDirectCitizens(
     test("Add citizen required error", () { 
       var citizenConcept = citizens.concept; 
       var citizenCount = citizens.length; 
-      var citizen = Citizen(citizenConcept);
+      var citizen = Citizen(citizenConcept); 
       var isAdded = citizens.add(citizen); 
       expect(isAdded, isFalse); 
       expect(citizens.length, equals(citizenCount)); 
@@ -84,7 +84,7 @@ void testDemocracyDirectCitizens(
     test("Add citizen unique error", () { 
       var citizenConcept = citizens.concept; 
       var citizenCount = citizens.length; 
-      var citizen = Citizen(citizenConcept);
+      var citizen = Citizen(citizenConcept); 
       var randomCitizen = directModel.citizens.random(); 
       citizen.citizenId = randomCitizen.citizenId; 
       var added = citizens.add(citizen); 
@@ -152,9 +152,9 @@ void testDemocracyDirectCitizens(
       var citizensCount = citizens.length; 
  
       var citizen = Citizen(citizens.concept); 
-      citizen.citizenId = 'job'; 
-      citizen.firstName = 'electronic'; 
-      citizen.lastName = 'secretary'; 
+      citizen.citizenId = 'house'; 
+      citizen.firstName = 'message'; 
+      citizen.lastName = 'answer'; 
       var added = selectedCitizens.add(citizen); 
       expect(added, isTrue); 
       expect(citizens.length, equals(++citizensCount)); 
@@ -230,7 +230,7 @@ void testDemocracyDirectCitizens(
       var randomCitizen = directModel.citizens.random(); 
       var beforeUpdate = randomCitizen.citizenId; 
       try { 
-        randomCitizen.citizenId = 'job'; 
+        randomCitizen.citizenId = 'notch'; 
       } on UpdateException catch (e) { 
         expect(randomCitizen.citizenId, equals(beforeUpdate)); 
       } 
@@ -239,7 +239,7 @@ void testDemocracyDirectCitizens(
     test("Update citizen id without try", () { 
       var randomCitizen = directModel.citizens.random(); 
       var beforeUpdateValue = randomCitizen.citizenId; 
-      expect(() => randomCitizen.citizenId = 'school', throws); 
+      expect(() => randomCitizen.citizenId = 'vacation', throws); 
       expect(randomCitizen.citizenId, equals(beforeUpdateValue)); 
     }); 
  
@@ -249,15 +249,15 @@ void testDemocracyDirectCitizens(
       var attribute = randomCitizen.concept.attributes.singleWhereCode("citizenId"); 
       expect(attribute?.update, isFalse); 
       attribute?.update = true; 
-      afterUpdateEntity.citizenId = 'vessel'; 
-      expect(afterUpdateEntity.citizenId, equals('vessel')); 
+      afterUpdateEntity.citizenId = 'big'; 
+      expect(afterUpdateEntity.citizenId, equals('big')); 
       attribute?.update = false; 
       var updated = citizens.update(randomCitizen, afterUpdateEntity); 
       expect(updated, isTrue); 
  
-      var entity = citizens.singleWhereAttributeId("citizenId", 'vessel'); 
+      var entity = citizens.singleWhereAttributeId("citizenId", 'big'); 
       expect(entity, isNotNull); 
-      expect(entity!.citizenId, equals('vessel')); 
+      expect(entity!.citizenId, equals('big')); 
  
       //citizens.display("After update citizen id"); 
     }); 
@@ -265,8 +265,8 @@ void testDemocracyDirectCitizens(
     test("Update citizen non id attribute with failure", () { 
       var randomCitizen = directModel.citizens.random(); 
       var afterUpdateEntity = randomCitizen.copy(); 
-      afterUpdateEntity.firstName = 'milk'; 
-      expect(afterUpdateEntity.firstName, equals('milk')); 
+      afterUpdateEntity.firstName = 'guest'; 
+      expect(afterUpdateEntity.firstName, equals('guest')); 
       // citizens.update can only be used if oid, code or id is set. 
       expect(() => citizens.update(randomCitizen, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -303,9 +303,9 @@ void testDemocracyDirectCitizens(
     test("citizen action undo and redo", () { 
       var citizenCount = citizens.length; 
       var citizen = Citizen(citizens.concept); 
-        citizen.citizenId = 'dvd'; 
-      citizen.firstName = 'coffee'; 
-      citizen.lastName = 'security'; 
+        citizen.citizenId = 'present'; 
+      citizen.firstName = 'meter'; 
+      citizen.lastName = 'pub'; 
       citizens.add(citizen); 
       expect(citizens.length, equals(++citizenCount)); 
       citizens.remove(citizen); 
@@ -325,9 +325,9 @@ void testDemocracyDirectCitizens(
     test("citizen session undo and redo", () { 
       var citizenCount = citizens.length; 
       var citizen = Citizen(citizens.concept); 
-        citizen.citizenId = 'authority'; 
-      citizen.firstName = 'line'; 
-      citizen.lastName = 'policeman'; 
+        citizen.citizenId = 'home'; 
+      citizen.firstName = 'river'; 
+      citizen.lastName = 'professor'; 
       citizens.add(citizen); 
       expect(citizens.length, equals(++citizenCount)); 
       citizens.remove(citizen); 
@@ -346,7 +346,7 @@ void testDemocracyDirectCitizens(
  
     test("Citizen update undo and redo", () { 
       var citizen = directModel.citizens.random(); 
-      var action = SetAttributeCommand(session, citizen, "firstName", 'pub'); 
+      var action = SetAttributeCommand(session, citizen, "firstName", 'enquiry'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -447,9 +447,9 @@ void testDemocracyDirectCitizens(
  
       democracyDomain.startCommandReaction(reaction); 
       var citizen = Citizen(citizens.concept); 
-        citizen.citizenId = 'center'; 
-      citizen.firstName = 'health'; 
-      citizen.lastName = 'health'; 
+        citizen.citizenId = 'undo'; 
+      citizen.firstName = 'universe'; 
+      citizen.lastName = 'life'; 
       citizens.add(citizen); 
       expect(citizens.length, equals(++citizenCount)); 
       citizens.remove(citizen); 
@@ -462,7 +462,7 @@ void testDemocracyDirectCitizens(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, citizen, "firstName", 'tax'); 
+        session, citizen, "firstName", 'beach'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       democracyDomain.cancelCommandReaction(reaction); 
