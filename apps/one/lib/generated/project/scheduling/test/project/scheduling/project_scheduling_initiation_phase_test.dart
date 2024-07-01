@@ -129,10 +129,10 @@ void testProjectSchedulingInitiationPhases(
       var initiationPhasesCount = initiationPhases.length; 
  
       var initiationPhase = InitiationPhase(initiationPhases.concept); 
-      initiationPhase.ProjectCharter = 'organization'; 
-      initiationPhase.StakeholderIdentification = 'dinner'; 
-      initiationPhase.FeasibilityStudy = 'do'; 
-      initiationPhase.ProjectGoals = 'crisis'; 
+      initiationPhase.ProjectCharter = 'dinner'; 
+      initiationPhase.StakeholderIdentification = 'pattern'; 
+      initiationPhase.FeasibilityStudy = 'dvd'; 
+      initiationPhase.ProjectGoals = 'grading'; 
       var added = selectedInitiationPhases.add(initiationPhase); 
       expect(added, isTrue); 
       expect(initiationPhases.length, equals(++initiationPhasesCount)); 
@@ -225,8 +225,8 @@ void testProjectSchedulingInitiationPhases(
     test("Update initiationPhase non id attribute with failure", () { 
       var randomInitiationPhase = schedulingModel.initiationPhases.random(); 
       var afterUpdateEntity = randomInitiationPhase.copy(); 
-      afterUpdateEntity.ProjectCharter = 'book'; 
-      expect(afterUpdateEntity.ProjectCharter, equals('book')); 
+      afterUpdateEntity.ProjectCharter = 'accident'; 
+      expect(afterUpdateEntity.ProjectCharter, equals('accident')); 
       // initiationPhases.update can only be used if oid, code or id is set. 
       expect(() => initiationPhases.update(randomInitiationPhase, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -249,10 +249,10 @@ void testProjectSchedulingInitiationPhases(
     test("initiationPhase action undo and redo", () { 
       var initiationPhaseCount = initiationPhases.length; 
       var initiationPhase = InitiationPhase(initiationPhases.concept); 
-        initiationPhase.ProjectCharter = 'restaurant'; 
-      initiationPhase.StakeholderIdentification = 'selfdo'; 
-      initiationPhase.FeasibilityStudy = 'restaurant'; 
-      initiationPhase.ProjectGoals = 'east'; 
+        initiationPhase.ProjectCharter = 'country'; 
+      initiationPhase.StakeholderIdentification = 'email'; 
+      initiationPhase.FeasibilityStudy = 'tension'; 
+      initiationPhase.ProjectGoals = 'body'; 
       initiationPhases.add(initiationPhase); 
       expect(initiationPhases.length, equals(++initiationPhaseCount)); 
       initiationPhases.remove(initiationPhase); 
@@ -272,10 +272,10 @@ void testProjectSchedulingInitiationPhases(
     test("initiationPhase session undo and redo", () { 
       var initiationPhaseCount = initiationPhases.length; 
       var initiationPhase = InitiationPhase(initiationPhases.concept); 
-        initiationPhase.ProjectCharter = 'productivity'; 
-      initiationPhase.StakeholderIdentification = 'cream'; 
-      initiationPhase.FeasibilityStudy = 'yellow'; 
-      initiationPhase.ProjectGoals = 'home'; 
+        initiationPhase.ProjectCharter = 'camping'; 
+      initiationPhase.StakeholderIdentification = 'salad'; 
+      initiationPhase.FeasibilityStudy = 'enquiry'; 
+      initiationPhase.ProjectGoals = 'car'; 
       initiationPhases.add(initiationPhase); 
       expect(initiationPhases.length, equals(++initiationPhaseCount)); 
       initiationPhases.remove(initiationPhase); 
@@ -294,7 +294,7 @@ void testProjectSchedulingInitiationPhases(
  
     test("InitiationPhase update undo and redo", () { 
       var initiationPhase = schedulingModel.initiationPhases.random(); 
-      var action = SetAttributeCommand(session, initiationPhase, "ProjectCharter", 'capacity'); 
+      var action = SetAttributeCommand(session, initiationPhase, "ProjectCharter", 'lifespan'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -395,10 +395,10 @@ void testProjectSchedulingInitiationPhases(
  
       projectDomain.startCommandReaction(reaction); 
       var initiationPhase = InitiationPhase(initiationPhases.concept); 
-        initiationPhase.ProjectCharter = 'thing'; 
-      initiationPhase.StakeholderIdentification = 'hot'; 
-      initiationPhase.FeasibilityStudy = 'fascination'; 
-      initiationPhase.ProjectGoals = 'service'; 
+        initiationPhase.ProjectCharter = 'question'; 
+      initiationPhase.StakeholderIdentification = 'tension'; 
+      initiationPhase.FeasibilityStudy = 'country'; 
+      initiationPhase.ProjectGoals = 'message'; 
       initiationPhases.add(initiationPhase); 
       expect(initiationPhases.length, equals(++initiationPhaseCount)); 
       initiationPhases.remove(initiationPhase); 
@@ -411,7 +411,7 @@ void testProjectSchedulingInitiationPhases(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, initiationPhase, "ProjectCharter", 'corner'); 
+        session, initiationPhase, "ProjectCharter", 'season'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 

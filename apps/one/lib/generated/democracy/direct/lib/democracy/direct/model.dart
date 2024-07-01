@@ -21,21 +21,21 @@ class DirectModel extends DirectEntries {
  
   void initCitizens() { 
     var citizen1 = Citizen(citizens.concept); 
-    citizen1.citizenId = 'pattern'; 
-    citizen1.firstName = 'right'; 
-    citizen1.lastName = 'algorithm'; 
+    citizen1.citizenId = 'auto'; 
+    citizen1.firstName = 'test'; 
+    citizen1.lastName = 'future'; 
     citizens.add(citizen1); 
  
     var citizen2 = Citizen(citizens.concept); 
-    citizen2.citizenId = 'test'; 
-    citizen2.firstName = 'vessel'; 
-    citizen2.lastName = 'interest'; 
+    citizen2.citizenId = 'blue'; 
+    citizen2.firstName = 'distance'; 
+    citizen2.lastName = 'agreement'; 
     citizens.add(citizen2); 
  
     var citizen3 = Citizen(citizens.concept); 
-    citizen3.citizenId = 'kids'; 
-    citizen3.firstName = 'tall'; 
-    citizen3.lastName = 'void'; 
+    citizen3.citizenId = 'time'; 
+    citizen3.firstName = 'end'; 
+    citizen3.lastName = 'web'; 
     citizens.add(citizen3); 
  
   } 

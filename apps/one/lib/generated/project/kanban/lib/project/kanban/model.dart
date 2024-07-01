@@ -21,15 +21,15 @@ class KanbanModel extends KanbanEntries {
  
   void initLibraries() { 
     var library1 = Library(libraries.concept); 
-    library1.name = 'done'; 
+    library1.name = 'corner'; 
     libraries.add(library1); 
  
     var library2 = Library(libraries.concept); 
-    library2.name = 'do'; 
+    library2.name = 'ticket'; 
     libraries.add(library2); 
  
     var library3 = Library(libraries.concept); 
-    library3.name = 'grading'; 
+    library3.name = 'executive'; 
     libraries.add(library3); 
  
   } 

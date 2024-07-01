@@ -21,18 +21,18 @@ class BrainstormingModel extends BrainstormingEntries {
  
   void initMindMaps() { 
     var mindMap1 = MindMap(mindMaps.concept); 
-    mindMap1.name = 'sailing'; 
-    mindMap1.description = 'message'; 
+    mindMap1.name = 'down'; 
+    mindMap1.description = 'algorithm'; 
     mindMaps.add(mindMap1); 
  
     var mindMap2 = MindMap(mindMaps.concept); 
-    mindMap2.name = 'redo'; 
-    mindMap2.description = 'heaven'; 
+    mindMap2.name = 'call'; 
+    mindMap2.description = 'sun'; 
     mindMaps.add(mindMap2); 
  
     var mindMap3 = MindMap(mindMaps.concept); 
-    mindMap3.name = 'body'; 
-    mindMap3.description = 'job'; 
+    mindMap3.name = 'girl'; 
+    mindMap3.description = 'table'; 
     mindMaps.add(mindMap3); 
  
   } 

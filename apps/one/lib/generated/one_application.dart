@@ -1,5 +1,6 @@
 import 'package:ednet_core/ednet_core.dart';
 
+import 'package:ednet_one/generated/settings/application/lib/settings_application.dart' as ssan;
 import 'package:ednet_one/generated/project/scheduling/lib/project_scheduling.dart' as ptsg;
 import 'package:ednet_one/generated/project/core/lib/project_core.dart' as ptce;
 import 'package:ednet_one/generated/project/brainstorming/lib/project_brainstorming.dart' as ptbg;
@@ -9,7 +10,6 @@ import 'package:ednet_one/generated/project/user/lib/project_user.dart' as ptur;
 import 'package:ednet_one/generated/project/gtd/lib/project_gtd.dart' as ptgd;
 import 'package:ednet_one/generated/household/finance/lib/household_finance.dart' as hdfe;
 import 'package:ednet_one/generated/household/member/lib/household_member.dart' as hdmr;
-import 'package:ednet_one/generated/communication/chat/lib/communication_chat.dart' as cnct;
 import 'package:ednet_one/generated/democracy/direct/lib/democracy_direct.dart' as dydt;
 // IMPORTS PLACEHOLDER
 
@@ -24,7 +24,18 @@ class OneApplication implements IOneApplication {
   }
 
   void _initializeDomains() {
-        // project scheduling
+        // settings application
+    final settingsApplicationRepo = ssan.SettingsApplicationRepo();
+    ssan.SettingsDomain settingsApplicationDomain = settingsApplicationRepo
+        .getDomainModels("Settings") as ssan.SettingsDomain;
+    ssan.ApplicationModel applicationModel =
+        settingsApplicationDomain.getModelEntries("Application") as ssan.ApplicationModel;
+    applicationModel.init();
+
+    _domains..add(settingsApplicationDomain.domain);
+    _domainModelsTable['settings_application'] = settingsApplicationDomain;
+
+    // project scheduling
     final projectSchedulingRepo = ptsg.ProjectSchedulingRepo();
     ptsg.ProjectDomain projectSchedulingDomain = projectSchedulingRepo
         .getDomainModels("Project") as ptsg.ProjectDomain;
@@ -122,17 +133,6 @@ class OneApplication implements IOneApplication {
 
     _domains..add(householdMemberDomain.domain);
     _domainModelsTable['household_member'] = householdMemberDomain;
-
-    // communication chat
-    final communicationChatRepo = cnct.CommunicationChatRepo();
-    cnct.CommunicationDomain communicationChatDomain = communicationChatRepo
-        .getDomainModels("Communication") as cnct.CommunicationDomain;
-    cnct.ChatModel chatModel =
-        communicationChatDomain.getModelEntries("Chat") as cnct.ChatModel;
-    chatModel.init();
-
-    _domains..add(communicationChatDomain.domain);
-    _domainModelsTable['communication_chat'] = communicationChatDomain;
 
     // democracy direct
     final democracyDirectRepo = dydt.DemocracyDirectRepo();

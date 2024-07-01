@@ -1,0 +1,58 @@
+domain: Art
+model: Education
+concepts:
+  - name: Student
+    attributes:
+      - name: name
+      - name: email
+      - name: password
+      - name: phone
+      - name: address
+      - name: city
+      - name: state
+      - name: country
+      - name: zip
+  - name: Course
+    attributes:
+      - name: name
+      - name: description
+      - name: duration
+      - name: fee
+  - name: Article
+    attributes:
+      - name: title
+      - name: content
+  - name: Review
+    attributes:
+      - name: rating
+      - name: comment
+
+relationships:
+  - name: StudentCourse
+    from: Student
+    to: Course
+    fromName: courses
+    toName: students
+    fromMin: 0
+    fromMax: N
+    toMin: 1
+    toMax: N
+  - name: CourseArticle
+    from: Course
+    to: Article
+    fromName: articles
+    toName: course
+    fromMin: 0
+    fromMax: N
+    toMin: 1
+    toMax: N
+  - name: CourseReview
+    from: Course
+    to: Review
+    fromName: reviews
+    toName: course
+    fromMin: 0
+    fromMax: N
+    toMin: 0
+    toMax: N
+

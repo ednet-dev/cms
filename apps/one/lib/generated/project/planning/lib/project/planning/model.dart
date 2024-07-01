@@ -21,15 +21,15 @@ class PlanningModel extends PlanningEntries {
  
   void initPlans() { 
     var plan1 = Plan(plans.concept); 
-    plan1.name = 'organization'; 
+    plan1.name = 'economy'; 
     plans.add(plan1); 
  
     var plan2 = Plan(plans.concept); 
-    plan2.name = 'beer'; 
+    plan2.name = 'ocean'; 
     plans.add(plan2); 
  
     var plan3 = Plan(plans.concept); 
-    plan3.name = 'paper'; 
+    plan3.name = 'capacity'; 
     plans.add(plan3); 
  
   } 

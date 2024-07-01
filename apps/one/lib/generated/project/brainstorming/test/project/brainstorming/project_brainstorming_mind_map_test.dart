@@ -129,8 +129,8 @@ void testProjectBrainstormingMindMaps(
       var mindMapsCount = mindMaps.length; 
  
       var mindMap = MindMap(mindMaps.concept); 
-      mindMap.name = 'thing'; 
-      mindMap.description = 'money'; 
+      mindMap.name = 'measuremewnt'; 
+      mindMap.description = 'health'; 
       var added = selectedMindMaps.add(mindMap); 
       expect(added, isTrue); 
       expect(mindMaps.length, equals(++mindMapsCount)); 
@@ -223,8 +223,8 @@ void testProjectBrainstormingMindMaps(
     test("Update mindMap non id attribute with failure", () { 
       var randomMindMap = brainstormingModel.mindMaps.random(); 
       var afterUpdateEntity = randomMindMap.copy(); 
-      afterUpdateEntity.name = 'notch'; 
-      expect(afterUpdateEntity.name, equals('notch')); 
+      afterUpdateEntity.name = 'selfdo'; 
+      expect(afterUpdateEntity.name, equals('selfdo')); 
       // mindMaps.update can only be used if oid, code or id is set. 
       expect(() => mindMaps.update(randomMindMap, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
@@ -245,8 +245,8 @@ void testProjectBrainstormingMindMaps(
     test("mindMap action undo and redo", () { 
       var mindMapCount = mindMaps.length; 
       var mindMap = MindMap(mindMaps.concept); 
-        mindMap.name = 'winter'; 
-      mindMap.description = 'table'; 
+        mindMap.name = 'small'; 
+      mindMap.description = 'architecture'; 
       mindMaps.add(mindMap); 
       expect(mindMaps.length, equals(++mindMapCount)); 
       mindMaps.remove(mindMap); 
@@ -266,8 +266,8 @@ void testProjectBrainstormingMindMaps(
     test("mindMap session undo and redo", () { 
       var mindMapCount = mindMaps.length; 
       var mindMap = MindMap(mindMaps.concept); 
-        mindMap.name = 'entrance'; 
-      mindMap.description = 'vessel'; 
+        mindMap.name = 'bank'; 
+      mindMap.description = 'observation'; 
       mindMaps.add(mindMap); 
       expect(mindMaps.length, equals(++mindMapCount)); 
       mindMaps.remove(mindMap); 
@@ -286,7 +286,7 @@ void testProjectBrainstormingMindMaps(
  
     test("MindMap update undo and redo", () { 
       var mindMap = brainstormingModel.mindMaps.random(); 
-      var action = SetAttributeCommand(session, mindMap, "name", 'question'); 
+      var action = SetAttributeCommand(session, mindMap, "name", 'present'); 
       action.doIt(); 
  
       session.past.undo(); 
@@ -387,8 +387,8 @@ void testProjectBrainstormingMindMaps(
  
       projectDomain.startCommandReaction(reaction); 
       var mindMap = MindMap(mindMaps.concept); 
-        mindMap.name = 'center'; 
-      mindMap.description = 'cash'; 
+        mindMap.name = 'offence'; 
+      mindMap.description = 'tree'; 
       mindMaps.add(mindMap); 
       expect(mindMaps.length, equals(++mindMapCount)); 
       mindMaps.remove(mindMap); 
@@ -401,7 +401,7 @@ void testProjectBrainstormingMindMaps(
       expect(reaction.reactedOnAdd, isTrue); 
  
       var setAttributeCommand = SetAttributeCommand( 
-        session, mindMap, "name", 'small'); 
+        session, mindMap, "name", 'paper'); 
       setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 
