@@ -1,182 +1,143 @@
+# EDNet CMS
+Your Content Management Superpower for Flutter
+
 [![Codemagic build status](https://api.codemagic.io/apps/63ce7b5ab80ead4e2c0f4735/ci/status_badge.svg)](https://codemagic.io/apps/63ce7b5ab80ead4e2c0f4735/ci/latest_build)
 [![melos](https://img.shields.io/badge/maintained%20with-melos-f700ff.svg?style=flat-square)](https://github.com/invertase/melos)
 
-# EDNet.dev
-Content Managed System domain model implementation in Dart and Flutter for use as first brick in development of multiplatform, complex, highly web integrated, business rich MVPs.
+Hey Flutter devs! 👋 Ready to supercharge your content management game? EDNet CMS is here to make your life easier when building complex, content-rich Flutter apps.
 
-# Content
-Content is omnipresent, recursive and self defined. 
-This does not make it easier to model it. Such artifact is hard to spot and catch its characteristic properties, as humans do with air, tend to take things for granted. 
-However, taking content for granted results in epidemic of bad UI, UX of trivial systems which are complicating analog-digital transition of intrinsic complex human processes. 
+## What's EDNet CMS?
 
-Main motivation in developing this library is to answer those challenges by modeling Content primarily in function of User and Context in which User operates on Content.
-Strategy is to elevate abstraction level above current web landscape, take some structured knowledge DB and map Semantic roles of Content across User Contexts and from there define particular implementations of Content-User-Context interactions ready to be specialized for particular instance of Context.
+EDNet CMS is your secret weapon for creating multiplatform, web-integrated, business-rich MVPs. It's not just a library; it's a whole new way of thinking about content management in Flutter, complete with a powerful interpreter app called EDNet One.
 
-As those interactions are graphs we could take advantage of graph theory for further analysis and optimization, also rendering and intuitive interactive presentation.
+## Why EDNet CMS?
 
-## Principles
-Before we continue we shall define context in which we are going to analyze domain model of Content by defining basic principles:
+Ever felt like content management in your apps is a bit... messy? Us too. That's why we created EDNet CMS. Here's what makes it special:
 
-- **Human biology**: the human biology influences the sensory apparatus and therefore the types of content that can be consumed. This should be taken into account when defining the content types in the system.
+1. **Content is King (and Queen)**: We recognize that content is everywhere, often recursive, and self-defined. Sounds complex? That's because it is! But don't worry, we've got you covered.
 
-- **Human psychology**: The cognitive abilities and psychology of humans should also be considered when designing the content management system. For example, the way information is presented and the layout of the user interface should be designed in a way that is easy for users to understand and navigate.
+2. **User-Centric Approach**: We model content primarily based on how users interact with it in different contexts. It's all about that user experience!
 
-- **Digital product limitations**: The limitations of a digital product should also be considered when designing the content management system. For example, the types of media that can be handled by the system and the way that the content is stored and retrieved.
+3. **Abstraction Level: Expert**: We elevate the abstraction level above the current web landscape, making it easier to map content across different user contexts.
 
 
-## Categorization
-Following basic principles, we can make initial categorization of Content-Sensory-Context landscape (There will be a lot of silly examples necessary to demonstrate idea):
+## Our Secret Sauce
 
-| Visual | Auditory | Olfactory | Gustatory | Tactile |
-|---|---|---|---|---|
-| TV | Speakers | Scent diffusers | Blender | Video game controller |
-| Monitor | Headphones | Scented candles | Oven | Keyboard |
-| Projector | Earbuds | Aromatherapy diffusers | Microwave | Mouse |
-| Watch | Smart speaker | Scented room sprays | Slow cooker | Touchscreen |
-| Refrigerator LCD panel | Car Audio System | Scented sachets | Instant Pot | Haptic feedback devices |
-| Smartphone | Home Theater System | Air fresheners | Electric grill | Touch screen monitors |
-| Tablet | Hearing aids |  | Food processors | Smartwatch |
-| E-Book-Reader | Music players |  | Juicers | Smart home devices |
-| Head-mounted display | Portable radios |  | Electric kettles | Remote controls |
-| Virtual reality headset | Soundbars |  | Coffee makers | Game Pad |
-| Augmented reality headset | Bluetooth speakers |  | Toasters |  |
-| Digital photo frame |  |  |  |  |
-| Digital signage |  |  |  |  |
-| Smart glasses |  |  |  |  |
+We've baked in some seriously cool principles:
 
+- **Human Biology**: We consider how humans physically interact with content.
+- **Human Psychology**: We design with the human mind in focus, making UIs that just make sense.
+- **Digital Realism**: We account for the limitations of digital products in our design process.
 
-# Method
+## The EDNet CMS Method
 
-- Opinionated abstractions:
-    - Language
-    - Process
-        - Event storming
-            - Artifacts
-                - Documentation
-                    - Live
-                    - Collaborative
-                    - Gathering point like evening fire in old times
-                - Software design - transpilable inside ECMAScript
-                    - Domain driven design
-                        - Domain
-                            - Application
-                                - Service
-                            - Model
-                                - Aggregate root
-                                    - Entity children
-                                    - Commands
-                                    - Policies
-                                    - Events
-                                    - Roles
-                                        - Permissions
-                            - Infrastructure
-                                - Repository
-                                    - Destructive
-                                    - None destructive
-                                        - Event sourced
-                        - Clients - other Bounded contexts depending on the implementation
-                        - Dependencies - other Bounded contexts implementation depends on
+We're all about opinionated abstractions:
 
-By using such opinionated processes and somewhat structuring expected output artifacts enables us to generate
-considerable amount of initial code on such way that we promote best practices across various verticals like:
-- requirements gathering
-- architecture
-- software design
-- testing
-- implementation
-- CI/CD
+1. **Custom Language**: We speak your domain's language.
+2. **Event Storming**: Capture your system's dynamics visually.
+3. **Domain-Driven Design**: Your code structure mirrors your business logic.
+4. **Code Generation**: Less boilerplate, more productivity.
 
-# Roadmap
-We will use Spiral Development and it evolutionary nature as described:
-> Ridjanovic, D. (2007). Rapid Development of Web Applications with Web Components. In: Elleithy, K. (eds) Advances and Innovations in Systems, Computing Sciences and Software Engineering. Springer, Dordrecht. https://doi.org/10.1007/978-1-4020-6264-3_19
-## Spirals
-### 0.0.1 Demonstration of idea
-    - [ ] Define Roadmap and first Spiral MVP
-    - [ ] Create a basic CMS for the EDNet.dev website
-        - [ ] Implement use case around displaying of simple Text
-    - [ ] Implement use case around simple registration and login
-    - [ ] Say "hello" to returning or authenticated users
-    - [ ] Setup CI/CD
-        - [ ] Setup basic CI/CD pipeline
-        - [ ] Setup CI/CD pipeline for Flutter Web
-    - [ ] Publish the 0.0.1 version of the CMS
+## Getting Started
 
-### 0.0.2 Support Images
-    - [ ] Images
+1. Add `ednet_core` and `ednet_cms` to your `pubspec.yaml`:
+   ```yaml
+   dependencies:
+     ednet_core: latest
+     ednet_cms: latest
+   dev_dependencies:
+     build_runner: latest
+   ```
 
-### 0.0.3 Support Videos
-    - [ ] Videos
+2. Model your domain:
+   Create `.ednet.yaml` files in `lib/requirements/` for each of your bounded contexts.
 
-### 0.0.4 Support Audio
-    - [ ] Audio
+   Example:
+   ```yaml
+   # lib/requirements/household/finance/finance.ednet.yaml
+   domain: Household
+   model: Finances
+   concepts: 
+     - name: Income
+       attributes:
+         - name: amount
+           type: number
+         - name: source
+           type: string
+     - name: Expense
+     - name: Budget
+     - name: Transaction
+   ```
 
-### 0.0.5 Support complex Text and Binary Content
-    - [ ] Documents
+3. Start the build_runner in watch mode:
+   ```bash
+   dart run build_runner watch --delete-conflicting-outputs
+   ```
 
-### 0.0.6 Categorization, Tagging and Search
-    - [ ] Links
-    - [ ] Tags
-    - [ ] Categories
+4. Generated OneApplication is entry point into your domain models.
 
-### 0.0.7 Authorization and Principals
-    - [ ] Users
-    - [ ] Roles
-    - [ ] Permissions
+5. Use EDNet One to visualize and interact with your domain model:
+   ```bash
+   flutter run
+   ```
 
-### 0.0.8 Content Management - Higher abstractions - UI/UX Design and Patterns
-    - [ ] Menus
-    - [ ] Widgets
-    - [ ] Themes
-    - [ ] Search
-    - [ ] Notifications
+## EDNet One: Your Domain Model Navigator
 
-### 0.1.0 Extendability
-    - [ ] Plugins
-    - [ ] Settings
+EDNet One is a multiplatform Flutter application that brings your EDNet.dev domain models to life:
 
-### 0.2.0 Visibility and Transparency
-    - [ ] Analytics
+- **Master-Detail UX Pattern**: Drill down from domains to models to entities seamlessly.
+- **Interactive Graph View**: Visualize entity relationships across domains.
+- **Multiplatform Support**: Run on Android, iOS, Web, and Desktop.
+- **Theme Support**: Switch between light and dark themes.
 
-### 0.3.0 Security in unsecure environments
-    - [ ] Security
+## 🚀 Features
 
-### 0.4.0 Maintainability
-    - [ ] Backup
-    - [ ] Restore
-    - [ ] Import
-    - [ ] Export
+- **In-Vivo Domain Model Editing**: Modify your domain model directly within the app.
+- **DBpedia and SPARQL Integration**: Enrich your data with vast knowledge graphs.
+- **Generative AI**: Get AI-assisted suggestions for model and UI improvements.
+- **API Integration**: Connect with calendar, email, project management, and more.
 
-### 0.5.0 Scalability
-    - [ ] Logs
-    - [ ] API
-    - [ ] CLI
-    - [ ] Docker
-    - [ ] Kubernetes
-    - [ ] CI/CD
+## 📝 Usage
 
-### 0.6.0 Community and communication
-    - [ ] Documentation
-    - [ ] Tutorials
-    - [ ] Examples
-    - [ ] Community
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ednet-dev/cms.git
+   ```
 
-### 1.0.0 Release
-    - [ ] Support
-    - [ ] Marketing
-    - [ ] Finance
-    - [ ] Legal
+2. Navigate to the EDNet One directory:
+   ```bash
+   cd cms/apps/one
+   ```
 
-### 2.0.0 Gamification
-    - [ ] Gamification
+3. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+4. Refer to **Getting Started**
 
-## Long term
+5. Run the application:
+   ```bash
+   flutter run
+   ```
 
-### 3.0.0 AI
+## Join the EDNet.dev Community
 
-### 4.0.0 AR/VR
+We're not just building a library; we're cultivating a community of Flutter developers who believe in building scalable, maintainable apps. Join us on [GitHub](https://github.com/ednet-dev/cms) to contribute, report issues, or just say hi!
 
-### 5.0.0 IoT
+## 📄 License
 
-### 6.0.0 Blockchain
+Individual packages and applications within this repository have their own licenses, - see the [LICENSE](LICENSE) file for details.
 
-### 7.0.0 Quantum Computing
+## 📧 Contact
+
+For more information, please contact our [dev team](mailto:dev@ednet.dev).
+
+---
+&nbsp;
+<div align="center">
+
+![EDNet One](https://img1.wsimg.com/isteam/ip/4896c6bc-229c-47e9-afdd-ff5ab2d2fdbf/Logo-eb329c1.png/:/rs=w:107,h:107,cg:true,m/cr=w:107,h:107/qt=q:95)
+
+**Explore • Interact • Integrate**
+
+</div>
