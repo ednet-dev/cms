@@ -12,8 +12,7 @@ class ThemeState {
 }
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
-  ThemeBloc()
-      : super(ThemeState(themeData: cliLightTheme, isDarkMode: false)) {
+  ThemeBloc() : super(ThemeState(themeData: cliDarkTheme, isDarkMode: true)) {
     on<ToggleThemeEvent>((event, emit) {
       final isDarkMode = !state.isDarkMode;
       final currentThemeName = themes[isDarkMode ? 'light' : 'dark']!

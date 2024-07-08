@@ -13,7 +13,7 @@ abstract class ${concept.code}Gen extends Entity<${concept.code}> {
 
   ${concept.code}Gen(Concept concept) {
     this.concept = concept;
-    ${concept.children.isEmpty ? '' : _generateChildrenSetup(concept)}
+    ${concept.children.isEmpty ? '// concept.children.isEmpty' : _generateChildrenSetup(concept)}
   }
 
   ${_generateWithIdConstructor(concept)}
