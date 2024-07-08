@@ -1,0 +1,10 @@
+name: ednet_core
+description: Set of cool generic tools in modeling domain models based on domain-driven design and event storming
+version: 0.0.1+10
+homepage: https://github.com/ednet-dev/cms/tree/main/packages/core
+
+environment:
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
+
+dependencies:
+  test: ^1.25.5

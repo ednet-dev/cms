@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 6.1.5">
+  <meta name="description" content="ednet_cms API docs, for the Dart programming language.">
+  <title>ednet_cms - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/ednet-dev/cms">ednet_cms package</a></li>
+  </ol>
+  <div class="self-name">ednet_cms</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <p><a href="https://codemagic.io/apps/63ce7b5ab80ead4e2c0f4735/ci/latest_build"><img src="https://api.codemagic.io/apps/63ce7b5ab80ead4e2c0f4735/ci/status_badge.svg" alt="Codemagic build status"></a>
+<a href="https://github.com/invertase/melos"><img src="https://img.shields.io/badge/maintained%20with-melos-f700ff.svg?style=flat-square" alt="melos"></a></p>
+<h1 id="ednetdev">EDNet.dev</h1>
+<p>Content Managed System domain model implementation in Dart and Flutter for use as first brick in development of multiplatform, complex, highly web integrated, business rich MVPs.</p>
+<h1 id="content">Content</h1>
+<p>Content is omnipresent, recursive and self defined.
+This does not make it easier to model it. Such artifact is hard to spot and catch its characteristic properties, as humans do with air, tend to take things for granted.
+However, taking content for granted results in epidemic of bad UI, UX of trivial systems which are complicating analog-digital transition of intrinsic complex human processes.</p>
+<p>Main motivation in developing this library is to answer those challenges by modeling Content primarily in function of User and Context in which User operates on Content.
+Strategy is to elevate abstraction level above current web landscape, take some structured knowledge DB and map Semantic roles of Content across User Contexts and from there define particular implementations of Content-User-Context interactions ready to be specialized for particular instance of Context.</p>
+<p>As those interactions are graphs we could take advantage of graph theory for further analysis and optimization, also rendering and intuitive interactive presentation.</p>
+<h2 id="principles">Principles</h2>
+<p>Before we continue we shall define context in which we are going to analyze domain model of Content by defining basic principles:</p>
+<ul>
+<li>
+<p><strong>Human biology</strong>: the human biology influences the sensory apparatus and therefore the types of content that can be consumed. This should be taken into account when defining the content types in the system.</p>
+</li>
+<li>
+<p><strong>Human psychology</strong>: The cognitive abilities and psychology of humans should also be considered when designing the content management system. For example, the way information is presented and the layout of the user interface should be designed in a way that is easy for users to understand and navigate.</p>
+</li>
+<li>
+<p><strong>Digital product limitations</strong>: The limitations of a digital product should also be considered when designing the content management system. For example, the types of media that can be handled by the system and the way that the content is stored and retrieved.</p>
+</li>
+</ul>
+<h2 id="categorization">Categorization</h2>
+<p>Following basic principles, we can make initial categorization of Content-Sensory-Context landscape (There will be a lot of silly examples necessary to demonstrate idea):</p>
+<table>
+<thead>
+<tr>
+<th>Visual</th>
+<th>Auditory</th>
+<th>Olfactory</th>
+<th>Gustatory</th>
+<th>Tactile</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TV</td>
+<td>Speakers</td>
+<td>Scent diffusers</td>
+<td>Blender</td>
+<td>Video game controller</td>
+</tr>
+<tr>
+<td>Monitor</td>
+<td>Headphones</td>
+<td>Scented candles</td>
+<td>Oven</td>
+<td>Keyboard</td>
+</tr>
+<tr>
+<td>Projector</td>
+<td>Earbuds</td>
+<td>Aromatherapy diffusers</td>
+<td>Microwave</td>
+<td>Mouse</td>
+</tr>
+<tr>
+<td>Watch</td>
+<td>Smart speaker</td>
+<td>Scented room sprays</td>
+<td>Slow cooker</td>
+<td>Touchscreen</td>
+</tr>
+<tr>
+<td>Refrigerator LCD panel</td>
+<td>Car Audio System</td>
+<td>Scented sachets</td>
+<td>Instant Pot</td>
+<td>Haptic feedback devices</td>
+</tr>
+<tr>
+<td>Smartphone</td>
+<td>Home Theater System</td>
+<td>Air fresheners</td>
+<td>Electric grill</td>
+<td>Touch screen monitors</td>
+</tr>
+<tr>
+<td>Tablet</td>
+<td>Hearing aids</td>
+<td></td>
+<td>Food processors</td>
+<td>Smartwatch</td>
+</tr>
+<tr>
+<td>E-Book-Reader</td>
+<td>Music players</td>
+<td></td>
+<td>Juicers</td>
+<td>Smart home devices</td>
+</tr>
+<tr>
+<td>Head-mounted display</td>
+<td>Portable radios</td>
+<td></td>
+<td>Electric kettles</td>
+<td>Remote controls</td>
+</tr>
+<tr>
+<td>Virtual reality headset</td>
+<td>Soundbars</td>
+<td></td>
+<td>Coffee makers</td>
+<td>Game Pad</td>
+</tr>
+<tr>
+<td>Augmented reality headset</td>
+<td>Bluetooth speakers</td>
+<td></td>
+<td>Toasters</td>
+<td></td>
+</tr>
+<tr>
+<td>Digital photo frame</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Digital signage</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Smart glasses</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="method">Method</h1>
+<ul>
+<li>Opinionated abstractions:
+<ul>
+<li>Language</li>
+<li>Process
+<ul>
+<li>Event storming
+<ul>
+<li>Artifacts
+<ul>
+<li>Documentation
+<ul>
+<li>Live</li>
+<li>Collaborative</li>
+<li>Gathering point like evening fire in old times</li>
+</ul>
+</li>
+<li>Software design - transpilable inside ECMAScript
+<ul>
+<li>Domain driven design
+<ul>
+<li>Domain
+<ul>
+<li>Application
+<ul>
+<li>Service</li>
+</ul>
+</li>
+<li>Model
+<ul>
+<li>Aggregate root
+<ul>
+<li>Entity children</li>
+<li>Commands</li>
+<li>Policies</li>
+<li>Events</li>
+<li>Roles
+<ul>
+<li>Permissions</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Infrastructure
+<ul>
+<li>Repository
+<ul>
+<li>Destructive</li>
+<li>None destructive
+<ul>
+<li>Event sourced</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Clients - other Bounded contexts depending on the implementation</li>
+<li>Dependencies - other Bounded contexts implementation depends on</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>By using such opinionated processes and somewhat structuring expected output artifacts enables us to generate
+considerable amount of initial code on such way that we promote best practices across various verticals like:</p>
+<ul>
+<li>requirements gathering</li>
+<li>architecture</li>
+<li>software design</li>
+<li>testing</li>
+<li>implementation</li>
+<li>CI/CD</li>
+</ul>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="calendar">
+  <span class="name"><a href="time_calendar_calendar/time_calendar_calendar-library.html">calendar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="ednet_cms">
+  <span class="name"><a href="ednet_cms/ednet_cms-library.html">ednet_cms</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="ednet_time">
+  <span class="name"><a href="ednet_time/ednet_time-library.html">ednet_time</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="https://github.com/ednet-dev/cms">ednet_cms package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">ednet_cms</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="time_calendar_calendar/time_calendar_calendar-library.html">calendar</a></li>
+      <li><a href="ednet_cms/ednet_cms-library.html">ednet_cms</a></li>
+      <li><a href="ednet_time/ednet_time-library.html">ednet_time</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    ednet_cms
+      0.0.1+2
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

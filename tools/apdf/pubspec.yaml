@@ -1,0 +1,28 @@
+name: apdf
+description: A command-line tool for generating PDFs from various sources.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
+
+dependencies:
+  args: ^2.4.2
+  cli_completion: ^0.4.0
+  mason_logger: ^0.2.10
+  pub_updater: ^0.4.0
+  pdf: ^3.10.6
+  glob: ^2.1.2
+  path: ^1.8.3
+  html: ^0.15.4
+
+dev_dependencies:
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
+  build_version: ^2.1.1
+  mocktail: ^1.0.1
+  test: ^1.24.9
+  very_good_analysis: ^5.1.0
+
+executables:
+  apdf:

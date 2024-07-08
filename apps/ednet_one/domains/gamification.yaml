@@ -1,0 +1,23 @@
+domain: 'Gamification'
+model: 'gamification'
+concepts:
+  - name: Gamification
+  - name: Game
+  - name: Player
+  - name: Team
+  - name: Match
+  - name: Round
+  - name: Tournament
+  - name: League
+  - name: Season
+  - name: Event
+  - name: Competition
+  - name: Challenge
+  - name: Quest
+  - name: Mission
+  - name: Adventure
+  - name: Story
+  - name: Character
+  - name: Avatar
+  - name: Role
+  - name: Skill

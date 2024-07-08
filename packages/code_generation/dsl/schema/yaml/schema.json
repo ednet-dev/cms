@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "The name of the domain"
+    },
+    "model": {
+      "type": "string",
+      "description": "The name of the model within the domain"
+    },
+    "concepts": {
+      "type": "array",
+      "description": "List of concepts in the model",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the concept"
+          },
+          "entry": {
+            "type": "boolean",
+            "description": "Whether this concept is an entry point"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the attribute"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "The category of the attribute",
+                  "enum": [
+                    "guid",
+                    "identifier",
+                    "required",
+                    ""
+                  ]
+                },
+                "sequence": {
+                  "type": "integer",
+                  "description": "The order of the attribute"
+                },
+                "init": {
+                  "type": "string",
+                  "description": "The initial value of the attribute"
+                },
+                "essential": {
+                  "type": "boolean",
+                  "description": "Whether the attribute is essential"
+                },
+                "sensitive": {
+                  "type": "boolean",
+                  "description": "Whether the attribute contains sensitive data"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The data type of the attribute"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "relations": {
+      "type": "array",
+      "description": "List of relations between concepts",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "The source concept of the relation"
+          },
+          "to": {
+            "type": "string",
+            "description": "The target concept of the relation"
+          },
+          "fromToName": {
+            "type": "string",
+            "description": "The name of the relation from source to target"
+          },
+          "fromToMin": {
+            "type": "string",
+            "description": "The minimum cardinality from source to target"
+          },
+          "fromToMax": {
+            "type": "string",
+            "description": "The maximum cardinality from source to target"
+          },
+          "fromToId": {
+            "type": "boolean",
+            "description": "Whether the relation is an identifier from source to target"
+          },
+          "toFromName": {
+            "type": "string",
+            "description": "The name of the relation from target to source"
+          },
+          "toFromMin": {
+            "type": "string",
+            "description": "The minimum cardinality from target to source"
+          },
+          "toFromMax": {
+            "type": "string",
+            "description": "The maximum cardinality from target to source"
+          },
+          "toFromId": {
+            "type": "boolean",
+            "description": "Whether the relation is an identifier from target to source"
+          },
+          "internal": {
+            "type": "boolean",
+            "description": "Whether the relation is internal to the model"
+          },
+          "category": {
+            "type": "string",
+            "description": "The category of the relation",
+            "enum": [
+              "inheritance",
+              "reflexive",
+              "twin",
+              "rel"
+            ]
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "fromToName",
+          "fromToMin",
+          "fromToMax",
+          "toFromName",
+          "toFromMin",
+          "toFromMax"
+        ]
+      }
+    }
+  },
+  "required": [
+    "concepts"
+  ]
+}

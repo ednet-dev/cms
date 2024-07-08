@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the createDomainModel function from the ednet_net library, for the Dart programming language.">
+  <title>createDomainModel function - ednet_net library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../ednet_net/ednet_net-library.html">ednet_net</a></li>
+    <li class="self-crumb">createDomainModel function</li>
+  </ol>
+  <div class="self-name">createDomainModel</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">createDomainModel</span> function 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="../ednet_core/Model-class.html">Model</a></span>
+<span class="name ">createDomainModel</span>(<wbr>)
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Model createDomainModel() {
+  Domain domain = new Domain(&#39;DirectDemocracy&#39;);
+  Model model = new Model(domain, &#39;DirectDemocracyModel&#39;);
+  assert(domain.models.length == 1);
+
+  Concept userConcept = new Concept(model, &#39;User&#39;);
+  userConcept.description = &#39;Represents a registered user on the platform.&#39;;
+  assert(model.concepts.length == 1);
+  new Attribute(userConcept, &#39;email&#39;).identifier = true;
+  new Attribute(userConcept, &#39;name&#39;);
+  new Attribute(userConcept, &#39;password&#39;);
+  &#47;&#47; ...
+
+  Concept proposalConcept = new Concept(model, &#39;Proposal&#39;);
+  proposalConcept.description =
+      &#39;Represents a proposal for a decision or action to be taken within a particular context.&#39;;
+  assert(model.concepts.length == 2);
+  new Attribute(proposalConcept, &#39;id&#39;).identifier = true;
+  new Attribute(proposalConcept, &#39;title&#39;);
+  new Attribute(proposalConcept, &#39;description&#39;);
+  &#47;&#47; ...
+
+  Concept voteConcept = new Concept(model, &#39;Vote&#39;);
+  voteConcept.description =
+      &#39;Represents a vote cast by a user on a particular proposal.&#39;;
+  assert(model.concepts.length == 3);
+  new Attribute(voteConcept, &#39;id&#39;).identifier = true;
+  new Attribute(voteConcept, &#39;voteType&#39;);
+  &#47;&#47; ...
+
+  Concept issueConcept = new Concept(model, &#39;Issue&#39;);
+  issueConcept.description =
+      &#39;Represents a topic or question that is open for discussion and debate among users on the platform.&#39;;
+  assert(model.concepts.length == 4);
+  new Attribute(issueConcept, &#39;id&#39;).identifier = true;
+  new Attribute(issueConcept, &#39;title&#39;);
+  new Attribute(issueConcept, &#39;description&#39;);
+  &#47;&#47; ...
+
+  Concept commentConcept = new Concept(model, &#39;Comment&#39;);
+  commentConcept.description =
+      &#39;Represents a comment made by a user on a particular issue.&#39;;
+  assert(model.concepts.length == 5);
+  new Attribute(commentConcept, &#39;id&#39;).identifier = true;
+  new Attribute(commentConcept, &#39;text&#39;);
+  &#47;&#47; ...
+
+  Concept expertConcept = new Concept(model, &#39;Expert&#39;);
+  expertConcept.description =
+      &#39;Represents a user who has specialized knowledge or experience in a particular field or topic.&#39;;
+  assert(model.concepts.length == 6);
+  new Attribute(expertConcept, &#39;fieldOfExpertise&#39;).identifier = true;
+&#47;&#47; ...
+
+  Child userProposalsNeighbor =
+      new Child(userConcept, proposalConcept, &#39;proposals&#39;);
+  Parent proposalUserNeighbor =
+      new Parent(proposalConcept, userConcept, &#39;user&#39;);
+  proposalUserNeighbor.identifier = true;
+  userProposalsNeighbor.opposite = proposalUserNeighbor;
+  proposalUserNeighbor.opposite = userProposalsNeighbor;
+  assert(userConcept.children.length == 1);
+  assert(proposalConcept.parents.length == 1);
+  assert(userConcept.sourceParents.length == 1);
+  assert(proposalConcept.sourceChildren.length == 1);
+
+  Child proposalVotesNeighbor =
+      new Child(proposalConcept, voteConcept, &#39;votes&#39;);
+  Parent voteProposalNeighbor =
+      new Parent(voteConcept, proposalConcept, &#39;proposal&#39;);
+  voteProposalNeighbor.identifier = true;
+  proposalVotesNeighbor.opposite = voteProposalNeighbor;
+  voteProposalNeighbor.opposite = proposalVotesNeighbor;
+  assert(proposalConcept.children.length == 1);
+  assert(voteConcept.parents.length == 1);
+  assert(proposalConcept.sourceParents.length == 1);
+  assert(voteConcept.sourceChildren.length == 1);
+
+  Child issueCommentsNeighbor =
+      new Child(issueConcept, commentConcept, &#39;comments&#39;);
+  Parent commentIssueNeighbor =
+      new Parent(commentConcept, issueConcept, &#39;issue&#39;);
+  commentIssueNeighbor.identifier = true;
+  issueCommentsNeighbor.opposite = commentIssueNeighbor;
+  commentIssueNeighbor.opposite = issueCommentsNeighbor;
+  assert(issueConcept.children.length == 1);
+  assert(commentConcept.parents.length == 1);
+  assert(issueConcept.sourceParents.length == 1);
+  assert(commentConcept.sourceChildren.length == 1);
+
+  Child userCommentsNeighbor =
+      new Child(userConcept, commentConcept, &#39;comments&#39;);
+  Parent commentUserNeighbor = new Parent(commentConcept, userConcept, &#39;user&#39;);
+  commentUserNeighbor.identifier = true;
+  userCommentsNeighbor.opposite = commentUserNeighbor;
+  commentUserNeighbor.opposite = userCommentsNeighbor;
+  assert(userConcept.children.length == 1);
+  assert(commentConcept.parents.length == 1);
+  assert(userConcept.sourceParents.length == 1);
+  assert(commentConcept.sourceChildren.length == 1);
+
+  Child expertUsersNeighbor = new Child(expertConcept, userConcept, &#39;users&#39;);
+  Parent userExpertNeighbor = new Parent(userConcept, expertConcept, &#39;expert&#39;);
+  userExpertNeighbor.identifier = true;
+  expertUsersNeighbor.opposite = userExpertNeighbor;
+  userExpertNeighbor.opposite = expertUsersNeighbor;
+  assert(expertConcept.children.length == 1);
+  assert(userConcept.parents.length == 1);
+  assert(expertConcept.sourceParents.length == 1);
+  assert(userConcept.sourceChildren.length == 1);
+
+  return model;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">ednet_core</a></li>
+  <li><a href="../ednet_net/ednet_net-library.html">ednet_net</a></li>
+  <li class="self-crumb">createDomainModel function</li>
+</ol>
+
+
+    <h5>ednet_net library</h5>
+    <ol>
+      <li class="section-title"><a href="../ednet_net/ednet_net-library.html#classes">Classes</a></li>
+        <li><a href="../ednet_net/UserConcept-class.html">UserConcept</a></li>
+
+
+
+
+
+      <li class="section-title"><a href="../ednet_net/ednet_net-library.html#functions">Functions</a></li>
+        <li><a href="../ednet_net/createDomainModel.html">createDomainModel</a></li>
+        <li><a href="../ednet_net/createModelData.html">createModelData</a></li>
+        <li><a href="../ednet_net/main.html">main</a></li>
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    ednet_core
+      0.0.1+2
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

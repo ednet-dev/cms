@@ -1,0 +1,8 @@
+name: ednet_cms
+
+environment:
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
+dev_dependencies:
+  melos: ^3.0.0
+dependencies:
+  shared_preferences: ^2.2.3

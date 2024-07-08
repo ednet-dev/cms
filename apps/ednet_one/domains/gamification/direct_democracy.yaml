@@ -1,0 +1,14 @@
+domain: 'DirectDemocracy'
+model: 'vote'
+concepts:
+  - name: Proposal
+  - name: Vote
+  - name: Voter
+  - name: Election
+  - name: Poll
+  - name: Survey
+  - name: Question
+  - name: Answer
+  - name: Result
+  - name: Decision
+  - name: Discussion

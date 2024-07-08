@@ -1,0 +1,44 @@
+name: ednet_cms
+description: Semantic CMS tools
+version: 0.0.3-dev.6
+homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_cms
+
+environment:
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ednet_code_generation:
+    path: ../code_generation
+  ednet_core:
+    path: ../core
+  watcher: ^1.0.2
+  args: ^2.4.0
+  build: ^2.3.1
+  glob: ^2.1.1
+  path: ^1.8.2
+  shared_preferences: ^2.2.3
+
+dev_dependencies:
+  test: ^1.25.5
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.4.10
+  build_web_compilers: ^3.2.7
+  build_config: ^1.1.1
+
+executables:
+  build:
+  watch:
+
+builders:
+  contentWatcherBuilder:
+    import: "package:ednet_cms/src/builders/content_watcher_builder.dart"
+    builder_factories: [ "contentWatcherBuilder" ]
+    build_extensions: { ".yaml": [ ".model.dart" ] }
+    auto_apply: dependents
+    build_to: source
+    runs_before: [ source_gen|combining_builder ]
+    applies_builders: [ source_gen|combining_builder ]

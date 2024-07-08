@@ -1,0 +1,11 @@
+domain: 'gamification'
+model: 'goal'
+concepts:
+  - name: Goal
+  - name: Task
+  - name: Reward
+  - name: Achievement
+  - name: Progress
+  - name: Level
+  - name: Badge
+  - name: Point

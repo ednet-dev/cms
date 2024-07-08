@@ -1,0 +1,165 @@
+{
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "entry": {
+            "type": "boolean"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sequence": {
+                  "type": "integer"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "essential": {
+                  "type": "boolean"
+                },
+                "sensitive": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["sequence", "category", "name", "type", "essential", "sensitive"]
+            }
+          },
+          "commands": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sequence": {
+                  "type": "integer"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "essential": {
+                  "type": "boolean"
+                },
+                "sensitive": {
+                  "type": "boolean"
+                },
+                "tooltip": {
+                  "type": "string"
+                }
+              },
+              "required": ["sequence", "category", "name", "type", "essential", "sensitive"]
+            }
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sequence": {
+                  "type": "integer"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": ["sequence", "category", "name", "description"]
+            }
+          },
+          "policies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sequence": {
+                  "type": "integer"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": ["sequence", "category", "name", "description"]
+            }
+          }
+        },
+        "required": ["name"]
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "fromToName": {
+            "type": "string"
+          },
+          "fromToMin": {
+            "type": "string"
+          },
+          "fromToMax": {
+            "type": "string"
+          },
+          "toFromName": {
+            "type": "string"
+          },
+          "toFromMin": {
+            "type": "string"
+          },
+          "toFromMax": {
+            "type": "string"
+          },
+          "internal": {
+            "type": "boolean"
+          },
+          "category": {
+            "type": "string"
+          }
+        },
+        "required": ["from", "to", "fromToName", "fromToMin", "fromToMax", "toFromName", "toFromMin", "toFromMax", "internal", "category"]
+      }
+    }
+  },
+  "required": ["domain", "model", "concepts"]
+}

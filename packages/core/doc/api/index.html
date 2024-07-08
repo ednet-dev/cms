@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 6.1.5">
+  <meta name="description" content="ednet_core API docs, for the Dart programming language.">
+  <title>ednet_core - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/ednet-dev/cms/packages/core">ednet_core package</a></li>
+  </ol>
+  <div class="self-name">ednet_core</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h3 id="disclaimer-not-production-ready-very-volatile-api-but-with-locked-versions-one-can-already-develop-full-blown-domain-models">DISCLAIMER: Not production ready, very volatile API! But with locked versions one can already develop full-blown domain models.</h3>
+<h1 id="init-ednet-core-v0012">Init <strong>EDNet Core</strong> v0.0.1+2</h1>
+<p>Credentials:</p>
+<ul>
+<li>Based on <a href="https://github.com/dzenanr/dartling">Dartling</a></li>
+</ul>
+<h1 id="collaboration">Collaboration:</h1>
+<p>Start your collaboration by visiting and taking participation in <a href="https://github.com/ednet-dev/cms/pull/6">RFC</a></p>
+<h2 id="0012-rfc-state">0.0.1+2 RFC state</h2>
+<h1 id="proposal-for-collaboration-on-ednetcore-a-meta-framework-for-rapid-definition-of-domain-models">Proposal for Collaboration on EDNetCore: A Meta Framework for Rapid Definition of Domain Models</h1>
+<h2 id="introduction">Introduction:</h2>
+<p>This document presents a proposal for collaboration on an open-source project to develop a meta framework for rapid
+definition of domain models called EDNetCore. This framework is built on top of the Domain-Driven Design (DDD) and
+EventStorming methodologies and enables the encapsulation of reusable parts of semantic implementation for generic
+repositories and UI default renderings.</p>
+<h2 id="motivation">Motivation:</h2>
+<p>The software development industry is experiencing a shift towards highly abstract and conceptual thinking in
+architectural terms, as evidenced by the disruptive advance of no-code platforms and solutions. This trend demands a
+focus on the concepts of solutions, their contextual role, and relationships, rather than the implementation details
+such as UI or persistence concerns. This shift places pressure on the industry to compete in creativity at a higher
+level, where the minority of highly specialized developers will act as maintainers of sub-stacks with similar knowledge
+of systems and subsystems as the modern average developer.</p>
+<p>The pressure of the analog-to-digital transition is immense and will utilize every novel niche with disrupting potential
+and fulfill it. The shortage of endemic highly skilled developers is continuous and omnipresent, and this project aims
+to democratize the no-code approach by empowering developers to focus on what matters, the Domain Model.</p>
+<h2 id="framework-description">Framework Description:</h2>
+<h3 id="ednetdsl">EDNetDSL</h3>
+<p>is used to describe any domain model.
+EDNetCMS interprets it on various platforms using appropriate default model interpreters,
+by only manipulating a YAML file of user stories high-level concepts and their basic relationships,
+as not more complex as a basic ER diagram, we can generate an entire well-structured, evolveable MVP of domain model in
+discussion and deploy it on the platform of our choosing.</p>
+<pre class="language-yaml"><code class="language-yaml">concepts:
+  - name: User
+    entry: true
+    attributes:
+      - sequence: 1
+        name: username
+
+      - sequence: 2
+        name: password
+        sensitive: true
+
+      - sequence: 3
+        name: email
+
+      - sequence: 4
+        name: name
+
+  - name: Address
+    attributes:
+      - sequence: 1
+        name: zip
+
+      - sequence: 2
+        name: city
+
+      - sequence: 3
+        name: street
+
+      - sequence: 4
+        name: number
+
+  - name: Country
+    attributes:
+      - sequence: 1
+        name: name
+
+      - sequence: 2
+        name: iso
+
+relations:
+  - from: Address
+    fromToName: country
+    to: Country
+    toFromName: addresses
+    id:
+      from: false
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+
+    toFromCardinality:
+      min: 0
+      max: N
+    category: relationship
+    internal: false
+
+  - from: User
+    fromToName: company
+    to: Company
+    toFromName: employees
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: 1
+
+    toFromCardinality:
+      min: 0
+      max: N
+    category: relationship
+    internal: false
+</code></pre>
+<h3 id="ednetcore">EDNetCore</h3>
+<p>is an instance implementation of EDNetDSL meta framework for rapid definition of domain models and is an abstraction on top of DDD and
+EventStorming, implementing their semantic and lingo. It enables the encapsulation of reusable parts of implementation
+for generic repositories and UI default renderings. In combination with other open-source initiatives, EDNetCore can
+generate almost everything infrastructural and have default Flutter material interpreter app for multi-platform
+deployment or default React material interpreter app optimized for web deployment of EDNetCore domain models.</p>
+<pre class="language-dart"><code class="language-dart">import 'package:ednet_core/ednet_core.dart';
+
+/// Entities and Value objects
+class Vote extends Entity&lt;Vote&gt; {}
+
+class Votes extends Entities&lt;Vote&gt; {}
+
+class Initiative extends Entity&lt;Initiative&gt; {}
+
+class Citizen extends Entity&lt;Citizen&gt; {}
+
+class Proposal extends Entity&lt;Proposal&gt; {}
+
+class Address extends ValueObject&lt;Address&gt; {}
+// ...
+
+/// Commands
+class VoteForProposalCommand extends IEntitiesCommand {}
+
+class VoteAgainstProposalCommand extends IEntitiesCommand {}
+
+class CommentProposalCommand extends IEntitiesCommand {}
+// ... 
+
+/// Side effects as Command reactions  - Events
+class ProposalCommentedReaction implements ICommandReaction {}
+// ...
+
+/// Events
+class VotedForProposalEvent extends IEntitiesEvent {}
+
+class VotedAgainstProposalEvent extends IEntitiesEvent {}
+// ...
+</code></pre>
+<h2 id="project-ambition">Project Ambition:</h2>
+<p>The project's ambition is not small, and there is a job to be done across all levels of seniority. There are amounts of
+legacy Dart 1 code waiting to be transformed into modern mixins and extensions. Large scale architectural concerns
+around performant peer-to-peer capabilities with universal platform as a constraint must be addressed. Furthermore, the
+definition, implementation, and concrete specialization of the rest of DDD and EventStorming artifacts, such as policies
+and events, aggregate roots, systems, etc., are yet to be integrated.</p>
+<p>ECMA Script transpilation and hooking publishing to npmjs for web development</p>
+<p>Backend use case specifics and examples of usage EDNetCore as domain model framework for custom backend with dart or
+nodejs and integration with existing ecosystem of popular technologies missing domain model opinion as Remix and
+similar.</p>
+<p>One domain model framework integrating backend and frontend implementation at the end generating optionally different
+levels of the architecture for the integration.</p>
+<p>Extensive documentation for existing API and architecture of EDNetCore in form of C4.</p>
+<p>The implementation of code generation for our DSL will empower higher stakeholders like Product managers to take more
+direct responsibility for the implementation on the software design level fully. They will understand how we derived our
+language and serve as active participants in the process.</p>
+<p>Working with highly structured graphs like are metamodels of domain models have bound us to utilize resources like
+DBPedia for generic interpretation or at least building of library of highly contextualized specializations of available
+public semantic models. Or, in plain language - we can and shall use public knowledge dbs and their ontologies to model
+all that there is, or to spark a life in our structured knowledge so that we persist our custom interactions of our
+custom contexts.</p>
+<p>EaaS, Everything as a service, we have to pay special attention to deployment capabilities and support all major cloud providers in unified way</p>
+<h2 id="conclusion">Conclusion:</h2>
+<p>The EDNetCore meta framework for rapid definition of domain models, built on top of DDD and EventStorming, aims to
+democratize the no-code approach to software development by empowering developers to focus on what matters, the Domain
+Model. This open-source initiative offers the potential to generate almost everything infrastructural, and with the
+implementation of code generation for our DSL, we will enable higher stakeholders to take more direct responsibility for
+the implementation of software design.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="application_service">
+  <span class="name"><a href="domain_model_application_service_application_service/domain_model_application_service_application_service-library.html">application_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bootstrap">
+  <span class="name"><a href="configuration_bootstrap/configuration_bootstrap-library.html">bootstrap</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bootstrap_domain_model_from_yaml">
+  <span class="name"><a href="utilities_dsl_bootstrap_domain_model_from_yaml/utilities_dsl_bootstrap_domain_model_from_yaml-library.html">bootstrap_domain_model_from_yaml</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bounded_context">
+  <span class="name"><a href="domain_model_bounded_contexts_bounded_context/domain_model_bounded_contexts_bounded_context-library.html">bounded_context</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="domain_model_graph">
+  <span class="name"><a href="utilities_dsl_visualization_domain_model_graph/utilities_dsl_visualization_domain_model_graph-library.html">domain_model_graph</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="domain_model_graph">
+  <span class="name"><a href="domain_infrastructure_graph_domain_model_graph/domain_infrastructure_graph_domain_model_graph-library.html">domain_model_graph</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="edge">
+  <span class="name"><a href="domain_infrastructure_graph_edge/domain_infrastructure_graph_edge-library.html">edge</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="edge_direction">
+  <span class="name"><a href="domain_infrastructure_graph_edge_direction/domain_infrastructure_graph_edge_direction-library.html">edge_direction</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="edge_type">
+  <span class="name"><a href="domain_infrastructure_graph_edge_type/domain_infrastructure_graph_edge_type-library.html">edge_type</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="ednet_core">
+  <span class="name"><a href="ednet_core/ednet_core-library.html">ednet_core</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="ednet_net">
+  <span class="name"><a href="ednet_net/ednet_net-library.html">ednet_net</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="entity_policies">
+  <span class="name"><a href="domain_model_policy_entity_policies/domain_model_policy_entity_policies-library.html">entity_policies</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="entity_policy">
+  <span class="name"><a href="domain_model_policy_entity_policy/domain_model_policy_entity_policy-library.html">entity_policy</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="entity_policy_factory">
+  <span class="name"><a href="domain_model_policy_entity_policy_factory/domain_model_policy_entity_policy_factory-library.html">entity_policy_factory</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="example">
+  <span class="name"><a href="example/example-library.html">example</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="graph">
+  <span class="name"><a href="graph/graph-library.html">graph</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="graph_visualitazion_widget">
+  <span class="name"><a href="utilities_dsl_visualization_graph_visualitazion_widget/utilities_dsl_visualization_graph_visualitazion_widget-library.html">graph_visualitazion_widget</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="infrastructure">
+  <span class="name"><a href="infrastructure/infrastructure-library.html">infrastructure</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="model">
+  <span class="name"><a href="domain_model/domain_model-library.html">model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="node">
+  <span class="name"><a href="domain_infrastructure_graph_node/domain_infrastructure_graph_node-library.html">node</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="node_type">
+  <span class="name"><a href="domain_infrastructure_graph_node_type/domain_infrastructure_graph_node_type-library.html">node_type</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="repository">
+  <span class="name"><a href="repository/repository-library.html">repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="yaml_source">
+  <span class="name"><a href="configuration_yaml_source/configuration_yaml_source-library.html">yaml_source</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="https://github.com/ednet-dev/cms/packages/core">ednet_core package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">ednet_core</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="domain_model_application_service_application_service/domain_model_application_service_application_service-library.html">application_service</a></li>
+      <li><a href="configuration_bootstrap/configuration_bootstrap-library.html">bootstrap</a></li>
+      <li><a href="utilities_dsl_bootstrap_domain_model_from_yaml/utilities_dsl_bootstrap_domain_model_from_yaml-library.html">bootstrap_domain_model_from_yaml</a></li>
+      <li><a href="domain_model_bounded_contexts_bounded_context/domain_model_bounded_contexts_bounded_context-library.html">bounded_context</a></li>
+      <li><a href="utilities_dsl_visualization_domain_model_graph/utilities_dsl_visualization_domain_model_graph-library.html">domain_model_graph</a></li>
+      <li><a href="domain_infrastructure_graph_domain_model_graph/domain_infrastructure_graph_domain_model_graph-library.html">domain_model_graph</a></li>
+      <li><a href="domain_infrastructure_graph_edge/domain_infrastructure_graph_edge-library.html">edge</a></li>
+      <li><a href="domain_infrastructure_graph_edge_direction/domain_infrastructure_graph_edge_direction-library.html">edge_direction</a></li>
+      <li><a href="domain_infrastructure_graph_edge_type/domain_infrastructure_graph_edge_type-library.html">edge_type</a></li>
+      <li><a href="ednet_core/ednet_core-library.html">ednet_core</a></li>
+      <li><a href="ednet_net/ednet_net-library.html">ednet_net</a></li>
+      <li><a href="domain_model_policy_entity_policies/domain_model_policy_entity_policies-library.html">entity_policies</a></li>
+      <li><a href="domain_model_policy_entity_policy/domain_model_policy_entity_policy-library.html">entity_policy</a></li>
+      <li><a href="domain_model_policy_entity_policy_factory/domain_model_policy_entity_policy_factory-library.html">entity_policy_factory</a></li>
+      <li><a href="example/example-library.html">example</a></li>
+      <li><a href="graph/graph-library.html">graph</a></li>
+      <li><a href="utilities_dsl_visualization_graph_visualitazion_widget/utilities_dsl_visualization_graph_visualitazion_widget-library.html">graph_visualitazion_widget</a></li>
+      <li><a href="infrastructure/infrastructure-library.html">infrastructure</a></li>
+      <li><a href="domain_model/domain_model-library.html">model</a></li>
+      <li><a href="domain_infrastructure_graph_node/domain_infrastructure_graph_node-library.html">node</a></li>
+      <li><a href="domain_infrastructure_graph_node_type/domain_infrastructure_graph_node_type-library.html">node_type</a></li>
+      <li><a href="repository/repository-library.html">repository</a></li>
+      <li><a href="configuration_yaml_source/configuration_yaml_source-library.html">yaml_source</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    ednet_core
+      0.0.1+2
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
