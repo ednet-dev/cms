@@ -2,7 +2,7 @@ part of ednet_core;
 
 class PolicyEngine {
   final List<Policy> policies = [];
-  final DomainSession session;
+  final DomainSession? session;
 
   PolicyEngine(this.session);
 
@@ -14,7 +14,7 @@ class PolicyEngine {
     return policies.where((policy) => policy.evaluate(entity)).toList();
   }
 
-  void executePoliciGes(Entity entity) {
+  void executePolicyGes(Entity entity) {
     final applicablePolicies = getApplicablePolicies(entity);
     for (var policy in applicablePolicies) {
       // Execute policy actions
