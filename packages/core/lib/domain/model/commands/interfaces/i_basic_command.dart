@@ -7,6 +7,7 @@ abstract class IBasicCommand implements ICommand {
   String? description;
   final DomainSession session;
   bool partOfTransaction = false;
+  List<Event> events = [];
 
   IBasicCommand(this.name, this.session);
 
@@ -32,6 +33,15 @@ abstract class IBasicCommand implements ICommand {
 
   @override
   toString() => 'command: $name; state: $state -- description: $description';
+
+  @override
+  List<Event> getEvents() {
+    return events;
+  }
+
+  void addEvent(Event event) {
+    events.add(event);
+  }
 
   display({String title = 'BasicCommand'}) {
     print('');

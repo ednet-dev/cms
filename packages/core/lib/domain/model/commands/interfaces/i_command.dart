@@ -1,6 +1,12 @@
 part of ednet_core;
 
 abstract class ICommand {
+  String get name;
+  String get category;
+  String get description;
+  String get successEvent;
+  String get failureEvent;
+
   bool get done;
 
   bool get undone;
@@ -12,4 +18,6 @@ abstract class ICommand {
   bool undo();
 
   bool redo();
+
+  List<Event> getEvents();
 }

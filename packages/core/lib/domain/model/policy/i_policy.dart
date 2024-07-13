@@ -18,13 +18,19 @@ class Policy implements IPolicy {
 
   @override
   bool evaluate(Entity entity) {
-    // TODO: Simple expression evaluation
-    // TODO: Or use a proper expression evaluation library
+    final evaluator = ExpressionEvaluator();
+    final exp = Expression.parse(expression);
+
+    final context = <String, dynamic>{};
     for (var dep in dependencies) {
-      if (entity.getAttribute(dep) == null) return false;
+      context[dep] = entity.getAttribute(dep);
     }
 
-    return true; // TODO: A simplified evaluation, solve this please, I need to be able to use some kind of boolean universal criteria language to be able to model policies in my dsl yaml. I want to be able to specify policies in a yaml file as a complex boolean expression over concept attributes and other semantic elements.
+    try {
+      return evaluator.eval(exp, context) as bool;
+    } catch (e) {
+      print('Error evaluating policy $name: $e');
+      return false;
+    }
   }
 }
-

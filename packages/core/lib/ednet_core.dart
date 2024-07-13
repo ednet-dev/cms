@@ -3,6 +3,8 @@ library ednet_core;
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:expressions/expressions.dart';
+
 export 'domain/model.dart';
 
 part 'core_repository.dart';
@@ -42,6 +44,7 @@ part 'domain/model/event/interfaces/i_past_command.dart';
 part 'domain/model/event/interfaces/i_source_of_command_reaction.dart';
 part 'domain/model/event/interfaces/i_source_of_past_reaction.dart';
 part 'domain/model/event/past.dart';
+part 'domain/model/event/event.dart';
 part 'domain/model/i_model_entries.dart';
 part 'domain/model/model_entries.dart';
 part 'domain/model/oid.dart';
@@ -59,6 +62,7 @@ part 'gen/ednet_model_generic.dart';
 part 'gen/ednet_model_specific.dart';
 part 'gen/ednet_repository.dart';
 part 'domain/model/policy/i_policy.dart';
+part 'domain/model/policy/policy_engine.dart';
 part 'gen/ednet_web.dart';
 part 'gen/random.dart';
 part 'gen/random_data.dart';

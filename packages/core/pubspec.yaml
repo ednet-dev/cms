@@ -7,4 +7,5 @@ environment:
   sdk: '>=3.5.0-180.3.beta <4.0.0'
 
 dependencies:
+  expressions: ^0.2.5+1
   test: ^1.25.5
