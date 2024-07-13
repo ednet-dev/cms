@@ -14,9 +14,9 @@ concepts:
     entry: true
     attributes:
       - name: citizenId
-        type: String
-      - name: name
-        type: String
+      - name: firstName
+      - name: lastName
+
     policies:
       - name: VerifyIdentity
         description: Verify the identity of a citizen.

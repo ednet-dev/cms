@@ -21,13 +21,15 @@ class Electoral_systemModel extends Electoral_systemEntries {
 
     void initCitizens() {
     var citizen1 = Citizen(citizens.concept); 
-    citizen1.citizenId = 'autobus'; 
-    citizen1.name = 'algorithm'; 
+    citizen1.citizenId = '1';
+    citizen1.firstName = 'privacy'; 
+    citizen1.lastName = 'employer'; 
     citizens.add(citizen1); 
  
     var citizen2 = Citizen(citizens.concept); 
-    citizen2.citizenId = 'policeman'; 
-    citizen2.name = 'productivity'; 
+    citizen2.citizenId = '2';
+    citizen2.firstName = 'down'; 
+    citizen2.lastName = 'yellow'; 
     citizens.add(citizen2); 
  
 

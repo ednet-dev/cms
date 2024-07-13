@@ -3,26 +3,38 @@ part of global_democracy_electoral_system;
 // lib/gen/global_democracy/electoral_system/citizens.dart
 
 abstract class CitizenGen extends Entity<Citizen> {
+
   CitizenGen(Concept concept) {
     this.concept = concept;
     // concept.children.isEmpty
   }
 
-  String get citizenId => getAttribute("citizenId");
+  
 
+  
+
+    String get citizenId => getAttribute("citizenId");
   void set citizenId(String a) => setAttribute("citizenId", a);
 
-  String get name => getAttribute("name");
+  String get firstName => getAttribute("firstName");
+  void set firstName(String a) => setAttribute("firstName", a);
 
-  void set name(String a) => setAttribute("name", a);
+  String get lastName => getAttribute("lastName");
+  void set lastName(String a) => setAttribute("lastName", a);
+
+
+  
 
   @override
   Citizen newEntity() => Citizen(concept);
 
   Citizens newEntities() => Citizens(concept);
+
+  
 }
 
 abstract class CitizensGen extends Entities<Citizen> {
+
   CitizensGen(Concept concept) {
     this.concept = concept;
   }
