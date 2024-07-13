@@ -1,4 +1,4 @@
-// lib/ednet_core_types.dart
+// lib/main.dart
 
 /*
 http://opensource.org/licenses/
