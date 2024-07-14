@@ -1,0 +1,19 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(domain_model, "Domain Model") {
+    Component(entity, "Entity", "Represents a domain object")
+    Component(concept, "Concept", "Defines the structure of entities")
+    Component(attribute, "Attribute", "Defines properties of entities")
+    Component(relationship, "Relationship", "Defines associations between entities")
+    Component(behavior, "Behavior", "Implements domain-specific logic")
+}
+
+Rel(entity, concept, "Defined by")
+Rel(concept, attribute, "Has")
+Rel(concept, relationship, "Has")
+Rel(entity, behavior, "Implements")
+
+@enduml

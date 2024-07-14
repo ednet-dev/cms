@@ -1,0 +1,28 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(developer, "Developer", "A software developer using ednet_core")
+
+System_Boundary(ednet_core, "ednet_core") {
+    Container(domain_model, "Domain Model", "Dart", "Defines the structure and behavior of the domain")
+    Container(repository, "Repository", "Dart", "Manages data persistence and retrieval")
+    Container(event_sourcing, "Event Sourcing", "Dart", "Implements event-based state management")
+    Container(code_generator, "Code Generator", "Dart", "Generates boilerplate code based on the domain model")
+    Container(validation, "Validation", "Dart", "Implements domain-specific validation rules")
+}
+
+System_Ext(database, "Database", "Persistent storage for domain entities")
+System_Ext(api, "External APIs", "Third-party services integrated with the application")
+
+Rel(developer, domain_model, "Defines")
+Rel(developer, code_generator, "Uses")
+Rel(domain_model, repository, "Uses")
+Rel(domain_model, event_sourcing, "Uses")
+Rel(domain_model, validation, "Uses")
+Rel(repository, database, "Persists data to")
+Rel(event_sourcing, database, "Stores events in")
+Rel(domain_model, api, "Integrates with")
+
+@enduml

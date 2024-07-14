@@ -1,0 +1,17 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(code_generator, "Code Generator") {
+    Component(model_parser, "Model Parser", "Parses domain model definitions")
+    Component(template_engine, "Template Engine", "Generates code from templates")
+    Component(code_writer, "Code Writer", "Writes generated code to files")
+    Component(dependency_resolver, "Dependency Resolver", "Resolves code dependencies")
+}
+
+Rel(model_parser, template_engine, "Provides data to")
+Rel(template_engine, code_writer, "Generates code for")
+Rel(code_writer, dependency_resolver, "Uses")
+
+@enduml
