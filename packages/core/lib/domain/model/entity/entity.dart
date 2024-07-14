@@ -7,8 +7,15 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   DateTime? _whenAdded;
   DateTime? _whenSet;
   DateTime? _whenRemoved;
+
   @override
   var exceptions = ValidationExceptions();
+
+  PolicyEvaluator _policyEvaluator = PolicyEvaluator(PolicyRegistry());
+
+  set policyEvaluator(PolicyEvaluator newPolicyEvaluator) {
+    _policyEvaluator = newPolicyEvaluator;
+  }
 
   Map<String, Object?> _attributeMap = <String, Object?>{};
 
@@ -112,6 +119,10 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         _internalChildMap[child.code] = childEntities;
       }
     }
+  }
+
+  PolicyEvaluationResult evaluatePolicies({String? policyKey}) {
+    return _policyEvaluator.evaluate(this, policyKey: policyKey);
   }
 
   @override
@@ -281,6 +292,17 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         }
         pre = beforePre;
         post = beforePost;
+      }
+
+      if (updated) {
+        // Evaluate policies after attribute change
+        var policyResult = evaluatePolicies();
+        if (!policyResult.success) {
+          // If policies are violated, revert the change
+          _attributeMap[name] = beforeValue;
+          updated = false;
+          throw PolicyViolationException(policyResult.violations);
+        }
       }
     }
     return updated;
@@ -896,6 +918,18 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       if (child.internal) {
         _internalChildMap[name] = entities;
       }
+
+      // Evaluate policies after child change
+      var policyResult = evaluatePolicies();
+      if (!policyResult.success) {
+        // If policies are violated, revert the change
+        _childMap.remove(name);
+        if (_internalChildMap.containsKey(name)) {
+          _internalChildMap.remove(name);
+        }
+        throw PolicyViolationException(policyResult.violations);
+      }
+
       return true;
     } else {
       return false;
@@ -921,12 +955,31 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           entity.concept.entryConcept.code);
       _parentMap[name] = entity;
       _referenceMap[name] = reference;
+
+      var policyResult = evaluatePolicies();
+      if (!policyResult.success) {
+        // If policies are violated, revert the change
+        _parentMap.remove(name);
+        _referenceMap.remove(name);
+        throw PolicyViolationException(policyResult.violations);
+      }
+
       return true;
     } else if (entity != null && parent.update) {
       var reference = Reference(entity.oid.toString(), entity.concept.code,
           entity.concept.entryConcept.code);
       _parentMap[name] = entity;
       _referenceMap[name] = reference;
+
+      // Evaluate policies after parent change
+      var policyResult = evaluatePolicies();
+      if (!policyResult.success) {
+        // If policies are violated, revert the change
+        _parentMap.remove(name);
+        _referenceMap.remove(name);
+        throw PolicyViolationException(policyResult.violations);
+      }
+
       return true;
     } else {
       String msg = '${_concept?.code}.${parent.code} is not updatable.';

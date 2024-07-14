@@ -9,12 +9,30 @@ abstract class IPolicy {
 }
 
 class Policy implements IPolicy {
+  @override
+  final String name;
+
+  @override
+  final String description;
+
+  final bool Function(Entity) _evaluationFunction;
+
+  Policy(this.name, this.description, this._evaluationFunction);
+
+  @override
+  bool evaluate(Entity entity) {
+    return _evaluationFunction(entity);
+  }
+}
+
+class PolicyWithDependencies implements IPolicy {
   final String name;
   final String description;
   final String expression;
   final Set<String> dependencies;
 
-  Policy(this.name, this.description, this.expression, this.dependencies);
+  PolicyWithDependencies(
+      this.name, this.description, this.expression, this.dependencies);
 
   @override
   bool evaluate(Entity entity) {
