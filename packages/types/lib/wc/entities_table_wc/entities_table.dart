@@ -32,7 +32,7 @@ class EntitiesTable {
       final hRow = table!.nodes[1] as TableRowElement;
       for (final thElement in hRow.nodes as List<TableCellElement>) {
         if (thElement.text == attribute.code) {
-          thElement.onClick.listen((Event e) {
+          thElement.onClick.listen((MouseEvent e) {
             entities.sort((e1, e2) {
               final v1 = e1.getAttribute(attribute.code);
               final v2 = e2.getAttribute(attribute.code);
@@ -94,7 +94,7 @@ class EntitiesTable {
     table?.nodes.add(dRow);
   }
 
-  void selectEntity(Event e) {
+  void selectEntity(MouseEvent e) {
     final dRow = (e.target as TableCellElement).parent;
     final idn = int.parse(dRow!.id);
     final entity = entities.singleWhereOid(Oid.ts(idn));

@@ -131,7 +131,7 @@ class EntityTable {
     currentEntity = entity;
   }
 
-  void addEntity(Event e) {
+  void addEntity(MouseEvent e) {
     final newEntity = entities.newEntity();
     for (final attribute in nonIncrementAttributes) {
       final row = findRow(attribute);
@@ -153,7 +153,7 @@ class EntityTable {
     firstField().focus();
   }
 
-  void updateEntity(Event e) {
+  void updateEntity(MouseEvent e) {
     final nonIdentifierAttributes =
         currentEntity?.concept.nonIdentifierAttributes;
     if (nonIdentifierAttributes == null) {
@@ -190,7 +190,7 @@ class EntityTable {
     firstField().focus();
   }
 
-  void removeEntity(Event e) {
+  void removeEntity(MouseEvent e) {
     if (removeButton?.text == 'Remove') {
       removeButton?.text = 'Confirm';
     } else {
@@ -205,7 +205,7 @@ class EntityTable {
     }
   }
 
-  void cancelCommand(Event e) {
+  void cancelCommand(MouseEvent e) {
     emptyData();
     firstField().focus();
     currentEntity = null;

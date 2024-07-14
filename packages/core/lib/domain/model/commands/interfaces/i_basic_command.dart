@@ -4,12 +4,22 @@ abstract class IBasicCommand implements ICommand {
   final String name;
   late String category;
   String state = 'started';
-  String? description;
+  String description;
   final DomainSession session;
   bool partOfTransaction = false;
   List<Event> events = [];
 
-  IBasicCommand(this.name, this.session);
+  IBasicCommand(
+    this.name,
+    this.session, {
+    this.description = 'Basic command',
+  });
+
+  @override
+  Event get successEvent => Event.SuccessEvent(name, description, [], null);
+
+  @override
+  Event get failureEvent => Event.FailureEvent(name, description, [], null);
 
   @override
   bool doIt();

@@ -227,6 +227,14 @@ packages:
       relative: true
     source: path
     version: "0.0.1+10"
+  expressions:
+    dependency: "direct main"
+    description:
+      name: expressions
+      sha256: "0a3a207dc4697bbb0e17c731c7f10f2df6f88d9dbb99ac83c4168a10b57e7a20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.5+1"
   fake_async:
     dependency: transitive
     description:
@@ -610,6 +618,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.1"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   shared_preferences:
     dependency: transitive
     description:

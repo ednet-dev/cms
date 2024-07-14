@@ -2,10 +2,14 @@ part of ednet_core;
 
 abstract class ICommand {
   String get name;
+
   String get category;
+
   String get description;
-  String get successEvent;
-  String get failureEvent;
+
+  Event get successEvent;
+
+  Event get failureEvent;
 
   bool get done;
 
