@@ -67,6 +67,7 @@ part 'domain/model/policy/policy_registry.dart';
 part 'domain/model/policy/policy_evaluator.dart';
 part 'domain/model/policy/policy_violation_exception.dart';
 part 'domain/model/policy/attribute_policy.dart.dart';
+part 'domain/model/policy/relationship_policy.dart';
 part 'gen/ednet_web.dart';
 part 'gen/random.dart';
 part 'gen/random_data.dart';

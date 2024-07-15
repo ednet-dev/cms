@@ -380,4 +380,12 @@ class Concept extends Entity<Concept> {
         children.toList().map((child) => child.toGraph()).toList();
     return graph;
   }
+
+  isParent(String relationshipName) {
+    return parents.any((parent) => parent.code == relationshipName);
+  }
+
+  isChild(String relationshipName) {
+    return children.any((child) => child.code == relationshipName);
+  }
 }

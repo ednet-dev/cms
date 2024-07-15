@@ -1,6 +1,8 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:test/test.dart';
 
+import 'mock/concrete_entity.dart';
+
 void main() {
   group('Policy Tests', () {
     final Domain domain = Domain();
@@ -34,8 +36,8 @@ void main() {
       testConcept.parents.add(Parent(testConcept, parentConcept, 'parentType'));
       testConcept.children.add(Child(testConcept, childConcept, 'children'));
 
-      // Create the test entity
-      testEntity = Entity<Concept>()..concept = testConcept;
+      // Create the test entity / ConcreteEntity
+      testEntity = ConcreteEntity(testConcept);
     });
 
     test('Basic Policy Evaluation', () {
@@ -123,6 +125,37 @@ void main() {
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
       expect(result.violations[0].policyKey, 'agePolicy');
+    });
+
+    test('RelationshipPolicy Evaluation', () {
+      var parentConcept = Concept(model, 'ParentConcept');
+      var childConcept = Concept(model, 'ChildConcept');
+      parentConcept.children
+          .add(Child(parentConcept, childConcept, 'children'));
+
+      var parentEntity = ConcreteEntity(parentConcept);
+      var childEntities = ConcreteEntities(childConcept);
+
+      var childCountPolicy = RelationshipPolicy(
+          name: 'Child Count Policy',
+          description: 'Entity must have at least 2 children',
+          relationshipName: 'children',
+          relationshipType: RelationshipType.child,
+          validator: RelationshipValidators.hasMinimumChildren(2));
+      registry.registerPolicy('childCountPolicy', childCountPolicy);
+
+      parentEntity.setChild('children', childEntities);
+
+      var result = evaluator.evaluate(parentEntity);
+      expect(result.success, isFalse);
+      expect(result.violations.length, 1);
+      expect(result.violations[0].policyKey, 'childCountPolicy');
+
+      childEntities.add(ConcreteEntity(childConcept));
+      childEntities.add(ConcreteEntity(childConcept));
+
+      result = evaluator.evaluate(parentEntity);
+      expect(result.success, isTrue);
     });
   });
 }
