@@ -1044,4 +1044,18 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     return graph;
   }
+
+  getRelationship(String relationshipName) {
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
+
+    if (_concept?.isParent(relationshipName) == true) {
+      return getParent(relationshipName);
+    } else if (_concept?.isChild(relationshipName) == true) {
+      return getChild(relationshipName);
+    } else {
+      return null;
+    }
+  }
 }
