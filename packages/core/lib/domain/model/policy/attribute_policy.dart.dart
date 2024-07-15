@@ -19,10 +19,12 @@ class AttributePolicy extends Policy {
   @override
   bool evaluate(Entity entity) {
     var attributeValue = entity.getAttribute(attributeName);
-    if (attributeValue == null) {
+    var parentValue = entity.getParent(attributeName);
+    var childValue = entity.getChild(attributeName);
+    if (attributeValue == null && parentValue == null && childValue == null) {
       return false;
     }
-    return validator(attributeValue);
+    return validator(attributeValue ?? parentValue ?? childValue);
   }
 }
 
