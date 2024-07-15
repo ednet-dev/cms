@@ -6,6 +6,8 @@ abstract class IPolicy {
   String get description;
 
   bool evaluate(Entity entity);
+
+  PolicyEvaluationResult evaluateWithDetails(Entity entity);
 }
 
 class Policy implements IPolicy {
@@ -15,13 +17,20 @@ class Policy implements IPolicy {
   @override
   final String description;
 
-  final bool Function(Entity) _evaluationFunction;
+  bool Function(Entity) _evaluationFunction;
 
   Policy(this.name, this.description, this._evaluationFunction);
 
   @override
   bool evaluate(Entity entity) {
     return _evaluationFunction(entity);
+  }
+
+  @override
+  PolicyEvaluationResult evaluateWithDetails(Entity entity) {
+    bool result = evaluate(entity);
+    return PolicyEvaluationResult(
+        result, result ? [] : [PolicyViolation(name, 'Evaluation failed')]);
   }
 }
 
@@ -50,5 +59,12 @@ class PolicyWithDependencies implements IPolicy {
       print('Error evaluating policy $name: $e');
       return false;
     }
+  }
+
+  @override
+  PolicyEvaluationResult evaluateWithDetails(Entity entity) {
+    bool result = evaluate(entity);
+    return PolicyEvaluationResult(
+        result, result ? [] : [PolicyViolation(name, 'Evaluation failed')]);
   }
 }

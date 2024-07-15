@@ -27,6 +27,9 @@ void main() {
       testConcept = Concept(model, 'TestConcept');
       testConcept.attributes.add(Attribute(testConcept, 'age')
         ..type = AttributeType(Domain('Test'), 'int'));
+      testConcept.attributes.add(Attribute(testConcept, 'name')
+        ..type = AttributeType(
+            Domain('Test'), 'String'));
 
       childConcept = Concept(model, 'ChildConcept');
       childConcept.attributes.add(Attribute(childConcept, 'childAttr')
@@ -45,7 +48,7 @@ void main() {
           'AgePolicy',
           'Age must be greater than or equal to 18',
           (Entity e) => (e.getAttribute('age') as int? ?? 0) >= 18);
-      registry.registerPolicy('agePolicy', policy);
+      registry.registerPolicy('AgePolicy', policy);
 
       testEntity.setAttribute('age', 20);
       var result = evaluator.evaluate(testEntity);
@@ -55,7 +58,7 @@ void main() {
       result = evaluator.evaluate(testEntity);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
-      expect(result.violations[0].policyKey, 'agePolicy');
+      expect(result.violations[0].policyKey, 'AgePolicy');
     });
 
     test('Multiple Policy Evaluation', () {
@@ -77,7 +80,7 @@ void main() {
       result = evaluator.evaluate(testEntity);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
-      expect(result.violations[0].policyKey, 'evenAgePolicy');
+      expect(result.violations[0].policyKey, 'EvenAgePolicy');
 
       testEntity.setAttribute('age', 17);
       result = evaluator.evaluate(testEntity);
@@ -104,7 +107,7 @@ void main() {
 
     test('AttributePolicy Evaluation', () {
       var agePolicy = AttributePolicy(
-          name: 'Age Policy',
+          name: 'AgePolicy',
           description: 'Age must be between 18 and 100',
           attributeName: 'age',
           validator: AttributeValidators.isBetween(18, 100));
@@ -118,13 +121,13 @@ void main() {
       result = evaluator.evaluate(testEntity);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
-      expect(result.violations[0].policyKey, 'agePolicy');
+      expect(result.violations[0].policyKey, 'AgePolicy');
 
       testEntity.setAttribute('age', 105);
       result = evaluator.evaluate(testEntity);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
-      expect(result.violations[0].policyKey, 'agePolicy');
+      expect(result.violations[0].policyKey, 'AgePolicy');
     });
 
     test('RelationshipPolicy Evaluation', () {
@@ -149,13 +152,58 @@ void main() {
       var result = evaluator.evaluate(parentEntity);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
-      expect(result.violations[0].policyKey, 'childCountPolicy');
+      expect(result.violations[0].policyKey, 'Child Count Policy');
 
       childEntities.add(ConcreteEntity(childConcept));
       childEntities.add(ConcreteEntity(childConcept));
 
       result = evaluator.evaluate(parentEntity);
       expect(result.success, isTrue);
+    });
+
+    test('CompositePolicy Evaluation', () {
+      var agePolicy = AttributePolicy(
+          name: 'Age Policy',
+          description: 'Age must be between 18 and 100',
+          attributeName: 'age',
+          validator: AttributeValidators.isBetween(18, 100));
+
+      var namePolicy = AttributePolicy(
+          name: 'Name Policy',
+          description: 'Name must not be empty',
+          attributeName: 'name',
+          validator: AttributeValidators.isNotNull);
+
+      var compositePolicy = CompositePolicy(
+          name: 'User Validation Policy',
+          description: 'Composite policy for user validation',
+          policies: [agePolicy, namePolicy],
+          type: CompositePolicyType.all);
+
+      registry.registerPolicy('userValidationPolicy', compositePolicy);
+
+      testEntity.setAttribute('age', 25);
+      testEntity.setAttribute('name', 'John Doe');
+      var result = evaluator.evaluate(testEntity);
+      expect(result.success, isTrue);
+
+      testEntity.setAttribute('age', 15);
+      result = evaluator.evaluate(testEntity);
+      expect(result.success, isFalse);
+      expect(result.violations.length, 1);
+      expect(result.violations[0].policyKey, 'Age Policy');
+
+      testEntity.setAttribute('age', 25);
+      testEntity.setAttribute('name', null);
+      result = evaluator.evaluate(testEntity);
+      expect(result.success, isFalse);
+      expect(result.violations.length, 1);
+      expect(result.violations[0].policyKey, 'Name Policy');
+
+      testEntity.setAttribute('age', 15);
+      result = evaluator.evaluate(testEntity);
+      expect(result.success, isFalse);
+      expect(result.violations.length, 2);
     });
   });
 }

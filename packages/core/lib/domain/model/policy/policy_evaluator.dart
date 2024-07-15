@@ -21,12 +21,7 @@ class PolicyEvaluator {
         return PolicyEvaluationResult(
             false, [PolicyViolation(policyKey, 'Policy not found')]);
       }
-      bool result = policy.evaluate(entity);
-      if (!result) {
-        return PolicyEvaluationResult(
-            false, [PolicyViolation(policyKey, 'Policy evaluation failed')]);
-      }
-      return PolicyEvaluationResult(true, []);
+      return policy.evaluateWithDetails(entity);
     } catch (e) {
       return PolicyEvaluationResult(
           false, [PolicyViolation(policyKey, 'Error during evaluation: $e')]);
@@ -37,9 +32,9 @@ class PolicyEvaluator {
     var violations = <PolicyViolation>[];
     for (var entry in _policyRegistry._policies.entries) {
       try {
-        if (!entry.value.evaluate(entity)) {
-          violations
-              .add(PolicyViolation(entry.key, 'Policy evaluation failed'));
+        var result = entry.value.evaluateWithDetails(entity);
+        if (!result.success) {
+          violations.addAll(result.violations);
         }
       } catch (e) {
         violations
