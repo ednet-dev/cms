@@ -988,6 +988,37 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
+  removeParent(String name) {
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
+
+    Parent? parent = _concept?.parents.singleWhereCode(name) as Parent?;
+    Reference? reference = _referenceMap[name];
+    if (parent == null) {
+      String msg = '${_concept?.code}.$name is not correct parent entity name.';
+      throw UpdateException(msg);
+    }
+
+    if (parent.update) {
+      _parentMap.remove(name);
+      _referenceMap.remove(name);
+
+      // Evaluate policies after parent change
+      var policyResult = evaluatePolicies();
+      if (!policyResult.success) {
+        // If policies are violated, revert the change
+        _parentMap[name] = parent;
+        _referenceMap[name] = reference!;
+        throw PolicyViolationException(policyResult.violations);
+      }
+    } else {
+      String msg = '${_concept?.code}.${parent.code} is not updatable.';
+      throw UpdateException(msg);
+    }
+  }
+
+  @override
   Map<String, dynamic> toGraph() {
     var graph = <String, dynamic>{};
     graph['oid'] = oid.toString();

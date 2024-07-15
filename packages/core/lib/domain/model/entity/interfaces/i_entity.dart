@@ -34,6 +34,8 @@ abstract class IEntity<E extends IEntity<E>> implements Comparable {
 
   bool setParent(String name, entity);
 
+  removeParent(String name);
+
   Object? getChild(String name);
 
   bool setChild(String name, Object entities);
