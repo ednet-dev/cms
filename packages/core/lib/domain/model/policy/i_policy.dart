@@ -5,6 +5,8 @@ abstract class IPolicy {
 
   String get description;
 
+  PolicyScope? get scope;
+
   bool evaluate(Entity entity);
 
   PolicyEvaluationResult evaluateWithDetails(Entity entity);
@@ -19,7 +21,7 @@ class Policy implements IPolicy {
 
   bool Function(Entity) _evaluationFunction;
 
-  Policy(this.name, this.description, this._evaluationFunction);
+  Policy(this.name, this.description, this._evaluationFunction, {this.scope});
 
   @override
   bool evaluate(Entity entity) {
@@ -40,6 +42,9 @@ class Policy implements IPolicy {
                 )
               ]);
   }
+
+  @override
+  PolicyScope? scope;
 }
 
 class PolicyWithDependencies implements IPolicy {
@@ -49,7 +54,8 @@ class PolicyWithDependencies implements IPolicy {
   final Set<String> dependencies;
 
   PolicyWithDependencies(
-      this.name, this.description, this.expression, this.dependencies);
+      this.name, this.description, this.expression, this.dependencies,
+      {this.scope});
 
   @override
   bool evaluate(Entity entity) {
@@ -83,4 +89,7 @@ class PolicyWithDependencies implements IPolicy {
                 )
               ]);
   }
+
+  @override
+  PolicyScope? scope;
 }

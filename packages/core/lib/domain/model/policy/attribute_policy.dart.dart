@@ -9,6 +9,7 @@ class AttributePolicy extends Policy {
     required String description,
     required this.attributeName,
     required this.validator,
+    PolicyScope? scope,
   }) : super(
           name,
           description,
@@ -22,6 +23,7 @@ class AttributePolicy extends Policy {
             }
             return isValid;
           },
+          scope: scope,
         );
 
   @override

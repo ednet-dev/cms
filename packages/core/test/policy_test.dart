@@ -9,132 +9,14 @@ void main() {
     late Model model;
     late PolicyRegistry registry;
     late PolicyEvaluator evaluator;
-    late Entity testObject;
-    late Concept testConcept;
-    late Concept parentConcept;
-    late Concept childConcept;
-
-    late Entity user;
-    late Concept userConcept;
-    late Concept postConcept;
-    late Concept commentConcept;
-
-    late Entity citizen;
-    late Concept citizenConcept;
-    late Concept electionConcept;
-    late Concept districtConcept;
-    late Concept voteConcept;
-    late Concept candidateConcept;
+    late TestDomain testDomain;
 
     setUp(() {
       registry = PolicyRegistry();
       evaluator = PolicyEvaluator(registry);
-      model = Model(domain, 'Test');
+      testDomain = TestDomain(domain);
 
-      // Create concepts and their attributes
-      parentConcept = Concept(model, 'ParentConcept');
-      parentConcept.attributes.add(Attribute(parentConcept, 'parentType')
-        ..type = AttributeType(domain, 'String'));
-
-      testConcept = Concept(model, 'TestConcept');
-      testConcept.attributes.add(
-          Attribute(testConcept, 'age')..type = AttributeType(domain, 'int'));
-      testConcept.attributes.add(Attribute(testConcept, 'name')
-        ..type = AttributeType(domain, 'String'));
-
-      childConcept = Concept(model, 'ChildConcept');
-      childConcept.attributes.add(Attribute(childConcept, 'email')
-        ..type = AttributeType(domain, 'String'));
-
-      // Set parent and child relationships
-      testConcept.parents.add(Parent(testConcept, parentConcept, 'parentType'));
-      testConcept.children.add(Child(testConcept, childConcept, 'children'));
-
-      // Set attributes for the child concept
-      testConcept.attributes.add(Attribute(testConcept, 'email')
-        ..type = AttributeType(domain, 'String'));
-
-      // Set attributes for the parent concept
-      testConcept.attributes.add(Attribute(testConcept, 'parentType')
-        ..type = AttributeType(domain, 'String'));
-
-      // Create a test entity
-      testObject = TestEntity(testConcept);
-
-      /// Direct democracy
-      // Create concepts and their attributes
-      userConcept = Concept(model, 'User');
-      userConcept.attributes.add(
-          Attribute(userConcept, 'age')..type = AttributeType(domain, 'int'));
-      userConcept.attributes.add(Attribute(userConcept, 'name')
-        ..type = AttributeType(domain, 'String'));
-      userConcept.attributes.add(Attribute(userConcept, 'email')
-        ..type = AttributeType(domain, 'String'));
-      // posts
-
-      postConcept = Concept(model, 'Post');
-      postConcept.attributes.add(Attribute(postConcept, 'content')
-        ..type = AttributeType(domain, 'String'));
-
-      userConcept.children.add(Child(userConcept, postConcept, 'posts'));
-
-      commentConcept = Concept(model, 'Comment');
-      commentConcept.attributes.add(Attribute(commentConcept, 'content')
-        ..type = AttributeType(domain, 'String'));
-
-      // Set parent and child relationships
-      postConcept.parents.add(Parent(postConcept, userConcept, 'author'));
-      postConcept.children.add(Child(postConcept, commentConcept, 'comments'));
-      commentConcept.parents.add(Parent(commentConcept, postConcept, 'post'));
-      commentConcept.children
-          .add(Child(commentConcept, commentConcept, 'replies'));
-
-      // Create the test entity
-      user = Entity<Concept>()..concept = userConcept;
-
-      // Create concepts and their attributes
-      citizenConcept = Concept(model, 'Citizen');
-      citizenConcept.attributes.add(Attribute(citizenConcept, 'age')
-        ..type = AttributeType(domain, 'int'));
-      citizenConcept.attributes.add(Attribute(citizenConcept, 'nationality')
-        ..type = AttributeType(domain, 'String'));
-      citizenConcept.attributes.add(Attribute(citizenConcept, 'yearsInDistrict')
-        ..type = AttributeType(domain, 'int'));
-      citizenConcept.attributes.add(Attribute(citizenConcept, 'hasDebts')
-        ..type = AttributeType(domain, 'bool'));
-      citizenConcept.attributes.add(Attribute(citizenConcept, 'hasCourtCases')
-        ..type = AttributeType(domain, 'bool'));
-      citizenConcept.attributes.add(Attribute(citizenConcept, 'courtCaseType')
-        ..type = AttributeType(domain, 'String'));
-
-      electionConcept = Concept(model, 'Election');
-      electionConcept.attributes.add(Attribute(electionConcept, 'name')
-        ..type = AttributeType(domain, 'String'));
-
-      districtConcept = Concept(model, 'District');
-      districtConcept.attributes.add(Attribute(districtConcept, 'districtCode')
-        ..type = AttributeType(domain, 'String'));
-      districtConcept.attributes.add(Attribute(districtConcept, 'location')
-        ..type = AttributeType(domain, 'String'));
-
-      voteConcept = Concept(model, 'Vote');
-      voteConcept.attributes.add(Attribute(voteConcept, 'candidate')
-        ..type = AttributeType(domain, 'String'));
-
-      candidateConcept = Concept(model, 'Candidate');
-      candidateConcept.attributes.add(Attribute(candidateConcept, 'signatures')
-        ..type = AttributeType(domain, 'int'));
-
-      // Set parent and child relationships
-      citizenConcept.children.add(Child(citizenConcept, voteConcept, 'votes'));
-      voteConcept.parents.add(Parent(voteConcept, citizenConcept, 'citizen'));
-      voteConcept.parents.add(Parent(voteConcept, electionConcept, 'election'));
-      voteConcept.parents.add(Parent(voteConcept, districtConcept, 'district'));
-      candidateConcept.parents
-          .add(Parent(candidateConcept, electionConcept, 'election'));
-
-      // Create the test entity
-      citizen = Entity<Concept>()..concept = citizenConcept;
+      model = testDomain.testModel;
     });
 
     test('Basic Policy Evaluation', () {
@@ -144,6 +26,7 @@ void main() {
           (Entity e) => (e.getAttribute('age') as int? ?? 0) >= 18);
       registry.registerPolicy('AgePolicy', policy);
 
+      var testObject = TestEntity(testDomain.testConcept);
       testObject.setAttribute('age', 20);
       var result = evaluator.evaluate(testObject);
       expect(result.success, isTrue);
@@ -166,6 +49,7 @@ void main() {
           Policy('EvenAgePolicy', 'Age must be an even number',
               (Entity e) => ((e.getAttribute('age') as int? ?? 0) % 2) == 0));
 
+      var testObject = TestEntity(testDomain.testConcept);
       testObject.setAttribute('age', 20);
       var result = evaluator.evaluate(testObject);
       expect(result.success, isTrue);
@@ -188,9 +72,9 @@ void main() {
           Policy('AgePolicy', 'Age must be greater than or equal to 18',
               (Entity e) => (e.getAttribute('age') as int? ?? 0) >= 18));
 
-      testObject = Entity<Concept>()
+      var testObject = TestEntity(testDomain.testConcept)
         ..policyEvaluator = evaluator
-        ..concept = testObject.concept;
+        ..concept = testDomain.testConcept;
 
       expect(() => testObject.setAttribute('age', 15),
           throwsA(isA<PolicyViolationException>()));
@@ -207,6 +91,7 @@ void main() {
           validator: AttributeValidators.isBetween(18, 100));
       registry.registerPolicy('agePolicy', agePolicy);
 
+      var testObject = TestEntity(testDomain.testConcept);
       testObject.setAttribute('age', 25);
       var result = evaluator.evaluate(testObject);
       expect(result.success, isTrue);
@@ -225,8 +110,8 @@ void main() {
     });
 
     test('RelationshipPolicy Evaluation', () {
-      var parentConcept = Concept(model, 'ParentConcept');
-      var childConcept = Concept(model, 'ChildConcept');
+      var parentConcept = testDomain.parentConcept;
+      var childConcept = testDomain.childConcept;
       parentConcept.children
           .add(Child(parentConcept, childConcept, 'children'));
 
@@ -276,6 +161,7 @@ void main() {
 
       registry.registerPolicy('userValidationPolicy', compositePolicy);
 
+      var testObject = TestEntity(testDomain.testConcept);
       testObject.setAttribute('age', 25);
       testObject.setAttribute('name', 'John Doe');
       var result = evaluator.evaluate(testObject);
@@ -301,7 +187,6 @@ void main() {
     });
 
     test('Complex CompositePolicy Evaluation', () {
-      // Define individual policies
       var agePolicy = AttributePolicy(
           name: 'AgePolicy',
           description: 'Age must be between 18 and 100',
@@ -318,7 +203,8 @@ void main() {
           name: 'ChildAttrPolicy',
           description: 'Child attribute must be non-empty',
           attributeName: 'email',
-          validator: AttributeValidators.isEmail);
+          validator: AttributeValidators.isEmail,
+          scope: PolicyScope({'TestEntity'}));
 
       var parentTypePolicy = AttributePolicy(
           name: 'ParentTypePolicy',
@@ -326,21 +212,18 @@ void main() {
           attributeName: 'parentType',
           validator: AttributeValidators.isNotNull);
 
-      // Composite policy 1 (all policies must pass)
       var compositePolicy1 = CompositePolicy(
           name: 'CompositePolicy1',
           description: 'Composite policy 1',
           policies: [agePolicy, namePolicy],
           type: CompositePolicyType.all);
 
-      // Composite policy 2 (any policy must pass)
       var compositePolicy2 = CompositePolicy(
           name: 'CompositePolicy2',
           description: 'Composite policy 2',
           policies: [emailPolicy, parentTypePolicy],
           type: CompositePolicyType.any);
 
-      // Composite policy of composite policies (complex expression)
       var complexCompositePolicy = CompositePolicy(
           name: 'ComplexCompositePolicy',
           description: 'Complex composite policy',
@@ -349,7 +232,7 @@ void main() {
       registry.clear();
       registry.registerPolicy('complexCompositePolicy', complexCompositePolicy);
 
-      // Test scenario 1: All policies pass
+      var testObject = TestEntity(testDomain.testConcept);
       testObject.setAttribute('age', 25);
       testObject.setAttribute('name', 'John Doe');
       testObject.setAttribute('email', 'value_domain.com');
@@ -357,121 +240,134 @@ void main() {
       var result = evaluator.evaluate(testObject);
       expect(result.success, isTrue);
 
-      // Test scenario 2: One policy in compositePolicy1 fails
       testObject.setAttribute('age', 17);
       result = evaluator.evaluate(testObject);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
       expect(result.violations[0].policyKey, 'AgePolicy');
 
-      // Test scenario 3: All policies in compositePolicy2 fail
       testObject.setAttribute('age', 25);
       testObject.setAttribute('name', 'John Doe');
       testObject.setAttribute('email', null);
       testObject.setAttribute('parentType', null);
       result = evaluator.evaluate(testObject);
       expect(result.success, isFalse);
-      expect(result.violations.length, 2);
-      expect(result.violations[0].policyKey, 'ChildAttrPolicy');
-      expect(result.violations[1].policyKey, 'ParentTypePolicy');
+      expect(result.violations.length, 1);
+      expect(result.violations[0].policyKey, 'ParentTypePolicy');
     });
 
-    test('Complex CompositePolicy Evaluation', () {
-      // Define individual policies
+    test('Complex CompositePolicy Evaluation for Citizen and Candidate', () {
+      var citizenScope = PolicyScope({'Citizen', 'Candidate'});
+      var candidateScope = PolicyScope({'Candidate'});
+
       var agePolicy = AttributePolicy(
-          name: 'AgePolicy',
-          description: 'Citizen must be at least 18 years old',
-          attributeName: 'age',
-          validator: AttributeValidators.isGreaterThan(18));
+        name: 'AgePolicy',
+        description: 'Person must be at least 18 years old',
+        attributeName: 'age',
+        validator: AttributeValidators.isGreaterThan(18),
+      );
 
       var citizenshipPolicy = AttributePolicy(
-          name: 'CitizenshipPolicy',
-          description:
-              'Citizen must be a citizen of AT or have lived 10 years in the district',
-          attributeName: 'nationality',
-          validator: (value) =>
-              value == 'AT' ||
-              citizen.getAttribute<int>('yearsInDistrict')! >= 10);
+        name: 'CitizenshipPolicy',
+        description:
+            'Citizen must be a citizen of AT or have lived 10 years in the district',
+        attributeName: 'nationality',
+        validator: (value) =>
+            value == 'AT' ||
+            testDomain.citizen.getAttribute<int>('yearsInDistrict')! >= 10,
+        scope: citizenScope,
+      );
 
       var debtPolicy = AttributePolicy(
-          name: 'DebtPolicy',
-          description: 'Citizen must have no debts',
-          attributeName: 'hasDebts',
-          validator: (value) => value == false);
+        name: 'DebtPolicy',
+        description: 'Citizen must have no debts',
+        attributeName: 'hasDebts',
+        validator: (value) => value == false,
+        scope: citizenScope,
+      );
 
       var courtCasePolicy = AttributePolicy(
-          name: 'CourtCasePolicy',
-          description:
-              'Citizen must have no court cases, or only non-criminal cases',
-          attributeName: 'hasCourtCases',
-          validator: (value) =>
-              value == false ||
-              citizen.getAttribute<String>('courtCaseType') != 'Criminal');
+        name: 'CourtCasePolicy',
+        description:
+            'Citizen must have no court cases, or only non-criminal cases',
+        attributeName: 'hasCourtCases',
+        validator: (value) =>
+            value == false ||
+            testDomain.citizen.getAttribute<String>('courtCaseType') !=
+                'Criminal',
+        scope: citizenScope,
+      );
 
       var candidatePolicy = AttributePolicy(
-          name: 'CandidatePolicy',
-          description: 'Candidate must gather at least 1000 signatures',
-          attributeName: 'signatures',
-          validator: AttributeValidators.isGreaterThan(1000));
+        name: 'CandidatePolicy',
+        description: 'Candidate must gather at least 1000 signatures',
+        attributeName: 'signatures',
+        validator: AttributeValidators.isGreaterThan(1000),
+        scope: candidateScope,
+      );
 
-      // Composite policy for citizens
       var citizenCompositePolicy = CompositePolicy(
-          name: 'CitizenCompositePolicy',
-          description: 'Citizen must meet all criteria to vote',
-          policies: [agePolicy, citizenshipPolicy, debtPolicy, courtCasePolicy],
-          type: CompositePolicyType.all);
+        name: 'CitizenCompositePolicy',
+        description: 'Citizen must meet all criteria to vote',
+        policies: [agePolicy, citizenshipPolicy, debtPolicy, courtCasePolicy],
+        type: CompositePolicyType.all,
+        scope: citizenScope,
+      );
 
-      // Composite policy for candidates
       var candidateCompositePolicy = CompositePolicy(
-          name: 'CandidateCompositePolicy',
-          description: 'Candidate must meet all criteria to run',
-          policies: [
-            agePolicy,
-            citizenshipPolicy,
-            debtPolicy,
-            courtCasePolicy,
-            candidatePolicy
-          ],
-          type: CompositePolicyType.all);
+        name: 'CandidateCompositePolicy',
+        description: 'Candidate must meet all criteria to run',
+        policies: [
+          agePolicy,
+          citizenshipPolicy,
+          debtPolicy,
+          courtCasePolicy,
+          candidatePolicy
+        ],
+        type: CompositePolicyType.all,
+        scope: candidateScope,
+      );
 
-      // Composite policy for overall validation
       var complexCompositePolicy = CompositePolicy(
-          name: 'ComplexCompositePolicy',
-          description: 'Overall validation for citizen and candidate',
-          policies: [citizenCompositePolicy, candidateCompositePolicy],
-          type: CompositePolicyType.all);
+        name: 'ComplexCompositePolicy',
+        description: 'Overall validation for citizen and candidate',
+        policies: [citizenCompositePolicy, candidateCompositePolicy],
+        type: CompositePolicyType.all,
+        // No scope - applies to all entities
+      );
 
       registry.registerPolicy('complexCompositePolicy', complexCompositePolicy);
 
-      // Test scenario 1: All policies pass
+      var citizen = Citizen(testDomain.citizenConcept);
       citizen.setAttribute('age', 25);
       citizen.setAttribute('nationality', 'AT');
       citizen.setAttribute('yearsInDistrict', 5);
       citizen.setAttribute('hasDebts', false);
       citizen.setAttribute('hasCourtCases', false);
-      var candidate = Entity<Concept>()..concept = candidateConcept;
-      candidate.setAttribute('signatures', 10001);
+
+      var candidate = Candidate(testDomain.candidateConcept);
+      candidate.setAttribute('age', 30);
+      candidate.setAttribute('nationality', 'AT');
+      candidate.setAttribute('yearsInDistrict', 10);
+      candidate.setAttribute('hasDebts', false);
+      candidate.setAttribute('hasCourtCases', false);
+      candidate.setAttribute('signatures', 1001);
 
       var result = evaluator.evaluate(citizen);
-      if (!result.success) {
-        print(result.violations);
-      }
       expect(result.success, isTrue);
 
       result = evaluator.evaluate(candidate);
       expect(result.success, isTrue);
 
-      // Test scenario 2: Age policy fails for citizen
       citizen.setAttribute('age', 17);
       result = evaluator.evaluate(citizen);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
       expect(result.violations[0].policyKey, 'AgePolicy');
 
-      // Test scenario 3: Debt policy fails for candidate
       citizen.setAttribute('age', 25);
       citizen.setAttribute('hasDebts', true);
-      candidate.setAttribute('signatures', 1000);
+      candidate.setAttribute('signatures', 900);
       result = evaluator.evaluate(citizen);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
@@ -480,7 +376,148 @@ void main() {
       result = evaluator.evaluate(candidate);
       expect(result.success, isFalse);
       expect(result.violations.length, 1);
-      expect(result.violations[0].policyKey, 'DebtPolicy');
+
+      expect(result.violations.any((v) => v.policyKey == 'CandidatePolicy'),
+          isTrue);
+    });
+
+    test('CompositePolicyType.all', () {
+      var policy1 = AttributePolicy(
+        name: 'JohnDoePolicy',
+        description: 'Attribute "name" must be "John Doe"',
+        attributeName: 'name',
+        validator: (value) => value == 'John Doe',
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      var policy2 = AttributePolicy(
+        name: 'Policy2',
+        description: 'Attribute "age" must be greater than 18',
+        attributeName: 'age',
+        validator: (value) => (value as int) > 18,
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      var compositePolicy = CompositePolicy(
+        name: 'AllPolicy',
+        description: 'All policies must pass',
+        policies: [policy1, policy2],
+        type: CompositePolicyType.all,
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      registry.registerPolicy('AllPolicy', compositePolicy);
+
+      var entity = TestEntity(testDomain.testConcept);
+      entity.setAttribute('age', 25);
+      entity.setAttribute('name', 'John Doe');
+
+      var result = evaluator.evaluate(entity);
+      expect(result.success, isTrue);
+      entity.setAttribute('name', 'John Does');
+
+      result = evaluator.evaluate(entity);
+      expect(result.success, isFalse);
+      expect(result.violations.length, 1);
+      expect(result.violations[0].policyKey, 'JohnDoePolicy');
+    });
+
+    test('CompositePolicyType.none', () {
+      var johnDoePolicy = AttributePolicy(
+        name: 'JohnDoePolicy',
+        description: 'Attribute "name" must be "John Does"',
+        attributeName: 'name',
+        validator: (value) => value == 'John Does',
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      var policy2 = AttributePolicy(
+        name: 'Policy2',
+        description: 'Attribute "age" must be less than 18',
+        attributeName: 'age',
+        validator: (value) => (value as int) < 18,
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      var compositePolicy = CompositePolicy(
+        name: 'NonePolicy',
+        description: 'No policies should pass',
+        policies: [johnDoePolicy, policy2],
+        type: CompositePolicyType.none,
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      registry.clear();
+      registry.registerPolicy('NonePolicy', compositePolicy);
+
+      var entity = TestEntity(testDomain.testConcept);
+      entity.setAttribute('name', 'John Doe');
+      entity.setAttribute('age', 25);
+
+      var result = evaluator.evaluate(entity);
+      expect(result.success, isTrue);
+
+      entity.setAttribute('age', 15);
+      result = evaluator.evaluate(entity);
+      expect(result.success, isFalse);
+      expect(result.violations.length, 1);
+      expect(result.violations[0].policyKey, 'JohnDoePolicy');
+    });
+
+    test('CompositePolicyType.majority', () {
+      var johnDoePolicy = AttributePolicy(
+        name: 'JohnDoePolicy',
+        description: 'Attribute "name" must be John Doe',
+        attributeName: 'name',
+        validator: (value) => value == 'John Doe',
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      var policy2 = AttributePolicy(
+        name: 'Policy2',
+        description: 'Attribute "age" must be greater than 18',
+        attributeName: 'age',
+        validator: (value) => (value as int) > 18,
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      var policy3 = AttributePolicy(
+        name: 'Policy3',
+        description: 'Attribute "email" must be "active"',
+        attributeName: 'email',
+        validator: (value) => value == 'active',
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      var compositePolicy = CompositePolicy(
+        name: 'MajorityPolicy',
+        description: 'More than half of the policies must pass',
+        policies: [johnDoePolicy, policy2, policy3],
+        type: CompositePolicyType.majority,
+        scope: PolicyScope({'TestConcept'}),
+      );
+
+      registry.registerPolicy('MajorityPolicy', compositePolicy);
+
+      var entity = TestEntity(testDomain.testConcept);
+      entity.setAttribute('name', 'John Doe');
+      entity.setAttribute('age', 25);
+      entity.setAttribute('email', 'inactive');
+
+      var result = evaluator.evaluate(entity);
+      expect(result.success, isTrue);
+
+      entity.setAttribute('name', 'John Does');
+      result = evaluator.evaluate(entity);
+      expect(result.success, isFalse);
+      expect(result.violations.length, 2);
+      expect(result.violations[0].policyKey, 'JohnDoePolicy');
+      expect(result.violations[1].policyKey, 'Policy3');
+
+      entity.setAttribute('age', 15);
+      result = evaluator.evaluate(entity);
+      expect(result.success, isFalse);
+      expect(result.violations.length, 3);
     });
   });
 }
