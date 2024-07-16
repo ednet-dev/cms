@@ -13,6 +13,10 @@ abstract class TestEntityBase extends Entity<TestEntity> {
 
   void set description(String a) => setAttribute('description', a);
 
+  DateTime get expirationDate => getAttribute('expirationDate');
+
+  void set expirationDate(DateTime a) => setAttribute('expirationDate', a);
+
   TestEntity newEntity() => TestEntity(concept);
 
   ConcreteEntities newEntities() => ConcreteEntities(concept);
@@ -133,13 +137,15 @@ class TestDomain {
     var TString = AttributeType(domain, 'String');
     var TInt = AttributeType(domain, 'int');
     var TBool = AttributeType(domain, 'bool');
-
+    var TDateTime = AttributeType(domain, 'DateTime');
     Attribute(parentConcept, 'parentType')..type = TString;
 
     Attribute(testConcept, 'age')..type = TInt;
     Attribute(testConcept, 'name')..type = TString;
     Attribute(testConcept, 'email')..type = TString;
     Attribute(testConcept, 'parentType')..type = TString;
+    Attribute(testConcept, 'expirationDate')..type = TDateTime;
+    Attribute(testConcept, 'creationDate')..type = TDateTime;
 
     Attribute(childConcept, 'email')..type = TString;
 
