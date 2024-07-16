@@ -33,6 +33,10 @@ class PolicyRegistry {
         .map((entry) => entry.key)
         .toList();
   }
+
+  void clear() {
+    _policies.clear();
+  }
 }
 
 class PolicyRegistrationException implements Exception {

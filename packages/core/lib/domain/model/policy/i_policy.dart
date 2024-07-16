@@ -30,7 +30,15 @@ class Policy implements IPolicy {
   PolicyEvaluationResult evaluateWithDetails(Entity entity) {
     bool result = evaluate(entity);
     return PolicyEvaluationResult(
-        result, result ? [] : [PolicyViolation(name, 'Evaluation failed')]);
+        result,
+        result
+            ? []
+            : [
+                PolicyViolation(
+                  name,
+                  description,
+                )
+              ]);
   }
 }
 
@@ -65,6 +73,14 @@ class PolicyWithDependencies implements IPolicy {
   PolicyEvaluationResult evaluateWithDetails(Entity entity) {
     bool result = evaluate(entity);
     return PolicyEvaluationResult(
-        result, result ? [] : [PolicyViolation(name, 'Evaluation failed')]);
+        result,
+        result
+            ? []
+            : [
+                PolicyViolation(
+                  name,
+                  'Evaluation failed',
+                )
+              ]);
   }
 }

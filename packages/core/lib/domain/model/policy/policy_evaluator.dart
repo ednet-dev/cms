@@ -18,13 +18,21 @@ class PolicyEvaluator {
     try {
       var policy = _policyRegistry.getPolicy(policyKey);
       if (policy == null) {
-        return PolicyEvaluationResult(
-            false, [PolicyViolation(policyKey, 'Policy not found')]);
+        return PolicyEvaluationResult(false, [
+          PolicyViolation(
+            policyKey,
+            'Policy not found',
+          ),
+        ]);
       }
       return policy.evaluateWithDetails(entity);
     } catch (e) {
       return PolicyEvaluationResult(
-          false, [PolicyViolation(policyKey, 'Error during evaluation: $e')]);
+        false,
+        [
+          PolicyViolation(policyKey, 'Error during evaluation: $e'),
+        ],
+      );
     }
   }
 
@@ -37,8 +45,10 @@ class PolicyEvaluator {
           violations.addAll(result.violations);
         }
       } catch (e) {
-        violations
-            .add(PolicyViolation(entry.key, 'Error during evaluation: $e'));
+        violations.add(PolicyViolation(
+          entry.key,
+          'Error during evaluation: $e',
+        ));
       }
     }
     return PolicyEvaluationResult(violations.isEmpty, violations);

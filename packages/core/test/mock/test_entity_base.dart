@@ -1,7 +1,7 @@
 import 'package:ednet_core/ednet_core.dart';
 
-abstract class ConcreteEntityGen extends Entity<ConcreteEntity> {
-  ConcreteEntityGen(Concept concept) {
+abstract class TestEntityBase extends Entity<TestEntity> {
+  TestEntityBase(Concept concept) {
     this.concept = concept;
   }
 
@@ -13,25 +13,25 @@ abstract class ConcreteEntityGen extends Entity<ConcreteEntity> {
 
   void set description(String a) => setAttribute('description', a);
 
-  ConcreteEntity newEntity() => ConcreteEntity(concept);
+  TestEntity newEntity() => TestEntity(concept);
 
   ConcreteEntities newEntities() => ConcreteEntities(concept);
 }
 
-abstract class ConcreteEntitiesGen extends Entities<ConcreteEntity> {
-  ConcreteEntitiesGen(Concept concept) {
+abstract class TestEntitiesBase extends Entities<TestEntity> {
+  TestEntitiesBase(Concept concept) {
     this.concept = concept;
   }
 
   ConcreteEntities newEntities() => ConcreteEntities(concept);
 
-  ConcreteEntity newEntity() => ConcreteEntity(concept);
+  TestEntity newEntity() => TestEntity(concept);
 }
 
-class ConcreteEntity extends ConcreteEntityGen {
-  ConcreteEntity(super.concept);
+class TestEntity extends TestEntityBase {
+  TestEntity(super.concept);
 }
 
-class ConcreteEntities extends ConcreteEntitiesGen {
+class ConcreteEntities extends TestEntitiesBase {
   ConcreteEntities(super.concept);
 }

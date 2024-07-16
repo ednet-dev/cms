@@ -1,7 +1,7 @@
 part of ednet_core;
 
 class CompositePolicy extends Policy {
-  final List<Policy> policies;
+  final List<IPolicy> policies;
   final CompositePolicyType type;
 
   CompositePolicy({
@@ -35,16 +35,30 @@ class CompositePolicy extends Policy {
     bool overallResult = true;
 
     for (var policy in policies) {
-      var result = policy.evaluateWithDetails(entity);
-      if (!result.success) {
-        violations.addAll(result.violations);
-        if (type == CompositePolicyType.all) {
+      if (policy is Policy) {
+        var result = policy.evaluateWithDetails(entity);
+        if (!result.success) {
+          violations.addAll(result.violations);
+          if (type == CompositePolicyType.all) {
+            overallResult = false;
+          }
+        } else if (type == CompositePolicyType.none) {
+          violations
+              .add(PolicyViolation(policy.name, 'Policy unexpectedly passed'));
           overallResult = false;
         }
-      } else if (type == CompositePolicyType.none) {
-        violations
-            .add(PolicyViolation(policy.name, 'Policy unexpectedly passed'));
-        overallResult = false;
+      } else {
+        if (!policy.evaluate(entity)) {
+          violations.add(PolicyViolation(
+              policy.name, 'Policy evaluation failed: ${policy.description}'));
+          if (type == CompositePolicyType.all) {
+            overallResult = false;
+          }
+        } else if (type == CompositePolicyType.none) {
+          violations
+              .add(PolicyViolation(policy.name, 'Policy unexpectedly passed'));
+          overallResult = false;
+        }
       }
     }
 
