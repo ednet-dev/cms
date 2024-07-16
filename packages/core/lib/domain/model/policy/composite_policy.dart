@@ -87,14 +87,6 @@ class CompositePolicy implements IPolicy {
 
     return PolicyEvaluationResult(success, violations);
   }
-
-  bool _evaluateWithScope(IPolicy policy, Entity entity) {
-    var mergedScope = scope?.merge(policy.scope) ?? policy.scope;
-    if (mergedScope != null && !mergedScope.isWithinScope(entity)) {
-      return true; // Policy doesn't apply, so it's considered successful
-    }
-    return policy.evaluate(entity);
-  }
 }
 
 enum CompositePolicyType {
