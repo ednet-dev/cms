@@ -18,32 +18,30 @@ class PolicyEvaluator {
     try {
       var policy = _policyRegistry.getPolicy(policyKey);
       if (policy == null) {
-        return PolicyEvaluationResult(
-            false, [PolicyViolation(policyKey, 'Policy not found')]);
+        return PolicyEvaluationResult(false, [
+          PolicyViolation(policyKey, 'Policy not found'),
+        ]);
       }
-      bool result = policy.evaluate(entity);
-      if (!result) {
-        return PolicyEvaluationResult(
-            false, [PolicyViolation(policyKey, 'Policy evaluation failed')]);
+      if (policy.scope != null && !policy.scope!.isWithinScope(entity)) {
+        return PolicyEvaluationResult(true, []);
       }
-      return PolicyEvaluationResult(true, []);
+      return policy.evaluateWithDetails(entity);
     } catch (e) {
       return PolicyEvaluationResult(
-          false, [PolicyViolation(policyKey, 'Error during evaluation: $e')]);
+        false,
+        [PolicyViolation(policyKey, 'Error during evaluation: $e')],
+      );
     }
   }
 
   PolicyEvaluationResult _evaluateAllPolicies(Entity entity) {
     var violations = <PolicyViolation>[];
-    for (var entry in _policyRegistry._policies.entries) {
-      try {
-        if (!entry.value.evaluate(entity)) {
-          violations
-              .add(PolicyViolation(entry.key, 'Policy evaluation failed'));
+    for (var policy in _policyRegistry.getAllPolicies()) {
+      if (policy.scope == null || policy.scope!.isWithinScope(entity)) {
+        var result = policy.evaluateWithDetails(entity);
+        if (!result.success) {
+          violations.addAll(result.violations);
         }
-      } catch (e) {
-        violations
-            .add(PolicyViolation(entry.key, 'Error during evaluation: $e'));
       }
     }
     return PolicyEvaluationResult(violations.isEmpty, violations);

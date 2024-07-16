@@ -11,12 +11,14 @@ class RelationshipPolicy extends Policy {
     required this.relationshipName,
     required this.relationshipType,
     required this.validator,
+    PolicyScope? scope,
   }) : super(
             name,
             description,
             (Entity e) =>
                 e.getRelationship(relationshipName) != null &&
-                validator(e, e.getRelationship(relationshipName)));
+                validator(e, e.getRelationship(relationshipName)),
+            scope: scope);
 
   @override
   bool evaluate(Entity entity) {
