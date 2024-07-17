@@ -1,7 +1,7 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:test/test.dart';
 
-import 'mock/test_entity_base.dart';
+import '../mock/test_entity_base.dart';
 
 void main() {
   group('Policy Tests', () {
