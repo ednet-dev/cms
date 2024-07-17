@@ -81,7 +81,7 @@ class HomePageState extends State<HomePage> {
     setState(() {
       selectedModel = model;
       selectedEntries =
-          model.concepts.isNotEmpty ? model.getEntryConcepts() : null;
+          model.concepts.isNotEmpty ? model.getOrderedEntryConcepts() : null;
     });
   }
 

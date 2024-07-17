@@ -103,4 +103,10 @@ class Model extends Entity<Model> {
     }
     return entryList;
   }
+
+  Concepts getOrderedEntryConcepts() {
+    var orderedEntryConceptsAsConcepts = Concepts();
+    orderedEntryConcepts.map(orderedEntryConceptsAsConcepts.add);
+    return orderedEntryConceptsAsConcepts;
+  }
 }
