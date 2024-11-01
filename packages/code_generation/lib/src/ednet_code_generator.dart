@@ -129,7 +129,7 @@ description: ${domainName}_${modelName} application that uses ednet_core for its
 homepage: https://ednet.one/
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
   
 dependencies:
   ednet_core: 
@@ -147,7 +147,7 @@ void genProject(String gen, String projectPath) {
     genDoc(projectPath);
     genLib(gen, projectPath);
     genTest(projectPath, ednetCoreModel);
-    genWeb(projectPath);
+    // genWeb(projectPath);
     final gitignore = genFile('${projectPath}/.gitignore');
     genGitignore(gitignore);
     final readme = genFile('${projectPath}/README.md');
@@ -376,7 +376,7 @@ void gen(String gen,
       genDoc(projectPath);
       genLib(gen, projectPath);
       genTest(projectPath, ednetCoreModel);
-      genWeb(projectPath);
+      // genWeb(projectPath);
       final gitignore = genFile('${projectPath}/.gitignore');
       genGitignore(gitignore);
       final readme = genFile('${projectPath}/README.md');
