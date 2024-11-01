@@ -1,6 +1,6 @@
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/generated/global_democracy/electoral_system/lib/global_democracy_electoral_system.dart'
-    as gyem;
+
+import 'package:ednet_one/generated/democracy/electoral/lib/democracy_electoral.dart' as dyel;
 // IMPORTS PLACEHOLDER
 
 class OneApplication implements IOneApplication {
@@ -14,32 +14,28 @@ class OneApplication implements IOneApplication {
   }
 
   void _initializeDomains() {
-    // global_democracy electoral_system
-    final global_democracyElectoral_systemRepo =
-        gyem.GlobalDemocracyElectoralSystemRepo();
-    gyem.Global_democracyDomain global_democracyElectoral_systemDomain =
-        global_democracyElectoral_systemRepo.getDomainModels("Global_democracy")
-            as gyem.Global_democracyDomain;
-    gyem.Electoral_systemModel electoral_systemModel =
-        global_democracyElectoral_systemDomain
-            .getModelEntries("Electoral_system") as gyem.Electoral_systemModel;
-    electoral_systemModel.init();
+        // democracy electoral
+    final democracyElectoralRepo = dyel.DemocracyElectoralRepo();
+    dyel.DemocracyDomain democracyElectoralDomain = democracyElectoralRepo
+        .getDomainModels("Democracy") as dyel.DemocracyDomain;
+    dyel.ElectoralModel electoralModel =
+        democracyElectoralDomain.getModelEntries("Electoral") as dyel.ElectoralModel;
+    electoralModel.init();
 
-    _domains..add(global_democracyElectoral_systemDomain.domain);
-    _domainModelsTable['global_democracy_electoral_system'] =
-        global_democracyElectoral_systemDomain;
+    _domains..add(democracyElectoralDomain.domain);
+    _domainModelsTable['democracy_electoral'] = democracyElectoralDomain;
 
 // INIT PLACEHOLDER
   }
-
+  
   @override
   DomainModels getDomainModels(String domain, String model) {
     final domainModel = _domainModelsTable['${domain}_$model'];
-
+  
     if (domainModel == null) {
       throw Exception('Domain model not found: $domain, $model');
     }
-
+  
     return domainModel;
   }
 
@@ -76,9 +72,7 @@ class OneApplication implements IOneApplication {
 
   @override
   Domains get domains => _domains;
-
   @override
   Domains get groupedDomains => _groupedDomains;
-
   Map<String, DomainModels> get domainModels => _domainModelsTable;
 }

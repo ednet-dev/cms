@@ -1,8 +1,8 @@
-name: settings_application
+name: democracy_electoral
 author: Your Name
-homepage: http://ondart.me/
+homepage: http://ednet.dev
 version: 0.0.1
-description: settings_application application that uses ednet_core for its model.
+description: democracy_electoral application that uses ednet_core for its model.
 environment:
   sdk: '>=3.5.0-180.3.beta <4.0.0'
 dependencies:

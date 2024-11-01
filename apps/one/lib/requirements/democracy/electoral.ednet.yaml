@@ -1,0 +1,32 @@
+domain: democracy
+model: electoral
+
+concepts:
+  - name: Citizen
+    entry: true
+    attributes:
+      - name: citizenId
+        category: identifier
+      - name: firstName
+      - name: lastName
+
+    policies:
+      - name: VerifyIdentity
+        description: Verify the identity of a citizen.
+        expression: "citizenId != null && name != null"
+        dependencies:
+          - citizenId
+          - name
+    commands:
+      - name: RegisterCitizen
+        category: citizen
+        description: Register a new citizen.
+        successEvent: CitizenRegistered
+        failureEvent: RegistrationFailed
+    events:
+      - name: CitizenRegistered
+        description: A citizen has been registered.
+        handlers:
+          - WelcomeNewCitizen
+      - name: RegistrationFailed
+        description: Registration of a citizen failed.

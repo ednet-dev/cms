@@ -21,7 +21,7 @@ dependencies:
   flutter_svg:
   flame_svg: ^1.10.2
   expressions: ^0.2.5+1
-¢
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
