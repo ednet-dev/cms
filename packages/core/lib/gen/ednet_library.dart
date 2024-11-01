@@ -44,31 +44,32 @@ String genEDNetLibrary(Model model) {
     // lib/{{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}}.dart
     {{license}}
 
-    library {{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}};
+library {{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}};
 
-    import "package:ednet_core/ednet_core.dart";
-    import "package:yaml/yaml.dart";
+import 'package:ednet_core/ednet_core.dart';
+import 'package:yaml/yaml.dart';
 
-    part "repository.dart";
-    part "gen/{{domainCodeLowerUnderscore}}/i_domain_models.dart";
-    part "gen/{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/model_entries.dart";
-    part "{{domainCodeLowerUnderscore}}/domain.dart";
-    part "{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/model.dart";
-    part "{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/json/data.dart";
-    part "{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/json/model.dart";
-    {{conceptParts}}
-    {{genConceptParts}}
+
+part 'repository.dart';
+part 'gen/{{domainCodeLowerUnderscore}}/i_domain_models.dart';
+part 'gen/{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/model_entries.dart';
+part '{{domainCodeLowerUnderscore}}/domain.dart';
+part '{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/model.dart';
+part '{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/json/data.dart';
+part '{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/json/model.dart';
+{{conceptParts}}
+{{genConceptParts}}
     
   ''';
 
   final List<String> conceptParts = model.concepts
       .map((c) =>
-          '\npart "${domainCodeLowerUnderscore}/${modelCodeLowerUnderscore}/${c.codesLowerUnderscore}.dart";\n')
+          '\npart \'${domainCodeLowerUnderscore}/${modelCodeLowerUnderscore}/${c.codesLowerUnderscore}.dart\';')
       .toList();
 
   final List<String> genConceptParts = model.concepts
       .map((c) =>
-          '\npart "gen/${domainCodeLowerUnderscore}/${modelCodeLowerUnderscore}/${c.codesLowerUnderscore}.dart";\n')
+          '\npart \'gen/${domainCodeLowerUnderscore}/${modelCodeLowerUnderscore}/${c.codesLowerUnderscore}.dart\';')
       .toList();
 
   return genEDNetLibraryTemplate.replaceAllMapped(RegExp('{{([A-Za-z]+)}}'),

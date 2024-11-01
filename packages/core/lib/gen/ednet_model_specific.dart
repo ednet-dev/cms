@@ -7,34 +7,29 @@ String genModel(Model model, String library) {
   Domain domain = model.domain;
 
   return '''
-part of $library;
-
+part of \'../../$library.dart\';
 // lib/${domain.codeLowerUnderscore}/${model.codeLowerUnderscore}/model.dart
 
 class ${model.code}Model extends ${model.code}Entries {
+  ${model.code}Model(super.model);
 
-  ${model.code}Model(Model model) : super(model);
-
-  ${model.entryConcepts.map((entryConcept) => '''
-  void fromJsonTo${entryConcept.code}Entry() {
+  ${model.entryConcepts.isEmpty ? '' : model.entryConcepts.map((entryConcept) => '''
+void fromJsonTo${entryConcept.code}Entry() {
     fromJsonToEntry(${domain.codeFirstLetterLower}${model.code}${entryConcept.code}Entry);
   }
-  ''').join('\n')}
-
+  ''').where((item) => item.trim().length > 0).join('\n')}
   void fromJsonToModel() {
     fromJson(${domain.codeFirstLetterLower}${model.code}Model);
   }
 
   void init() {
-    ${model.orderedEntryConcepts.map((entryConcept) => 'init${entryConcept.codePluralFirstLetterUpper}();').join('\n    ')}
+    ${model.orderedEntryConcepts.isEmpty ? '' : model.orderedEntryConcepts.map((entryConcept) => 'init${entryConcept.codePluralFirstLetterUpper}();').where((item) => item.trim().length > 0).join('\n    ')}
   }
-
-  ${model.entryConcepts.map((entryConcept) => '''
-  void init${entryConcept.codePluralFirstLetterUpper}() {
-${createInitEntryEntitiesRandomly(entryConcept)}
+  ${model.entryConcepts.isEmpty ? '' : model.entryConcepts.map((entryConcept) => '''
+void init${entryConcept.codePluralFirstLetterUpper}() {
+    ${createInitEntryEntitiesRandomly(entryConcept)}
   }
-  ''').join('\n')}
-
+  ''').where((item) => item.trim().length > 0).join('\n')}
   // added after code gen - begin
 
   // added after code gen - end

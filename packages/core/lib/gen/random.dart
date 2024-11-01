@@ -3,8 +3,7 @@ part of ednet_core;
 String createInitEntryEntitiesRandomly(Concept entryConcept) {
   var sc = '';
   for (var i = 1; i < ENTRY_ENTITIES_COUNT + 1; i++) {
-    var entitiesCreated =
-        createInitEntryEntityRandomly(entryConcept, suffix: i);
+    var entitiesCreated = createInitEntryEntityRandomly(entryConcept, suffix: i);
     sc = '$sc$entitiesCreated';
   }
   return sc;
@@ -13,15 +12,13 @@ String createInitEntryEntitiesRandomly(Concept entryConcept) {
 String createTestEntryEntitiesRandomly(Concept entryConcept, model) {
   var sc = '';
   for (var i = 1; i < ENTRY_ENTITIES_COUNT + 1; i++) {
-    var entitiesCreated =
-        createTestEntryEntityRandomly(entryConcept, suffix: i, model: model);
+    var entitiesCreated = createTestEntryEntityRandomly(entryConcept, suffix: i, model: model);
     sc = '$sc$entitiesCreated';
   }
   return sc;
 }
 
-String createInitEntryEntityRandomly(Concept entryConcept,
-    {int? suffix, bool withChildren = true}) {
+String createInitEntryEntityRandomly(Concept entryConcept, {int? suffix, bool withChildren = true}) {
   var sc = '';
   String entryEntity;
   if (suffix != null) {
@@ -30,17 +27,16 @@ String createInitEntryEntityRandomly(Concept entryConcept,
     entryEntity = entryConcept.codeFirstLetterLower;
   }
   var entryEntities = entryConcept.codesFirstLetterLower;
-  sc = '$sc    var $entryEntity = ${entryConcept.code}('
-      '${entryConcept.codesFirstLetterLower}.concept); \n';
+  sc = '$sc  final $entryEntity = ${entryConcept.code}('
+      '${entryConcept.codesFirstLetterLower}.concept) \n';
   var attributesSet = setInitAttributesRandomly(entryConcept, entryEntity);
   sc = '$sc$attributesSet';
 
   for (Parent externalRequiredParent in entryConcept.externalRequiredParents) {
     var parent = externalRequiredParent.code;
     var parent6 = externalRequiredParent.codeFirstLetterUpper;
-    var parents =
-        externalRequiredParent.destinationConcept.codePluralFirstLetterLower;
-    sc = '$sc    var $entryEntity$parent6 = $parents.random(); \n';
+    var parents = externalRequiredParent.destinationConcept.codePluralFirstLetterLower;
+    sc = '$sc    final $entryEntity$parent6 = $parents.random(); \n';
     sc = '$sc    $entryEntity.$parent = $entryEntity$parent6; \n';
   }
 
@@ -63,8 +59,7 @@ String createInitEntryEntityRandomly(Concept entryConcept,
         Concept parentConcept = entryConcept;
         String childCode = child.code;
         Concept childConcept = child.destinationConcept;
-        var entitiesCreated = createChildEntitiesRandomly(
-            parentVar, parentCode, parentConcept, childCode, childConcept);
+        var entitiesCreated = createChildEntitiesRandomly(parentVar, parentCode, parentConcept, childCode, childConcept);
         sc = '$sc$entitiesCreated';
       }
     }
@@ -96,8 +91,7 @@ String allParents(parents, String text) {
   return allParents(restParents, newText);
 }
 
-String createTestEntryEntityRandomly(Concept entryConcept,
-    {int? suffix, bool withChildren = true, model}) {
+String createTestEntryEntityRandomly(Concept entryConcept, {int? suffix, bool withChildren = true, model}) {
   var sc = '';
   String entryEntity;
   if (suffix != null) {
@@ -106,8 +100,8 @@ String createTestEntryEntityRandomly(Concept entryConcept,
     entryEntity = entryConcept.codeFirstLetterLower;
   }
   var entryEntities = entryConcept.codesFirstLetterLower;
-  sc = '${sc}var $entryEntity = ${entryConcept.code}('
-      '${entryConcept.codesFirstLetterLower}.concept); \n';
+  sc = '${sc}final $entryEntity = ${entryConcept.code}('
+      '${entryConcept.codesFirstLetterLower}.concept) \n';
   var attributesSet = setTestAttributesRandomly(entryConcept, entryEntity);
   sc = '$sc  $attributesSet';
 
@@ -115,8 +109,7 @@ String createTestEntryEntityRandomly(Concept entryConcept,
     var parent = externalRequiredParent.code;
     var parent2 = externalRequiredParent.codeFirstLetterUpper;
     var parents = externalRequiredParent.destinationConcept;
-    sc =
-        '$sc    var $entryEntity$parent2 = ${model.codeFirstLetterLower}Model.${allParents(parents, '')}.random(); \n';
+    sc = '$sc    final $entryEntity$parent2 = ${model.codeFirstLetterLower}Model.${allParents(parents, '')}.random(); \n';
     sc = '$sc    $entryEntity.$parent = $entryEntity$parent2; \n';
   }
 
@@ -139,8 +132,7 @@ String createTestEntryEntityRandomly(Concept entryConcept,
         Concept parentConcept = entryConcept;
         String childCode = child.code;
         Concept childConcept = child.destinationConcept;
-        var entitiesCreated = createChildEntitiesRandomly(
-            parentVar, parentCode, parentConcept, childCode, childConcept);
+        var entitiesCreated = createChildEntitiesRandomly(parentVar, parentCode, parentConcept, childCode, childConcept);
         sc = '$sc$entitiesCreated';
       }
     }
@@ -148,33 +140,34 @@ String createTestEntryEntityRandomly(Concept entryConcept,
   return sc;
 }
 
-String createChildEntitiesRandomly(String parentVar, String parentCode,
-    Concept parentConcept, String childCode, Concept childConcept) {
+String createChildEntitiesRandomly(
+  String parentVar,
+  String parentCode,
+  Concept parentConcept,
+  String childCode,
+  Concept childConcept,
+) {
   var sc = '';
   for (var i = 1; i < CHILD_ENTITIES_COUNT + 1; i++) {
     var childEntity = '$parentVar$childCode$i';
     var childEntities = childCode;
-    sc = '$sc    var $childEntity = ${childConcept.code}('
-        '$parentVar.$childCode.concept); \n';
+    sc = '$sc    final $childEntity = ${childConcept.code}('
+        '$parentVar.$childCode.concept) \n';
     var attributesSet = setInitAttributesRandomly(childConcept, childEntity);
     sc = '$sc$attributesSet';
 
-    for (Parent externalRequiredParent
-        in childConcept.externalRequiredParents) {
+    for (Parent externalRequiredParent in childConcept.externalRequiredParents) {
       var parent = externalRequiredParent.code;
       var parent4 = externalRequiredParent.codeFirstLetterUpper;
-      var parents =
-          externalRequiredParent.destinationConcept.codePluralFirstLetterLower;
-      sc =
-          '$sc    var $childEntity$parent4 =  ${allParents(parents, '')}.random(); \n';
+      var parents = externalRequiredParent.destinationConcept.codePluralFirstLetterLower;
+      sc = '$sc    final $childEntity$parent4 =  ${allParents(parents, '')}.random(); \n';
       sc = '$sc    $childEntity.$parent = $childEntity$parent4; \n';
     }
 
     sc = '$sc    $childEntity.$parentCode = $parentVar; \n';
     sc = '$sc    $parentVar.$childEntities.add($childEntity); \n';
 
-    for (Parent externalRequiredParent
-        in childConcept.externalRequiredParents) {
+    for (Parent externalRequiredParent in childConcept.externalRequiredParents) {
 //var parent  = '${externalRequiredParent.code}';
       var parent8 = externalRequiredParent.codeFirstLetterUpper;
       sc = '$sc    $childEntity$parent8.'
@@ -192,8 +185,13 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
 // a new child is a grandchild of the old parent, or a child of a new parent
         String newChildCode = child.code;
         Concept newChildConcept = child.destinationConcept;
-        var entitiesCreated = createChildEntitiesRandomly(newParentVar,
-            newParentCode, newParentConcept, newChildCode, newChildConcept);
+        var entitiesCreated = createChildEntitiesRandomly(
+          newParentVar,
+          newParentCode,
+          newParentConcept,
+          newChildCode,
+          newChildConcept,
+        );
         sc = '$sc$entitiesCreated';
       }
     } // for child
@@ -206,10 +204,10 @@ String setInitAttributesRandomly(Concept concept, String entity) {
   var sc = '';
 //for (Attribute attribute in concept.requiredAttributes) {
   for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
-    var attributeSet = setInitAttributeRandomly(attribute, entity);
+    var attributeSet = '${setInitAttributeRandomly(attribute, entity)}';
     sc = '$sc$attributeSet';
   }
-  return sc;
+  return '$sc;';
 }
 
 String setTestAttributesRandomly(Concept concept, String entity) {
@@ -219,14 +217,14 @@ String setTestAttributesRandomly(Concept concept, String entity) {
     var attributeSet = setTestAttributeRandomly(attribute, entity);
     sc = '$sc$attributeSet';
   }
-  return sc;
+  return '$sc;';
 }
 
 String setInitAttributeRandomly(Attribute attribute, String entity) {
   var sc = '';
   if (attribute.increment == null) {
     var value = genAttributeTextRandomly(attribute);
-    sc = '$sc    $entity.${attribute.code} = $value; \n';
+    sc = '\n$sc    ..${attribute.code} = $value';
   }
   return sc;
 }
@@ -235,7 +233,7 @@ String setTestAttributeRandomly(Attribute attribute, String entity) {
   var sc = '';
   if (attribute.increment == null) {
     var value = genAttributeTextRandomly(attribute);
-    sc = '$sc      $entity.${attribute.code} = $value; \n';
+    sc = '\n$sc      ..${attribute.code} = $value';
   }
   return sc;
 }

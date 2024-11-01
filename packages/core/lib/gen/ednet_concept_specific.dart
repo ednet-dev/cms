@@ -1,79 +1,71 @@
 part of ednet_core;
 
 String genConcept(Concept concept, String library) {
-  Model model = concept.model;
-  Domain domain = model.domain;
+  final model = concept.model;
+  final domain = model.domain;
+  final buffer = StringBuffer()
+    ..writeln('part of \'../../$library.dart\';')
+    ..writeln()
+    ..writeln(
+        '// lib/${domain.codeLowerUnderscore}/${model.codeLowerUnderscore}/${concept.codesLowerUnderscore}.dart')
+    ..writeln('class ${concept.code} extends ${concept.code}Gen {')
+    ..writeln('  ${concept.code}(super.concept);')
+    ..writeln();
 
-  var sc = 'part of $library; \n';
-  sc = '$sc \n';
-  sc = '$sc// lib/${domain.codeLowerUnderscore}/'
-      '${model.codeLowerUnderscore}/${concept.codesLowerUnderscore}.dart \n';
-  sc = '$sc \n';
-  sc = '${sc}class ${concept.code} extends ${concept.code}Gen { \n';
-  sc = '$sc \n';
-  sc = '$sc  ${concept.code}(Concept concept) : super(concept); \n';
-  sc = '$sc \n';
-
-  Id id = concept.id;
+  final id = concept.id;
   if (id.length > 0) {
-    sc = '$sc  ${concept.code}.withId(Concept concept';
+    buffer.write('  ${concept.code}.withId(Concept concept');
     if (id.referenceLength > 0) {
-      for (Parent parent in concept.parents.whereType<Parent>()) {
+      for (final parent in concept.parents.whereType<Parent>()) {
         if (parent.identifier) {
-          Concept destinationConcept = parent.destinationConcept;
-          sc = '$sc, ${destinationConcept.code} ${parent.code}';
+          final destinationConcept = parent.destinationConcept;
+          buffer.write(', ${destinationConcept.code} ${parent.code}');
         }
       }
     }
     if (id.attributeLength > 0) {
-      for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
+      for (final attribute in concept.attributes.whereType<Attribute>()) {
         if (attribute.identifier) {
-          sc = '$sc, ${attribute.type?.base} ${attribute.code}';
+          buffer.write(', ${attribute.type?.base} ${attribute.code}');
         }
       }
     }
-    sc = '$sc) : \n';
-    sc = '$sc    super.withId(concept';
+    buffer
+      ..writeln(') :')
+      ..write('    super.withId(concept');
     if (id.referenceLength > 0) {
-      for (Parent parent in concept.parents.whereType<Parent>()) {
+      for (final parent in concept.parents.whereType<Parent>()) {
         if (parent.identifier) {
-          sc = '$sc, ${parent.code}';
+          buffer.write(', ${parent.code}');
         }
       }
     }
     if (id.attributeLength > 0) {
-      for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
+      for (final attribute in concept.attributes.whereType<Attribute>()) {
         if (attribute.identifier) {
-          sc = '$sc, ${attribute.code}';
+          buffer.write(', ${attribute.code}');
         }
       }
     }
-    sc = '$sc); \n';
-    sc = '$sc \n';
+    buffer
+      ..writeln(');')
+      ..writeln();
   }
 
-  sc = '$sc  // added after code gen - begin \n';
-  sc = '$sc \n';
-  sc = '$sc  // added after code gen - end \n';
-  sc = '$sc \n';
+  buffer
+    ..writeln('  // added after code gen - begin')
+    ..writeln()
+    ..writeln('  // added after code gen - end')
+    ..writeln()
+    ..writeln('}')
+    ..writeln()
+    ..writeln('class ${concept.codes} extends ${concept.codes}Gen {')
+    ..writeln('  ${concept.codes}(super.concept);')
+    ..writeln()
+    ..writeln('  // added after code gen - begin')
+    ..writeln()
+    ..writeln('  // added after code gen - end')
+    ..writeln('}');
 
-  sc = '$sc} \n';
-  sc = '$sc \n';
-
-  sc = '${sc}class ${concept.codes} extends ${concept.codes}Gen { \n';
-  sc = '$sc \n';
-  sc = '$sc  ${concept.codes}(Concept concept) : super(concept); \n';
-  sc = '$sc \n';
-
-  sc = '$sc  // added after code gen - begin \n';
-  sc = '$sc \n';
-  sc = '$sc  // added after code gen - end \n';
-  sc = '$sc \n';
-
-  sc = '$sc} \n';
-  sc = '$sc \n';
-
-  return sc;
+  return buffer.toString();
 }
-
-

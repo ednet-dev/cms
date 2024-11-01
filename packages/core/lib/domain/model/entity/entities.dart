@@ -648,7 +648,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   @override
-  bool add(E entity) {
+  bool add(dynamic entity) {
     bool added = false;
     if (isValid(entity)) {
       var propagated = true;
