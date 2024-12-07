@@ -56,6 +56,7 @@ part 'domain/model/policy/policy_evaluator.dart';
 part 'domain/model/policy/policy_registry.dart';
 part 'domain/model/policy/policy_scope.dart';
 part 'domain/model/policy/time_based_policy.dart';
+part 'domain/model/policy/policy_evaluation_tracer.dart';
 part 'domain/model/policy/policy_violation_exception.dart';
 part 'domain/model/policy/relationship_policy.dart';
 part 'domain/model/primitives/dart_basic_types.dart';

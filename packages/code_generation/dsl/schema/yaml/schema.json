@@ -20,12 +20,18 @@
             "type": "string",
             "description": "The name of the concept"
           },
+          "description": {
+            "type": "string",
+            "description": "The description of the concept, its business role and semantics"
+          },
           "entry": {
             "type": "boolean",
-            "description": "Whether this concept is an entry point"
+            "description": "Whether this concept is an entry point",
+            "default": false
           },
           "attributes": {
             "type": "array",
+            "description": "The list of attributes for the concept",
             "items": {
               "type": "object",
               "properties": {
@@ -41,27 +47,33 @@
                     "identifier",
                     "required",
                     ""
-                  ]
+                  ],
+                  "default": ""
                 },
                 "sequence": {
                   "type": "integer",
-                  "description": "The order of the attribute"
+                  "description": "The order of the attribute",
+                  "default": 0
                 },
                 "init": {
                   "type": "string",
-                  "description": "The initial value of the attribute"
+                  "description": "The initial value of the attribute (can be 'increment', 'empty', or any string)",
+                  "default": ""
                 },
                 "essential": {
                   "type": "boolean",
-                  "description": "Whether the attribute is essential"
+                  "description": "Whether the attribute is essential",
+                  "default": true
                 },
                 "sensitive": {
                   "type": "boolean",
-                  "description": "Whether the attribute contains sensitive data"
+                  "description": "Whether the attribute contains sensitive data",
+                  "default": false
                 },
                 "type": {
                   "type": "string",
-                  "description": "The data type of the attribute"
+                  "description": "The data type of the attribute",
+                  "default": "String"
                 }
               },
               "required": [
@@ -103,7 +115,8 @@
           },
           "fromToId": {
             "type": "boolean",
-            "description": "Whether the relation is an identifier from source to target"
+            "description": "Whether the relation is an identifier from source to target",
+            "default": false
           },
           "toFromName": {
             "type": "string",
@@ -119,11 +132,13 @@
           },
           "toFromId": {
             "type": "boolean",
-            "description": "Whether the relation is an identifier from target to source"
+            "description": "Whether the relation is an identifier from target to source",
+            "default": false
           },
           "internal": {
             "type": "boolean",
-            "description": "Whether the relation is internal to the model"
+            "description": "Whether the relation is internal to the model",
+            "default": false
           },
           "category": {
             "type": "string",
@@ -133,7 +148,8 @@
               "reflexive",
               "twin",
               "rel"
-            ]
+            ],
+            "default": "rel"
           }
         },
         "required": [

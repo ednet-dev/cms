@@ -1,8 +1,0 @@
-domain: 'gamification'
-model: 'leaderboard'
-concepts:
-  - name Leaderboard
-  - name: Rank
-  - name: Competitor
-  - name: Score
-  - name: Stats

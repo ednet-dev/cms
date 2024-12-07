@@ -1,309 +1,197 @@
 # EDNet Core
-
-**Version:** 1.0.0
+**Version:** 0.1.0
 
 ## Overview
 
-EDNet Core is a meta framework for rapid definition of domain models, built on top of Domain-Driven
-Design (DDD) and EventStorming methodologies. It encapsulates reusable parts of semantic
-implementation for generic repositories and UI default renderings, aiming to democratize the no-code
-approach to software development.
+EDNet Core is the foundational Dart library for defining, managing, and evolving rich domain models using the principles of Domain-Driven Design (DDD) and EventStorming. It aims to simplify how domain models are captured, reasoned about, and integrated into the broader software ecosystem. By abstracting away boilerplate and offering a consistent pattern for modeling complex domains, EDNet Core accelerates development and fosters a more collaborative no-code/low-code environment.
 
-## Key Features
+In essence, EDNet Core focuses on the "semantic backbone" of your application—your domain. It helps you describe your concepts, attributes, relationships, invariants, and domain events in a structured, platform-agnostic manner. EDNet Core then serves as a stable foundation for code generation, repository abstractions, UI scaffolds, and integrations with higher-level tools or platforms like EDNet CMS, EDNet DSL, and other EDNet ecosystem offerings.
 
-- **Domain-Driven Design (DDD)**
-- **EventStorming Methodologies**
-- **Rapid Domain Model Definition**
-- **Reusable Implementation**
-- **UI Default Renderings**
-- **Cross-Platform Deployment**
+## Key Tenets
+EDNet Core elevates the role of domain models in software development. By combining DDD and EventStorming techniques with a meta-level approach, EDNet Core fosters quick iteration, richer semantics, and a smoother path from abstract concepts to fully functional applications. As part of the broader EDNet ecosystem, it lays the groundwork for more expressive, maintainable, and democratized software design.
+
+- **Domain-Driven Modeling**: Directly model your business concepts (Entities, Value Objects, Aggregates), ensuring the code reflects the ubiquitous language and rich semantics.
+- **EventStorming Alignment**: Incorporate EventStorming-inspired workflows, tying domain events, processes, and invariants into a coherent, analyzable structure.
+- **Meta-Framework**: EDNet Core acts as a meta-layer, allowing higher-level frameworks (like EDNet CMS or EDNet Code Generation) to read, interpret, and transform your models without hand-crafted adapters.
+- **No-Code / Low-Code Integration**: By defining domain models in a structured YAML or DSL format, non-technical stakeholders can collaborate and iterate on the domain without diving into code internals.
+- **Extensible & Reusable**: Leverage standard patterns and baseline implementations (like repository interfaces, event handlers, and validation hooks) without reinventing the wheel.
+- **Cross-Platform Friendly**: EDNet Core is pure Dart, making it suitable for Flutter, server-side, CLI tools, code generation pipelines, and beyond.
 
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
-2. [Setting Up the Environment](#setting-up-the-environment)
-3. [Defining Domain Models](#defining-domain-models)
-4. [Creating a Core Repository](#creating-a-core-repository)
-5. [Creating Models](#creating-models)
-6. [Defining Entities](#defining-entities)
-7. [Initializing Data](#initializing-data)
-8. [Generating Code](#generating-code)
-9. [Writing Tests](#writing-tests)
-10. [Example Projects](#example-projects)
-11. [Best Practices](#best-practices)
-12. [Contribution](#contribution)
+2. [Installation & Setup](#installation--setup)
+3. [Defining a Domain](#defining-a-domain)
+4. [Adding Models and Entities](#adding-models-and-entities)
+5. [Relationships & Constraints](#relationships--constraints)
+6. [Initialization & Data Seeding](#initialization--data-seeding)
+7. [Code Generation with ednet\_code\_generation](#code-generation-with-ednet_code_generation)
+8. [Integration Points](#integration-points)
+9. [Testing & Validation](#testing--validation)
+10. [Best Practices](#best-practices)
+11. [Resources & Community](#resources--community)
+12. [Contributing](#contributing)
 
 ## Prerequisites
 
-Ensure you have the following installed:
+- **Dart SDK**: Ensure you have the [Dart SDK](https://dart.dev/get-dart) installed.
+- **Optional Flutter Setup**: If integrating with Flutter-based UIs, have [Flutter](https://flutter.dev/docs/get-started/install) set up.
+- **Familiarity with DDD Concepts**: Basic understanding of Entities, Value Objects, Aggregates, and Repositories is helpful.
 
-- Dart SDK
-- Flutter SDK (if working on a Flutter project)
-- An IDE or text editor (e.g., VS Code, IntelliJ IDEA)
+## Installation & Setup
 
-## Setting Up the Environment
+Add `ednet_core` to your project's `pubspec.yaml`:
 
-1. **Install Dart and Flutter**: Follow the official [Dart](https://dart.dev/get-dart)
-   and [Flutter](https://flutter.dev/docs/get-started/install) installation guides.
-2. **Create a new Dart/Flutter project**:
-    ```bash
-    dart create my_project
-    # or for Flutter
-    flutter create my_project
-    ```
-3. **Add ednet_core to your project**:
-    ```yaml
-    dependencies:
-      ednet_core: latest_version
-    ```
-4. **Install dependencies**:
-    ```bash
-    dart pub get
-    # or for Flutter
-    flutter pub get
-    ```
+```yaml
+dependencies:
+  ednet_core: ^0.1.0
+```
 
-## Defining Domain Models
+Then run:
 
-1. **Create domain model files**: Create a file for your domain model,
-   e.g., `household_domain.dart`.
-2. **Define domain and model structure**:
-    ```dart
-    import 'package:ednet_core/ednet_core.dart';
+```bash
+dart pub get
+# or if using Flutter
+flutter pub get
+```
 
-    class HouseholdDomain extends Domain {
-      HouseholdDomain(String name) : super(name);
-    }
+## Defining a Domain
 
-    class ProjectModel extends ModelEntries {
-      Projects projects;
+A domain in EDNet Core encapsulates a conceptual boundary of your business logic:
 
-      ProjectModel(Domain domain) : super(domain, "Project") {
-        projects = Projects(this);
-        addEntry("Project", projects);
-      }
-    }
-    ```
+```dart
+import 'package:ednet_core/ednet_core.dart';
 
-## Creating a Core Repository
+class MyDomain extends Domain {
+  MyDomain(String name) : super(name);
+}
+```
 
-1. **Create a repository**:
-    ```dart
-    var repository = CoreRepository();
-    ```
-2. **Register the domain and models with the repository**:
-    ```dart
-    var householdDomain = HouseholdDomain("Household");
-    repository.addDomain(householdDomain);
+Domains contain one or more models (e.g., “Project”, “User”, “Proposal”), each capturing a part of the domain’s complexity.
 
-    var projectModel = ProjectModel(householdDomain);
-    householdDomain.addModelEntries(projectModel);
-    ```
+## Adding Models and Entities
 
-## Creating Models
+Models are collections of concepts (Entities, Value Objects, Attributes, Relations):
 
-1. **Create a model**:
-    ```dart
-    ProjectModel projectModel = ProjectModel(householdDomain);
-    householdDomain.addModelEntries(projectModel);
-    ```
+```dart
+class ProjectModel extends ModelEntries {
+  late Projects projects;
 
-## Defining Entities
+  ProjectModel(Domain domain) : super(domain, "Project") {
+    projects = Projects(this);
+    addEntry("Project", projects);
+  }
+}
 
-1. **Define an entity** within your model:
-    ```dart
-    class Project extends Entity {
-      String name;
+class Project extends Entity {
+  String name = "";
 
-      Project(Concept concept) : super(concept);
+  Project(Concept concept) : super(concept);
 
-      @override
-      String toString() => 'Project: $name';
-    }
+  @override
+  String toString() => 'Project: $name';
+}
 
-    class Projects extends Entities<Project> {
-      Projects(ModelEntries modelEntries) : super(modelEntries);
-    }
+class Projects extends Entities<Project> {
+  Projects(ModelEntries modelEntries) : super(modelEntries);
+}
+```
 
-    class ProjectModel extends ModelEntries {
-      Projects projects;
+Add the model to the domain and register it in a repository:
 
-      ProjectModel(Domain domain) : super(domain, "Project") {
-        projects = Projects(this);
-        addEntry("Project", projects);
-      }
-    }
-    ```
+```dart
+var domain = MyDomain("Business");
+var projectModel = ProjectModel(domain);
+domain.addModelEntries(projectModel);
 
-## Initializing Data
+var repository = CoreRepository();
+repository.addDomain(domain);
+```
 
-1. **Initialize data**:
-    ```dart
-    void initData(CoreRepository repository) {
-       var householdDomain = repository.getDomainModels("Household");
-       ProjectModel? projectModel = householdDomain?.getModelEntries("Project") as ProjectModel?;
-       projectModel?.init();
-    }
-    ```
+## Relationships & Constraints
 
-## Generating Code
-
-1. **Generate code**:
-    ```dart
-    void genCode(CoreRepository repository) {
-      repository.gen("household_project");
-    }
-    ```
-
-## Writing Tests
-
-1. **Write tests**:
-    ```dart
-    void testHouseholdProjectProjects(HouseholdDomain householdDomain, ProjectModel projectModel, Projects projects) {
-      DomainSession session;
-      group("Testing Household.Project.Project", () {
-        session = householdDomain.newSession();
-        setUp(() { projectModel.init(); });
-        tearDown(() { projectModel.clear(); });
-
-        test("Not empty model", () {
-          expect(projectModel.isEmpty, isFalse);
-          expect(projects.isEmpty, isFalse);
-        });
-
-        // Other tests...
-      });
-    }
-    ```
-
-
-# Alternatives
-
-## EDNetDSL
-
-is used to describe any domain model.
-EDNetCMS interprets it on various platforms using appropriate default model interpreters,
-by only manipulating a YAML file of user stories high-level concepts and their basic relationships,
-as not more complex as a basic ER diagram, we can generate an entire well-structured, evolveable MVP
-of domain model in
-discussion and deploy it on the platform of our choosing.
+EDNet Core supports relationships (one-to-one, one-to-many, many-to-many) and invariants. Model these as needed:
 
 ```yaml
 concepts:
   - name: User
-    entry: true
     attributes:
-      - sequence: 1
-        name: username
+      - name: username
+      - name: email
 
-      - sequence: 2
-        name: password
-        sensitive: true
-
-      - sequence: 3
-        name: email
-
-      - sequence: 4
-        name: name
-
-  - name: Address
+  - name: Project
     attributes:
-      - sequence: 1
-        name: zip
-
-      - sequence: 2
-        name: city
-
-      - sequence: 3
-        name: street
-
-      - sequence: 4
-        name: number
-
-  - name: Country
-    attributes:
-      - sequence: 1
-        name: name
-
-      - sequence: 2
-        name: iso
+      - name: name
 
 relations:
-  - from: Address
-    fromToName: country
-    to: Country
-    toFromName: addresses
-    id:
-      from: false
-      to: false
+  - from: Project
+    fromToName: owner
+    to: User
+    toFromName: ownedProjects
     fromToCardinality:
       min: 1
       max: 1
     toFromCardinality:
       min: 0
       max: N
-    category: relationship
-    internal: false
-
-  - from: User
-    fromToName: company
-    to: Company
-    toFromName: employees
-    id:
-      from: true
-      to: false
-    fromToCardinality:
-      min: 1
-      max: 1
-
-    toFromCardinality:
-      min: 0
-      max: N
-    category: relationship
-    internal: false
 ```
-### ednet_code_generation
 
-### EDNetCMS
+This YAML-driven definition could then be transformed by EDNet Core into typed Entities and robust relations in code.
 
-1. Create your e.g. flutter app with `flutter create my_app`
-2. Add `ednet_cms` to your `pubspec.yaml` file:
-   ```yaml
-   dependencies:
-     ednet_cms: latest_version
-   ```
-3. Put your DSL yaml files in `lib/requriements` folder like e.g:
-   ```bash
-   lib/requirements/
-   ├── user_management
-   │   ├── user.ednet.yaml
-   │   └── role.ednet.yaml
-   ├── voting
-   │   ├── vote.ednet.yaml
-   │   └── ballot.ednet.yaml
-   ├── legislation_proposal
-   │   ├── proposal.ednet.yaml
-   │   └── amendment.ednet.yaml
-   └── discussion_forum
-       ├── thread.ednet.yaml
-       └── comment.ednet.yaml
-   ```
-4. Run `dart run build_runner watch --delete-conflicting-outputs` to generate the code.
-5. 
+## Initialization & Data Seeding
+
+Initialize or seed data after model creation:
+
+```dart
+projectModel.init(); // may populate default entries
+```
+
+## Code Generation with ednet\_code\_generation
+
+When integrated with ednet\_code\_generation, you can:
+
+- Take your domain definitions (in Dart or YAML DSL).
+- Run code generation steps to produce boilerplate, typed repositories, and event handling code.
+- Export DSL, regenerate code, and keep your domain models in sync with evolving business needs.
+
+```bash
+dart run build_runner build
+```
+
+The generated code provides a stable foundation for further expansions, validations, and integration with UI layers.
+
+## Integration Points
+
+- **EDNet CMS**: Combine with EDNet CMS to interpret domain models into dynamic web interfaces, collaborative modeling tools, and governance workflows.
+- **EDNet DSL**: Define domain models in a high-level YAML DSL and have EDNet Core generate the underlying code. Non-technical users can adjust the DSL, enabling a no-code or low-code approach.
+- **Custom Repositories and Services**: EDNet Core doesn’t lock you in; integrate your domain model with REST APIs, GraphQL endpoints, microservices, and other data layers as needed.
+
+## Testing & Validation
+
+Leverage EDNet Core’s consistent structure to write comprehensive tests:
+
+```dart
+test('Should have initial projects', () {
+  expect(projectModel.isEmpty, isFalse);
+  expect(projectModel.projects.isEmpty, isFalse);
+});
+```
+
+The stable structure makes it straightforward to test invariants, relationships, and domain logic.
+
 ## Best Practices
 
-1. **Modularize your code**: Keep your domains, models, and entities well-organized and align
-   boundaries against business language.
-2. **Write comprehensive tests**: Ensure all critical paths are tested.
-3. **Follow Dart and Flutter best practices**: Adhere to recommended coding standards and
-   conventions.
+1. **Keep Domain Language Clean**: Use descriptive concept and attribute names aligned with real business language.
+2. **Modularization**: Split large domains into multiple models for clarity.
+3. **Leverage DSLs Early**: Start from simple YAML or code-based definitions and generate complex artifacts. Iterate frequently.
+4. **Test Often**: Integrations and invariants should be tested to ensure the domain’s logic remains correct as it evolves.
 
-## Contribution
+## Resources & Community
 
-Start your collaboration by participating in our [RFC](https://github.com/ednet-dev/cms/pull/6).
+- **EDNet Core Repository**: [GitHub - ednet-dev/core](https://github.com/ednet-dev/cms/tree/7bbe3ff53cc4e3178d0fac144f86dc87e5d27a44/packages/core)
+- **EDNet Ecosystem**: Explore EDNet CMS, EDNet Code Generation, and EDNet DSL for a more holistic no-code/low-code pipeline.
+- **DDD & EventStorming**: Familiarize yourself with these methodologies to get the most out of EDNet Core.
 
-## Conclusion
+## Contributing
 
-EDNetCore aims to democratize the no-code approach to software development by focusing on domain
-models. With the combination of DDD and EventStorming methodologies, it offers a powerful framework
-for rapid domain model definition and reusable implementation.
+We welcome contributions, feedback, and discussions. Start by reviewing the Contribution Guidelines. Submit PRs, suggest RFCs, or engage in community discussions to improve and refine EDNet Core.

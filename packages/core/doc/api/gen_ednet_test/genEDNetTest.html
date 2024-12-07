@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the genEDNetTest function from the ednet_test library, for the Dart programming language.">
+  <title>genEDNetTest function - ednet_test library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../gen_ednet_test/gen_ednet_test-library.html">gen&#47;ednet_test.dart</a></li>
+    <li class="self-crumb">genEDNetTest function</li>
+  </ol>
+  <div class="self-name">genEDNetTest</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="gen_ednet_test&#47;gen_ednet_test-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">genEDNetTest</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+<span class="name ">genEDNetTest</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="genEDNetTest-param-repo"><span class="type-annotation"><a href="../ednet_core/CoreRepository-class.html">CoreRepository</a></span> <span class="parameter-name">repo</span>, </span></li>
+<li><span class="parameter" id="genEDNetTest-param-model"><span class="type-annotation"><a href="../ednet_core/Model-class.html">Model</a></span> <span class="parameter-name">model</span>, </span></li>
+<li><span class="parameter" id="genEDNetTest-param-entryConcept"><span class="type-annotation"><a href="../ednet_core/Concept-class.html">Concept</a></span> <span class="parameter-name">entryConcept</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
+  Domain domain = model.domain;
+  final repoName = &#39;${domain.codeFirstLetterUpper}${model.codeFirstLetterUpper}Repo&#39;;
+  var sc = &#39; \n&#39;;
+  sc = &#39;$sc&#47;&#47; test&#47;${domain.codeLowerUnderscore}&#47;&#39;
+      &#39;${model.codeLowerUnderscore}&#47;${domain.codeLowerUnderscore}_&#39;
+      &#39;${model.codeLowerUnderscore}_${entryConcept.codeLowerUnderscore}_&#39;
+      &#39;test.dart \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;${sc}import \&#39;package:test&#47;test.dart\&#39;; \n&#39;;
+  sc = &#39;${sc}import \&#39;package:ednet_core&#47;ednet_core.dart\&#39;; \n&#39;;
+  sc = &#39;${sc}import \&#39;..&#47;..&#47;..&#47;lib&#47;${domain.codeLowerUnderscore}_&#39;
+      &#39;${model.codeLowerUnderscore}.dart\&#39;; \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  var entities = entryConcept.codePluralFirstLetterLower;
+  var entity = entryConcept.codeFirstLetterLower;
+  var entity2 = entryConcept.code;
+  var entities2 = entryConcept.codePluralFirstLetterUpper;
+&#47;&#47;var entityConcept = &#39;${entities}.concept&#39;;
+
+  sc = &#39;${sc}void test${domain.code}${model.code}&#39;
+      &#39;${entryConcept.codePluralFirstLetterUpper}( \n&#39;;
+  sc = &#39;$sc    ${domain.code}Domain ${domain.codeFirstLetterLower}Domain, &#39;
+      &#39;${model.code}Model ${model.codeFirstLetterLower}Model, &#39;
+      &#39;$entities2 $entities) { \n&#39;;
+  sc = &#39;$sc  DomainSession session; \n&#39;;
+  sc = &#39;$sc  group(\&#39;Testing ${domain.code}.${model.code}.$entity2\&#39;, () { \n&#39;;
+  sc = &#39;$sc    session = ${domain.codeFirstLetterLower}Domain.newSession();  \n&#39;;
+&#47;&#47;sc = &#39;${sc}    expect(${model.codeFirstLetterLower}Model.isEmpty, isTrue); \n&#39;;
+  sc = &#39;$sc    setUp(() { \n&#39;;
+  sc = &#39;$sc      ${model.codeFirstLetterLower}Model.init(); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc    tearDown(() { \n&#39;;
+  sc = &#39;$sc      ${model.codeFirstLetterLower}Model.clear(); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Not empty model\&#39;, () { \n&#39;;
+  sc = &#39;$sc      expect(${model.codeFirstLetterLower}Model.isEmpty, &#39;
+      &#39;isFalse); \n&#39;;
+  sc = &#39;$sc      expect($entities.isEmpty, isFalse); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Empty model\&#39;, () { \n&#39;;
+  sc = &#39;$sc      ${model.codeFirstLetterLower}Model.clear(); \n&#39;;
+  sc = &#39;$sc      expect(${model.codeFirstLetterLower}Model.isEmpty, &#39;
+      &#39;isTrue); \n&#39;;
+  sc = &#39;$sc      expect($entities.isEmpty, isTrue); \n&#39;;
+  sc = &#39;$sc      expect($entities.exceptions.isEmpty, isTrue); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;From model to JSON\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final json = ${model.codeFirstLetterLower}Model.toJson(); \n&#39;;
+  sc = &#39;$sc      expect(json, isNotNull); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      print(json); \n&#39;;
+  sc = &#39;$sc      &#47;&#47;${model.codeFirstLetterLower}Model.displayJson(); \n&#39;;
+  sc = &#39;$sc      &#47;&#47;${model.codeFirstLetterLower}Model.display(); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;From JSON to model\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final json = ${model.codeFirstLetterLower}Model.toJson(); \n&#39;;
+  sc = &#39;$sc      ${model.codeFirstLetterLower}Model.clear(); \n&#39;;
+  sc = &#39;$sc      expect(${model.codeFirstLetterLower}Model.isEmpty, &#39;
+      &#39;isTrue); \n&#39;;
+  sc = &#39;$sc      ${model.codeFirstLetterLower}Model.fromJson(json); \n&#39;;
+  sc = &#39;$sc      expect(${model.codeFirstLetterLower}Model.isEmpty, &#39;
+      &#39;isFalse); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      ${model.codeFirstLetterLower}Model.display(); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;From model entry to JSON\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final json = ${model.codeFirstLetterLower}Model.&#39;
+      &#39;fromEntryToJson(\&#39;$entity2\&#39;); \n&#39;;
+  sc = &#39;$sc      expect(json, isNotNull); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      print(json); \n&#39;;
+  sc = &#39;$sc      &#47;&#47;${model.codeFirstLetterLower}Model.&#39;
+      &#39;displayEntryJson(\&#39;$entity2\&#39;); \n&#39;;
+  sc = &#39;$sc      &#47;&#47;${model.codeFirstLetterLower}Model.displayJson(); \n&#39;;
+  sc = &#39;$sc      &#47;&#47;${model.codeFirstLetterLower}Model.display(); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;From JSON to model entry\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final json = ${model.codeFirstLetterLower}Model.&#39;
+      &#39;fromEntryToJson(\&#39;$entity2\&#39;); \n&#39;;
+  sc = &#39;$sc      $entities.clear(); \n&#39;;
+  sc = &#39;$sc      expect($entities.isEmpty, isTrue); \n&#39;;
+  sc = &#39;$sc      ${model.codeFirstLetterLower}Model.fromJsonToEntry(json); \n&#39;;
+  sc = &#39;$sc      expect($entities.isEmpty, isFalse); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      $entities.display(title: \&#39;From JSON to model entry\&#39;); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Add $entity required error\&#39;, () { \n&#39;;
+  var requiredNonIdAttribute = findRequiredNonIdAttribute(entryConcept);
+  if (requiredNonIdAttribute != null) {
+    sc = &#39;$sc      final ${entity}Concept = $entities.concept; \n&#39;;
+    sc = &#39;$sc      var ${entity}Count = $entities.length; \n&#39;;
+    sc = &#39;$sc      final $entity = $entity2(${entity}Concept); \n&#39;;
+    sc = &#39;$sc      final isAdded = $entities.add($entity); \n&#39;;
+    sc = &#39;$sc      expect(isAdded, isFalse); \n&#39;;
+    sc = &#39;$sc      expect($entities.length, equals(${entity}Count)); \n&#39;;
+    sc = &#39;$sc      expect($entities.exceptions.length, greaterThan(0)); \n&#39;;
+    sc = &#39;$sc      expect($entities.exceptions.toList()[0].category, &#39;
+        &#39;equals(\&#39;required\&#39;)); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      $entities.exceptions.display(title: \&#39;Add $entity required &#39;
+        &#39;error\&#39;); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no required attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Add $entity unique error\&#39;, () { \n&#39;;
+  var idAttribute = findIdAttribute(entryConcept);
+  if (idAttribute != null) {
+    if (idAttribute.increment == null) {
+      sc = &#39;$sc      final ${entity}Concept = $entities.concept; \n&#39;;
+      sc = &#39;$sc      var ${entity}Count = $entities.length; \n&#39;;
+      sc = &#39;$sc      final $entity = $entity2(${entity}Concept); \n&#39;;
+      sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+      sc = &#39;$sc      $entity.${idAttribute.code} = &#39;
+          &#39;random$entity2.${idAttribute.code}; \n&#39;;
+      sc = &#39;$sc      final added = $entities.add($entity); \n&#39;;
+      sc = &#39;$sc      expect(added, isFalse); \n&#39;;
+      sc = &#39;$sc      expect($entities.length, equals(${entity}Count)); \n&#39;;
+      sc = &#39;$sc      expect($entities.exceptions.length, greaterThan(0)); \n&#39;;
+      sc = &#39;$sc \n&#39;;
+      sc = &#39;$sc      $entities.exceptions.display(title: \&#39;Add $entity unique &#39;
+          &#39;error\&#39;); \n&#39;;
+    } else {
+      sc = &#39;$sc      &#47;&#47; id attribute defined as increment, cannot update it \n&#39;;
+    }
+  } else {
+    sc = &#39;$sc      &#47;&#47; no id attribute \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Not found $entity by oid\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final ednetOid = Oid.ts(1345648254063); \n&#39;;
+  sc = &#39;$sc      final $entity = $entities.singleWhereOid(ednetOid); \n&#39;;
+  sc = &#39;$sc      expect($entity, isNull); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Find $entity by oid\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+  sc = &#39;$sc      final $entity = &#39;
+      &#39;$entities.singleWhereOid(random$entity2.oid); \n&#39;;
+  sc = &#39;$sc      expect($entity, isNotNull); \n&#39;;
+  sc = &#39;$sc      expect($entity, equals(random$entity2)); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Find $entity by attribute id\&#39;, () { \n&#39;;
+  if (idAttribute != null) {
+    sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+    sc = &#39;$sc      final $entity = \n&#39;;
+    sc = &#39;$sc          $entities.singleWhereAttributeId(&#39;
+        &#39;\&#39;${idAttribute.code}\&#39;, random$entity2.${idAttribute.code}); \n&#39;;
+    sc = &#39;$sc      expect($entity, isNotNull); \n&#39;;
+    sc = &#39;$sc      expect($entity!.${idAttribute.code}, &#39;
+        &#39;equals(random$entity2.${idAttribute.code})); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no id attribute \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Find $entity by required attribute\&#39;, () { \n&#39;;
+  if (requiredNonIdAttribute != null) {
+    sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+    sc = &#39;$sc      final $entity = \n&#39;;
+    sc = &#39;$sc          $entities.firstWhereAttribute(&#39;
+        &#39;\&#39;${requiredNonIdAttribute.code}\&#39;, &#39;
+        &#39;random$entity2.${requiredNonIdAttribute.code}); \n&#39;;
+    sc = &#39;$sc      expect($entity, isNotNull); \n&#39;;
+    sc = &#39;$sc      expect($entity.${requiredNonIdAttribute.code}, &#39;
+        &#39;equals(random$entity2.${requiredNonIdAttribute.code})); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no required attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Find $entity by attribute\&#39;, () { \n&#39;;
+  var nonRequiredAttribute = findNonRequiredAttribute(entryConcept);
+  if (nonRequiredAttribute != null) {
+    sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+    sc = &#39;$sc      final $entity = \n&#39;;
+    sc = &#39;$sc          $entities.firstWhereAttribute(&#39;
+        &#39;\&#39;${nonRequiredAttribute.code}\&#39;, random$entity2.&#39;
+        &#39;${nonRequiredAttribute.code}); \n&#39;;
+    sc = &#39;$sc      expect($entity, isNotNull); \n&#39;;
+    sc = &#39;$sc      expect($entity.${nonRequiredAttribute.code}, &#39;
+        &#39;equals(random$entity2.${nonRequiredAttribute.code})); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no attribute that is not required \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Select $entities by attribute\&#39;, () { \n&#39;;
+  if (nonRequiredAttribute != null) {
+    sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+    sc = &#39;$sc      final selected$entities2 = \n&#39;;
+    sc = &#39;$sc          $entities.selectWhereAttribute(&#39;
+        &#39;\&#39;${nonRequiredAttribute.code}\&#39;, random$entity2.&#39;
+        &#39;${nonRequiredAttribute.code}); \n&#39;;
+    sc = &#39;$sc      expect(selected$entities2.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      for (final se in selected$entities2) {&#39;;
+    sc = &#39;$sc        expect(se.${nonRequiredAttribute.code}, equals(random$entity2.${nonRequiredAttribute.code}));&#39;;
+    sc = &#39;$sc      }&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      &#47;&#47;selected$entities2.display(title: \&#39;Select $entities by &#39;
+        &#39;${nonRequiredAttribute.code}\&#39;); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no attribute that is not required \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Select $entities by required attribute\&#39;, () { \n&#39;;
+  if (requiredNonIdAttribute != null) {
+    sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+    sc = &#39;$sc      final selected$entities2 = \n&#39;;
+    sc = &#39;$sc          $entities.selectWhereAttribute(&#39;
+        &#39;\&#39;${requiredNonIdAttribute.code}\&#39;, &#39;
+        &#39;random$entity2.${requiredNonIdAttribute.code}); \n&#39;;
+    sc = &#39;$sc      expect(selected$entities2.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      selected$entities2.forEach((se) =&gt; \n&#39;;
+    sc = &#39;$sc          expect(se.${requiredNonIdAttribute.code}, &#39;
+        &#39;equals(random$entity2.${requiredNonIdAttribute.code}))); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      &#47;&#47;selected$entities2.display(title: \&#39;Select $entities by &#39;
+        &#39;${requiredNonIdAttribute.code}\&#39;); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no required attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Select $entities by attribute, then add\&#39;, () { \n&#39;;
+  var nonIdAttribute = findNonIdAttribute(entryConcept);
+  if (nonIdAttribute != null) {
+    sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+    sc = &#39;$sc      final selected$entities2 = \n&#39;;
+    sc = &#39;$sc          $entities.selectWhereAttribute(&#39;
+        &#39;\&#39;${nonIdAttribute.code}\&#39;, random$entity2.${nonIdAttribute.code}); \n&#39;;
+    sc = &#39;$sc      expect(selected$entities2.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      expect(selected$entities2.source?.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      var ${entities}Count = $entities.length; \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      final $entity = $entity2($entities.concept) \n&#39;;
+    var attributesSet = setTestAttributesRandomly(entryConcept, entity);
+    sc = &#39;$sc$attributesSet&#39;;
+    sc = &#39;$sc      final added = selected$entities2.add($entity); \n&#39;;
+    sc = &#39;$sc      expect(added, isTrue); \n&#39;;
+    sc = &#39;$sc      expect($entities.length, equals(++${entities}Count)); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      &#47;&#47;selected$entities2.display(title: \n&#39;;
+    sc = &#39;$sc      &#47;&#47;  \&#39;Select $entities by attribute, then add\&#39;); \n&#39;;
+    sc = &#39;$sc      &#47;&#47;$entities.display(title: \&#39;All $entities\&#39;); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Select $entities by attribute, then remove\&#39;, () { \n&#39;;
+  if (nonIdAttribute != null) {
+    sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+    sc = &#39;$sc      final selected$entities2 = \n&#39;;
+    sc = &#39;$sc          $entities.selectWhereAttribute(&#39;
+        &#39;\&#39;${nonIdAttribute.code}\&#39;, random$entity2.${nonIdAttribute.code}); \n&#39;;
+    sc = &#39;$sc      expect(selected$entities2.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      expect(selected$entities2.source?.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      var ${entities}Count = $entities.length; \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      final removed = selected$entities2.remove(random$entity2); \n&#39;;
+    sc = &#39;$sc      expect(removed, isTrue); \n&#39;;
+    sc = &#39;$sc      expect($entities.length, equals(--${entities}Count)); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      random$entity2.display(prefix: \&#39;removed\&#39;); \n&#39;;
+    sc = &#39;$sc      &#47;&#47;selected$entities2.display(title: \n&#39;;
+    sc = &#39;$sc      &#47;&#47;  \&#39;Select $entities by attribute, then remove\&#39;); \n&#39;;
+    sc = &#39;$sc      &#47;&#47;$entities.display(title: \&#39;All $entities\&#39;); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Sort $entities\&#39;, () { \n&#39;;
+  if (idAttribute != null) {
+    sc = &#39;$sc      $entities.sort(); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      &#47;&#47;$entities.display(title: \&#39;Sort $entities\&#39;); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no id attribute \n&#39;;
+    sc = &#39;$sc      &#47;&#47; add compareTo method in the specific $entity2 class \n&#39;;
+    sc = &#39;$sc      &#47;* \n&#39;;
+    sc = &#39;$sc      $entities.sort(); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      &#47;&#47;$entities.display(title: \&#39;Sort $entities\&#39;); \n&#39;;
+    sc = &#39;$sc      *&#47; \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Order $entities\&#39;, () { \n&#39;;
+  if (idAttribute != null) {
+    sc = &#39;$sc      final ordered$entities2 = $entities.order(); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2.length, &#39;
+        &#39;equals($entities.length)); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2.source?.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2.source?.length, &#39;
+        &#39;equals($entities.length)); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2, isNot(same($entities))); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      &#47;&#47;ordered$entities2.display(title: \&#39;Order $entities\&#39;); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no id attribute \n&#39;;
+    sc = &#39;$sc      &#47;&#47; add compareTo method in the specific $entity2 class \n&#39;;
+    sc = &#39;$sc      &#47;* \n&#39;;
+    sc = &#39;$sc      final ordered$entities2 = $entities.order(); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2.length, &#39;
+        &#39;equals($entities.length)); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2.source?.isEmpty, isFalse); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2.source?.length, &#39;
+        &#39;equals($entities.length)); \n&#39;;
+    sc = &#39;$sc      expect(ordered$entities2, isNot(same($entities))); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      &#47;&#47;ordered$entities2.display(title: \&#39;Order $entities\&#39;); \n&#39;;
+    sc = &#39;$sc      *&#47; \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Copy $entities\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final copied$entities2 = $entities.copy(); \n&#39;;
+  sc = &#39;$sc      expect(copied$entities2.isEmpty, isFalse); \n&#39;;
+  sc = &#39;$sc      expect(copied$entities2.length, &#39;
+      &#39;equals($entities.length)); \n&#39;;
+  sc = &#39;$sc      expect(copied$entities2, isNot(same($entities))); \n&#39;;
+  sc = &#39;$sc      for (final e in copied$entities2) {&#39;;
+  sc = &#39;$sc        expect(e, equals($entities.singleWhereOid(e.oid)));&#39;;
+  sc = &#39;$sc      }&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  if (entryConcept.hasId) {
+    sc = &#39;$sc      for (final e in copied$entities2) {&#39;;
+    sc = &#39;$sc        expect(e, isNot(same($entities.singleWhereId(e.id!))));&#39;;
+    sc = &#39;$sc      }&#39;;
+  }
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      &#47;&#47;copied$entities2.display(title: &quot;Copy $entities&quot;); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;True for every $entity\&#39;, () { \n&#39;;
+  if (requiredNonIdAttribute != null) {
+    sc = &#39;$sc      expect($entities.every((e) =&gt; &#39;
+        &#39;e.${requiredNonIdAttribute.code} != null), isTrue); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no required attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Random $entity\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final ${entity}1 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+  sc = &#39;$sc      expect(${entity}1, isNotNull); \n&#39;;
+  sc = &#39;$sc      final ${entity}2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+  sc = &#39;$sc      expect(${entity}2, isNotNull); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      &#47;&#47;${entity}1.display(prefix: \&#39;random1\&#39;); \n&#39;;
+  sc = &#39;$sc      &#47;&#47;${entity}2.display(prefix: \&#39;random2\&#39;); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Update $entity id with try\&#39;, () { \n&#39;;
+  if (idAttribute != null) {
+    if (idAttribute.increment == null) {
+      sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+      sc = &#39;$sc      final beforeUpdate = random$entity2.${idAttribute.code}; \n&#39;;
+      sc = &#39;$sc      try { \n&#39;;
+      var attributeSet = setTestAttributeRandomly(idAttribute, &#39;random$entity2&#39;);
+      sc = &#39;$sc        random$entity2$attributeSet;&#39;;
+      sc = &#39;$sc      } on UpdateException catch (e) { \n&#39;;
+      sc = &#39;$sc        expect(random$entity2.${idAttribute.code}, &#39;
+          &#39;equals(beforeUpdate)); \n&#39;;
+      sc = &#39;$sc      } \n&#39;;
+    } else {
+      sc = &#39;$sc      &#47;&#47; id attribute defined as increment, cannot update it \n&#39;;
+    }
+  } else {
+    sc = &#39;$sc      &#47;&#47; no id attribute \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Update $entity id without try\&#39;, () { \n&#39;;
+  if (idAttribute != null) {
+    if (idAttribute.increment == null) {
+      sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+      sc = &#39;$sc      final beforeUpdateValue = &#39;
+          &#39;random$entity2.${idAttribute.code}; \n&#39;;
+      var value = genAttributeTextRandomly(idAttribute);
+      sc = &#39;$sc      expect(() =&gt; random$entity2.${idAttribute.code} = &#39;
+          &#39;$value, throws); \n&#39;;
+      sc = &#39;$sc      expect(random$entity2.${idAttribute.code}, &#39;
+          &#39;equals(beforeUpdateValue)); \n&#39;;
+    } else {
+      sc = &#39;$sc      &#47;&#47; id attribute defined as increment, cannot update it \n&#39;;
+    }
+  } else {
+    sc = &#39;$sc      &#47;&#47; no id attribute \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Update $entity id with success\&#39;, () { \n&#39;;
+  if (idAttribute != null) {
+    if (idAttribute.increment == null) {
+      sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+      sc = &#39;$sc      final afterUpdateEntity = random$entity2.copy(); \n&#39;;
+      sc = &#39;$sc      final attribute = random$entity2.concept.attributes.&#39;
+          &#39;singleWhereCode(\&#39;${idAttribute.code}\&#39;); \n&#39;;
+      sc = &#39;$sc      expect(attribute?.update, isFalse); \n&#39;;
+      sc = &#39;$sc      attribute?.update = true; \n&#39;;
+      var value = genAttributeTextRandomly(idAttribute);
+      sc = &#39;$sc      afterUpdateEntity.${idAttribute.code} = $value; \n&#39;;
+      sc = &#39;$sc      expect(afterUpdateEntity.${idAttribute.code}, &#39;
+          &#39;equals($value)); \n&#39;;
+      sc = &#39;$sc      attribute?.update = false; \n&#39;;
+      sc = &#39;$sc      final updated = $entities.update(random$entity2, &#39;
+          &#39;afterUpdateEntity); \n&#39;;
+      sc = &#39;$sc      expect(updated, isTrue); \n&#39;;
+      sc = &#39;$sc \n&#39;;
+      sc = &#39;$sc      final entity = $entities.singleWhereAttributeId(&#39;
+          &#39;\&#39;${idAttribute.code}\&#39;, $value); \n&#39;;
+      sc = &#39;$sc      expect(entity, isNotNull); \n&#39;;
+      sc = &#39;$sc      expect(entity!.${idAttribute.code}, equals($value)); \n&#39;;
+      sc = &#39;$sc \n&#39;;
+      sc = &#39;$sc      &#47;&#47;$entities.display(\&#39;After update $entity id\&#39;); \n&#39;;
+    } else {
+      sc = &#39;$sc      &#47;&#47; id attribute defined as increment, cannot update it \n&#39;;
+    }
+  } else {
+    sc = &#39;$sc      &#47;&#47; no id attribute \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Update $entity non id attribute with failure\&#39;, () { \n&#39;;
+  if (nonIdAttribute != null) {
+    sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+&#47;&#47;sc = &#39;${sc}      var beforeUpdateValue = &#39;
+&#47;&#47;     &#39;random${Entity}.${nonIdAttribute.code}; \n&#39;;
+    var value = genAttributeTextRandomly(nonIdAttribute);
+    sc = &#39;$sc      final afterUpdateEntity = random$entity2.copy()..${nonIdAttribute.code} = $value; \n&#39;;
+    sc = &#39;$sc      expect(afterUpdateEntity.${nonIdAttribute.code}, &#39;
+        &#39;equals($value)); \n&#39;;
+    sc = &#39;$sc      &#47;&#47; $entities.update can only be used if oid, code or &#39;
+        &#39;id is set. \n&#39;;
+    sc = &#39;$sc      expect(() =&gt; $entities.update(random$entity2, &#39;
+        &#39;afterUpdateEntity), throwsA(isA&lt;Exception&gt;())); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Copy Equality\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random()..display(prefix:\&#39;before copy: \&#39;); \n&#39;;
+  sc = &#39;$sc      final random${entity2}Copy = random$entity2.copy()..display(prefix:\&#39;after copy: \&#39;); \n&#39;;
+  sc = &#39;$sc      expect(random$entity2, equals(random${entity2}Copy)); \n&#39;;
+  sc = &#39;$sc      expect(random$entity2.oid, equals(random${entity2}Copy.oid)); \n&#39;;
+  sc = &#39;$sc      expect(random$entity2.code, &#39;
+      &#39;equals(random${entity2}Copy.code)); \n&#39;;
+  for (Attribute attribute in entryConcept.attributes.whereType&lt;Attribute&gt;()) {
+    sc = &#39;$sc      expect(random$entity2.${attribute.code}, &#39;
+        &#39;equals(random${entity2}Copy.${attribute.code})); \n&#39;;
+  }
+  sc = &#39;$sc \n&#39;;
+
+  if (idAttribute != null) {
+    sc = &#39;$sc      expect(random$entity2.id, isNotNull); \n&#39;;
+    sc = &#39;$sc      expect(random${entity2}Copy.id, isNotNull); \n&#39;;
+    sc = &#39;$sc      expect(random$entity2.id, equals(random${entity2}Copy.id)); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      var idsEqual = false; \n&#39;;
+    sc = &#39;$sc      if (random$entity2.id == random${entity2}Copy.id) { \n&#39;;
+    sc = &#39;$sc        idsEqual = true; \n&#39;;
+    sc = &#39;$sc      } \n&#39;;
+    sc = &#39;$sc      expect(idsEqual, isTrue); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      idsEqual = false; \n&#39;;
+    sc = &#39;$sc      if (random$entity2.id!.equals(random${entity2}Copy.id!)) { \n&#39;;
+    sc = &#39;$sc        idsEqual = true; \n&#39;;
+    sc = &#39;$sc      } \n&#39;;
+    sc = &#39;$sc      expect(idsEqual, isTrue); \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;$entity action undo and redo\&#39;, () { \n&#39;;
+&#47;&#47;sc = &#39;${sc}      final ${entity}Concept = ${entities}.concept; \n&#39;;
+  sc = &#39;$sc      var ${entity}Count = $entities.length; \n&#39;;
+  sc = &#39;$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false, model: model)}&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc      $entities.remove($entity); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      final action = AddCommand(session, $entities, $entity)..doIt(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      action.undo(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      action.redo(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;$entity session undo and redo\&#39;, () { \n&#39;;
+&#47;&#47;sc = &#39;${sc}      final ${entity}Concept = ${entities}.concept; \n&#39;;
+  sc = &#39;$sc      var ${entity}Count = $entities.length; \n&#39;;
+  sc = &#39;$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false, model: model)}&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc      $entities.remove($entity); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      AddCommand(session, $entities, $entity).doIt();; \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      session.past.undo(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      session.past.redo(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;$entity2 update undo and redo\&#39;, () { \n&#39;;
+  if (nonIdAttribute != null) {
+    sc = &#39;$sc      final $entity = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+    var value = genAttributeTextRandomly(nonIdAttribute);
+    sc = &#39;$sc      final action = SetAttributeCommand(session, &#39;
+        &#39;$entity, \&#39;${nonIdAttribute.code}\&#39;, $value)..doIt(); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      session.past.undo(); \n&#39;;
+    sc = &#39;$sc      expect($entity.${nonIdAttribute.code}, &#39;
+        &#39;equals(action.before)); \n&#39;;
+    sc = &#39;$sc \n&#39;;
+    sc = &#39;$sc      session.past.redo(); \n&#39;;
+    sc = &#39;$sc      expect($entity.${nonIdAttribute.code}, &#39;
+        &#39;equals(action.after)); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;$entity2 action with multiple undos and redos\&#39;, () { \n&#39;;
+  sc = &#39;$sc      var ${entity}Count = $entities.length; \n&#39;;
+  sc = &#39;$sc      final ${entity}1 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      RemoveCommand(session, $entities, &#39;
+      &#39;${entity}1).doIt(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      final ${entity}2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      RemoveCommand(session, $entities, &#39;
+      &#39;${entity}2).doIt(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      &#47;&#47;session.past.display(); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      session.past.undo(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      session.past.undo(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      &#47;&#47;session.past.display(); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      session.past.redo(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      session.past.redo(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      &#47;&#47;session.past.display(); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Transaction undo and redo\&#39;, () { \n&#39;;
+  sc = &#39;$sc      var ${entity}Count = $entities.length; \n&#39;;
+  sc = &#39;$sc      final ${entity}1 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+  sc = &#39;$sc      var ${entity}2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+  sc = &#39;$sc      while (${entity}1 == ${entity}2) { \n&#39;;
+  sc = &#39;$sc        ${entity}2 = ${model.codeFirstLetterLower}Model.$entities.random();  \n&#39;;
+  sc = &#39;$sc      } \n&#39;;
+  sc = &#39;$sc      final action1 = RemoveCommand(session, $entities, &#39;
+      &#39;${entity}1); \n&#39;;
+  sc = &#39;$sc      final action2 = RemoveCommand(session, $entities, &#39;
+      &#39;${entity}2); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      Transaction(\&#39;two removes on $entities\&#39;, session) \n&#39;;
+  sc = &#39;$sc        ..add(action1) \n&#39;;
+  sc = &#39;$sc        ..add(action2) \n&#39;;
+  sc = &#39;$sc        ..doIt(); \n&#39;;
+  sc = &#39;$sc      ${entity}Count = ${entity}Count - 2; \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      $entities.display(title:\&#39;Transaction Done\&#39;); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      session.past.undo(); \n&#39;;
+  sc = &#39;$sc      ${entity}Count = ${entity}Count + 2; \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      $entities.display(title:\&#39;Transaction Undone\&#39;); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      session.past.redo(); \n&#39;;
+  sc = &#39;$sc      ${entity}Count = ${entity}Count - 2; \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      $entities.display(title:\&#39;Transaction Redone\&#39;); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Transaction with one action error\&#39;, () { \n&#39;;
+  sc = &#39;$sc      final ${entity}Count = $entities.length; \n&#39;;
+  sc = &#39;$sc      final ${entity}1 = ${model.codeFirstLetterLower}Model.$entities.random(); \n&#39;;
+  sc = &#39;$sc      final ${entity}2 = ${entity}1; \n&#39;;
+  sc = &#39;$sc      final action1 = RemoveCommand(session, $entities, &#39;
+      &#39;${entity}1); \n&#39;;
+  sc = &#39;$sc      final action2 = RemoveCommand(session, $entities, &#39;
+      &#39;${entity}2); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      final transaction = Transaction( \n&#39;;
+  sc = &#39;$sc        \&#39;two removes on $entities, with an error on the second\&#39;,\n&#39;;
+  sc = &#39;$sc        session, \n&#39;;
+  sc = &#39;$sc        )\n&#39;;
+  sc = &#39;$sc        ..add(action1) \n&#39;;
+  sc = &#39;$sc        ..add(action2); \n&#39;;
+  sc = &#39;$sc      final done = transaction.doIt(); \n&#39;;
+  sc = &#39;$sc      expect(done, isFalse); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      &#47;&#47;$entities.display(title:\&#39;Transaction with an error\&#39;); \n&#39;;
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;$sc    test(\&#39;Reactions to $entity actions\&#39;, () { \n&#39;;
+&#47;&#47;sc = &#39;${sc}      final ${entity}Concept = ${entities}.concept; \n&#39;;
+  sc = &#39;$sc      var ${entity}Count = $entities.length; \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      final reaction = ${entity2}Reaction(); \n&#39;;
+  sc = &#39;$sc      expect(reaction, isNotNull); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      ${domain.codeFirstLetterLower}Domain.startCommandReaction(reaction); \n&#39;;
+  sc = &#39;$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false, model: model)}&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc      $entities.remove($entity); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(--${entity}Count)); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc      final session = ${domain.codeFirstLetterLower}Domain.newSession(); \n&#39;;
+  sc = &#39;$sc      AddCommand(session, $entities, &#39;
+      &#39;$entity).doIt(); \n&#39;;
+  sc = &#39;$sc      expect($entities.length, equals(++${entity}Count)); \n&#39;;
+  sc = &#39;$sc      expect(reaction.reactedOnAdd, isTrue); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  if (nonIdAttribute != null) {
+    var value = genAttributeTextRandomly(nonIdAttribute);
+    sc = &#39;$sc      SetAttributeCommand( \n&#39;;
+    sc = &#39;$sc        session,\n&#39;;
+    sc = &#39;$sc        $entity,\n&#39;;
+    sc = &#39;$sc        \&#39;${nonIdAttribute.code}\&#39;,\n&#39;;
+    sc = &#39;$sc        $value,\n&#39;;
+    sc = &#39;$sc      ).doIt();\n&#39;;
+    sc = &#39;$sc      expect(reaction.reactedOnUpdate, isTrue); \n&#39;;
+    sc = &#39;$sc      ${domain.codeFirstLetterLower}Domain.cancelCommandReaction(reaction); \n&#39;;
+  } else {
+    sc = &#39;$sc      &#47;&#47; no attribute that is not id \n&#39;;
+  }
+  sc = &#39;$sc    }); \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+&#47;&#47; after the last test
+
+  sc = &#39;$sc  }); \n&#39;;
+  sc = &#39;$sc} \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;${sc}class ${entity2}Reaction implements ICommandReaction { \n&#39;;
+  sc = &#39;$sc  bool reactedOnAdd    = false; \n&#39;;
+  sc = &#39;$sc  bool reactedOnUpdate = false; \n&#39;;
+  sc = &#39;$sc \n&#39;;
+  sc = &#39;$sc  @override&#39;;
+  sc = &#39;$sc  void react(ICommand action) { \n&#39;;
+  sc = &#39;$sc    if (action is IEntitiesCommand) { \n&#39;;
+  sc = &#39;$sc      reactedOnAdd = true; \n&#39;;
+  sc = &#39;$sc    } else if (action is IEntityCommand) { \n&#39;;
+  sc = &#39;$sc      reactedOnUpdate = true; \n&#39;;
+  sc = &#39;$sc    } \n&#39;;
+  sc = &#39;$sc  } \n&#39;;
+  sc = &#39;$sc} \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  sc = &#39;${sc}void main() { \n&#39;;
+  sc = &#39;$sc  final repository = $repoName(); \n&#39;;
+  sc = &#39;$sc  final ${domain.codeFirstLetterLower}Domain = &#39;
+      &#39;repository.getDomainModels(\&#39;${domain.code}\&#39;) as ${domain.code}Domain?;\n&#39;;
+  sc = &#39;$sc  assert(${domain.codeFirstLetterLower}Domain != null, \&#39;${domain.code}Domain is not defined\&#39;); \n&#39;;
+  sc = &#39;$sc  final ${model.codeFirstLetterLower}Model = &#39;
+      &#39;${domain.codeFirstLetterLower}Domain!.getModelEntries(\&#39;${model.code}\&#39;) as ${model.code}Model?;\n&#39;;
+  sc = &#39;$sc  assert(${model.codeFirstLetterLower}Model != null, \&#39;${model.code}Model is not defined\&#39;); \n&#39;;
+  sc = &#39;$sc  final $entities = &#39;
+      &#39;${model.codeFirstLetterLower}Model!.$entities; \n&#39;;
+  sc = &#39;$sc  test${domain.code}${model.code}&#39;
+      &#39;${entryConcept.codePluralFirstLetterUpper}(&#39;
+      &#39;${domain.codeFirstLetterLower}Domain, &#39;
+      &#39;${model.codeFirstLetterLower}Model, $entities); \n&#39;;
+  sc = &#39;$sc} \n&#39;;
+  sc = &#39;$sc \n&#39;;
+
+  return sc;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../gen_ednet_test/gen_ednet_test-library.html">ednet_test</a></li>
+    <li class="self-crumb">genEDNetTest function</li>
+</ol>
+
+    <h5>ednet_test library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ednet_core
+      0.0.1+11
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

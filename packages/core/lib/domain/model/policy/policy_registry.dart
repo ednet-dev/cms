@@ -18,7 +18,7 @@ class PolicyRegistry {
 
   List<IPolicy> getAllPolicies() => _policies.values.toList();
 
-  bool evaluatePolicy(String key, Entity entity) {
+  bool evaluateNamedPolicy(String key, Entity entity) {
     var policy = getPolicy(key);
     if (policy == null) {
       throw PolicyNotFoundException('Policy not found: $key');

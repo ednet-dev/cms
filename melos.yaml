@@ -22,9 +22,17 @@ scripts:
     run: melos exec -- "flutter analyze"
     description: Run `flutter analyze` in all packages
 
+  analyze:core:
+    run: melos exec --scope="core" -- "dart analyze"
+    description: Run Dart analyze for the core package in this project.
+
   format:
     run: melos exec -- "flutter format . --set-exit-if-changed"
     description: Run `flutter format .` in all packages
+
+  format:core:
+    run: melos exec --scope="core" -- "dart format . --set-exit-if-changed"
+    description: Run Dart format for the core package in this project.
 
   test:
     run: melos exec --dir-exists="test" --fail-fast -- "flutter test --no-pub --coverage"
@@ -45,3 +53,11 @@ scripts:
   publish:
     run: melos publish --scope="ednet_cms" --no-dry-run
     description: Publish ednet_cms to pub.dev.
+
+  publish:dry:core:
+    run: melos publish --scope="core" --dry-run
+    description: Dry run of publishing core to pub.dev.
+
+  publish:core:
+    run: melos publish --scope="core" --no-dry-run
+    description: Publish core to pub.dev.

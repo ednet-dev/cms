@@ -16,7 +16,7 @@ class TimeBasedPolicy implements IPolicy {
     required this.description,
     required this.timeAttributeName,
     required this.validator,
-    required this.scope,
+    this.scope,
     Clock? clock,
   }) : clock = clock ?? SystemClock();
 

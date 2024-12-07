@@ -37,41 +37,45 @@ void genConceptEntities(File file, Concept concept) {
 }
 
 void genJsonData(File file) {
-  var sc = 'part of ${domainName}_${modelName}; \n';
-  sc = '${sc} \n';
-  sc = '${sc}// http://www.json.org/ \n';
-  sc = '${sc}// http://jsonformatter.curiousconcept.com/ \n';
-  sc = '${sc} \n';
-  sc = '${sc}// lib/${domainName}/${modelName}/json/data.dart \n';
+  final buffer = StringBuffer()
+    ..writeln('part of \'../../../${domainName}_${modelName}.dart\';')
+    ..writeln()
+    ..writeln(
+        '// DSL: https://github.com/ednet-dev/cms/blob/7bbe3ff53cc4e3178d0fac144f86dc87e5d27a44/packages/code_generation/dsl/SCHEMA.md')
+    ..writeln(
+        '// DSL Schema: https://github.com/ednet-dev/cms/blob/7bbe3ff53cc4e3178d0fac144f86dc87e5d27a44/packages/code_generation/dsl/schema/yaml/schema.json')
+    ..writeln()
+    ..writeln('// lib/${domainName}/${modelName}/json/data.dart');
 
   for (final entryConcept in ednetCoreModel.entryConcepts) {
-    sc = '${sc}var ${domainName}${firstLetterToUpper(modelName)}'
-        '${entryConcept.code}Entry = r""" \n';
-    sc = '${sc} \n';
-    sc = '${sc}"""; \n';
-    sc = '${sc} \n';
+    buffer
+      ..writeln(
+          'String ${domainName}${firstLetterToUpper(modelName)}${entryConcept.code}Entry = \'\'\'')
+      ..writeln('\'\'\';')
+      ..writeln();
   }
 
-  sc = '${sc}var ${domainName}${firstLetterToUpper(modelName)}Model = r""" \n';
-  sc = '${sc} \n';
-  sc = '${sc}"""; \n';
-  sc = '${sc} \n';
+  buffer
+    ..writeln(
+        'String ${domainName}${firstLetterToUpper(modelName)}Model = \'\'\'')
+    ..writeln('\'\'\';')
+    ..writeln();
 
-  addText(file, sc);
+  addText(file, buffer.toString());
 }
 
 void genJsonModel(File file) {
   final text = """
-part of ${domainName}_${modelName};
+part of \'../../../${domainName}_${modelName}.dart\';
 
-// http://www.json.org/
-// http://jsonformatter.curiousconcept.com/
+// DSL: https://github.com/ednet-dev/cms/blob/7bbe3ff53cc4e3178d0fac144f86dc87e5d27a44/packages/code_generation/dsl/SCHEMA.md
+// DSL Schema: https://github.com/ednet-dev/cms/blob/7bbe3ff53cc4e3178d0fac144f86dc87e5d27a44/packages/code_generation/dsl/schema/yaml/schema.json
 
 // lib/${domainName}/${modelName}/json/model.dart
-
-var ${domainName}${firstLetterToUpper(modelName)}ModelJson = r'''
+String ${domainName}${firstLetterToUpper(modelName)}ModelYaml = '''
 ${modelJson ?? yamlString}
 ''';
+
   """;
   addText(file, text);
 }

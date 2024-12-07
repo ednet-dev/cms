@@ -7,7 +7,7 @@ description: Generate a new EDNetCore project.
 homepage: https://github.com/ednet-dev/ednet_core_gen
 documentation: http://goo.gl/Fd08zZ
 environment:
-  sdk: '>=3.0.3 <4.0.0'
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
 
 dependencies:
   ednet_core: 0.0.1
