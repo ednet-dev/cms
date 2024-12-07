@@ -1,3 +1,7 @@
+## 0.0.1+11
+
+ - TBD-CHANGELOG
+
 ## 0.0.1+10
 
 - **FIX**: ednet_core bug.

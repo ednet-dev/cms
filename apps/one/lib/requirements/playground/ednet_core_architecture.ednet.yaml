@@ -1,0 +1,69 @@
+domain: "EdnetCoreArchitecture"
+model: "ednet_core_architecture"
+
+concepts:
+  - name: CoreMotivation
+    attributes:
+      - name: intention
+        type: String
+      - name: rationale
+        type: String
+      - name: influences
+        type: String
+      - name: impactOnEnvironment
+        type: String
+
+  - name: Layer
+    attributes:
+      - name: name
+        type: String
+      - name: artifactType
+        type: String
+
+  - name: Artifact
+    attributes:
+      - name: name
+        type: String
+      - name: motivation
+        type: String
+      - name: structure
+        type: String
+      - name: influencesOnEnvironment
+        type: String
+      - name: influencedByEnvironment
+        type: String
+
+  - name: CrossCuttingConcern
+    attributes:
+      - name: name
+        type: String
+      - name: motivation
+        type: String
+      - name: influencesOnEnvironment
+        type: String
+      - name: influencedByEnvironment
+        type: String
+
+  - name: Outcome
+    attributes:
+      - name: goal
+        type: String
+      - name: longTermVision
+        type: String
+      - name: ecosystemInfluence
+        type: String
+
+relations:
+  - from: Layer
+    to: Artifact
+    fromToName: hasArtifacts
+    toFromName: belongsToLayer
+    id:
+      from: true
+      to: false
+    fromToCardinality:
+      min: 1
+      max: N
+    toFromCardinality:
+      min: 0
+      max: N
