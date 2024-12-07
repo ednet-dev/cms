@@ -11,46 +11,47 @@
   
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
   
   <link rel="stylesheet" href="../static-assets/github.css?v1">
   <link rel="stylesheet" href="../static-assets/styles.css?v1">
   <link rel="icon" href="../static-assets/favicon.png?v1">
-
   
 </head>
 
-
 <body data-base-href="../" data-using-base-href="false" class="light-theme">
-
 <div id="overlay-under-drawer"></div>
-
 <header id="title">
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">ednet_core</a></li>
-    <li><a href="../ednet_core/ednet_core-library.html">ednet_core</a></li>
+    <li><a href="../ednet_core/ednet_core-library.html">ednet_core.dart</a></li>
     <li class="self-crumb">Parent class</li>
   </ol>
   <div class="self-name">Parent</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <div class="toggle" id="theme-button">
+  <div class="toggle" id="theme-button" title="Toggle brightness">
     <label for="theme">
       <input type="checkbox" id="theme" value="light-theme">
-      <span class="material-symbols-outlined">
-        brightness_4
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
       </span>
     </label>
   </div>
 </header>
 <main>
-
-  <div id="dartdoc-main-content" class="main-content">
-      <div>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="ednet_core&#47;ednet_core-library-sidebar.html"
+    data-below-sidebar="ednet_core&#47;Parent-class-sidebar.html">
+    <div>
 <h1><span class="kind-class">Parent</span> class 
-    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
  
 </h1></div>
 
@@ -75,11 +76,7 @@
         
 
 
-        <dt>Available Extensions</dt>
-        <dd><ul class="comma-separated clazz-relationships">
-          <li><a href="../ednet_core/Mrkvica.html">Mrkvica</a></li>
-        </ul></dd>
-
+        
         
 
 
@@ -89,7 +86,6 @@
     
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
-
     <dl class="constructor-summary-list">
         <dt id="Parent" class="callable">
           <span class="name"><a href="../ednet_core/Parent/Parent.html">Parent</a></span><span class="signature">(<span class="parameter" id="-param-sourceConcept"><span class="type-annotation"><a href="../ednet_core/Concept-class.html">Concept</a></span> <span class="parameter-name">sourceConcept</span>, </span><span class="parameter" id="-param-destinationConcept"><span class="type-annotation"><a href="../ednet_core/Concept-class.html">Concept</a></span> <span class="parameter-name">destinationConcept</span>, </span><span class="parameter" id="-param-parentCode"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">parentCode</span></span>)</span>
@@ -99,446 +95,510 @@
         </dd>
     </dl>
   </section>
-
-    <section class="summary offset-anchor" id="instance-properties">
-      <h2>Properties</h2>
-
-      <dl class="properties">
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-properties">
+    <h2>Properties</h2>
+    <dl class="properties">
         <dt id="absorb" class="property">
   <span class="name"><a href="../ednet_core/Parent/absorb.html">absorb</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd>
   
-  <div class="features"><span class="feature">read / write</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span></div>
 
 </dd>
 
         <dt id="code" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/code.html">code</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codeFirstLetterLower" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codeFirstLetterLower.html">codeFirstLetterLower</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codeFirstLetterUpper" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codeFirstLetterUpper.html">codeFirstLetterUpper</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codeLowerSpace" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codeLowerSpace.html">codeLowerSpace</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codeLowerUnderscore" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codeLowerUnderscore.html">codeLowerUnderscore</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codePlural" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codePlural.html">codePlural</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codePluralFirstLetterLower" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codePluralFirstLetterLower.html">codePluralFirstLetterLower</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codePluralFirstLetterUpper" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codePluralFirstLetterUpper.html">codePluralFirstLetterUpper</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codePluralFirstLetterUpperSpace" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codePluralFirstLetterUpperSpace.html">codePluralFirstLetterUpperSpace</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="codePluralLowerUnderscore" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/codePluralLowerUnderscore.html">codePluralLowerUnderscore</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="concept" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/concept.html">concept</a></span>
-  <span class="signature">&#8596; <a href="../ednet_core/Concept-class.html">Concept</a></span> 
+  <span class="signature">&#8596; <a href="../ednet_core/Concept-class.html">Concept</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="destinationConcept" class="property inherited">
   <span class="name"><a href="../ednet_core/Neighbor/destinationConcept.html">destinationConcept</a></span>
-  <span class="signature">&#8596; <a href="../ednet_core/Concept-class.html">Concept</a></span> 
+  <span class="signature">&#8596; <a href="../ednet_core/Concept-class.html">Concept</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="essential" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/essential.html">essential</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="exceptions" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/exceptions.html">exceptions</a></span>
-  <span class="signature">&#8596; <a href="../ednet_core/IValidationExceptions-class.html">IValidationExceptions</a></span> 
+  <span class="signature">&#8596; <a href="../ednet_core/IValidationExceptions-class.html">IValidationExceptions</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="external" class="property inherited">
   <span class="name"><a href="../ednet_core/Neighbor/external.html">external</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="hashCode" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/hashCode.html">hashCode</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
 
 </dt>
 <dd class="inherited">
   The hash code for this object.
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="id" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/id.html">id</a></span>
-  <span class="signature">&#8594; <a href="../ednet_core/Id-class.html">Id</a>?</span> 
+  <span class="signature">&#8594; <a href="../ednet_core/Id-class.html">Id</a>?</span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="identifier" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/identifier.html">identifier</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="inheritance" class="property inherited">
   <span class="name"><a href="../ednet_core/Neighbor/inheritance.html">inheritance</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="internal" class="property inherited">
   <span class="name"><a href="../ednet_core/Neighbor/internal.html">internal</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="label" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/label.html">label</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="maxc" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/maxc.html">maxc</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="maxMany" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/maxMany.html">maxMany</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="minc" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/minc.html">minc</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="oid" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/oid.html">oid</a></span>
-  <span class="signature">&#8596; <a href="../ednet_core/Oid-class.html">Oid</a></span> 
+  <span class="signature">&#8596; <a href="../ednet_core/Oid-class.html">Oid</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="opposite" class="property inherited">
   <span class="name"><a href="../ednet_core/Neighbor/opposite.html">opposite</a></span>
-  <span class="signature">&#8596; <a href="../ednet_core/Neighbor-class.html">Neighbor</a>?</span> 
+  <span class="signature">&#8596; <a href="../ednet_core/Neighbor-class.html">Neighbor</a>?</span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="policyEvaluator" class="property inherited">
+  <span class="name"><a href="../ednet_core/Entity/policyEvaluator.html">policyEvaluator</a></span>
+  <span class="signature">&#8592; <a href="../ednet_core/PolicyEvaluator-class.html">PolicyEvaluator</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">no getter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="post" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/post.html">post</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="pre" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/pre.html">pre</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="reflexive" class="property inherited">
   <span class="name"><a href="../ednet_core/Neighbor/reflexive.html">reflexive</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="required" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/required.html">required</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="runtimeType" class="property inherited">
   <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span>
+  
 
 </dt>
 <dd class="inherited">
   A representation of the runtime type of the object.
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="sensitive" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/sensitive.html">sensitive</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="sourceConcept" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/sourceConcept.html">sourceConcept</a></span>
-  <span class="signature">&#8596; <a href="../ednet_core/Concept-class.html">Concept</a></span> 
+  <span class="signature">&#8596; <a href="../ednet_core/Concept-class.html">Concept</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="twin" class="property inherited">
   <span class="name"><a href="../ednet_core/Neighbor/twin.html">twin</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="type" class="property inherited">
+  <span class="name"><a href="../ednet_core/Property/type.html">type</a></span>
+  <span class="signature">&#8596; <a href="../ednet_core/AttributeType-class.html">AttributeType</a>?</span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="update" class="property inherited">
   <span class="name"><a href="../ednet_core/Property/update.html">update</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="whenAdded" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/whenAdded.html">whenAdded</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span>
+  
 
 </dt>
 <dd class="inherited">
   Log
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="whenRemoved" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/whenRemoved.html">whenRemoved</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="whenSet" class="property inherited">
   <span class="name"><a href="../ednet_core/Entity/whenSet.html">whenSet</a></span>
-  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span> 
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span>
+  
 
 </dt>
 <dd class="inherited">
   
-  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
 
 </dd>
 
-      </dl>
-    </section>
+    </dl>
+  </section>
 
     
   <section
-      class="summary offset-anchor inherited"
+      class="summary offset-anchor"
       id="instance-methods">
     <h2>Methods</h2>
     <dl class="callables">
@@ -589,7 +649,7 @@ It is not a deep copy.
 </dd>
 
         <dt id="display" class="callable inherited">
-  <span class="name"><a href="../ednet_core/Entity/display.html">display</a></span><span class="signature">(<wbr><span class="parameter" id="display-param-prefix">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">prefix</span> = <span class="default-value">&#39;&#39;</span>, </span><span class="parameter" id="display-param-withOid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withOid</span> = <span class="default-value">true</span>, </span><span class="parameter" id="display-param-withChildren"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withChildren</span> = <span class="default-value">true</span>, </span><span class="parameter" id="display-param-withInternalChildren"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withInternalChildren</span> = <span class="default-value">true</span>}</span>)
+  <span class="name"><a href="../ednet_core/Entity/display.html">display</a></span><span class="signature">(<wbr>{<span class="parameter" id="display-param-prefix"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">prefix</span> = <span class="default-value">&#39;&#39;</span>, </span><span class="parameter" id="display-param-withOid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withOid</span> = <span class="default-value">true</span>, </span><span class="parameter" id="display-param-withChildren"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withChildren</span> = <span class="default-value">true</span>, </span><span class="parameter" id="display-param-withInternalChildren"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withInternalChildren</span> = <span class="default-value">true</span></span>})
     <span class="returntype parameter">&#8594; void</span>
   </span>
   
@@ -641,6 +701,19 @@ Two entities are equal if they have the same content, ignoring oid and when.
 
 </dd>
 
+        <dt id="evaluatePolicies" class="callable inherited">
+  <span class="name"><a href="../ednet_core/Entity/evaluatePolicies.html">evaluatePolicies</a></span><span class="signature">(<wbr>{<span class="parameter" id="evaluatePolicies-param-policyKey"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">policyKey</span></span>})
+    <span class="returntype parameter">&#8594; <a href="../ednet_core/PolicyEvaluationResult-class.html">PolicyEvaluationResult</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
         <dt id="fromJson" class="callable inherited">
   <span class="name"><a href="../ednet_core/Entity/fromJson.html">fromJson</a></span><span class="signature">&lt;<wbr><span class="type-parameter">K extends <a href="../ednet_core/Entity-class.html">Entity</a><span class="signature">&lt;<wbr><span class="type-parameter">K</span>&gt;</span></span>&gt;</span><span class="signature">(<wbr><span class="parameter" id="fromJson-param-entityJson"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">entityJson</span></span>)
     <span class="returntype parameter">&#8594; void</span>
@@ -655,7 +728,7 @@ Two entities are equal if they have the same content, ignoring oid and when.
 </dd>
 
         <dt id="fromJsonMap" class="callable inherited">
-  <span class="name"><a href="../ednet_core/Entity/fromJsonMap.html">fromJsonMap</a></span><span class="signature">(<wbr><span class="parameter" id="fromJsonMap-param-entityMap"><span class="type-annotation">dynamic</span> <span class="parameter-name">entityMap</span>, </span><span class="parameter" id="fromJsonMap-param-internalParent">[<span class="type-annotation"><a href="../ednet_core/Entity-class.html">Entity</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../ednet_core/Entity-class.html">Entity</a></span>&gt;</span>?</span> <span class="parameter-name">internalParent</span>]</span>)
+  <span class="name"><a href="../ednet_core/Entity/fromJsonMap.html">fromJsonMap</a></span><span class="signature">(<wbr><span class="parameter" id="fromJsonMap-param-entityMap"><span class="type-annotation">dynamic</span> <span class="parameter-name">entityMap</span>, [</span><span class="parameter" id="fromJsonMap-param-internalParent"><span class="type-annotation"><a href="../ednet_core/Entity-class.html">Entity</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../ednet_core/Entity-class.html">Entity</a></span>&gt;</span>?</span> <span class="parameter-name">internalParent</span></span>])
     <span class="returntype parameter">&#8594; void</span>
   </span>
   
@@ -732,9 +805,22 @@ Two entities are equal if they have the same content, ignoring oid and when.
 
 </dd>
 
+        <dt id="getRelationship" class="callable inherited">
+  <span class="name"><a href="../ednet_core/Entity/getRelationship.html">getRelationship</a></span><span class="signature">(<wbr><span class="parameter" id="getRelationship-param-relationshipName"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">relationshipName</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
         <dt id="getStringFromAttribute" class="callable inherited">
   <span class="name"><a href="../ednet_core/Entity/getStringFromAttribute.html">getStringFromAttribute</a></span><span class="signature">(<wbr><span class="parameter" id="getStringFromAttribute-param-name"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span>
   </span>
   
 
@@ -792,7 +878,7 @@ Two entities are equal if they have the same content, ignoring oid and when.
 
 </dt>
 <dd class="inherited">
-  Invoked when a non-existent method or property is accessed.
+  Invoked when a nonexistent method or property is accessed.
   <div class="features"><span class="feature">inherited</span></div>
 
 </dd>
@@ -813,6 +899,19 @@ Two entities are equal if they have the same content, ignoring oid and when.
         <dt id="preSetAttribute" class="callable inherited">
   <span class="name"><a href="../ednet_core/Entity/preSetAttribute.html">preSetAttribute</a></span><span class="signature">(<wbr><span class="parameter" id="preSetAttribute-param-name"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span>, </span><span class="parameter" id="preSetAttribute-param-value"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a>?</span> <span class="parameter-name">value</span></span>)
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="removeParent" class="callable inherited">
+  <span class="name"><a href="../ednet_core/Entity/removeParent.html">removeParent</a></span><span class="signature">(<wbr><span class="parameter" id="removeParent-param-name"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
   </span>
   
 
@@ -901,6 +1000,19 @@ Two entities are equal if they have the same content, ignoring oid and when.
 
 </dd>
 
+        <dt id="toGraph" class="callable">
+  <span class="name"><a href="../ednet_core/Parent/toGraph.html">toGraph</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
         <dt id="toJson" class="callable inherited">
   <span class="name"><a href="../ednet_core/Entity/toJson.html">toJson</a></span><span class="signature">(<wbr>)
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
@@ -968,281 +1080,38 @@ Two entities are equal if they have the same content, ignoring oid and when.
     
     
 
-
   </div> <!-- /.main-content -->
-
   <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
-    <header id="header-search-sidebar" class="hidden-l">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
   <form class="search-sidebar" role="search">
     <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
 </header>
-
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-  <li><a href="../index.html">ednet_core</a></li>
-  <li><a href="../ednet_core/ednet_core-library.html">ednet_core</a></li>
-  <li class="self-crumb">Parent class</li>
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../ednet_core/ednet_core-library.html">ednet_core</a></li>
+    <li class="self-crumb">Parent class</li>
 </ol>
-
 
     <h5>ednet_core library</h5>
-    <ol>
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#classes">Classes</a></li>
-        <li><a href="../ednet_core/AddCommand-class.html">AddCommand</a></li>
-        <li><a href="../ednet_core/AggregateRoot-class.html">AggregateRoot</a></li>
-        <li><a href="../ednet_core/AllowAllPolicy-class.html">AllowAllPolicy</a></li>
-        <li><a href="../ednet_core/Attribute-class.html">Attribute</a></li>
-        <li><a href="../ednet_core/Attributes-class.html">Attributes</a></li>
-        <li><a href="../ednet_core/AttributeType-class.html">AttributeType</a></li>
-        <li><a href="../ednet_core/AttributeTypes-class.html">AttributeTypes</a></li>
-        <li><a href="../ednet_core/Child-class.html">Child</a></li>
-        <li><a href="../ednet_core/Children-class.html">Children</a></li>
-        <li><a href="../ednet_core/Concept-class.html">Concept</a></li>
-        <li><a href="../ednet_core/Concepts-class.html">Concepts</a></li>
-        <li><a href="../ednet_core/CoreRepository-class.html">CoreRepository</a></li>
-        <li><a href="../ednet_core/DenyAllPolicy-class.html">DenyAllPolicy</a></li>
-        <li><a href="../ednet_core/Domain-class.html">Domain</a></li>
-        <li><a href="../ednet_core/DomainModels-class.html">DomainModels</a></li>
-        <li><a href="../ednet_core/Domains-class.html">Domains</a></li>
-        <li><a href="../ednet_core/DomainSession-class.html">DomainSession</a></li>
-        <li><a href="../ednet_core/Entities-class.html">Entities</a></li>
-        <li><a href="../ednet_core/Entity-class.html">Entity</a></li>
-        <li><a href="../ednet_core/IBasicCommand-class.html">IBasicCommand</a></li>
-        <li><a href="../ednet_core/ICommand-class.html">ICommand</a></li>
-        <li><a href="../ednet_core/ICommandReaction-class.html">ICommandReaction</a></li>
-        <li><a href="../ednet_core/Id-class.html">Id</a></li>
-        <li><a href="../ednet_core/IDomainModels-class.html">IDomainModels</a></li>
-        <li><a href="../ednet_core/IDomainSession-class.html">IDomainSession</a></li>
-        <li><a href="../ednet_core/IEntities-class.html">IEntities</a></li>
-        <li><a href="../ednet_core/IEntitiesCommand-class.html">IEntitiesCommand</a></li>
-        <li><a href="../ednet_core/IEntity-class.html">IEntity</a></li>
-        <li><a href="../ednet_core/IEntityCommand-class.html">IEntityCommand</a></li>
-        <li><a href="../ednet_core/IId-class.html">IId</a></li>
-        <li><a href="../ednet_core/IModelEntries-class.html">IModelEntries</a></li>
-        <li><a href="../ednet_core/IPast-class.html">IPast</a></li>
-        <li><a href="../ednet_core/IPastCommand-class.html">IPastCommand</a></li>
-        <li><a href="../ednet_core/IPolicy-class.html">IPolicy</a></li>
-        <li><a href="../ednet_core/IRepository-class.html">IRepository</a></li>
-        <li><a href="../ednet_core/ISourceOfCommandReaction-class.html">ISourceOfCommandReaction</a></li>
-        <li><a href="../ednet_core/ISourceOfPastReaction-class.html">ISourceOfPastReaction</a></li>
-        <li><a href="../ednet_core/ITransaction-class.html">ITransaction</a></li>
-        <li><a href="../ednet_core/IValidationExceptions-class.html">IValidationExceptions</a></li>
-        <li><a href="../ednet_core/Model-class.html">Model</a></li>
-        <li><a href="../ednet_core/ModelEntries-class.html">ModelEntries</a></li>
-        <li><a href="../ednet_core/Models-class.html">Models</a></li>
-        <li><a href="../ednet_core/Neighbor-class.html">Neighbor</a></li>
-        <li><a href="../ednet_core/Oid-class.html">Oid</a></li>
-        <li><a href="../ednet_core/Parent-class.html">Parent</a></li>
-        <li><a href="../ednet_core/Parents-class.html">Parents</a></li>
-        <li><a href="../ednet_core/Past-class.html">Past</a></li>
-        <li><a href="../ednet_core/Property-class.html">Property</a></li>
-        <li><a href="../ednet_core/Reference-class.html">Reference</a></li>
-        <li><a href="../ednet_core/RemoveCommand-class.html">RemoveCommand</a></li>
-        <li><a href="../ednet_core/SetAttributeCommand-class.html">SetAttributeCommand</a></li>
-        <li><a href="../ednet_core/SetChildCommand-class.html">SetChildCommand</a></li>
-        <li><a href="../ednet_core/SetParentCommand-class.html">SetParentCommand</a></li>
-        <li><a href="../ednet_core/Transaction-class.html">Transaction</a></li>
-        <li><a href="../ednet_core/ValidationExceptions-class.html">ValidationExceptions</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#extensions">Extensions</a></li>
-        <li><a href="../ednet_core/Mrkvica.html">Mrkvica</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#mixins">Mixins</a></li>
-        <li><a href="../ednet_core/AuthorizationFor-mixin.html">AuthorizationFor</a></li>
-        <li><a href="../ednet_core/Serializable-mixin.html">Serializable</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#constants">Constants</a></li>
-        <li><a href="../ednet_core/CHILD_ENTITIES_COUNT-constant.html">CHILD_ENTITIES_COUNT</a></li>
-        <li><a href="../ednet_core/ENTRY_ENTITIES_COUNT-constant.html">ENTRY_ENTITIES_COUNT</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#properties">Properties</a></li>
-        <li><a href="../ednet_core/ednetLibraryAppTemplate.html">ednetLibraryAppTemplate</a></li>
-        <li><a href="../ednet_core/emailList.html">emailList</a></li>
-        <li><a href="../ednet_core/license.html">license</a></li>
-        <li><a href="../ednet_core/uriList.html">uriList</a></li>
-        <li><a href="../ednet_core/wordList.html">wordList</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#functions">Functions</a></li>
-        <li><a href="../ednet_core/allParents.html">allParents</a></li>
-        <li><a href="../ednet_core/camelCaseFirstLetterUpperSeparator.html">camelCaseFirstLetterUpperSeparator</a></li>
-        <li><a href="../ednet_core/camelCaseLowerSeparator.html">camelCaseLowerSeparator</a></li>
-        <li><a href="../ednet_core/camelCaseSeparator.html">camelCaseSeparator</a></li>
-        <li><a href="../ednet_core/createChildEntitiesRandomly.html">createChildEntitiesRandomly</a></li>
-        <li><a href="../ednet_core/createInitEntryEntitiesRandomly.html">createInitEntryEntitiesRandomly</a></li>
-        <li><a href="../ednet_core/createInitEntryEntityRandomly.html">createInitEntryEntityRandomly</a></li>
-        <li><a href="../ednet_core/createTestEntryEntitiesRandomly.html">createTestEntryEntitiesRandomly</a></li>
-        <li><a href="../ednet_core/createTestEntryEntityRandomly.html">createTestEntryEntityRandomly</a></li>
-        <li><a href="../ednet_core/dropEnd.html">dropEnd</a></li>
-        <li><a href="../ednet_core/findIdAttribute.html">findIdAttribute</a></li>
-        <li><a href="../ednet_core/findNonIdAttribute.html">findNonIdAttribute</a></li>
-        <li><a href="../ednet_core/findNonRequiredAttribute.html">findNonRequiredAttribute</a></li>
-        <li><a href="../ednet_core/findRequiredNonIdAttribute.html">findRequiredNonIdAttribute</a></li>
-        <li><a href="../ednet_core/firstLetterLower.html">firstLetterLower</a></li>
-        <li><a href="../ednet_core/firstLetterUpper.html">firstLetterUpper</a></li>
-        <li><a href="../ednet_core/fromJsonToModel.html">fromJsonToModel</a></li>
-        <li><a href="../ednet_core/genAttributeTextRandomly.html">genAttributeTextRandomly</a></li>
-        <li><a href="../ednet_core/genConcept.html">genConcept</a></li>
-        <li><a href="../ednet_core/genConceptGen.html">genConceptGen</a></li>
-        <li><a href="../ednet_core/genDomain.html">genDomain</a></li>
-        <li><a href="../ednet_core/genEDNetGen.html">genEDNetGen</a></li>
-        <li><a href="../ednet_core/genEDNetLibrary.html">genEDNetLibrary</a></li>
-        <li><a href="../ednet_core/genEDNetLibraryApp.html">genEDNetLibraryApp</a></li>
-        <li><a href="../ednet_core/genEDNetTest.html">genEDNetTest</a></li>
-        <li><a href="../ednet_core/genEDNetWeb.html">genEDNetWeb</a></li>
-        <li><a href="../ednet_core/genEntries.html">genEntries</a></li>
-        <li><a href="../ednet_core/genModel.html">genModel</a></li>
-        <li><a href="../ednet_core/genModels.html">genModels</a></li>
-        <li><a href="../ednet_core/genRepository.html">genRepository</a></li>
-        <li><a href="../ednet_core/plural.html">plural</a></li>
-        <li><a href="../ednet_core/randomBool.html">randomBool</a></li>
-        <li><a href="../ednet_core/randomDouble.html">randomDouble</a></li>
-        <li><a href="../ednet_core/randomEmail.html">randomEmail</a></li>
-        <li><a href="../ednet_core/randomInt.html">randomInt</a></li>
-        <li><a href="../ednet_core/randomListElement.html">randomListElement</a></li>
-        <li><a href="../ednet_core/randomNum.html">randomNum</a></li>
-        <li><a href="../ednet_core/randomSign.html">randomSign</a></li>
-        <li><a href="../ednet_core/randomUri.html">randomUri</a></li>
-        <li><a href="../ednet_core/randomWord.html">randomWord</a></li>
-        <li><a href="../ednet_core/setInitAttributeRandomly.html">setInitAttributeRandomly</a></li>
-        <li><a href="../ednet_core/setInitAttributesRandomly.html">setInitAttributesRandomly</a></li>
-        <li><a href="../ednet_core/setTestAttributeRandomly.html">setTestAttributeRandomly</a></li>
-        <li><a href="../ednet_core/setTestAttributesRandomly.html">setTestAttributesRandomly</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#enums">Enums</a></li>
-        <li><a href="../ednet_core/DartBasicType.html">DartBasicType</a></li>
-
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#exceptions">Exceptions</a></li>
-        <li><a href="../ednet_core/AddException-class.html">AddException</a></li>
-        <li><a href="../ednet_core/CodeException-class.html">CodeException</a></li>
-        <li><a href="../ednet_core/CommandException-class.html">CommandException</a></li>
-        <li><a href="../ednet_core/ConceptError-class.html">ConceptError</a></li>
-        <li><a href="../ednet_core/ConceptException-class.html">ConceptException</a></li>
-        <li><a href="../ednet_core/EDNetException-class.html">EDNetException</a></li>
-        <li><a href="../ednet_core/IdException-class.html">IdException</a></li>
-        <li><a href="../ednet_core/JsonException-class.html">JsonException</a></li>
-        <li><a href="../ednet_core/OidException-class.html">OidException</a></li>
-        <li><a href="../ednet_core/OrderException-class.html">OrderException</a></li>
-        <li><a href="../ednet_core/ParentException-class.html">ParentException</a></li>
-        <li><a href="../ednet_core/RemoveException-class.html">RemoveException</a></li>
-        <li><a href="../ednet_core/TypeException-class.html">TypeException</a></li>
-        <li><a href="../ednet_core/UpdateException-class.html">UpdateException</a></li>
-        <li><a href="../ednet_core/ValidationException-class.html">ValidationException</a></li>
-</ol>
-
+    <div id="dartdoc-sidebar-left-content"></div>
   </div>
-
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
-    <ol>
-
-        <li class="section-title"><a href="../ednet_core/Parent-class.html#constructors">Constructors</a></li>
-          <li><a href="../ednet_core/Parent/Parent.html">Parent</a></li>
-
-
-        <li class="section-title">
-          <a href="../ednet_core/Parent-class.html#instance-properties">Properties</a>
-        </li>
-          <li><a href="../ednet_core/Parent/absorb.html">absorb</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/code.html">code</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codeFirstLetterLower.html">codeFirstLetterLower</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codeFirstLetterUpper.html">codeFirstLetterUpper</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codeLowerSpace.html">codeLowerSpace</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codeLowerUnderscore.html">codeLowerUnderscore</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codePlural.html">codePlural</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codePluralFirstLetterLower.html">codePluralFirstLetterLower</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codePluralFirstLetterUpper.html">codePluralFirstLetterUpper</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codePluralFirstLetterUpperSpace.html">codePluralFirstLetterUpperSpace</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/codePluralLowerUnderscore.html">codePluralLowerUnderscore</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/concept.html">concept</a></li>
-          <li class="inherited"><a href="../ednet_core/Neighbor/destinationConcept.html">destinationConcept</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/essential.html">essential</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/exceptions.html">exceptions</a></li>
-          <li class="inherited"><a href="../ednet_core/Neighbor/external.html">external</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/hashCode.html">hashCode</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/id.html">id</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/identifier.html">identifier</a></li>
-          <li class="inherited"><a href="../ednet_core/Neighbor/inheritance.html">inheritance</a></li>
-          <li class="inherited"><a href="../ednet_core/Neighbor/internal.html">internal</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/label.html">label</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/maxc.html">maxc</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/maxMany.html">maxMany</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/minc.html">minc</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/oid.html">oid</a></li>
-          <li class="inherited"><a href="../ednet_core/Neighbor/opposite.html">opposite</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/post.html">post</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/pre.html">pre</a></li>
-          <li class="inherited"><a href="../ednet_core/Neighbor/reflexive.html">reflexive</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/required.html">required</a></li>
-          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/sensitive.html">sensitive</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/sourceConcept.html">sourceConcept</a></li>
-          <li class="inherited"><a href="../ednet_core/Neighbor/twin.html">twin</a></li>
-          <li class="inherited"><a href="../ednet_core/Property/update.html">update</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/whenAdded.html">whenAdded</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/whenRemoved.html">whenRemoved</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/whenSet.html">whenSet</a></li>
-
-        <li class="section-title inherited"><a href="../ednet_core/Parent-class.html#instance-methods">Methods</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/compareAttributes.html">compareAttributes</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/compareTo.html">compareTo</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/copy.html">copy</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/display.html">display</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/displayToString.html">displayToString</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/equalContent.html">equalContent</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/equals.html">equals</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/fromJson.html">fromJson</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/fromJsonMap.html">fromJsonMap</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/getAttribute.html">getAttribute</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/getChild.html">getChild</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/getInternalChild.html">getInternalChild</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/getParent.html">getParent</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/getReference.html">getReference</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/getStringFromAttribute.html">getStringFromAttribute</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/getStringOrNullFromAttribute.html">getStringOrNullFromAttribute</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/newEntities.html">newEntities</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/newEntity.html">newEntity</a></li>
-          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/postSetAttribute.html">postSetAttribute</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/preSetAttribute.html">preSetAttribute</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/setAttribute.html">setAttribute</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/setAttributesFrom.html">setAttributesFrom</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/setChild.html">setChild</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/setParent.html">setParent</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/setReference.html">setReference</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/setStringToAttribute.html">setStringToAttribute</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/toJson.html">toJson</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/toJsonMap.html">toJsonMap</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/toString.html">toString</a></li>
-
-        <li class="section-title inherited"><a href="../ednet_core/Parent-class.html#operators">Operators</a></li>
-          <li class="inherited"><a href="../ednet_core/Entity/operator_equals.html">operator ==</a></li>
-
-
-
-
-</ol>
-
   </div><!--/.sidebar-offcanvas-->
-
 </main>
-
 <footer>
   <span class="no-break">
     ednet_core
-      0.0.1+2
+      0.0.1+11
   </span>
-
   
 </footer>
-
 
 
 <script src="../static-assets/highlight.pack.js?v1"></script>
 <script src="../static-assets/docs.dart.js"></script>
 
-
-
 </body>
-
 </html>
 

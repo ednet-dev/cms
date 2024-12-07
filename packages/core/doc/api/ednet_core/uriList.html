@@ -11,46 +11,47 @@
   
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
   
   <link rel="stylesheet" href="../static-assets/github.css?v1">
   <link rel="stylesheet" href="../static-assets/styles.css?v1">
   <link rel="icon" href="../static-assets/favicon.png?v1">
-
   
 </head>
 
-
 <body data-base-href="../" data-using-base-href="false" class="light-theme">
-
 <div id="overlay-under-drawer"></div>
-
 <header id="title">
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">ednet_core</a></li>
-    <li><a href="../ednet_core/ednet_core-library.html">ednet_core</a></li>
+    <li><a href="../ednet_core/ednet_core-library.html">ednet_core.dart</a></li>
     <li class="self-crumb">uriList property</li>
   </ol>
   <div class="self-name">uriList</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <div class="toggle" id="theme-button">
+  <div class="toggle" id="theme-button" title="Toggle brightness">
     <label for="theme">
       <input type="checkbox" id="theme" value="light-theme">
-      <span class="material-symbols-outlined">
-        brightness_4
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
       </span>
     </label>
   </div>
 </header>
 <main>
-
-  <div id="dartdoc-main-content" class="main-content">
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="ednet_core&#47;ednet_core-library-sidebar.html"
+      data-below-sidebar="">
       <div>
 <h1><span class="kind-top-level-property">uriList</span> top-level property 
-    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
  
 </h1></div>
 
@@ -58,7 +59,7 @@
           
           <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span>
           <span class="name ">uriList</span>
-          <div class="features"><span class="feature">read / write</span></div>
+          <div class="features"><span class="feature">getter/setter pair</span></div>
 
         </section>
         
@@ -67,450 +68,297 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">var uriList = [
-&#39;http:&#47;&#47;www.useit.com&#47;alertbox&#47;articles-not-blogs.html&#39;,
-&#39;http:&#47;&#47;cci.mit.edu&#47;ci2012&#47;plenaries&#47;index.html&#39;,
-&#39;http:&#47;&#47;www.typescriptlang.org&#47;&#39;,
-&#39;http:&#47;&#47;whoapi.com&#47;&#39;,
-&#39;http:&#47;&#47;news.ycombinator.com&#47;item?id=4530217&#39;,
-&#39;http:&#47;&#47;www.pythontutor.com&#47;&#39;,
-&#39;https:&#47;&#47;github.com&#47;languages&#47;Dart&#39;,
-&#39;http:&#47;&#47;www.drdobbs.com&#47;open-source&#47;dart-build-html5-apps-fast&#47;240005631&#39;,
-&#39;http:&#47;&#47;darttrials.blogspot.ca&#47;2012&#47;09&#47;contributed-contributions.html&#39;,
-&#39;http:&#47;&#47;kkovacs.eu&#47;cassandra-vs-mongodb-vs-couchdb-vs-redis&#39;,
-&#39;http:&#47;&#47;code.google.com&#47;p&#47;dart-enumerators&#47;&#39;,
-&#39;http:&#47;&#47;gsdview.appspot.com&#47;dart-editor-archive-continuous&#47;latest&#47;&#39;,
-&#39;http:&#47;&#47;www.villa-marrakech.ma&#47;&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;idiomatic-dart&#47;&#39;,
-&#39;http:&#47;&#47;dartery.blogspot.ca&#47;2012&#47;09&#47;memoizing-functions-in-dart.html&#39;,
-&#39;http:&#47;&#47;blog.dynamicprogrammer.com&#47;2012&#47;09&#47;01&#47;first-steps-with-dart.html&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;&#39;,
-&#39;https:&#47;&#47;github.com&#47;dart-lang&#39;,
-&#39;http:&#47;&#47;pub.dartlang.org&#47;&#39;,
-&#39;http:&#47;&#47;www.builtwithdart.com&#47;&#39;,
-&#39;http:&#47;&#47;www.drdobbs.com&#47;open-source&#47;dart-build-html5-apps-fast&#47;240005631&#39;,
-&#39;https:&#47;&#47;code.google.com&#47;p&#47;dart&#47;&#39;,
-&#39;https:&#47;&#47;groups.google.com&#47;a&#47;dartlang.org&#47;forum&#47;?fromgroups#!forum&#47;misc&#39;,
-&#39;https:&#47;&#47;groups.google.com&#47;a&#47;dartlang.org&#47;forum&#47;?fromgroups#!forum&#47;web-ui&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;support&#47;&#39;,
-&#39;http:&#47;&#47;code.google.com&#47;p&#47;dart&#47;issues&#47;list&#39;,
-&#39;http:&#47;&#47;try.dartlang.org&#47;&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;style-guide&#47;&#39;,
-&#39;http:&#47;&#47;code.google.com&#47;p&#47;dart&#47;wiki&#47;Contributing&#39;,
-&#39;http:&#47;&#47;news.dartlang.org&#47;2012&#47;08&#47;tracking-darts-m1-progress.html&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;m1-language-changes&#47;&#39;,
-&#39;https:&#47;&#47;github.com&#47;dart-lang&#39;,
-&#39;http:&#47;&#47;blog.dartwatch.com&#47;p&#47;community-dart-packages-and-examples.html&#39;,
-&#39;http:&#47;&#47;api.dartlang.org&#47;docs&#47;continuous&#47;&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;style-guide&#47;&#39;,
-&#39;http:&#47;&#47;hilite.me&#47;&#39;,
-&#39;http:&#47;&#47;jsonformatter.curiousconcept.com&#47;&#39;,
-&#39;http:&#47;&#47;stackoverflow.com&#47;tags&#47;dart&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;m1-language-changes&#47;&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;dart-unit-tests&#47;&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;docs&#47;editor&#47;&#39;,
-&#39;http:&#47;&#47;blog.dartwatch.com&#47;p&#47;community-dart-packages-and-examples.html&#39;,
-&#39;http:&#47;&#47;www.dartlang.org&#47;slides&#47;2012&#47;06&#47;io12&#47;Bullseye-Your-first-Dart-app-Codelab-GoogleIO2012.pdf&#39;,
-&#39;http:&#47;&#47;www.mendeley.com&#47;&#39;,
-&#39;http:&#47;&#47;www.google.com&#47;+&#47;learnmore&#47;hangouts&#47;?hl=en&#39;,
-&#39;http:&#47;&#47;en.wikipedia.org&#47;wiki&#47;Massive_open_online_course&#39;,
-&#39;http:&#47;&#47;www.jhsph.edu&#47;news&#47;news-releases&#47;2013&#47;spira-sleep-alzheimer.html&#39;,
-&#39;http:&#47;&#47;www.major2nd.com&#47;users&#47;ghost&#47;papers&#47;spa2008&#47;spa2008-text.html&#39;,
-&#39;https:&#47;&#47;github.com&#47;vhf&#47;free-programming-books&#39;,
-&#39;http:&#47;&#47;www.baliiloveyou.com&#47;villas&#39;,
-&#39;http:&#47;&#47;goodui.org&#47;&#39;,
-&#39;http:&#47;&#47;www.indiegogo.com&#47;projects&#47;angel-the-first-open-sensor-for-health-and-fitness&#39;,
-&#39;https:&#47;&#47;assemblymade.com&#47;hello&#39;,
-&#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6597336&#39;,
-&#39;http:&#47;&#47;blog.pieratt.com&#47;post&#47;64881538909&#47;work-versus-life-greatness-versus-family&#39;,
-&#39;http:&#47;&#47;www.ianbicking.org&#47;blog&#47;2013&#47;10&#47;why-isnt-programming-futuristic.html&#39;,
-&#39;https:&#47;&#47;www.dartlang.org&#47;docs&#47;tutorials&#47;polymer-intro&#47;&#39;,
-&#39;http:&#47;&#47;blog.butlermatt.me&#47;?p=71&#39;,
-&#39;https:&#47;&#47;bitbucket.org&#47;AndrewVernon&#47;hx2dart&#39;,
-&#39;http:&#47;&#47;blog.bettercloud.com&#47;google-apps-stats&#47;&#39;,
-&#39;http:&#47;&#47;www.trendir.com&#47;house-design&#47;concrete-house-built-for-strong-winds.html&#39;,
-&#39;https:&#47;&#47;www.hackerschool.com&#47;blog&#47;25-who-comes-to-hacker-school&#39;,
-&#39;http:&#47;&#47;www.ctoaas.co&#47;blog&#47;2013&#47;10&#47;24&#47;teams-shouldnt-need-to-reach-consensus&#47;&#39;,
-&#39;http:&#47;&#47;ideas.time.com&#47;2013&#47;10&#47;22&#47;how-to-build-willpower-for-the-weak&#47;&#39;,
-&#39;http:&#47;&#47;www.sitekickr.com&#47;blog&#47;sitting-web-developers-life-sentence&#47;&#39;,
-&#39;http:&#47;&#47;www.metro.us&#47;newyork&#47;news&#47;2013&#47;10&#47;22&#47;airbnb-a-huge-boost-to-citys-economy-study&#47;&#39;,
-&#39;http:&#47;&#47;www.itworld.com&#47;cloud-computing&#47;379566&#47;don-t-go-programming-if-you-don-t-have-good-thesaurus&#39;,
-&#39;http:&#47;&#47;opinionator.blogs.nytimes.com&#47;2013&#47;10&#47;23&#47;in-flipped-classrooms-a-method-for-mastery&#47;&#39;,
-&#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6605193&#39;,
-&#39;http:&#47;&#47;37signals.com&#47;remote&#47;&#39;,
-&#39;http:&#47;&#47;blog.codeship.io&#47;2013&#47;10&#47;24&#47;codeship-dart-support.html&#39;,
-&#39;http:&#47;&#47;arstechnica.com&#47;security&#47;2013&#47;10&#47;a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography&#47;&#39;,
-&#39;http:&#47;&#47;fr.openclassrooms.com&#47;&#39;,
-&#39;http:&#47;&#47;pathbrite.com&#47;blog&#47;design-thinking-in-the-classroom&#47;&#39;,
-&#39;http:&#47;&#47;www.theguardian.com&#47;higher-education-network&#47;blog&#47;2013&#47;oct&#47;21&#47;open-access-myths-peter-suber-harvard&#39;,
-&#39;http:&#47;&#47;www.6yka.com&#47;novost&#47;45866&#47;28-najintrigantnijih-gradova-svijeta&#39;,
-&#39;http:&#47;&#47;www.houzz.com&#47;photos&#39;,
-&#39;http:&#47;&#47;miss-cranky-pants.quora.com&#47;Tip-From-Life-Hacks&#39;,
-&#39;http:&#47;&#47;searchlightsandsunglasses.org&#47;&#39;,
-&#39;http:&#47;&#47;www.htdp.org&#47;&#39;,
-&#39;http:&#47;&#47;whitedb.org&#47;&#39;,
-&#39;http:&#47;&#47;www.aosabook.org&#47;en&#47;index.html&#39;,
-&#39;http:&#47;&#47;onwebradio.com&#47;CFOX-FM-99.3-Vancouver-Canada-Live-Radio_16336.aspx&#39;,
-&#39;http:&#47;&#47;www.rdio.com&#47;people&#47;MiroslavBjelokapic&#47;&#39;,
-&#39;http:&#47;&#47;www.stitcher.com&#47;?refid=emlstories20131024&#39;,
-&#39;http:&#47;&#47;www.reverbnation.com&#47;&#39;,
-&#39;https:&#47;&#47;github.com&#47;sethladd&#47;dart-polymer-dart-examples&#47;tree&#47;master&#47;web&#47;custom_element_insert_into_light_dom&#39;,
-&#39;http:&#47;&#47;www.e-novine.com&#47;kultura&#47;kultura-tema&#47;36865-Savremeno-kolovanje-podanika.html&#39;,
-&#39;http:&#47;&#47;www.cantrip.org&#47;gatto.html&#39;,
-&#39;http:&#47;&#47;www.mongodb.com&#47;blog&#39;,
-&#39;https:&#47;&#47;www.usenix.org&#47;system&#47;files&#47;1309_14-17_mickens.pdf&#39;,
-&#39;http:&#47;&#47;froont.com&#47;&#39;,
-&#39;http:&#47;&#47;www.lutanho.net&#47;play&#47;abalone.html&#39;,
-&#39;http:&#47;&#47;blog.intuit.ca&#47;what-i-wish-i-knew-kerry-morrison-ceo-endloop-mobile&#47;&#39;,
-&#39;http:&#47;&#47;www.quora.com&#47;Life&#47;How-will-people-react-to-moving-from-a-low-to-a-high-standard-of-living&#39;,
-&#39;http:&#47;&#47;narrative.ly&#47;pieces-of-mind&#47;nick-brown-smelled-bull&#47;&#39;,
-&#39;http:&#47;&#47;samizdat.mines.edu&#47;howto&#47;HowToBeAProgrammer.html&#39;,
-&#39;http:&#47;&#47;sciencenordic.com&#47;boss-not-workload-causes-workplace-depression&#39;,
-&#39;http:&#47;&#47;tutorialzine.com&#47;2013&#47;10&#47;12-awesome-css3-features-you-can-finally-use&#47;&#39;,
-&#39;http:&#47;&#47;benbleasdaleblogs.wordpress.com&#47;2013&#47;10&#47;23&#47;want-to-see-an-enzyme-check-inside-your-nose&#47;&#39;,
-&#39;http:&#47;&#47;blog.ploeh.dk&#47;2013&#47;10&#47;23&#47;mocks-for-commands-stubs-for-queries&#47;&#39;,
-&#39;http:&#47;&#47;www.nytimes.com&#47;2013&#47;10&#47;27&#47;opinion&#47;sunday&#47;bruni-italy-breaks-your-heart.html&#39;,
-&#39;http:&#47;&#47;www.nytimes.com&#47;2013&#47;10&#47;26&#47;opinion&#47;blow-billionaires-row-and-welfare-lines.html&#39;,
-&#39;http:&#47;&#47;www.nybooks.com&#47;articles&#47;archives&#47;2013&#47;nov&#47;07&#47;climate-change-gambling-civilization&#47;&#39;,
-&#39;http:&#47;&#47;pcottle.github.io&#47;learnGitBranching&#47;&#39;,
-&#39;http:&#47;&#47;www.slate.com&#47;blogs&#47;browbeat&#47;2013&#47;10&#47;24&#47;quitting_academic_jobs_professor_zachary_ernst_and_other_leaving_tenure.html&#39;,
-&#39;https:&#47;&#47;cloudant.com&#47;blog&#47;pouchdb&#47;&#39;,
-&#39;http:&#47;&#47;www.nytimes.com&#47;2013&#47;10&#47;27&#47;opinion&#47;sunday&#47;slaves-of-the-internet-unite.html&#39;,
-&#39;http:&#47;&#47;blossoms.mit.edu&#47;videos&#47;lessons&#47;taking_walks_delivering_mail_introduction_graph_theory&#39;,
-&#39;http:&#47;&#47;blogs.kqed.org&#47;mindshift&#47;2013&#47;09&#47;a-school-with-no-teachers-where-students-teach-themselves&#47;&#39;,
-&#39;https:&#47;&#47;www.youtube.com&#47;watch?v=VxTamiSIVMY&#39;,
-&#39;http:&#47;&#47;glaforge.appspot.com&#47;article&#47;functional-groovy-presentation&#39;,
-&#39;http:&#47;&#47;istommydrunk.svbtle.com&#47;mvp-is-about-not-wasting-your-life&#39;,
-&#39;http:&#47;&#47;www.squarespace.com&#47;stories&#47;#hide-x-stitch&#39;,
-&#39;https:&#47;&#47;www.strikingly.com&#47;&#39;,
-&#39;http:&#47;&#47;codegeneration.net&#47;&#39;,
-&#39;http:&#47;&#47;www.deusexmachinatio.com&#47;blog&#47;2013&#47;8&#47;4&#47;fashion-fake-geek-girls-and-worldcon.html&#39;,
-&#39;http:&#47;&#47;bower.io&#47;&#39;,
-&#39;http:&#47;&#47;blog.houseplans.com&#47;article&#47;define-your-architectural-program&#39;,
-&#39;http:&#47;&#47;victorsavkin.com&#47;post&#47;65519559752&#47;contrasting-backbone-and-angular&#39;,
-&#39;https:&#47;&#47;github.com&#47;butlermatt&#47;dart_HTML5_Canvas&#39;,
-&#39;http:&#47;&#47;chimera.labs.oreilly.com&#47;books&#47;1234000001654&#47;index.html&#39;,
-&#39;http:&#47;&#47;blog.butlermatt.me&#47;?p=63&#39;,
-&#39;http:&#47;&#47;www.designfloat.com&#47;blog&#47;2013&#47;10&#47;30&#47;best-free-coding-education-resources&#47;&#39;,
-&#39;http:&#47;&#47;www.houseplans.com&#47;plan&#47;640-square-feet-1-bedroom-1-bathroom-0-garage-modern-38327&#39;,
-&#39;http:&#47;&#47;sagecreekproductions.wordpress.com&#47;&#39;,
-&#39;http:&#47;&#47;www.codewars.com&#47;&#39;,
-&#39;http:&#47;&#47;weblog.bocoup.com&#47;building-multiplayer-html5-games-with-cloak&#47;&#39;,
-&#39;http:&#47;&#47;getaviate.com&#47;&#39;,
-&#39;http:&#47;&#47;blog.alexmaccaw.com&#47;asynchronous-ui&#39;,
-&#39;https:&#47;&#47;www.dartlang.org&#47;articles&#47;event-loop&#47;&#39;,
-&#39;https:&#47;&#47;www.canva.com&#47;&#39;,
-&#39;https:&#47;&#47;coderwall.com&#47;p&#47;crj69a&#39;,
-&#39;https:&#47;&#47;medium.com&#47;understandings-epiphanies&#47;2bed2dd4ed78&#39;,
-&#39;http:&#47;&#47;restcountries.eu&#47;&#39;,
-&#39;http:&#47;&#47;blog.butlermatt.me&#47;?p=85&#39;,
-&#39;http:&#47;&#47;voir.ca&#47;musique&#47;2013&#47;10&#47;31&#47;lhistoire-du-1036-quartier-general&#47;&#39;,
-&#39;https:&#47;&#47;lockitron.com&#47;&#39;,
-&#39;https:&#47;&#47;nest.com&#47;&#39;,
-&#39;http:&#47;&#47;needwant.com&#47;p&#47;buying-apartment-airbnb&#47;&#39;,
-&#39;http:&#47;&#47;www.businessinsider.com&#47;google-employees-confess-the-worst-things-about-working-at-google-2013-11&#39;,
-&#39;http:&#47;&#47;howtocode.io&#47;&#39;,
-&#39;http:&#47;&#47;joshsymonds.com&#47;blog&#47;2013&#47;11&#47;03&#47;what-makes-a-good-programmer-good&#47;&#39;,
-&#39;http:&#47;&#47;daltoncaldwell.com&#47;why-having-an-mba-is-a-negative-hiring-signal&#39;,
-&#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6663174&#39;,
-&#39;http:&#47;&#47;blogs.scientificamerican.com&#47;cross-check&#47;2013&#47;11&#47;02&#47;a-dig-through-old-files-reminds-me-why-im-so-critical-of-science&#47;&#39;,
-&#39;http:&#47;&#47;arxiv.org&#47;abs&#47;cs.DS&#47;0111050&#39;,
-&#39;http:&#47;&#47;www.theguardian.com&#47;society&#47;2013&#47;nov&#47;01&#47;secrets-worlds-happiest-cities-commute-property-prices&#39;,
-&#39;http:&#47;&#47;nathanleclaire.com&#47;blog&#47;2013&#47;10&#47;16&#47;commit-every-day&#47;&#39;,
-&#39;http:&#47;&#47;marginalrevolution.com&#47;marginalrevolution&#47;2013&#47;10&#47;learning-to-compete-or-cooperate.html&#39;,
-&#39;http:&#47;&#47;aralbalkan.com&#47;notes&#47;responsive-pixels&#47;&#39;,
-&#39;http:&#47;&#47;tutorialzine.com&#47;2013&#47;10&#47;12-awesome-css3-features-you-can-finally-use&#47;&#39;,
-&#39;http:&#47;&#47;fivera.net&#47;create-a-self-hosted-wordpress-site-for-free&#47;&#39;,
-&#39;http:&#47;&#47;www.nytimes.com&#47;2013&#47;11&#47;03&#47;education&#47;edlife&#47;finding-life-after-academia-and-not-feeling-bad-about-it.html&#39;,
-&#39;http:&#47;&#47;blog.houseplans.com&#47;article&#47;understanding-design-drawings&#39;,
-&#39;https:&#47;&#47;blogs.oracle.com&#47;geertjan&#47;entry&#47;dart_and_netbeans_ide_7&#39;,
-&#39;https:&#47;&#47;akbiggs.silvrback.com&#47;on-game-development&#39;,
-&#39;http:&#47;&#47;www.nomadmicrohomes.com&#47;&#39;,
-&#39;http:&#47;&#47;www.mymodernmet.com&#47;profiles&#47;blogs&#47;ian-lorne-kent-nomad-micro-home&#39;,
-&#39;https:&#47;&#47;webmenu.org&#47;apps&#47;webmenu&#39;,
-&#39;http:&#47;&#47;influxdb.org&#47;&#39;,
-&#39;http:&#47;&#47;www.fastcompany.com&#47;3021179&#47;secrets-of-running-a-six-figure-airbnb-business&#39;,
-&#39;http:&#47;&#47;www.drdobbs.com&#47;architecture-and-design&#47;2013-developer-salary-survey&#47;240163580&#39;,
-&#39;https:&#47;&#47;weworkremotely.com&#47;&#39;,
-&#39;https:&#47;&#47;www.dartlang.org&#47;docs&#47;dart-up-and-running&#47;contents&#47;ch02.html&#39;,
-&#39;http:&#47;&#47;news.dartlang.org&#47;2013&#47;11&#47;angular-announces-angulardart.html&#39;,
-&#39;http:&#47;&#47;en.wikipedia.org&#47;wiki&#47;Missing_square_puzzle&#39;,
-&#39;https:&#47;&#47;github.com&#47;bp74&#47;StageXL_Samples&#39;,
-&#39;https:&#47;&#47;github.com&#47;PBS-KIDS&#47;Platypus&#39;,
-&#39;http:&#47;&#47;cacm.acm.org&#47;blogs&#47;blog-cacm&#47;168862-results-from-the-first-year-course-moocs-not-there-yet&#47;fulltext&#39;,
-&#39;http:&#47;&#47;www.houzz.com&#47;ideabooks&#47;18929429&#47;list&#47;Visit-a-California-Hillside-House-Rooted-in-Nature&#39;,
-&#39;http:&#47;&#47;www.scotiabank.com&#47;gillerprize&#47;0,,5813,00.html&#39;,
-&#39;http:&#47;&#47;www.sloanecroatia.com&#47;blog&#47;other-side-of-croatia&#47;&#39;,
-&#39;https:&#47;&#47;github.com&#47;ErikGrimes&#47;polymer_ui_elements&#39;,
-&#39;http:&#47;&#47;www.zenprogrammer.org&#47;&#39;,
-&#39;http:&#47;&#47;blog.soat.fr&#47;2013&#47;11&#47;10-trucs-infaillibles-pour-rater-ses-tests-unitaires-en-toutes-circonstances-22&#47;&#39;,
-&#39;http:&#47;&#47;mashable.com&#47;2013&#47;11&#47;05&#47;google-announces-helpouts&#47;&#39;,
-&#39;http:&#47;&#47;anewdomain.net&#47;2013&#47;11&#47;05&#47;mike-elgan&#47;&#39;,
-&#39;https:&#47;&#47;www.dartlang.org&#47;docs&#47;tutorials&#47;connect-dart-html&#47;&#39;,
-&#39;http:&#47;&#47;internationalliving.com&#47;2013&#47;11&#47;doctor-explains-affordable-care-act-means-expats&#47;&#39;,
-&#39;http:&#47;&#47;sploid.gizmodo.com&#47;animating-famous-paintings-are-freaking-hilarious-1459175346&#39;,
-&#39;http:&#47;&#47;geekfeminism.org&#47;2012&#47;09&#47;29&#47;quick-hit-how-git-shows-the-patriarchal-nature-of-the-software-industry&#47;&#39;,
-&#39;http:&#47;&#47;successfulsoftware.net&#47;2013&#47;11&#47;06&#47;lifestyle-programming&#47;&#39;,
-&#39;http:&#47;&#47;alexkrupp.typepad.com&#47;sensemaking&#47;2013&#47;11&#47;2012-my-year-of-code.html&#39;,
-&#39;http:&#47;&#47;www.houseplans.com&#47;&#39;,
-&#39;http:&#47;&#47;fr.slideshare.net&#47;adamnash&#47;personal-finance-for-engineers-twitter-2013&#39;,
-&#39;http:&#47;&#47;toxicdump.org&#47;stuff&#47;FourierToy.swf&#39;,
-&#39;http:&#47;&#47;www.pathfinderinternational.net&#47;ec-report&#47;&#39;,
-&#39;http:&#47;&#47;www.xcubegames.com&#47;blog&#47;5-major-benefits-of-html5-game-development&#47;&#39;,
-&#39;http:&#47;&#47;voir.ca&#47;nouvelles&#47;2013&#47;11&#47;07&#47;nid-dcoucou-un-defi-de-taille-pour-improvisateurs-avertis&#47;&#39;,
-&#39;http:&#47;&#47;iznadsvih.blogspot.ca&#47;2013&#47;09&#47;sarajevo-moje-voljeno_29.html&#39;,
-&#39;http:&#47;&#47;voir.ca&#47;chroniques&#47;2013&#47;11&#47;06&#47;ogden-cest-pas-un-cave-ou-limportance-daller-au-dela-de-la-premiere-impression&#47;&#39;,
-&#39;http:&#47;&#47;www.sadanduseless.com&#47;2013&#47;10&#47;the-married-kama-sutra&#47;&#39;,
-&#39;http:&#47;&#47;updates.html5rocks.com&#47;2013&#47;11&#47;The-Yeoman-Monthly-Digest-1&#39;,
-&#39;http:&#47;&#47;work.j832.com&#47;2013&#47;11&#47;if-you-do-any-open-source-development.html&#39;,
-&#39;http:&#47;&#47;likesandpluses.com&#47;reasons-to-not-own-a-car&#39;,
-&#39;http:&#47;&#47;www.lisbonlux.com&#47;magazine&#47;25-reasons-to-love-lisbon&#47;&#39;,
-&#39;http:&#47;&#47;www.theoutlinerofgiants.com&#47;&#39;,
-&#39;http:&#47;&#47;branchez-vous.com&#47;2013&#47;08&#47;20&#47;le-vaguebooker-ce-narcissique-incompris&#47;&#39;,
-&#39;http:&#47;&#47;internationalliving.com&#47;2013&#47;01&#47;theres-no-such-thing-as-boredom-in-boquete-panama&#47;&#39;,
-&#39;http:&#47;&#47;www.sharegoodthings.net&#47;&#39;,
-&#39;http:&#47;&#47;www.jasondavies.com&#47;maps&#47;rotate&#47;&#39;,
-&#39;http:&#47;&#47;google.github.io&#47;quiver-dart&#47;&#39;,
-&#39;http:&#47;&#47;www.linkedin.com&#47;groups&#47;Rich-Internet-Applications-Engineer-Dart-4124554.S.5804347538836303876&#39;,
-&#39;http:&#47;&#47;cruisesheet.com&#47;&#39;,
-&#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6697416&#39;,
-&#39;http:&#47;&#47;tynan.com&#47;cruisework&#39;,
-&#39;http:&#47;&#47;tynan.com&#47;transatlantic?&#39;,
-&#39;http:&#47;&#47;www.washingtonpost.com&#47;blogs&#47;worldviews&#47;wp&#47;2013&#47;11&#47;07&#47;a-stunning-map-of-depression-rates-around-the-world&#47;&#39;,
-&#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6697572&#39;,
-&#39;http:&#47;&#47;harpers.org&#47;wp-content&#47;uploads&#47;2008&#47;09&#47;HarpersMagazine-1996-01-0007859.pdf&#39;,
-&#39;https:&#47;&#47;github.com&#47;Dobiasd&#47;articles&#47;blob&#47;master&#47;switching_from_imperative_to_functional_programming_with_games_in_Elm.md&#39;,
-&#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6695648&#39;,
-&#39;http:&#47;&#47;www.ndpsoftware.com&#47;git-cheatsheet.html&#39;,
-&#39;http:&#47;&#47;nanowrimo.org&#47;&#39;,
-&#39;http:&#47;&#47;bitly-cloned.herokuapp.com&#47;&#39;,
-&#39;http:&#47;&#47;pub.dartlang.org&#47;packages&#47;neuquant&#39;,
-&#39;http:&#47;&#47;www.archdaily.com&#47;445596&#47;ermitage-septembre&#47;&#39;,
-&#39;http:&#47;&#47;tinyhouseblog.com&#47;yourstory&#47;beautiful-tiny-home-bethesda&#47;&#39;,
-&#39;http:&#47;&#47;www.buzzfeed.com&#47;video&#47;andrewilnyckyj&#47;6-essential-mac-tips&#39;,
-&#39;http:&#47;&#47;www.houseplans.com&#47;plan&#47;1225-square-feet-2-bedroom-2-bathroom-0-garage-southern-38296&#39;,
-&#39;http:&#47;&#47;pretdart.com&#47;comment-ca-marche&#47;&#39;,
-&#39;http:&#47;&#47;www.pyret.org&#47;&#39;,
-&#39;http:&#47;&#47;blog.nullspace.io&#47;apple-2-lisp-part-1.html&#39;,
-&#39;http:&#47;&#47;www.zolmeister.com&#47;2013&#47;10&#47;the-pond.html&#39;,
-&#39;http:&#47;&#47;www.mnot.net&#47;cache_docs&#47;&#39;,
-&#39;https:&#47;&#47;medium.com&#47;futures-exchange&#47;3be652b8eccb&#39;,
-&#39;http:&#47;&#47;www.stefankendall.com&#47;2013&#47;11&#47;10-questions-to-ask-your-potential.html&#39;,
-&#39;http:&#47;&#47;hackingbusinessmodel.info&#47;&#39;,
-&#39;http:&#47;&#47;www.ecoplandesign.com&#47;gallery&#47;&#39;,
-&#39;http:&#47;&#47;johnwolfendale.wordpress.com&#47;2009&#47;09&#47;01&#47;10-of-the-worlds-best-eco-houses&#47;&#39;,
-&#39;http:&#47;&#47;danielhough.co.uk&#47;blog&#47;unhuddled&#47;&#39;,
-&#39;http:&#47;&#47;www.heydonworks.com&#47;article&#47;tetris-the-power-of-css&#39;,
-&#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6712703&#39;,
-&#39;http:&#47;&#47;www.sarahmei.com&#47;blog&#47;2013&#47;11&#47;11&#47;why-you-should-never-use-mongodb&#47;&#39;,
-&#39;http:&#47;&#47;tinyhouseblog.com&#47;yurts&#47;tiny-spiritual-retreat-cabins&#47;&#39;,
-&#39;http:&#47;&#47;css-tricks.com&#47;modular-future-web-components&#47;&#39;,
-&#39;http:&#47;&#47;www.fastcompany.com&#47;3018598&#47;for-99-this-ceo-can-tell-you-what-might-kill-you-inside-23andme-founder-anne-wojcickis-dna-r&#39;,
-&#39;http:&#47;&#47;www.ed2go.com&#47;&#39;,
-&#39;http:&#47;&#47;www.theguardian.com&#47;world&#47;2013&#47;oct&#47;20&#47;marinaleda-spanish-communist-village-utopia&#39;,
-&#39;http:&#47;&#47;sitr.us&#47;2013&#47;11&#47;04&#47;functional-data-structures.html&#39;,
-&#39;https:&#47;&#47;github.com&#47;vadimtsushko&#47;angular_objectory_demo&#39;,
-&#39;https:&#47;&#47;github.com&#47;vsavkin&#47;angulardart-sample-app&#39;,
-&#39;https:&#47;&#47;speakerdeck.com&#47;minipai&#47;angular-dot-js-for-designers&#39;,
-&#39;http:&#47;&#47;www.jonathanbroquist.com&#47;building-a-google-calendar-booking-app-with-mongodb-expressjs-angularjs-and-node-js-part-1&#47;&#39;,
-&#39;http:&#47;&#47;www.infoq.com&#47;presentations&#47;io-functional-side-effects&#39;,
-&#39;https:&#47;&#47;vividcortex.com&#47;blog&#47;2013&#47;10&#47;23&#47;big-o-notation-made-simple&#47;&#39;,
-&#39;http:&#47;&#47;www.toptal.com&#47;angular-js&#47;a-step-by-step-guide-to-your-first-angularjs-app&#39;,
-&#39;http:&#47;&#47;maryrosecook.com&#47;blog&#47;post&#47;a-practical-introduction-to-functional-programming&#39;,
-&#39;http:&#47;&#47;arxiv.org&#47;abs&#47;cs.DS&#47;0111050&#39;,
-&#39;https:&#47;&#47;github.com&#47;airbnb&#47;javascript&#39;,
-&#39;http:&#47;&#47;acsmooc.blogspot.ca&#47;2013&#47;11&#47;on-technical-vs-qualitative-courses_12.html&#39;,
-&#39;http:&#47;&#47;plpnetwork.com&#47;2013&#47;11&#47;07&#47;obsession-academic-teaching-preparing-kids-life&#47;&#39;,
-&#39;http:&#47;&#47;www.trendir.com&#47;house-design&#47;ultramodern-reinvention-of-traditional-woodland-cabin-with-timber-structure.html&#39;,
+  &#39;http:&#47;&#47;www.useit.com&#47;alertbox&#47;articles-not-blogs.html&#39;,
+  &#39;http:&#47;&#47;cci.mit.edu&#47;ci2012&#47;plenaries&#47;index.html&#39;,
+  &#39;http:&#47;&#47;www.typescriptlang.org&#47;&#39;,
+  &#39;http:&#47;&#47;whoapi.com&#47;&#39;,
+  &#39;http:&#47;&#47;news.ycombinator.com&#47;item?id=4530217&#39;,
+  &#39;http:&#47;&#47;www.pythontutor.com&#47;&#39;,
+  &#39;https:&#47;&#47;github.com&#47;languages&#47;Dart&#39;,
+  &#39;http:&#47;&#47;www.drdobbs.com&#47;open-source&#47;dart-build-html5-apps-fast&#47;240005631&#39;,
+  &#39;http:&#47;&#47;darttrials.blogspot.ca&#47;2012&#47;09&#47;contributed-contributions.html&#39;,
+  &#39;http:&#47;&#47;kkovacs.eu&#47;cassandra-vs-mongodb-vs-couchdb-vs-redis&#39;,
+  &#39;http:&#47;&#47;code.google.com&#47;p&#47;dart-enumerators&#47;&#39;,
+  &#39;http:&#47;&#47;gsdview.appspot.com&#47;dart-editor-archive-continuous&#47;latest&#47;&#39;,
+  &#39;http:&#47;&#47;www.villa-marrakech.ma&#47;&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;idiomatic-dart&#47;&#39;,
+  &#39;http:&#47;&#47;dartery.blogspot.ca&#47;2012&#47;09&#47;memoizing-functions-in-dart.html&#39;,
+  &#39;http:&#47;&#47;blog.dynamicprogrammer.com&#47;2012&#47;09&#47;01&#47;first-steps-with-dart.html&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;&#39;,
+  &#39;https:&#47;&#47;github.com&#47;dart-lang&#39;,
+  &#39;http:&#47;&#47;pub.dartlang.org&#47;&#39;,
+  &#39;http:&#47;&#47;www.builtwithdart.com&#47;&#39;,
+  &#39;http:&#47;&#47;www.drdobbs.com&#47;open-source&#47;dart-build-html5-apps-fast&#47;240005631&#39;,
+  &#39;https:&#47;&#47;code.google.com&#47;p&#47;dart&#47;&#39;,
+  &#39;https:&#47;&#47;groups.google.com&#47;a&#47;dartlang.org&#47;forum&#47;?fromgroups#!forum&#47;misc&#39;,
+  &#39;https:&#47;&#47;groups.google.com&#47;a&#47;dartlang.org&#47;forum&#47;?fromgroups#!forum&#47;web-ui&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;support&#47;&#39;,
+  &#39;http:&#47;&#47;code.google.com&#47;p&#47;dart&#47;issues&#47;list&#39;,
+  &#39;http:&#47;&#47;try.dartlang.org&#47;&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;style-guide&#47;&#39;,
+  &#39;http:&#47;&#47;code.google.com&#47;p&#47;dart&#47;wiki&#47;Contributing&#39;,
+  &#39;http:&#47;&#47;news.dartlang.org&#47;2012&#47;08&#47;tracking-darts-m1-progress.html&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;m1-language-changes&#47;&#39;,
+  &#39;https:&#47;&#47;github.com&#47;dart-lang&#39;,
+  &#39;http:&#47;&#47;blog.dartwatch.com&#47;p&#47;community-dart-packages-and-examples.html&#39;,
+  &#39;http:&#47;&#47;api.dartlang.org&#47;docs&#47;continuous&#47;&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;style-guide&#47;&#39;,
+  &#39;http:&#47;&#47;hilite.me&#47;&#39;,
+  &#39;http:&#47;&#47;jsonformatter.curiousconcept.com&#47;&#39;,
+  &#39;http:&#47;&#47;stackoverflow.com&#47;tags&#47;dart&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;m1-language-changes&#47;&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;articles&#47;dart-unit-tests&#47;&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;docs&#47;editor&#47;&#39;,
+  &#39;http:&#47;&#47;blog.dartwatch.com&#47;p&#47;community-dart-packages-and-examples.html&#39;,
+  &#39;http:&#47;&#47;www.dartlang.org&#47;slides&#47;2012&#47;06&#47;io12&#47;Bullseye-Your-first-Dart-app-Codelab-GoogleIO2012.pdf&#39;,
+  &#39;http:&#47;&#47;www.mendeley.com&#47;&#39;,
+  &#39;http:&#47;&#47;www.google.com&#47;+&#47;learnmore&#47;hangouts&#47;?hl=en&#39;,
+  &#39;http:&#47;&#47;en.wikipedia.org&#47;wiki&#47;Massive_open_online_course&#39;,
+  &#39;http:&#47;&#47;www.jhsph.edu&#47;news&#47;news-releases&#47;2013&#47;spira-sleep-alzheimer.html&#39;,
+  &#39;http:&#47;&#47;www.major2nd.com&#47;users&#47;ghost&#47;papers&#47;spa2008&#47;spa2008-text.html&#39;,
+  &#39;https:&#47;&#47;github.com&#47;vhf&#47;free-programming-books&#39;,
+  &#39;http:&#47;&#47;www.baliiloveyou.com&#47;villas&#39;,
+  &#39;http:&#47;&#47;goodui.org&#47;&#39;,
+  &#39;http:&#47;&#47;www.indiegogo.com&#47;projects&#47;angel-the-first-open-sensor-for-health-and-fitness&#39;,
+  &#39;https:&#47;&#47;assemblymade.com&#47;hello&#39;,
+  &#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6597336&#39;,
+  &#39;http:&#47;&#47;blog.pieratt.com&#47;post&#47;64881538909&#47;work-versus-life-greatness-versus-family&#39;,
+  &#39;http:&#47;&#47;www.ianbicking.org&#47;blog&#47;2013&#47;10&#47;why-isnt-programming-futuristic.html&#39;,
+  &#39;https:&#47;&#47;www.dartlang.org&#47;docs&#47;tutorials&#47;polymer-intro&#47;&#39;,
+  &#39;http:&#47;&#47;blog.butlermatt.me&#47;?p=71&#39;,
+  &#39;https:&#47;&#47;bitbucket.org&#47;AndrewVernon&#47;hx2dart&#39;,
+  &#39;http:&#47;&#47;blog.bettercloud.com&#47;google-apps-stats&#47;&#39;,
+  &#39;http:&#47;&#47;www.trendir.com&#47;house-design&#47;concrete-house-built-for-strong-winds.html&#39;,
+  &#39;https:&#47;&#47;www.hackerschool.com&#47;blog&#47;25-who-comes-to-hacker-school&#39;,
+  &#39;http:&#47;&#47;www.ctoaas.co&#47;blog&#47;2013&#47;10&#47;24&#47;teams-shouldnt-need-to-reach-consensus&#47;&#39;,
+  &#39;http:&#47;&#47;ideas.time.com&#47;2013&#47;10&#47;22&#47;how-to-build-willpower-for-the-weak&#47;&#39;,
+  &#39;http:&#47;&#47;www.sitekickr.com&#47;blog&#47;sitting-web-developers-life-sentence&#47;&#39;,
+  &#39;http:&#47;&#47;www.metro.us&#47;newyork&#47;news&#47;2013&#47;10&#47;22&#47;airbnb-a-huge-boost-to-citys-economy-study&#47;&#39;,
+  &#39;http:&#47;&#47;www.itworld.com&#47;cloud-computing&#47;379566&#47;don-t-go-programming-if-you-don-t-have-good-thesaurus&#39;,
+  &#39;http:&#47;&#47;opinionator.blogs.nytimes.com&#47;2013&#47;10&#47;23&#47;in-flipped-classrooms-a-method-for-mastery&#47;&#39;,
+  &#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6605193&#39;,
+  &#39;http:&#47;&#47;37signals.com&#47;remote&#47;&#39;,
+  &#39;http:&#47;&#47;blog.codeship.io&#47;2013&#47;10&#47;24&#47;codeship-dart-support.html&#39;,
+  &#39;http:&#47;&#47;arstechnica.com&#47;security&#47;2013&#47;10&#47;a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography&#47;&#39;,
+  &#39;http:&#47;&#47;fr.openclassrooms.com&#47;&#39;,
+  &#39;http:&#47;&#47;pathbrite.com&#47;blog&#47;design-thinking-in-the-classroom&#47;&#39;,
+  &#39;http:&#47;&#47;www.theguardian.com&#47;higher-education-network&#47;blog&#47;2013&#47;oct&#47;21&#47;open-access-myths-peter-suber-harvard&#39;,
+  &#39;http:&#47;&#47;www.6yka.com&#47;novost&#47;45866&#47;28-najintrigantnijih-gradova-svijeta&#39;,
+  &#39;http:&#47;&#47;www.houzz.com&#47;photos&#39;,
+  &#39;http:&#47;&#47;miss-cranky-pants.quora.com&#47;Tip-From-Life-Hacks&#39;,
+  &#39;http:&#47;&#47;searchlightsandsunglasses.org&#47;&#39;,
+  &#39;http:&#47;&#47;www.htdp.org&#47;&#39;,
+  &#39;http:&#47;&#47;whitedb.org&#47;&#39;,
+  &#39;http:&#47;&#47;www.aosabook.org&#47;en&#47;index.html&#39;,
+  &#39;http:&#47;&#47;onwebradio.com&#47;CFOX-FM-99.3-Vancouver-Canada-Live-Radio_16336.aspx&#39;,
+  &#39;http:&#47;&#47;www.rdio.com&#47;people&#47;MiroslavBjelokapic&#47;&#39;,
+  &#39;http:&#47;&#47;www.stitcher.com&#47;?refid=emlstories20131024&#39;,
+  &#39;http:&#47;&#47;www.reverbnation.com&#47;&#39;,
+  &#39;https:&#47;&#47;github.com&#47;sethladd&#47;dart-polymer-dart-examples&#47;tree&#47;master&#47;web&#47;custom_element_insert_into_light_dom&#39;,
+  &#39;http:&#47;&#47;www.e-novine.com&#47;kultura&#47;kultura-tema&#47;36865-Savremeno-kolovanje-podanika.html&#39;,
+  &#39;http:&#47;&#47;www.cantrip.org&#47;gatto.html&#39;,
+  &#39;http:&#47;&#47;www.mongodb.com&#47;blog&#39;,
+  &#39;https:&#47;&#47;www.usenix.org&#47;system&#47;files&#47;1309_14-17_mickens.pdf&#39;,
+  &#39;http:&#47;&#47;froont.com&#47;&#39;,
+  &#39;http:&#47;&#47;www.lutanho.net&#47;play&#47;abalone.html&#39;,
+  &#39;http:&#47;&#47;blog.intuit.ca&#47;what-i-wish-i-knew-kerry-morrison-ceo-endloop-mobile&#47;&#39;,
+  &#39;http:&#47;&#47;www.quora.com&#47;Life&#47;How-will-people-react-to-moving-from-a-low-to-a-high-standard-of-living&#39;,
+  &#39;http:&#47;&#47;narrative.ly&#47;pieces-of-mind&#47;nick-brown-smelled-bull&#47;&#39;,
+  &#39;http:&#47;&#47;samizdat.mines.edu&#47;howto&#47;HowToBeAProgrammer.html&#39;,
+  &#39;http:&#47;&#47;sciencenordic.com&#47;boss-not-workload-causes-workplace-depression&#39;,
+  &#39;http:&#47;&#47;tutorialzine.com&#47;2013&#47;10&#47;12-awesome-css3-features-you-can-finally-use&#47;&#39;,
+  &#39;http:&#47;&#47;benbleasdaleblogs.wordpress.com&#47;2013&#47;10&#47;23&#47;want-to-see-an-enzyme-check-inside-your-nose&#47;&#39;,
+  &#39;http:&#47;&#47;blog.ploeh.dk&#47;2013&#47;10&#47;23&#47;mocks-for-commands-stubs-for-queries&#47;&#39;,
+  &#39;http:&#47;&#47;www.nytimes.com&#47;2013&#47;10&#47;27&#47;opinion&#47;sunday&#47;bruni-italy-breaks-your-heart.html&#39;,
+  &#39;http:&#47;&#47;www.nytimes.com&#47;2013&#47;10&#47;26&#47;opinion&#47;blow-billionaires-row-and-welfare-lines.html&#39;,
+  &#39;http:&#47;&#47;www.nybooks.com&#47;articles&#47;archives&#47;2013&#47;nov&#47;07&#47;climate-change-gambling-civilization&#47;&#39;,
+  &#39;http:&#47;&#47;pcottle.github.io&#47;learnGitBranching&#47;&#39;,
+  &#39;http:&#47;&#47;www.slate.com&#47;blogs&#47;browbeat&#47;2013&#47;10&#47;24&#47;quitting_academic_jobs_professor_zachary_ernst_and_other_leaving_tenure.html&#39;,
+  &#39;https:&#47;&#47;cloudant.com&#47;blog&#47;pouchdb&#47;&#39;,
+  &#39;http:&#47;&#47;www.nytimes.com&#47;2013&#47;10&#47;27&#47;opinion&#47;sunday&#47;slaves-of-the-internet-unite.html&#39;,
+  &#39;http:&#47;&#47;blossoms.mit.edu&#47;videos&#47;lessons&#47;taking_walks_delivering_mail_introduction_graph_theory&#39;,
+  &#39;http:&#47;&#47;blogs.kqed.org&#47;mindshift&#47;2013&#47;09&#47;a-school-with-no-teachers-where-students-teach-themselves&#47;&#39;,
+  &#39;https:&#47;&#47;www.youtube.com&#47;watch?v=VxTamiSIVMY&#39;,
+  &#39;http:&#47;&#47;glaforge.appspot.com&#47;article&#47;functional-groovy-presentation&#39;,
+  &#39;http:&#47;&#47;istommydrunk.svbtle.com&#47;mvp-is-about-not-wasting-your-life&#39;,
+  &#39;http:&#47;&#47;www.squarespace.com&#47;stories&#47;#hide-x-stitch&#39;,
+  &#39;https:&#47;&#47;www.strikingly.com&#47;&#39;,
+  &#39;http:&#47;&#47;codegeneration.net&#47;&#39;,
+  &#39;http:&#47;&#47;www.deusexmachinatio.com&#47;blog&#47;2013&#47;8&#47;4&#47;fashion-fake-geek-girls-and-worldcon.html&#39;,
+  &#39;http:&#47;&#47;bower.io&#47;&#39;,
+  &#39;http:&#47;&#47;blog.houseplans.com&#47;article&#47;define-your-architectural-program&#39;,
+  &#39;http:&#47;&#47;victorsavkin.com&#47;post&#47;65519559752&#47;contrasting-backbone-and-angular&#39;,
+  &#39;https:&#47;&#47;github.com&#47;butlermatt&#47;dart_HTML5_Canvas&#39;,
+  &#39;http:&#47;&#47;chimera.labs.oreilly.com&#47;books&#47;1234000001654&#47;index.html&#39;,
+  &#39;http:&#47;&#47;blog.butlermatt.me&#47;?p=63&#39;,
+  &#39;http:&#47;&#47;www.designfloat.com&#47;blog&#47;2013&#47;10&#47;30&#47;best-free-coding-education-resources&#47;&#39;,
+  &#39;http:&#47;&#47;www.houseplans.com&#47;plan&#47;640-square-feet-1-bedroom-1-bathroom-0-garage-modern-38327&#39;,
+  &#39;http:&#47;&#47;sagecreekproductions.wordpress.com&#47;&#39;,
+  &#39;http:&#47;&#47;www.codewars.com&#47;&#39;,
+  &#39;http:&#47;&#47;weblog.bocoup.com&#47;building-multiplayer-html5-games-with-cloak&#47;&#39;,
+  &#39;http:&#47;&#47;getaviate.com&#47;&#39;,
+  &#39;http:&#47;&#47;blog.alexmaccaw.com&#47;asynchronous-ui&#39;,
+  &#39;https:&#47;&#47;www.dartlang.org&#47;articles&#47;event-loop&#47;&#39;,
+  &#39;https:&#47;&#47;www.canva.com&#47;&#39;,
+  &#39;https:&#47;&#47;coderwall.com&#47;p&#47;crj69a&#39;,
+  &#39;https:&#47;&#47;medium.com&#47;understandings-epiphanies&#47;2bed2dd4ed78&#39;,
+  &#39;http:&#47;&#47;restcountries.eu&#47;&#39;,
+  &#39;http:&#47;&#47;blog.butlermatt.me&#47;?p=85&#39;,
+  &#39;http:&#47;&#47;voir.ca&#47;musique&#47;2013&#47;10&#47;31&#47;lhistoire-du-1036-quartier-general&#47;&#39;,
+  &#39;https:&#47;&#47;lockitron.com&#47;&#39;,
+  &#39;https:&#47;&#47;nest.com&#47;&#39;,
+  &#39;http:&#47;&#47;needwant.com&#47;p&#47;buying-apartment-airbnb&#47;&#39;,
+  &#39;http:&#47;&#47;www.businessinsider.com&#47;google-employees-confess-the-worst-things-about-working-at-google-2013-11&#39;,
+  &#39;http:&#47;&#47;howtocode.io&#47;&#39;,
+  &#39;http:&#47;&#47;joshsymonds.com&#47;blog&#47;2013&#47;11&#47;03&#47;what-makes-a-good-programmer-good&#47;&#39;,
+  &#39;http:&#47;&#47;daltoncaldwell.com&#47;why-having-an-mba-is-a-negative-hiring-signal&#39;,
+  &#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6663174&#39;,
+  &#39;http:&#47;&#47;blogs.scientificamerican.com&#47;cross-check&#47;2013&#47;11&#47;02&#47;a-dig-through-old-files-reminds-me-why-im-so-critical-of-science&#47;&#39;,
+  &#39;http:&#47;&#47;arxiv.org&#47;abs&#47;cs.DS&#47;0111050&#39;,
+  &#39;http:&#47;&#47;www.theguardian.com&#47;society&#47;2013&#47;nov&#47;01&#47;secrets-worlds-happiest-cities-commute-property-prices&#39;,
+  &#39;http:&#47;&#47;nathanleclaire.com&#47;blog&#47;2013&#47;10&#47;16&#47;commit-every-day&#47;&#39;,
+  &#39;http:&#47;&#47;marginalrevolution.com&#47;marginalrevolution&#47;2013&#47;10&#47;learning-to-compete-or-cooperate.html&#39;,
+  &#39;http:&#47;&#47;aralbalkan.com&#47;notes&#47;responsive-pixels&#47;&#39;,
+  &#39;http:&#47;&#47;tutorialzine.com&#47;2013&#47;10&#47;12-awesome-css3-features-you-can-finally-use&#47;&#39;,
+  &#39;http:&#47;&#47;fivera.net&#47;create-a-self-hosted-wordpress-site-for-free&#47;&#39;,
+  &#39;http:&#47;&#47;www.nytimes.com&#47;2013&#47;11&#47;03&#47;education&#47;edlife&#47;finding-life-after-academia-and-not-feeling-bad-about-it.html&#39;,
+  &#39;http:&#47;&#47;blog.houseplans.com&#47;article&#47;understanding-design-drawings&#39;,
+  &#39;https:&#47;&#47;blogs.oracle.com&#47;geertjan&#47;entry&#47;dart_and_netbeans_ide_7&#39;,
+  &#39;https:&#47;&#47;akbiggs.silvrback.com&#47;on-game-development&#39;,
+  &#39;http:&#47;&#47;www.nomadmicrohomes.com&#47;&#39;,
+  &#39;http:&#47;&#47;www.mymodernmet.com&#47;profiles&#47;blogs&#47;ian-lorne-kent-nomad-micro-home&#39;,
+  &#39;https:&#47;&#47;webmenu.org&#47;apps&#47;webmenu&#39;,
+  &#39;http:&#47;&#47;influxdb.org&#47;&#39;,
+  &#39;http:&#47;&#47;www.fastcompany.com&#47;3021179&#47;secrets-of-running-a-six-figure-airbnb-business&#39;,
+  &#39;http:&#47;&#47;www.drdobbs.com&#47;architecture-and-design&#47;2013-developer-salary-survey&#47;240163580&#39;,
+  &#39;https:&#47;&#47;weworkremotely.com&#47;&#39;,
+  &#39;https:&#47;&#47;www.dartlang.org&#47;docs&#47;dart-up-and-running&#47;contents&#47;ch02.html&#39;,
+  &#39;http:&#47;&#47;news.dartlang.org&#47;2013&#47;11&#47;angular-announces-angulardart.html&#39;,
+  &#39;http:&#47;&#47;en.wikipedia.org&#47;wiki&#47;Missing_square_puzzle&#39;,
+  &#39;https:&#47;&#47;github.com&#47;bp74&#47;StageXL_Samples&#39;,
+  &#39;https:&#47;&#47;github.com&#47;PBS-KIDS&#47;Platypus&#39;,
+  &#39;http:&#47;&#47;cacm.acm.org&#47;blogs&#47;blog-cacm&#47;168862-results-from-the-first-year-course-moocs-not-there-yet&#47;fulltext&#39;,
+  &#39;http:&#47;&#47;www.houzz.com&#47;ideabooks&#47;18929429&#47;list&#47;Visit-a-California-Hillside-House-Rooted-in-Nature&#39;,
+  &#39;http:&#47;&#47;www.scotiabank.com&#47;gillerprize&#47;0,,5813,00.html&#39;,
+  &#39;http:&#47;&#47;www.sloanecroatia.com&#47;blog&#47;other-side-of-croatia&#47;&#39;,
+  &#39;https:&#47;&#47;github.com&#47;ErikGrimes&#47;polymer_ui_elements&#39;,
+  &#39;http:&#47;&#47;www.zenprogrammer.org&#47;&#39;,
+  &#39;http:&#47;&#47;blog.soat.fr&#47;2013&#47;11&#47;10-trucs-infaillibles-pour-rater-ses-tests-unitaires-en-toutes-circonstances-22&#47;&#39;,
+  &#39;http:&#47;&#47;mashable.com&#47;2013&#47;11&#47;05&#47;google-announces-helpouts&#47;&#39;,
+  &#39;http:&#47;&#47;anewdomain.net&#47;2013&#47;11&#47;05&#47;mike-elgan&#47;&#39;,
+  &#39;https:&#47;&#47;www.dartlang.org&#47;docs&#47;tutorials&#47;connect-dart-html&#47;&#39;,
+  &#39;http:&#47;&#47;internationalliving.com&#47;2013&#47;11&#47;doctor-explains-affordable-care-act-means-expats&#47;&#39;,
+  &#39;http:&#47;&#47;sploid.gizmodo.com&#47;animating-famous-paintings-are-freaking-hilarious-1459175346&#39;,
+  &#39;http:&#47;&#47;geekfeminism.org&#47;2012&#47;09&#47;29&#47;quick-hit-how-git-shows-the-patriarchal-nature-of-the-software-industry&#47;&#39;,
+  &#39;http:&#47;&#47;successfulsoftware.net&#47;2013&#47;11&#47;06&#47;lifestyle-programming&#47;&#39;,
+  &#39;http:&#47;&#47;alexkrupp.typepad.com&#47;sensemaking&#47;2013&#47;11&#47;2012-my-year-of-code.html&#39;,
+  &#39;http:&#47;&#47;www.houseplans.com&#47;&#39;,
+  &#39;http:&#47;&#47;fr.slideshare.net&#47;adamnash&#47;personal-finance-for-engineers-twitter-2013&#39;,
+  &#39;http:&#47;&#47;toxicdump.org&#47;stuff&#47;FourierToy.swf&#39;,
+  &#39;http:&#47;&#47;www.pathfinderinternational.net&#47;ec-report&#47;&#39;,
+  &#39;http:&#47;&#47;www.xcubegames.com&#47;blog&#47;5-major-benefits-of-html5-game-development&#47;&#39;,
+  &#39;http:&#47;&#47;voir.ca&#47;nouvelles&#47;2013&#47;11&#47;07&#47;nid-dcoucou-un-defi-de-taille-pour-improvisateurs-avertis&#47;&#39;,
+  &#39;http:&#47;&#47;iznadsvih.blogspot.ca&#47;2013&#47;09&#47;sarajevo-moje-voljeno_29.html&#39;,
+  &#39;http:&#47;&#47;voir.ca&#47;chroniques&#47;2013&#47;11&#47;06&#47;ogden-cest-pas-un-cave-ou-limportance-daller-au-dela-de-la-premiere-impression&#47;&#39;,
+  &#39;http:&#47;&#47;www.sadanduseless.com&#47;2013&#47;10&#47;the-married-kama-sutra&#47;&#39;,
+  &#39;http:&#47;&#47;updates.html5rocks.com&#47;2013&#47;11&#47;The-Yeoman-Monthly-Digest-1&#39;,
+  &#39;http:&#47;&#47;work.j832.com&#47;2013&#47;11&#47;if-you-do-any-open-source-development.html&#39;,
+  &#39;http:&#47;&#47;likesandpluses.com&#47;reasons-to-not-own-a-car&#39;,
+  &#39;http:&#47;&#47;www.lisbonlux.com&#47;magazine&#47;25-reasons-to-love-lisbon&#47;&#39;,
+  &#39;http:&#47;&#47;www.theoutlinerofgiants.com&#47;&#39;,
+  &#39;http:&#47;&#47;branchez-vous.com&#47;2013&#47;08&#47;20&#47;le-vaguebooker-ce-narcissique-incompris&#47;&#39;,
+  &#39;http:&#47;&#47;internationalliving.com&#47;2013&#47;01&#47;theres-no-such-thing-as-boredom-in-boquete-panama&#47;&#39;,
+  &#39;http:&#47;&#47;www.sharegoodthings.net&#47;&#39;,
+  &#39;http:&#47;&#47;www.jasondavies.com&#47;maps&#47;rotate&#47;&#39;,
+  &#39;http:&#47;&#47;google.github.io&#47;quiver-dart&#47;&#39;,
+  &#39;http:&#47;&#47;www.linkedin.com&#47;groups&#47;Rich-Internet-Applications-Engineer-Dart-4124554.S.5804347538836303876&#39;,
+  &#39;http:&#47;&#47;cruisesheet.com&#47;&#39;,
+  &#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6697416&#39;,
+  &#39;http:&#47;&#47;tynan.com&#47;cruisework&#39;,
+  &#39;http:&#47;&#47;tynan.com&#47;transatlantic?&#39;,
+  &#39;http:&#47;&#47;www.washingtonpost.com&#47;blogs&#47;worldviews&#47;wp&#47;2013&#47;11&#47;07&#47;a-stunning-map-of-depression-rates-around-the-world&#47;&#39;,
+  &#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6697572&#39;,
+  &#39;http:&#47;&#47;harpers.org&#47;wp-content&#47;uploads&#47;2008&#47;09&#47;HarpersMagazine-1996-01-0007859.pdf&#39;,
+  &#39;https:&#47;&#47;github.com&#47;Dobiasd&#47;articles&#47;blob&#47;master&#47;switching_from_imperative_to_functional_programming_with_games_in_Elm.md&#39;,
+  &#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6695648&#39;,
+  &#39;http:&#47;&#47;www.ndpsoftware.com&#47;git-cheatsheet.html&#39;,
+  &#39;http:&#47;&#47;nanowrimo.org&#47;&#39;,
+  &#39;http:&#47;&#47;bitly-cloned.herokuapp.com&#47;&#39;,
+  &#39;http:&#47;&#47;pub.dartlang.org&#47;packages&#47;neuquant&#39;,
+  &#39;http:&#47;&#47;www.archdaily.com&#47;445596&#47;ermitage-septembre&#47;&#39;,
+  &#39;http:&#47;&#47;tinyhouseblog.com&#47;yourstory&#47;beautiful-tiny-home-bethesda&#47;&#39;,
+  &#39;http:&#47;&#47;www.buzzfeed.com&#47;video&#47;andrewilnyckyj&#47;6-essential-mac-tips&#39;,
+  &#39;http:&#47;&#47;www.houseplans.com&#47;plan&#47;1225-square-feet-2-bedroom-2-bathroom-0-garage-southern-38296&#39;,
+  &#39;http:&#47;&#47;pretdart.com&#47;comment-ca-marche&#47;&#39;,
+  &#39;http:&#47;&#47;www.pyret.org&#47;&#39;,
+  &#39;http:&#47;&#47;blog.nullspace.io&#47;apple-2-lisp-part-1.html&#39;,
+  &#39;http:&#47;&#47;www.zolmeister.com&#47;2013&#47;10&#47;the-pond.html&#39;,
+  &#39;http:&#47;&#47;www.mnot.net&#47;cache_docs&#47;&#39;,
+  &#39;https:&#47;&#47;medium.com&#47;futures-exchange&#47;3be652b8eccb&#39;,
+  &#39;http:&#47;&#47;www.stefankendall.com&#47;2013&#47;11&#47;10-questions-to-ask-your-potential.html&#39;,
+  &#39;http:&#47;&#47;hackingbusinessmodel.info&#47;&#39;,
+  &#39;http:&#47;&#47;www.ecoplandesign.com&#47;gallery&#47;&#39;,
+  &#39;http:&#47;&#47;johnwolfendale.wordpress.com&#47;2009&#47;09&#47;01&#47;10-of-the-worlds-best-eco-houses&#47;&#39;,
+  &#39;http:&#47;&#47;danielhough.co.uk&#47;blog&#47;unhuddled&#47;&#39;,
+  &#39;http:&#47;&#47;www.heydonworks.com&#47;article&#47;tetris-the-power-of-css&#39;,
+  &#39;https:&#47;&#47;news.ycombinator.com&#47;item?id=6712703&#39;,
+  &#39;http:&#47;&#47;www.sarahmei.com&#47;blog&#47;2013&#47;11&#47;11&#47;why-you-should-never-use-mongodb&#47;&#39;,
+  &#39;http:&#47;&#47;tinyhouseblog.com&#47;yurts&#47;tiny-spiritual-retreat-cabins&#47;&#39;,
+  &#39;http:&#47;&#47;css-tricks.com&#47;modular-future-web-components&#47;&#39;,
+  &#39;http:&#47;&#47;www.fastcompany.com&#47;3018598&#47;for-99-this-ceo-can-tell-you-what-might-kill-you-inside-23andme-founder-anne-wojcickis-dna-r&#39;,
+  &#39;http:&#47;&#47;www.ed2go.com&#47;&#39;,
+  &#39;http:&#47;&#47;www.theguardian.com&#47;world&#47;2013&#47;oct&#47;20&#47;marinaleda-spanish-communist-village-utopia&#39;,
+  &#39;http:&#47;&#47;sitr.us&#47;2013&#47;11&#47;04&#47;functional-data-structures.html&#39;,
+  &#39;https:&#47;&#47;github.com&#47;vadimtsushko&#47;angular_objectory_demo&#39;,
+  &#39;https:&#47;&#47;github.com&#47;vsavkin&#47;angulardart-sample-app&#39;,
+  &#39;https:&#47;&#47;speakerdeck.com&#47;minipai&#47;angular-dot-js-for-designers&#39;,
+  &#39;http:&#47;&#47;www.jonathanbroquist.com&#47;building-a-google-calendar-booking-app-with-mongodb-expressjs-angularjs-and-node-js-part-1&#47;&#39;,
+  &#39;http:&#47;&#47;www.infoq.com&#47;presentations&#47;io-functional-side-effects&#39;,
+  &#39;https:&#47;&#47;vividcortex.com&#47;blog&#47;2013&#47;10&#47;23&#47;big-o-notation-made-simple&#47;&#39;,
+  &#39;http:&#47;&#47;www.toptal.com&#47;angular-js&#47;a-step-by-step-guide-to-your-first-angularjs-app&#39;,
+  &#39;http:&#47;&#47;maryrosecook.com&#47;blog&#47;post&#47;a-practical-introduction-to-functional-programming&#39;,
+  &#39;http:&#47;&#47;arxiv.org&#47;abs&#47;cs.DS&#47;0111050&#39;,
+  &#39;https:&#47;&#47;github.com&#47;airbnb&#47;javascript&#39;,
+  &#39;http:&#47;&#47;acsmooc.blogspot.ca&#47;2013&#47;11&#47;on-technical-vs-qualitative-courses_12.html&#39;,
+  &#39;http:&#47;&#47;plpnetwork.com&#47;2013&#47;11&#47;07&#47;obsession-academic-teaching-preparing-kids-life&#47;&#39;,
+  &#39;http:&#47;&#47;www.trendir.com&#47;house-design&#47;ultramodern-reinvention-of-traditional-woodland-cabin-with-timber-structure.html&#39;,
 ];</code></pre>
 </section>
 
 
 
   </div> <!-- /.main-content -->
-
   <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
-    <header id="header-search-sidebar" class="hidden-l">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
   <form class="search-sidebar" role="search">
     <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
 </header>
-
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-  <li><a href="../index.html">ednet_core</a></li>
-  <li><a href="../ednet_core/ednet_core-library.html">ednet_core</a></li>
-  <li class="self-crumb">uriList property</li>
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../ednet_core/ednet_core-library.html">ednet_core</a></li>
+    <li class="self-crumb">uriList property</li>
 </ol>
-
 
     <h5>ednet_core library</h5>
-    <ol>
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#classes">Classes</a></li>
-        <li><a href="../ednet_core/AddCommand-class.html">AddCommand</a></li>
-        <li><a href="../ednet_core/AggregateRoot-class.html">AggregateRoot</a></li>
-        <li><a href="../ednet_core/AllowAllPolicy-class.html">AllowAllPolicy</a></li>
-        <li><a href="../ednet_core/Attribute-class.html">Attribute</a></li>
-        <li><a href="../ednet_core/Attributes-class.html">Attributes</a></li>
-        <li><a href="../ednet_core/AttributeType-class.html">AttributeType</a></li>
-        <li><a href="../ednet_core/AttributeTypes-class.html">AttributeTypes</a></li>
-        <li><a href="../ednet_core/Child-class.html">Child</a></li>
-        <li><a href="../ednet_core/Children-class.html">Children</a></li>
-        <li><a href="../ednet_core/Concept-class.html">Concept</a></li>
-        <li><a href="../ednet_core/Concepts-class.html">Concepts</a></li>
-        <li><a href="../ednet_core/CoreRepository-class.html">CoreRepository</a></li>
-        <li><a href="../ednet_core/DenyAllPolicy-class.html">DenyAllPolicy</a></li>
-        <li><a href="../ednet_core/Domain-class.html">Domain</a></li>
-        <li><a href="../ednet_core/DomainModels-class.html">DomainModels</a></li>
-        <li><a href="../ednet_core/Domains-class.html">Domains</a></li>
-        <li><a href="../ednet_core/DomainSession-class.html">DomainSession</a></li>
-        <li><a href="../ednet_core/Entities-class.html">Entities</a></li>
-        <li><a href="../ednet_core/Entity-class.html">Entity</a></li>
-        <li><a href="../ednet_core/IBasicCommand-class.html">IBasicCommand</a></li>
-        <li><a href="../ednet_core/ICommand-class.html">ICommand</a></li>
-        <li><a href="../ednet_core/ICommandReaction-class.html">ICommandReaction</a></li>
-        <li><a href="../ednet_core/Id-class.html">Id</a></li>
-        <li><a href="../ednet_core/IDomainModels-class.html">IDomainModels</a></li>
-        <li><a href="../ednet_core/IDomainSession-class.html">IDomainSession</a></li>
-        <li><a href="../ednet_core/IEntities-class.html">IEntities</a></li>
-        <li><a href="../ednet_core/IEntitiesCommand-class.html">IEntitiesCommand</a></li>
-        <li><a href="../ednet_core/IEntity-class.html">IEntity</a></li>
-        <li><a href="../ednet_core/IEntityCommand-class.html">IEntityCommand</a></li>
-        <li><a href="../ednet_core/IId-class.html">IId</a></li>
-        <li><a href="../ednet_core/IModelEntries-class.html">IModelEntries</a></li>
-        <li><a href="../ednet_core/IPast-class.html">IPast</a></li>
-        <li><a href="../ednet_core/IPastCommand-class.html">IPastCommand</a></li>
-        <li><a href="../ednet_core/IPolicy-class.html">IPolicy</a></li>
-        <li><a href="../ednet_core/IRepository-class.html">IRepository</a></li>
-        <li><a href="../ednet_core/ISourceOfCommandReaction-class.html">ISourceOfCommandReaction</a></li>
-        <li><a href="../ednet_core/ISourceOfPastReaction-class.html">ISourceOfPastReaction</a></li>
-        <li><a href="../ednet_core/ITransaction-class.html">ITransaction</a></li>
-        <li><a href="../ednet_core/IValidationExceptions-class.html">IValidationExceptions</a></li>
-        <li><a href="../ednet_core/Model-class.html">Model</a></li>
-        <li><a href="../ednet_core/ModelEntries-class.html">ModelEntries</a></li>
-        <li><a href="../ednet_core/Models-class.html">Models</a></li>
-        <li><a href="../ednet_core/Neighbor-class.html">Neighbor</a></li>
-        <li><a href="../ednet_core/Oid-class.html">Oid</a></li>
-        <li><a href="../ednet_core/Parent-class.html">Parent</a></li>
-        <li><a href="../ednet_core/Parents-class.html">Parents</a></li>
-        <li><a href="../ednet_core/Past-class.html">Past</a></li>
-        <li><a href="../ednet_core/Property-class.html">Property</a></li>
-        <li><a href="../ednet_core/Reference-class.html">Reference</a></li>
-        <li><a href="../ednet_core/RemoveCommand-class.html">RemoveCommand</a></li>
-        <li><a href="../ednet_core/SetAttributeCommand-class.html">SetAttributeCommand</a></li>
-        <li><a href="../ednet_core/SetChildCommand-class.html">SetChildCommand</a></li>
-        <li><a href="../ednet_core/SetParentCommand-class.html">SetParentCommand</a></li>
-        <li><a href="../ednet_core/Transaction-class.html">Transaction</a></li>
-        <li><a href="../ednet_core/ValidationExceptions-class.html">ValidationExceptions</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#extensions">Extensions</a></li>
-        <li><a href="../ednet_core/Mrkvica.html">Mrkvica</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#mixins">Mixins</a></li>
-        <li><a href="../ednet_core/AuthorizationFor-mixin.html">AuthorizationFor</a></li>
-        <li><a href="../ednet_core/Serializable-mixin.html">Serializable</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#constants">Constants</a></li>
-        <li><a href="../ednet_core/CHILD_ENTITIES_COUNT-constant.html">CHILD_ENTITIES_COUNT</a></li>
-        <li><a href="../ednet_core/ENTRY_ENTITIES_COUNT-constant.html">ENTRY_ENTITIES_COUNT</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#properties">Properties</a></li>
-        <li><a href="../ednet_core/ednetLibraryAppTemplate.html">ednetLibraryAppTemplate</a></li>
-        <li><a href="../ednet_core/emailList.html">emailList</a></li>
-        <li><a href="../ednet_core/license.html">license</a></li>
-        <li><a href="../ednet_core/uriList.html">uriList</a></li>
-        <li><a href="../ednet_core/wordList.html">wordList</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#functions">Functions</a></li>
-        <li><a href="../ednet_core/allParents.html">allParents</a></li>
-        <li><a href="../ednet_core/camelCaseFirstLetterUpperSeparator.html">camelCaseFirstLetterUpperSeparator</a></li>
-        <li><a href="../ednet_core/camelCaseLowerSeparator.html">camelCaseLowerSeparator</a></li>
-        <li><a href="../ednet_core/camelCaseSeparator.html">camelCaseSeparator</a></li>
-        <li><a href="../ednet_core/createChildEntitiesRandomly.html">createChildEntitiesRandomly</a></li>
-        <li><a href="../ednet_core/createInitEntryEntitiesRandomly.html">createInitEntryEntitiesRandomly</a></li>
-        <li><a href="../ednet_core/createInitEntryEntityRandomly.html">createInitEntryEntityRandomly</a></li>
-        <li><a href="../ednet_core/createTestEntryEntitiesRandomly.html">createTestEntryEntitiesRandomly</a></li>
-        <li><a href="../ednet_core/createTestEntryEntityRandomly.html">createTestEntryEntityRandomly</a></li>
-        <li><a href="../ednet_core/dropEnd.html">dropEnd</a></li>
-        <li><a href="../ednet_core/findIdAttribute.html">findIdAttribute</a></li>
-        <li><a href="../ednet_core/findNonIdAttribute.html">findNonIdAttribute</a></li>
-        <li><a href="../ednet_core/findNonRequiredAttribute.html">findNonRequiredAttribute</a></li>
-        <li><a href="../ednet_core/findRequiredNonIdAttribute.html">findRequiredNonIdAttribute</a></li>
-        <li><a href="../ednet_core/firstLetterLower.html">firstLetterLower</a></li>
-        <li><a href="../ednet_core/firstLetterUpper.html">firstLetterUpper</a></li>
-        <li><a href="../ednet_core/fromJsonToModel.html">fromJsonToModel</a></li>
-        <li><a href="../ednet_core/genAttributeTextRandomly.html">genAttributeTextRandomly</a></li>
-        <li><a href="../ednet_core/genConcept.html">genConcept</a></li>
-        <li><a href="../ednet_core/genConceptGen.html">genConceptGen</a></li>
-        <li><a href="../ednet_core/genDomain.html">genDomain</a></li>
-        <li><a href="../ednet_core/genEDNetGen.html">genEDNetGen</a></li>
-        <li><a href="../ednet_core/genEDNetLibrary.html">genEDNetLibrary</a></li>
-        <li><a href="../ednet_core/genEDNetLibraryApp.html">genEDNetLibraryApp</a></li>
-        <li><a href="../ednet_core/genEDNetTest.html">genEDNetTest</a></li>
-        <li><a href="../ednet_core/genEDNetWeb.html">genEDNetWeb</a></li>
-        <li><a href="../ednet_core/genEntries.html">genEntries</a></li>
-        <li><a href="../ednet_core/genModel.html">genModel</a></li>
-        <li><a href="../ednet_core/genModels.html">genModels</a></li>
-        <li><a href="../ednet_core/genRepository.html">genRepository</a></li>
-        <li><a href="../ednet_core/plural.html">plural</a></li>
-        <li><a href="../ednet_core/randomBool.html">randomBool</a></li>
-        <li><a href="../ednet_core/randomDouble.html">randomDouble</a></li>
-        <li><a href="../ednet_core/randomEmail.html">randomEmail</a></li>
-        <li><a href="../ednet_core/randomInt.html">randomInt</a></li>
-        <li><a href="../ednet_core/randomListElement.html">randomListElement</a></li>
-        <li><a href="../ednet_core/randomNum.html">randomNum</a></li>
-        <li><a href="../ednet_core/randomSign.html">randomSign</a></li>
-        <li><a href="../ednet_core/randomUri.html">randomUri</a></li>
-        <li><a href="../ednet_core/randomWord.html">randomWord</a></li>
-        <li><a href="../ednet_core/setInitAttributeRandomly.html">setInitAttributeRandomly</a></li>
-        <li><a href="../ednet_core/setInitAttributesRandomly.html">setInitAttributesRandomly</a></li>
-        <li><a href="../ednet_core/setTestAttributeRandomly.html">setTestAttributeRandomly</a></li>
-        <li><a href="../ednet_core/setTestAttributesRandomly.html">setTestAttributesRandomly</a></li>
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#enums">Enums</a></li>
-        <li><a href="../ednet_core/DartBasicType.html">DartBasicType</a></li>
-
-
-      <li class="section-title"><a href="../ednet_core/ednet_core-library.html#exceptions">Exceptions</a></li>
-        <li><a href="../ednet_core/AddException-class.html">AddException</a></li>
-        <li><a href="../ednet_core/CodeException-class.html">CodeException</a></li>
-        <li><a href="../ednet_core/CommandException-class.html">CommandException</a></li>
-        <li><a href="../ednet_core/ConceptError-class.html">ConceptError</a></li>
-        <li><a href="../ednet_core/ConceptException-class.html">ConceptException</a></li>
-        <li><a href="../ednet_core/EDNetException-class.html">EDNetException</a></li>
-        <li><a href="../ednet_core/IdException-class.html">IdException</a></li>
-        <li><a href="../ednet_core/JsonException-class.html">JsonException</a></li>
-        <li><a href="../ednet_core/OidException-class.html">OidException</a></li>
-        <li><a href="../ednet_core/OrderException-class.html">OrderException</a></li>
-        <li><a href="../ednet_core/ParentException-class.html">ParentException</a></li>
-        <li><a href="../ednet_core/RemoveException-class.html">RemoveException</a></li>
-        <li><a href="../ednet_core/TypeException-class.html">TypeException</a></li>
-        <li><a href="../ednet_core/UpdateException-class.html">UpdateException</a></li>
-        <li><a href="../ednet_core/ValidationException-class.html">ValidationException</a></li>
-</ol>
-
+    <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-left-->
-
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
   </div><!--/.sidebar-offcanvas-->
-
 </main>
-
 <footer>
   <span class="no-break">
     ednet_core
-      0.0.1+2
+      0.0.1+11
   </span>
-
   
 </footer>
-
 
 
 <script src="../static-assets/highlight.pack.js?v1"></script>
 <script src="../static-assets/docs.dart.js"></script>
 
-
-
 </body>
-
 </html>
 
