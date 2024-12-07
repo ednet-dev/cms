@@ -38,12 +38,12 @@ Model createDomainModel() {
 }
 
 ModelEntries createModelData(Model model) {
-  var entries = ModelEntries(model);
-  Entities categories = entries.getEntry('Category');
-  assert(categories.isEmpty);
   var concept = model.concepts.firstWhere((c) => c.code == 'Category');
+  var entries = ModelEntries(model);
+  var categories = entries.getEntry('Category');
+  assert(categories.isEmpty);
 
-  Entity dartCategory = Entity<Concept>();
+  var dartCategory = Entity<Concept>();
   dartCategory.concept = categories.concept;
   dartCategory.setAttribute('name', 'Dart');
   dartCategory.setAttribute('description', 'Dart Web language.');
@@ -179,5 +179,44 @@ void testModelData(Model model) {
 }
 
 void main() {
-  testModelData(createDomainModel());
+  group('Meta Model Tests', () {
+    test('Create and Add Entities to Model', () {
+      // Step 1: Create a Domain and Model
+      var domain = Domain('TestDomain');
+      var model = Model(domain, 'TestModel');
+
+      // Step 2: Create Concepts
+      var concept1 = Concept(model, 'Concept1');
+      concept1.setAttribute('name', 'String');
+      var concept2 = Concept(model, 'Concept2');
+
+      // Add concepts to the model
+      model.concepts.add(concept1);
+      model.concepts.add(concept2);
+
+      // Step 3: Create Entities
+      var entity1 = Entity<Concept>();
+      entity1.concept = concept1;
+      entity1.setAttribute('name', 'Entity1');
+
+      var entity2 = Entity<Concept>();
+      entity2.concept = concept2;
+      entity2.setAttribute('name', 'Entity2');
+
+      // Step 4: Add Entities to the Model
+      var entities1 = Entities<Concept>();
+      entities1.concept = concept1;
+      entities1.add(entity1);
+
+      var entities2 = Entities<Concept>();
+      entities2.concept = concept2;
+      entities2.add(entity2);
+
+      // Step 5: Validate the Entities
+      expect(entities1.length, equals(1));
+      expect(entities2.length, equals(1));
+      expect(entities1.first.getAttribute('name'), equals('Entity1'));
+      expect(entities2.first.getAttribute('name'), equals('Entity2'));
+    });
+  });
 }

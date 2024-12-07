@@ -295,13 +295,23 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
 
       if (updated) {
-        // Evaluate policies after attribute change
+        /// Evaluate policies after attribute change
+        /// First Entity policies, then Model policies
         var policyResult = evaluatePolicies();
         if (!policyResult.success) {
           // If policies are violated, revert the change
           _attributeMap[name] = beforeValue;
           updated = false;
           throw PolicyViolationException(policyResult.violations);
+        }
+
+        /// Enforce model policies after attribute change
+        var modelPolicyResult = concept.model.evaluateModelPolicies(this);
+        if (!modelPolicyResult) {
+          // If policies are violated, revert the change
+          _attributeMap[name] = beforeValue;
+          updated = false;
+          throw PolicyViolationException(modelPolicyResult.violations);
         }
       }
     }
@@ -608,7 +618,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   /// if the result is greater than 0 then the first is greater than the second.
   @override
   int compareTo(entity) {
-    if (code.isNotEmpty) {
+    if (code.isNotEmpty && _code != null) {
       return _code!.compareTo(entity.code);
     } else if (entity.id != null && id != null) {
       return id!.compareTo(entity.id);
@@ -919,7 +929,9 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         _internalChildMap[name] = entities;
       }
 
-      // Evaluate policies after child change
+      /// Evaluate policies after child change
+      /// First Entity policies, then Model policies
+
       var policyResult = evaluatePolicies();
       if (!policyResult.success) {
         // If policies are violated, revert the change
@@ -928,6 +940,17 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           _internalChildMap.remove(name);
         }
         throw PolicyViolationException(policyResult.violations);
+      }
+
+      /// Enforce model policies after child change
+      var modelPolicyResult = concept.model.evaluateModelPolicies(this);
+      if (!modelPolicyResult) {
+        // If policies are violated, revert the change
+        _childMap.remove(name);
+        if (_internalChildMap.containsKey(name)) {
+          _internalChildMap.remove(name);
+        }
+        throw PolicyViolationException(modelPolicyResult.violations);
       }
 
       return true;
@@ -972,12 +995,22 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       _referenceMap[name] = reference;
 
       // Evaluate policies after parent change
+      /// First Entity policies, then Model policies
       var policyResult = evaluatePolicies();
       if (!policyResult.success) {
         // If policies are violated, revert the change
         _parentMap.remove(name);
         _referenceMap.remove(name);
         throw PolicyViolationException(policyResult.violations);
+      }
+
+      /// Enforce model policies after parent change
+      var modelPolicyResult = concept.model.evaluateModelPolicies(this);
+      if (!modelPolicyResult.success) {
+        // If policies are violated, revert the change
+        _parentMap.remove(name);
+        _referenceMap.remove(name);
+        throw PolicyViolationException(modelPolicyResult.violations);
       }
 
       return true;

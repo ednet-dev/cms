@@ -68,8 +68,12 @@ String createInitEntryEntityRandomly(Concept entryConcept, {int? suffix, bool wi
 }
 
 String allParents(parents, String text) {
-  if (!(parents is IEntities)) {
+  if (parents is Entity) {
     return parents.codePluralFirstLetterLower;
+  }
+
+  if (parents is String) {
+    return parents;
   }
 
   if (parents.length == 0) {

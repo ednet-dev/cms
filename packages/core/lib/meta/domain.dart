@@ -51,16 +51,34 @@ class Domain extends Entity<Domain> {
     return graph;
   }
 }
-//
-// extension DomainExtension on Domain {
-//   Map<String, dynamic> toGraph() {
-//     return {
-//       'code': code,
-//       'description': description,
-//       'domain': domain.code,
-//       'domains': domains.toGraph(),
-//       'types': types.toGraph(),
-//       'models': models.toGraph(),
-//     };
-//   }
-// }
+
+extension DomainExtensionToGraph on Domain {
+  Map<String, dynamic> toGraph() {
+    return {
+      'code': code,
+      'description': description,
+      'domain': domain.code,
+      'domains': domains.toGraph(),
+      'types': types.toGraph(),
+      'models': models.toGraph(),
+    };
+  }
+}
+
+extension DomainExtensionToDomains on Domain {
+  Domains toDomains() {
+    final domains = Domains();
+    domains.add(this);
+    return domains;
+  }
+}
+
+extension DomainListExtension on List<Domain> {
+  Domains toDomains() {
+    final domains = Domains();
+    for (var d in this) {
+      domains.add(d);
+    }
+    return domains;
+  }
+}

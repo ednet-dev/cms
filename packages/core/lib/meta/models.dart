@@ -5,6 +5,8 @@ class Models extends Entities<Model> {}
 class Model extends Entity<Model> {
   String? author;
   String? description;
+  late final PolicyRegistry policyRegistry;
+  late final PolicyEvaluator policyEvaluator;
 
   Domain domain;
 
@@ -13,6 +15,9 @@ class Model extends Entity<Model> {
   Model(this.domain, String modelCode) {
     super.code = modelCode;
     domain.models.add(this);
+
+    policyRegistry = PolicyRegistry();
+    policyEvaluator = PolicyEvaluator(policyRegistry);
   }
 
   List<Concept> get entryConcepts {
@@ -108,5 +113,47 @@ class Model extends Entity<Model> {
     var orderedEntryConceptsAsConcepts = Concepts();
     orderedEntryConcepts.map(orderedEntryConceptsAsConcepts.add);
     return orderedEntryConceptsAsConcepts;
+  }
+
+  void registerPolicy(String key, IPolicy policy) {
+    policyRegistry.registerPolicy(key, policy);
+  }
+
+  void removePolicy(String key) {
+    policyRegistry.removePolicy(key);
+  }
+
+  @override
+  PolicyEvaluationResult evaluatePolicies({String? policyKey}) {
+    // gather all entity entries of model and evaluate them
+    // var entityEntries = Entities<Concept>();
+    // for (var concept in entryConcepts) {
+    //   (concept.nonIdentifierAttributes.toList()
+    //         ..addAll(concept.nonIdentifierAttributes.toList()))
+    //       .forEach((attribute) {
+    //     if (attribute is ReferenceAttribute) {
+    //       entityEntries.addAll(attribute.entities);
+    //     }
+    //   });
+    // }
+    // return policyEvaluator.evaluate(this, policyKey: policyKey);
+
+    return PolicyEvaluationResult(true, []);
+  }
+
+  bool validateEntity(Entity entity) {
+    var result = evaluateModelPolicies(entity);
+    return result.success;
+  }
+
+  void enforcePolicies(Entity entity) {
+    var result = evaluateModelPolicies(entity);
+    if (!result.success) {
+      throw PolicyViolationException(result.violations);
+    }
+  }
+
+  evaluateModelPolicies(Entity entity) {
+    return true;
   }
 }
