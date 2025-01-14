@@ -71,10 +71,10 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void trigger(DomainSession session) {
-  for (var handler in handlers) {
-    &#47;&#47; session.executeCommand(handler, entity, data);
-    print(&#39;session handler&#39;);
-  }
+  &#47;&#47; for (var handler in handlers) {
+  &#47;&#47; session.executeCommand(handler, entity, data);
+  print(&#39;session handler&#39;);
+  &#47;&#47; }
 }</code></pre>
 </section>
 
@@ -103,7 +103,7 @@
 <footer>
   <span class="no-break">
     ednet_core
-      0.0.1+11
+      0.1.0
   </span>
   
 </footer>
