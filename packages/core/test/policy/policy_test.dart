@@ -6,7 +6,7 @@ import '../mock/test_entity_base.dart';
 void main() {
   group('Policy Tests', () {
     final Domain domain = Domain('Test');
-    late Model model;
+    // late Model model;
     late PolicyRegistry registry;
     late PolicyEvaluator evaluator;
     late TestDomain testDomain;
@@ -16,7 +16,7 @@ void main() {
       evaluator = PolicyEvaluator(registry);
       testDomain = TestDomain(domain);
 
-      model = testDomain.testModel;
+      // model = testDomain.testModel;
     });
 
     test('Basic Policy Evaluation', () {

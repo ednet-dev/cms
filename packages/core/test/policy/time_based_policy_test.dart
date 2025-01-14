@@ -19,7 +19,7 @@ class TestClock implements Clock {
 void main() {
   group('TimeBasedPolicy Tests', () {
     final Domain domain = Domain('Test');
-    late Model model;
+    // late Model model;
     late PolicyRegistry registry;
     late PolicyEvaluator evaluator;
     late TestDomain testDomain;
@@ -30,7 +30,7 @@ void main() {
       evaluator = PolicyEvaluator(registry);
       testDomain = TestDomain(domain);
 
-      model = testDomain.testModel;
+      // model = testDomain.testModel;
       testEntity = TestEntity(testDomain.testConcept);
     });
 

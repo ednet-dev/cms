@@ -35,8 +35,6 @@ class RelationshipPolicy extends Policy {
         return entity.getParent(relationshipName);
       case RelationshipType.child:
         return entity.getChild(relationshipName);
-      default:
-        throw ArgumentError('Invalid relationship type');
     }
   }
 }

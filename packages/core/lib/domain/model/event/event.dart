@@ -17,9 +17,9 @@ class Event {
       [this.data = const {}]);
 
   void trigger(DomainSession session) {
-    for (var handler in handlers) {
-      // session.executeCommand(handler, entity, data);
-      print('session handler');
-    }
+    // for (var handler in handlers) {
+    // session.executeCommand(handler, entity, data);
+    print('session handler');
+    // }
   }
 }

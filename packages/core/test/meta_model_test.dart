@@ -38,7 +38,7 @@ Model createDomainModel() {
 }
 
 ModelEntries createModelData(Model model) {
-  var concept = model.concepts.firstWhere((c) => c.code == 'Category');
+  // var concept = model.concepts.firstWhere((c) => c.code == 'Category');
   var entries = ModelEntries(model);
   var categories = entries.getEntry('Category');
   assert(categories.isEmpty);
