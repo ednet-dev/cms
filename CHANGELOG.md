@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-01-15
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`ednet_core` - `v0.1.0`](#ednet_core---v010)
+
+---
+
+#### `ednet_core` - `v0.1.0`
+
+
 ## 2024-12-07
 
 ### Changes
