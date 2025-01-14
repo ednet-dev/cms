@@ -1,0 +1,3 @@
+C:\Users\user_name\dart\model\wc\ednet_core_types\gen.txt
+
+--genall C:\Users\user_name\dart\model\wc\ednet_core_types EDNetCore types

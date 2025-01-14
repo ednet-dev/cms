@@ -1,0 +1,17 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(event_sourcing, "Event Sourcing") {
+    Component(event_store, "Event Store", "Stores and retrieves events")
+    Component(event_publisher, "Event Publisher", "Publishes events to subscribers")
+    Component(event_handler, "Event Handler", "Processes events and updates state")
+    Component(snapshot_manager, "Snapshot Manager", "Manages state snapshots")
+}
+
+Rel(event_publisher, event_store, "Stores events in")
+Rel(event_handler, event_store, "Retrieves events from")
+Rel(event_handler, snapshot_manager, "Uses")
+
+@enduml

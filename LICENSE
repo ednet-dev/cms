@@ -1,0 +1,21 @@
+Individual packages and applications within this repository have their own licenses,
+which can be found in their respective internal LICENSE files.
+
+Disclaimer: Which kind of licences could be expected
+
+Any derivative works developed by the community
+that are considered to have potential for generating revenue streams
+and fall within the core interests of the community (determined through direct democracy)
+will be licensed under the GNU Affero General Public License v3.0.
+
+The purpose of this is to make clear our intention to monetize work in this domain,
+while still allowing competition from other individuals or groups using open-source
+technologies from this repository.
+
+Our goal is to foster creative work across all domains,
+enabling anyone to easily create products
+using the reusable and specialized building blocks provided by ednet.dev
+and integrating them into the next generation web ecosystem of
+self-manifested (i.e. user-created) semantic agents.
+
+Most other artifacts within this repository, as well as their dependencies, are licensed under MIT or BSD3 compatible licenses.

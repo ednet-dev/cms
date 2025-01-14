@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the createDomainModel function from the example library, for the Dart programming language.">
+  <title>createDomainModel function - example library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../example/example-library.html">example.dart</a></li>
+    <li class="self-crumb">createDomainModel function</li>
+  </ol>
+  <div class="self-name">createDomainModel</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="example&#47;example-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">createDomainModel</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="../ednet_core/Model-class.html">Model</a></span>
+<span class="name ">createDomainModel</span>(<wbr>)
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Model createDomainModel() {
+  Domain domain = Domain(&#39;CategoryQuestion&#39;);
+  Model model = Model(domain, &#39;Link&#39;);
+  assert(domain.models.length == 1);
+
+  Concept categoryConcept = Concept(model, &#39;Category&#39;);
+  categoryConcept.description = &#39;Category of web links.&#39;;
+  assert(model.concepts.length == 1);
+  Attribute(categoryConcept, &#39;name&#39;).identifier = true;
+  Attribute(categoryConcept, &#39;description&#39;);
+  assert(categoryConcept.attributes.length == 2);
+
+  Concept webLinkConcept = Concept(model, &#39;WebLink&#39;);
+  webLinkConcept.entry = false;
+  webLinkConcept.description = &#39;Web links of interest.&#39;;
+  assert(model.concepts.length == 2);
+  Attribute(webLinkConcept, &#39;subject&#39;).identifier = true;
+  Attribute(webLinkConcept, &#39;url&#39;);
+  Attribute(webLinkConcept, &#39;description&#39;);
+  assert(webLinkConcept.attributes.length == 3);
+
+  Child categoryWebLinksNeighbor =
+      Child(categoryConcept, webLinkConcept, &#39;webLinks&#39;);
+  Parent webLinkCategoryNeighbor =
+      Parent(webLinkConcept, categoryConcept, &#39;category&#39;);
+  webLinkCategoryNeighbor.identifier = true;
+  categoryWebLinksNeighbor.opposite = webLinkCategoryNeighbor;
+  webLinkCategoryNeighbor.opposite = categoryWebLinksNeighbor;
+  assert(categoryConcept.children.length == 1);
+  assert(webLinkConcept.parents.length == 1);
+  assert(categoryConcept.sourceParents.length == 1);
+  assert(webLinkConcept.sourceChildren.length == 1);
+
+  return model;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../example/example-library.html">example</a></li>
+    <li class="self-crumb">createDomainModel function</li>
+</ol>
+
+    <h5>example library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ednet_core
+      0.0.1+11
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

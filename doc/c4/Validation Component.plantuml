@@ -1,0 +1,17 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(validation, "Validation") {
+    Component(validator, "Validator", "Executes validation rules")
+    Component(rule_engine, "Rule Engine", "Manages and applies validation rules")
+    Component(error_collector, "Error Collector", "Collects and manages validation errors")
+    Component(custom_rule_parser, "Custom Rule Parser", "Parses custom validation rules")
+}
+
+Rel(validator, rule_engine, "Uses")
+Rel(validator, error_collector, "Reports errors to")
+Rel(rule_engine, custom_rule_parser, "Uses for custom rules")
+
+@enduml

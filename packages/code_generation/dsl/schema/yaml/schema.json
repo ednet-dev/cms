@@ -1,0 +1,317 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "context": {
+      "type": "object",
+      "description": "The context of the model",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the context"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the context"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "domain": {
+      "type": "object",
+      "description": "The domain within the context",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the domain"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the domain"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "model": {
+      "type": "object",
+      "description": "The model within the domain",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the model"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the model"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "concepts": {
+      "type": "array",
+      "description": "List of concepts in the model",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the concept"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the concept, its business role and semantics"
+          },
+          "entry": {
+            "type": "boolean",
+            "description": "Whether this concept is an entry point",
+            "default": false
+          },
+          "is": {
+            "type": "string",
+            "description": "Indicates inheritance from another concept"
+          },
+          "attributes": {
+            "type": "array",
+            "description": "The list of attributes for the concept",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the attribute"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "The category of the attribute",
+                  "enum": [
+                    "guid",
+                    "identifier",
+                    "required",
+                    ""
+                  ],
+                  "default": ""
+                },
+                "sequence": {
+                  "type": "integer",
+                  "description": "The order of the attribute",
+                  "default": 0
+                },
+                "init": {
+                  "type": "string",
+                  "description": "The initial value of the attribute (can be 'increment', 'empty', or any string)",
+                  "default": ""
+                },
+                "essential": {
+                  "type": "boolean",
+                  "description": "Whether the attribute is essential",
+                  "default": true
+                },
+                "sensitive": {
+                  "type": "boolean",
+                  "description": "Whether the attribute contains sensitive data",
+                  "default": false
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The data type of the attribute",
+                  "default": "String"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "policies": {
+            "type": "array",
+            "description": "List of policies associated with the concept",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the policy"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "A description of the policy"
+                },
+                "expression": {
+                  "type": "string",
+                  "description": "The expression defining the policy logic"
+                },
+                "dependencies": {
+                  "type": "array",
+                  "description": "List of attributes or other elements the policy depends on",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "expression"
+              ]
+            }
+          },
+          "commands": {
+            "type": "array",
+            "description": "List of commands associated with the concept",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the command"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "The category of the command"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "A description of the command"
+                },
+                "successEvent": {
+                  "type": "string",
+                  "description": "The event triggered upon successful execution"
+                },
+                "failureEvent": {
+                  "type": "string",
+                  "description": "The event triggered upon failure"
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "successEvent",
+                "failureEvent"
+              ]
+            }
+          },
+          "events": {
+            "type": "array",
+            "description": "List of events associated with the concept",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the event"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "A description of the event"
+                },
+                "handlers": {
+                  "type": "array",
+                  "description": "List of handlers for the event",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "description"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "relations": {
+      "type": "array",
+      "description": "List of relations between concepts",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "The source concept of the relation"
+          },
+          "to": {
+            "type": "string",
+            "description": "The target concept of the relation"
+          },
+          "fromToName": {
+            "type": "string",
+            "description": "The name of the relation from source to target"
+          },
+          "fromToMin": {
+            "type": "string",
+            "description": "The minimum cardinality from source to target"
+          },
+          "fromToMax": {
+            "type": "string",
+            "description": "The maximum cardinality from source to target"
+          },
+          "fromToId": {
+            "type": "boolean",
+            "description": "Whether the relation is an identifier from source to target",
+            "default": false
+          },
+          "toFromName": {
+            "type": "string",
+            "description": "The name of the relation from target to source"
+          },
+          "toFromMin": {
+            "type": "string",
+            "description": "The minimum cardinality from target to source"
+          },
+          "toFromMax": {
+            "type": "string",
+            "description": "The maximum cardinality from target to source"
+          },
+          "toFromId": {
+            "type": "boolean",
+            "description": "Whether the relation is an identifier from target to source",
+            "default": false
+          },
+          "internal": {
+            "type": "boolean",
+            "description": "Whether the relation is internal to the model",
+            "default": false
+          },
+          "category": {
+            "type": "string",
+            "description": "The category of the relation",
+            "enum": [
+              "inheritance",
+              "reflexive",
+              "twin",
+              "rel"
+            ],
+            "default": "rel"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "fromToName",
+          "fromToMin",
+          "fromToMax",
+          "toFromName",
+          "toFromMin",
+          "toFromMax"
+        ]
+      }
+    }
+  },
+  "required": [
+    "context",
+    "domain",
+    "model",
+    "concepts"
+  ]
+}

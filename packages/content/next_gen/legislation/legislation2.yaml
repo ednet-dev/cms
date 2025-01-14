@@ -1,0 +1,111 @@
+concepts:
+  - name: Legislation
+    description: The domain model for legislative bodies and the documents they produce.
+    commands:
+      - name: Search
+        description: Search for legislative bodies, bills, acts, and treaties.
+        arguments:
+          - name: query
+            type: string
+            description: The search query.
+          - name: type
+            type: string
+            description: The type of entity to search for.
+            enum:
+              - LegislativeBody
+              - Bill
+              - Act
+              - Treaty
+      - name: CreateLegislativeBody
+        description: Create a new legislative body.
+        arguments:
+          - name: name
+            type: string
+            description: The name of the new legislative body.
+          - name: jurisdiction
+            type: string
+            description: The jurisdiction of the new legislative body.
+          - name: type
+            type: string
+            description: The type of the new legislative body.
+            enum:
+              - Federal
+              - State
+              - Local
+        policies:
+          - name: IsAdmin
+            description: Only administrators can create legislative bodies.
+        events:
+          - name: LegislativeBodyCreated
+            description: The event fired when a new legislative body is created.
+            attributes:
+              - name: name
+                type: string
+                description: The name of the new legislative body.
+              - name: jurisdiction
+                type: string
+                description: The jurisdiction of the new legislative body.
+              - name: type
+                type: string
+                description: The type of the new legislative body.
+              - name: createdBy
+                type: string
+                description: The name of the user who created the legislative body.
+    subscriptions:
+      - name: LegislativeBodySubscription
+        description: Subscription to receive notifications when legislative bodies are created.
+        event: LegislativeBodyCreated
+      - name: BillSubscription
+        description: Subscription to receive notifications when bills are created.
+        event: BillCreated
+        dependencies:
+          - concept: Legislator
+            policy: IsLegislator
+          - concept: LegislativeSession
+            policy: IsInSession
+          - fromConcept: LegislativeBody
+            fromToRelation: bills
+            toConcept: Bill
+            toFromRelation: legislativeBody
+      - name: ActSubscription
+        description: Subscription to receive notifications when acts are created.
+        event: ActCreated
+        dependencies:
+          - concept: Legislator
+            policy: IsLegislator
+          - concept: LegislativeSession
+            policy: IsInSession
+          - fromConcept: LegislativeBody
+            fromToRelation: acts
+            toConcept: Act
+            toFromRelation: legislativeBody
+      - name: TreatySubscription
+        description: Subscription to receive notifications when treaties are created.
+        event: TreatyCreated
+        dependencies:
+          - concept: Legislator
+            policy: IsLegislator
+          - fromConcept: Country
+            fromToRelation: treaties
+            toConcept: Treaty
+            toFromRelation: country
+    children:
+      - name: LegislativeBody
+        children:
+          - name: Legislator
+          - name: LegislativeSession
+          - name: Bill
+          - name: Act
+          - name: Treaty
+        relations:
+          - from: Legislator
+            fromToName: LegislativeBody
+            to: LegislativeBody
+            toFromName: Legislators
+            fromToCardinality:
+              min: 0
+              max: N
+            toFromCardinality:
+              min: 0
+              max: N
+          - from: LegislativeSession

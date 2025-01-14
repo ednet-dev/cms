@@ -1,0 +1,15 @@
+.idea
+melos_ednetdev.iml
+**/*.iml
+.dart_tool
+.dart_tool/package_config.json
+package_config.json
+pubspec_overrides.yaml
+.flutter-plugins
+.flutter-plugins-dependencies
+/.dart_tool/
+.DS_Store
+**/.DS_Store
+packages/cms/.flutter-plugins
+packages/cms/coverage/test/ednet_cms_test.dart.vm.json
+.run/

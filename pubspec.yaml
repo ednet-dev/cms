@@ -1,0 +1,18 @@
+name: EDNetDev
+publish_to: none
+environment:
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
+dependencies:
+  shared_preferences: ^2.2.3
+
+dev_dependencies:
+  melos: ^6.3.1
+
+melos:
+  packages:
+    - apps/one
+    - packages/core
+    - packages/code_generation
+    - packages/cms
+    - packages/content
+    - packages/types

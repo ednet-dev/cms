@@ -1,0 +1,87 @@
+domain: email
+model: gmail
+concepts:
+  - name: Email
+    entry: true
+    attributes:
+      - name: emailId
+        category: identifier
+        essential: true
+      - name: subject
+        category: required
+        essential: true
+      - name: body
+        type: String
+        essential: true
+      - name: sender
+        essential: true
+      - name: recipient
+        essential: true
+      - name: cc
+      - name: bcc
+      - name: attachments
+      - name: sentAt
+        essential: true
+      - name: receivedAt
+        essential: true
+      - name: readAt
+      - name: repliedAt
+      - name: forwardedAt
+      - name: archivedAt
+      - name: deletedAt
+      - name: spamAt
+      - name: flaggedAt
+      - name: labels
+      - name: importance
+      - name: priority
+      - name: status
+      - name: category
+      - name: threadId
+      - name: messageId
+      - name: references
+      - name: inReplyTo
+      - name: header
+      - name: footer
+      - name: signature
+      - name: encryption
+      - name: signature
+      - name: encryption
+      - name: language
+      - name: locale
+      - name: timezone
+      - name: location
+      - name: device
+      - name: browser
+      - name: os
+      - name: version
+      - name: ip
+      - name: userAgent
+
+  - name: Attachment
+    attributes:
+      - name: attachmentId
+        category: identifier
+        essential: true
+      - name: name
+        category: required
+        essential: true
+      - name: type
+        essential: true
+      - name: size
+        essential: true
+      - name: content
+        essential: true
+      - name: uploadedAt
+        essential: true
+      - name: downloadedAt
+
+
+relations:
+  - from: Email
+    fromToName: attachments
+    toFromName: email
+    to: Attachment
+    fromToMin: '0'
+    fromToMax: 'N'
+    toFromMin: '1'
+    toFromMax: '1'

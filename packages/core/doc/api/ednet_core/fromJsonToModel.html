@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the fromJsonToModel function from the ednet_core library, for the Dart programming language.">
+  <title>fromJsonToModel function - ednet_core library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../ednet_core/ednet_core-library.html">ednet_core.dart</a></li>
+    <li class="self-crumb">fromJsonToModel function</li>
+  </ol>
+  <div class="self-name">fromJsonToModel</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="ednet_core&#47;ednet_core-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">fromJsonToModel</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="../ednet_core/Model-class.html">Model</a></span>
+<span class="name ">fromJsonToModel</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="fromJsonToModel-param-json"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">json</span>, </span></li>
+<li><span class="parameter" id="fromJsonToModel-param-domain"><span class="type-annotation"><a href="../ednet_core/Domain-class.html">Domain</a></span> <span class="parameter-name">domain</span>, </span></li>
+<li><span class="parameter" id="fromJsonToModel-param-modelCode"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">modelCode</span>, </span></li>
+<li><span class="parameter" id="fromJsonToModel-param-yaml"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a>?</span> <span class="parameter-name">yaml</span>, </span></li>
+</ol>)
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
+  Iterable jsonConcepts = [];
+  Iterable relations = [];
+
+  if (yaml == null || yaml.isEmpty) {
+    if (json.trim() == &#39;&#39;) {
+      throw EDNetException(&#39;Empty JSON string for Model parse&#39;);
+    }
+    var boardMap = jsonDecode(json);
+    jsonConcepts = boardMap[&quot;concepts&quot;];
+    relations = boardMap[&quot;relations&quot;];
+  } else {
+    jsonConcepts = yaml[&quot;concepts&quot;] as Iterable;
+    if (yaml.containsKey(&quot;relations&quot;)) {
+      relations = yaml[&quot;relations&quot;] as Iterable;
+    }
+  }
+
+  Model model = Model(domain, modelCode);
+
+  for (var jsonConcept in jsonConcepts) {
+    String? conceptCode = jsonConcept[&quot;name&quot;];
+    assert(conceptCode != null,
+    &#39;Concept code is missing for the jsonConcept. For ${domain
+        .code}.$modelCode&#39;);
+    bool conceptEntry = jsonConcept[&quot;entry&quot;] ?? false;
+    Concept concept = Concept(model, conceptCode!);
+    concept.entry = conceptEntry;
+
+    var items = jsonConcept[&quot;attributes&quot;] ?? [];
+    for (var item in items) {
+      String attributeCode = item[&quot;name&quot;];
+      if (attributeCode != &#39;oid&#39; &amp;&amp; attributeCode != &#39;code&#39;) {
+        Attribute attribute = Attribute(concept, attributeCode);
+        String itemCategory = item[&quot;category&quot;] ?? &#39;&#39;;
+        if (itemCategory == &#39;guid&#39;) {
+          attribute.guid = true;
+        } else if (itemCategory == &#39;identifier&#39;) {
+          attribute.identifier = true;
+        } else if (itemCategory == &#39;required&#39;) {
+          attribute.minc = &#39;1&#39;;
+        }
+        int itemSequence = item[&quot;sequence&quot;] as int? ?? 0;
+        attribute.sequence = itemSequence;
+        String itemInit = item[&quot;init&quot;] ?? &#39;&#39;;
+        if (itemInit.trim() == &#39;&#39;) {
+          attribute.init = null;
+        } else if (itemInit == &#39;increment&#39;) {
+          attribute.increment = 1;
+          attribute.init = null;
+        } else if (itemInit == &#39;empty&#39;) {
+          attribute.init = &#39;&#39;;
+        } else {
+          attribute.init = itemInit;
+        }
+        bool itemEssential = item[&quot;essential&quot;] ?? true;
+        attribute.essential = itemEssential;
+        bool itemSensitive = item[&quot;sensitive&quot;] ?? false;
+        attribute.sensitive = itemSensitive;
+        String itemType = item[&quot;type&quot;] ?? &#39;String&#39;;
+        AttributeType? type = domain.types.singleWhereCode(itemType);
+        if (type != null) {
+          attribute.type = type;
+        } else {
+          attribute.type = domain.getType(&#39;String&#39;);
+        }
+      }
+    }
+  }
+
+  for (var relation in relations) {
+    String from = relation[&quot;from&quot;];
+    String to = relation[&quot;to&quot;];
+
+    Concept? concept1 = model.concepts.singleWhereCode(from);
+    Concept? concept2 = model.concepts.singleWhereCode(to);
+    if (concept1 == null) {
+      throw ConceptException(
+          &#39;Line concept is missing for the $from jsonConcept. For ${domain
+              .code}.$modelCode&#39;);
+    }
+    if (concept2 == null) {
+      throw ConceptException(
+          &#39;Line concept is missing for the $to jsonConcept. For ${domain
+              .code}.$modelCode&#39;);
+    }
+
+    String fromToName = relation[&quot;fromToName&quot;];
+    String fromToMin = &#39;${relation[&quot;fromToMin&quot;]}&#39;;
+    String fromToMax = &#39;${relation[&quot;fromToMax&quot;]}&#39;;
+    bool fromToId = relation[&quot;fromToId&quot;] ?? false;
+    String toFromName = relation[&quot;toFromName&quot;];
+    String toFromMin = &#39;${relation[&quot;toFromMin&quot;]}&#39;;
+    String toFromMax = &#39;${relation[&quot;toFromMax&quot;]}&#39;;
+    bool toFromId = relation[&quot;toFromId&quot;] ?? false;
+    bool lineInternal = relation[&quot;internal&quot;] ?? false;
+    String lineCategory = relation[&quot;category&quot;] ?? &#39;rel&#39;;
+
+    bool d12Child;
+    bool d21Child;
+    bool d12Parent;
+    bool d21Parent;
+
+    if (fromToMax != &#39;1&#39;) {
+      d12Child = true;
+      if (toFromMax != &#39;1&#39;) {
+        d21Child = true;
+      } else {
+        d21Child = false;
+      }
+    } else if (toFromMax != &#39;1&#39;) {
+      d12Child = false;
+      d21Child = true;
+    } else if (fromToMin == &#39;0&#39;) {
+      d12Child = true;
+      d21Child = false;
+    } else if (toFromMin == &#39;0&#39;) {
+      d12Child = false;
+      d21Child = true;
+    } else {
+      d12Child = true;
+      d21Child = false;
+    }
+
+    d12Parent = !d12Child;
+    d21Parent = !d21Child;
+
+    if (d12Child &amp;&amp; d21Child) {
+       throw Exception(&#39;$from -- $to relation has two children.&#39;);
+    }
+    if (d12Parent &amp;&amp; d21Parent) {
+      throw Exception(&#39;$from -- $to relation has two parents.&#39;);
+    }
+
+    Neighbor neighbor12;
+    Neighbor neighbor21;
+
+    if (d12Child &amp;&amp; d21Parent) {
+      neighbor12 = Child(concept1, concept2, fromToName);
+      neighbor21 = Parent(concept2, concept1, toFromName);
+
+      neighbor12.opposite = neighbor21;
+      neighbor21.opposite = neighbor12;
+
+      neighbor12.minc = fromToMin;
+      neighbor12.maxc = fromToMax;
+      neighbor12.identifier = fromToId;
+
+      neighbor21.minc = toFromMin;
+      neighbor21.maxc = toFromMax;
+      neighbor21.identifier = toFromId;
+
+      neighbor12.internal = lineInternal;
+      if (lineCategory == &#39;inheritance&#39;) {
+        neighbor12.inheritance = true;
+      } else if (lineCategory == &#39;reflexive&#39;) {
+        neighbor12.reflexive = true;
+      } else if (lineCategory == &#39;twin&#39;) {
+        neighbor12.twin = true;
+      }
+
+      neighbor21.internal = lineInternal;
+      if (lineCategory == &#39;inheritance&#39;) {
+        neighbor21.inheritance = true;
+      } else if (lineCategory == &#39;reflexive&#39;) {
+        neighbor21.reflexive = true;
+      } else if (lineCategory == &#39;twin&#39;) {
+        neighbor21.twin = true;
+      }
+    } else if (d12Parent &amp;&amp; d21Child) {
+      neighbor12 = Parent(concept1, concept2, fromToName);
+      neighbor21 = Child(concept2, concept1, toFromName);
+
+      neighbor12.opposite = neighbor21;
+      neighbor21.opposite = neighbor12;
+
+      neighbor12.minc = fromToMin;
+      neighbor12.maxc = fromToMax;
+      neighbor12.identifier = fromToId;
+
+      neighbor21.minc = toFromMin;
+      neighbor21.maxc = toFromMax;
+      neighbor21.identifier = toFromId;
+
+      neighbor12.internal = lineInternal;
+      if (lineCategory == &#39;inheritance&#39;) {
+        neighbor12.inheritance = true;
+      } else if (lineCategory == &#39;reflexive&#39;) {
+        neighbor12.reflexive = true;
+      } else if (lineCategory == &#39;twin&#39;) {
+        neighbor12.twin = true;
+      }
+
+      neighbor21.internal = lineInternal;
+      if (lineCategory == &#39;inheritance&#39;) {
+        neighbor21.inheritance = true;
+      } else if (lineCategory == &#39;reflexive&#39;) {
+        neighbor21.reflexive = true;
+      } else if (lineCategory == &#39;twin&#39;) {
+        neighbor21.twin = true;
+      }
+    }
+  }
+
+  return model;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ednet_core</a></li>
+    <li><a href="../ednet_core/ednet_core-library.html">ednet_core</a></li>
+    <li class="self-crumb">fromJsonToModel function</li>
+</ol>
+
+    <h5>ednet_core library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ednet_core
+      0.0.1+11
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

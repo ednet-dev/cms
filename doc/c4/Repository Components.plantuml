@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(repository, "Repository") {
+    Component(crud_operations, "CRUD Operations", "Create, Read, Update, Delete")
+    Component(query_builder, "Query Builder", "Constructs database queries")
+    Component(cache_manager, "Cache Manager", "Manages in-memory caching")
+    Component(transaction_manager, "Transaction Manager", "Manages database transactions")
+}
+
+System_Ext(database, "Database", "Persistent storage")
+
+Rel(crud_operations, query_builder, "Uses")
+Rel(crud_operations, cache_manager, "Uses")
+Rel(crud_operations, transaction_manager, "Uses")
+Rel(query_builder, database, "Queries")
+Rel(transaction_manager, database, "Manages transactions with")
+
+@enduml

@@ -1,0 +1,636 @@
+name: apdf
+description: A command-line tool for generating PDFs from various sources.
+version: 0.0.7
+publish_to: none
+
+environment:
+  sdk: '>=3.5.0-180.3.beta <4.0.0'
+
+dependencies:
+  args: ^2.4.2
+  cli_completion: ^0.4.0
+  mason_logger: ^0.2.10
+  pub_updater: ^0.4.0
+  pdf: ^3.10.6
+  glob: ^2.1.2
+  path: ^1.8.3
+  html: ^0.15.4
+  http: ^1.2.2
+  yaml:
+  version_manager: ^0.0.2+1
+
+dev_dependencies:
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
+  build_version: ^2.1.1
+  grinder: ^0.9.5
+  pub_semver:
+  mocktail: ^1.0.1
+  test: ^1.24.9
+  very_good_analysis: ^5.1.0
+  yaml_edit:
+
+executables:
+  apdf:
+
+
+
+
+const packageVersion = '0.0.7';
+
+
+
+class GeneratePdfCommand extends Command<int> {
+  GeneratePdfCommand({required Logger logger}) : _logger = logger {
+    argParser
+      ..addOption(
+        'source',
+        abbr: 's',
+        help: 'The source directory to traverse.',
+        valueHelp: 'path',
+        defaultsTo: './',
+      )
+      ..addOption(
+        'output',
+        abbr: 'o',
+        help: 'The name of the output file.',
+        valueHelp: 'filename',
+      )
+      ..addOption(
+        'include',
+        abbr: 'i',
+        help: 'Glob pattern for files to include.',
+        valueHelp: 'include',
+        defaultsTo: '**/*.dart',
+      )
+      ..addOption(
+        'exclude',
+        abbr: 'e',
+        help: 'Glob pattern for files to exclude.',
+        valueHelp: 'exclude',
+        defaultsTo: '',
+      )
+      ..addOption(
+        'outputFormat',
+        abbr: 'f',
+        help: 'The format of the output file (pdf or text).',
+        valueHelp: 'format',
+        allowed: ['pdf', 'text'],
+        defaultsTo: 'pdf',
+      )
+      ..addFlag(
+        'recursiveLibBin',
+        abbr: 'r',
+        help:
+            'When no arguments are provided, traverse lib and bin directories recursively and generate a single Dart file.',
+        negatable: false,
+      );
+  }
+
+  @override
+  String get description =>
+      'Generates a file with the concatenated source code from files matching '
+      'the include pattern and not matching the exclude pattern '
+      'in the given directory. The output format can be PDF or plain text. '
+      'When executed without arguments in a Dart/Flutter project, it traverses the '
+      'lib and bin directories and assembles a single Dart file with all source code, '
+      'prepending the pubspec.yaml as a header.';
+
+  @override
+  String get name => 'generate';
+
+  final Logger _logger;
+
+  @override
+  Future<int> run() async {
+    final currentDir = Directory.current;
+    final projectRoot = await _findProjectRoot(currentDir);
+    final isDartProject = projectRoot != null;
+
+    final hasNoArgs = argResults?.arguments.isEmpty ?? true;
+
+    var sourcePath = argResults?['source'] as String? ?? './';
+    var outputFileName = argResults?['output'] as String? ?? 'source_code.pdf';
+    var includePatterns = argResults?['include'] as String? ?? '**/*.dart';
+    final excludePatterns = argResults?['exclude'] as String? ?? '';
+    var outputFormat = argResults?['outputFormat'] as String? ?? 'pdf';
+
+    if (hasNoArgs && isDartProject) {
+      sourcePath = projectRoot.path;
+
+      includePatterns = 'lib/**/*.dart,bin/**/*.dart';
+
+      outputFormat = 'text';
+
+      final pubspecFile = File(path.join(projectRoot.path, 'pubspec.yaml'));
+      final pubspecContent = await pubspecFile.readAsString();
+      final pubspec = loadYaml(pubspecContent) as YamlMap;
+      final projectName = pubspec['name'] as String? ?? 'project';
+
+      outputFileName = '${projectName}_source.dart';
+    }
+
+    final includeGlobs = includePatterns.isNotEmpty
+        ? includePatterns
+            .split(',')
+            .map((pattern) => Glob(pattern.trim(), recursive: true))
+            .toList()
+        : [
+            Glob('**/*.dart', recursive: true),
+          ]; // Default to Dart files if empty
+
+    final excludeGlobs = excludePatterns.isNotEmpty
+        ? excludePatterns
+            .split(',')
+            .map((pattern) => Glob(pattern.trim(), recursive: true))
+            .toList()
+        : <Glob>[]; // Default to an empty list if exclude pattern is empty
+
+    final sourceDirectory = Directory(sourcePath);
+    final codeBuffer = StringBuffer();
+
+    if (hasNoArgs && isDartProject) {
+      final pubspecFile = File(path.join(sourceDirectory.path, 'pubspec.yaml'));
+      if (await pubspecFile.exists()) {
+        final pubspecContent = await pubspecFile.readAsString();
+        codeBuffer
+          ..writeln('// pubspec.yaml')
+          ..writeln(pubspecContent)
+          ..writeln('\n\n// Concatenated Source Code\n');
+      } else {
+        _logger.warn('pubspec.yaml not found at project root.');
+      }
+    }
+
+    await traverseDirectory(
+      sourceDirectory,
+      codeBuffer,
+      includeGlobs,
+      excludeGlobs,
+    );
+
+    final filteredCode = filterCode(codeBuffer.toString());
+
+    var updatedOutputFileName =
+        outputFileName.replaceAll(RegExp(r'\.pdf$|\.txt$|\.dart$'), '');
+    if (outputFormat == 'pdf') {
+      updatedOutputFileName += '.pdf';
+    } else if (outputFormat == 'text') {
+      updatedOutputFileName += '.txt';
+    } else if (outputFormat == 'dart') {
+      updatedOutputFileName += '.dart';
+    }
+
+    if (outputFormat == 'pdf') {
+      await generatePdf(filteredCode, updatedOutputFileName);
+      _logger.success('PDF generated: $updatedOutputFileName');
+    } else if (outputFormat == 'text') {
+      await generateTextFile(filteredCode, updatedOutputFileName);
+      _logger.success('Text file generated: $updatedOutputFileName');
+    } else if (outputFormat == 'dart') {
+      await generateDartFile(filteredCode, updatedOutputFileName);
+      _logger.success('Dart file generated: $updatedOutputFileName');
+    }
+
+    return ExitCode.success.code;
+  }
+
+  Future<Directory?> _findProjectRoot(Directory dir) async {
+    var current = dir;
+    while (true) {
+      if (await File(path.join(current.path, 'pubspec.yaml')).exists()) {
+        return current;
+      }
+      if (current.parent.path == current.path) {
+        return null;
+      }
+      current = current.parent;
+    }
+  }
+
+  Future<void> traverseDirectory(
+    Directory directory,
+    StringBuffer codeBuffer,
+    List<Glob> includeGlobs,
+    List<Glob> excludeGlobs,
+  ) async {
+    final rootPath = directory.absolute.path;
+
+    await for (final entity
+        in directory.list(recursive: true, followLinks: false)) {
+      final filePath = entity.absolute.path;
+      final relativeFilePath = path.relative(filePath, from: rootPath);
+
+      if (entity is File) {
+        final isIncluded =
+            includeGlobs.any((glob) => glob.matches(relativeFilePath));
+        final isExcluded =
+            excludeGlobs.any((glob) => glob.matches(relativeFilePath));
+
+        if (isIncluded && !isExcluded) {
+          _logger.info('Adding file: $relativeFilePath'); // Debug print
+          final code = await entity.readAsString();
+          codeBuffer
+            ..write('// File: $relativeFilePath\n')
+            ..write(code.trim())
+            ..write('\n\n'); // Add some space between files
+        } else {
+          _logger.info('Skipping file: $relativeFilePath'); // Debug print
+        }
+      }
+    }
+  }
+
+  String filterCode(String code) {
+    final lines = code.split('\n');
+    final filteredLines = lines.where(
+      (line) =>
+          !line.trim().startsWith('import') && !line.trim().startsWith('//'),
+    );
+    return filteredLines.join('\n');
+  }
+
+  Future<void> generateTextFile(String allCode, String outputFileName) async {
+    final file = File(outputFileName);
+    await file.writeAsString(allCode);
+  }
+
+  Future<void> generateDartFile(String allCode, String outputFileName) async {
+    final file = File(outputFileName);
+    await file.writeAsString(allCode);
+  }
+
+  Future<void> generatePdf(String allCode, String outputFileName) async {
+    final pdf = pw.Document();
+
+    const maxChunkSize = 1000; // Adjust this size as needed
+
+    final codeChunks = <String>[];
+    for (var i = 0; i < allCode.length; i += maxChunkSize) {
+      final end = (i + maxChunkSize < allCode.length)
+          ? i + maxChunkSize
+          : allCode.length;
+      codeChunks.add(allCode.substring(i, end));
+    }
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) => codeChunks.map((chunk) {
+          return pw.Paragraph(
+            text: chunk,
+            style: pw.TextStyle(font: pw.Font.courier(), fontSize: 10),
+          );
+        }).toList(),
+      ),
+    );
+
+    final file = File(outputFileName);
+    await file.writeAsBytes(await pdf.save());
+  }
+}
+
+
+
+class UpdateCommand extends Command<int> {
+  UpdateCommand({
+    required Logger logger,
+    PubUpdater? pubUpdater,
+  })  : _logger = logger,
+        _pubUpdater = pubUpdater ?? PubUpdater();
+
+  final Logger _logger;
+  final PubUpdater _pubUpdater;
+
+  @override
+  String get description => 'Update the CLI.';
+
+  static const String commandName = 'update';
+
+  @override
+  String get name => commandName;
+
+  @override
+  Future<int> run() async {
+    final updateCheckProgress = _logger.progress('Checking for updates');
+    late final String latestVersion;
+    try {
+      latestVersion = await _pubUpdater.getLatestVersion(packageName);
+    } catch (error) {
+      updateCheckProgress.fail();
+      _logger.err('$error');
+      return ExitCode.software.code;
+    }
+    updateCheckProgress.complete('Checked for updates');
+
+    final isUpToDate = packageVersion == latestVersion;
+    if (isUpToDate) {
+      _logger.info('CLI is already at the latest version.');
+      return ExitCode.success.code;
+    }
+
+    final updateProgress = _logger.progress('Updating to $latestVersion');
+
+    late final ProcessResult result;
+    try {
+      result = await _pubUpdater.update(
+        packageName: packageName,
+        versionConstraint: latestVersion,
+      );
+    } catch (error) {
+      updateProgress.fail();
+      _logger.err('$error');
+      return ExitCode.software.code;
+    }
+
+    if (result.exitCode != ExitCode.success.code) {
+      updateProgress.fail();
+      _logger.err('Error updating CLI: ${result.stderr}');
+      return ExitCode.software.code;
+    }
+
+    updateProgress.complete('Updated to $latestVersion');
+
+    return ExitCode.success.code;
+  }
+}
+
+export 'generate_pdf_command.dart';
+export 'update_command.dart';
+
+
+
+class CrawlCommand extends Command<int> {
+  CrawlCommand({required Logger logger}) : _logger = logger {
+    argParser.addOption(
+      'url',
+      abbr: 'u',
+      help: 'The URL to crawl.',
+      valueHelp: 'url',
+    );
+  }
+
+  @override
+  String get description => 'Crawls a given URL and extracts text content.';
+
+  @override
+  String get name => 'crawl';
+
+  final Logger _logger;
+
+  @override
+  Future<int> run() async {
+    final url = argResults?['url'] as String?;
+    if (url == null || url.isEmpty) {
+      _logger.err('URL is required.');
+      return ExitCode.usage.code;
+    }
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode != 200) {
+        _logger.err('Failed to fetch URL: ${response.statusCode}');
+        return ExitCode.software.code;
+      }
+
+      final document = parse(response.body);
+      final two = extractHtmlContent(document);
+
+      final textContent = document.body?.text ?? '';
+
+      final jsonContent = jsonEncode({
+        'url': url,
+        'content': textContent,
+      });
+
+      final dateTime = DateTime.now().toIso8601String();
+      final fileName = '$dateTime.json';
+      final file = File(fileName);
+      await file.writeAsString(jsonContent);
+
+      _logger.success('Content saved to $fileName');
+      return ExitCode.success.code;
+    } catch (e) {
+      _logger.err('An error occurred: $e');
+      return ExitCode.software.code;
+    }
+  }
+
+  String? extractHtmlContent(Document document) {
+    final extractedContent = StringBuffer();
+
+    void parseElement(Element element) {
+      if (element.localName == 'script') {
+        return;
+      }
+
+      for (final child in element.children) {
+        parseElement(child);
+      }
+
+      final text = element.text.trim();
+      if (text.isNotEmpty) {
+        extractedContent
+          ..writeln(text)
+          ..writeln(); // Add a new line for readability
+      }
+    }
+
+    const tagsToExtract = [
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'p',
+      'article',
+      'section',
+      'header',
+      'footer',
+      'nav',
+      'aside',
+      'main',
+    ];
+
+    for (final tag in tagsToExtract) {
+      document.querySelectorAll(tag).forEach(parseElement);
+    }
+
+    final finalText = parseFragment(extractedContent.toString()).text;
+    return finalText?.replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+
+  String _extractHtmlSemanticContentOld(Element element) {
+    final extractedContent = StringBuffer();
+
+    void parseElement(Element element) {
+      if (element.text.trim().isNotEmpty ?? false) {
+        extractedContent
+          ..writeln(element.text.trim())
+          ..writeln(); // Add a new line for readability
+      }
+
+      for (final child in element.children) {
+        parseElement(child);
+      }
+    }
+
+    parseElement(element);
+
+    return extractedContent.toString();
+  }
+
+  String _extractHtmlContentOld(Document document) {
+    final extractedContent = StringBuffer();
+
+    final tagsToExtract = <String>[
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'p',
+      'article',
+      'section',
+      'header',
+      'footer',
+      'nav',
+      'aside',
+      'main',
+    ];
+
+    for (final tag in tagsToExtract) {
+      document.querySelectorAll(tag).forEach((element) {
+        if (element.text.trim().isNotEmpty ?? false) {
+          extractedContent
+            ..writeln(element.text.trim())
+            ..writeln(); // Add a new line for readability
+        }
+      });
+    }
+
+    return extractedContent.toString();
+  }
+}
+
+
+const executableName = 'apdf';
+const packageName = 'apdf';
+const description =
+    'A CLI for generating PDFs and Dart files from various text sources.';
+
+class ApdfCommandRunner extends CompletionCommandRunner<int> {
+  ApdfCommandRunner({
+    Logger? logger,
+    PubUpdater? pubUpdater,
+  })  : _logger = logger ?? Logger(),
+        _pubUpdater = pubUpdater ?? PubUpdater(),
+        super(executableName, description) {
+    argParser
+      ..addFlag(
+        'version',
+        abbr: 'v',
+        negatable: false,
+        help: 'Print the current version.',
+      )
+      ..addFlag(
+        'verbose',
+        help: 'Noisy logging, including all shell commands executed.',
+      );
+
+    addCommand(GeneratePdfCommand(logger: _logger));
+    addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
+    addCommand(CrawlCommand(logger: _logger));
+  }
+
+  @override
+  void printUsage() => _logger.info(usage);
+
+  final Logger _logger;
+  final PubUpdater _pubUpdater;
+
+  @override
+  Future<int> run(Iterable<String> args) async {
+    try {
+      final topLevelResults = parse(args);
+      if (topLevelResults['verbose'] == true) {
+        _logger.level = Level.verbose;
+      }
+      return await runCommand(topLevelResults) ?? ExitCode.success.code;
+    } on FormatException catch (e, stackTrace) {
+      _logger
+        ..err(e.message)
+        ..err('$stackTrace')
+        ..info('')
+        ..info(usage);
+      return ExitCode.usage.code;
+    } on UsageException catch (e) {
+      _logger
+        ..err(e.message)
+        ..info('')
+        ..info(e.usage);
+      return ExitCode.usage.code;
+    }
+  }
+
+  @override
+  Future<int?> runCommand(ArgResults topLevelResults) async {
+    if (topLevelResults.command?.name == 'completion') {
+      await super.runCommand(topLevelResults);
+      return ExitCode.success.code;
+    }
+
+    _logger
+      ..detail('Argument information:')
+      ..detail('  Top level options:');
+    for (final option in topLevelResults.options) {
+      if (topLevelResults.wasParsed(option)) {
+        _logger.detail('  - $option: ${topLevelResults[option]}');
+      }
+    }
+    if (topLevelResults.command != null) {
+      final commandResult = topLevelResults.command!;
+      _logger
+        ..detail('  Command: ${commandResult.name}')
+        ..detail('    Command options:');
+      for (final option in commandResult.options) {
+        if (commandResult.wasParsed(option)) {
+          _logger.detail('    - $option: ${commandResult[option]}');
+        }
+      }
+    }
+
+    final int? exitCode;
+    if (topLevelResults['version'] == true) {
+      _logger.info(packageVersion);
+      exitCode = ExitCode.success.code;
+    } else {
+      exitCode = await super.runCommand(topLevelResults);
+    }
+
+    if (topLevelResults.command?.name != UpdateCommand.commandName) {
+      await _checkForUpdates();
+    }
+
+    return exitCode;
+  }
+
+  Future<void> _checkForUpdates() async {
+    try {
+      final latestVersion = await _pubUpdater.getLatestVersion(packageName);
+      final isUpToDate = packageVersion == latestVersion;
+      if (!isUpToDate) {
+        _logger
+          ..info('')
+          ..info(
+            '''
+${lightYellow.wrap('Update available!')} ${lightCyan.wrap(packageVersion)} \u2192 ${lightCyan.wrap(latestVersion)}
+Run ${lightCyan.wrap('$executableName update')} to update''',
+          );
+      }
+    } catch (_) {}
+  }
+}
+

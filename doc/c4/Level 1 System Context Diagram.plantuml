@@ -1,0 +1,18 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(developer, "Developer", "A software developer using ednet_core")
+
+System(ednet_core, "ednet_core", "Domain-driven design framework for Dart")
+
+System_Ext(database, "Database", "Persistent storage for domain entities")
+
+System_Ext(api, "External APIs", "Third-party services integrated with the application")
+
+Rel(developer, ednet_core, "Uses")
+Rel(ednet_core, database, "Persists data to")
+Rel(ednet_core, api, "Integrates with")
+
+@enduml
