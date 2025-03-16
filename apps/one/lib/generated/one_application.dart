@@ -1,6 +1,6 @@
 import 'package:ednet_core/ednet_core.dart';
 
-import 'package:ednet_one/generated/democracy/electoral/lib/democracy_electoral.dart' as dyel;
+import 'package:ednet_one/generated/project/core/lib/project_core.dart' as ptce;
 // IMPORTS PLACEHOLDER
 
 class OneApplication implements IOneApplication {
@@ -14,16 +14,16 @@ class OneApplication implements IOneApplication {
   }
 
   void _initializeDomains() {
-        // democracy electoral
-    final democracyElectoralRepo = dyel.DemocracyElectoralRepo();
-    dyel.DemocracyDomain democracyElectoralDomain = democracyElectoralRepo
-        .getDomainModels("Democracy") as dyel.DemocracyDomain;
-    dyel.ElectoralModel electoralModel =
-        democracyElectoralDomain.getModelEntries("Electoral") as dyel.ElectoralModel;
-    electoralModel.init();
+        // project core
+    final projectCoreRepo = ptce.ProjectCoreRepo();
+    ptce.ProjectDomain projectCoreDomain = projectCoreRepo
+        .getDomainModels("Project") as ptce.ProjectDomain;
+    ptce.CoreModel coreModel =
+        projectCoreDomain.getModelEntries("Core") as ptce.CoreModel;
+    coreModel.init();
 
-    _domains..add(democracyElectoralDomain.domain);
-    _domainModelsTable['democracy_electoral'] = democracyElectoralDomain;
+    _domains.add(projectCoreDomain.domain);
+    _domainModelsTable['project_core'] = projectCoreDomain;
 
 // INIT PLACEHOLDER
   }
