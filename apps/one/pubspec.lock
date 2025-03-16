@@ -253,7 +253,7 @@ packages:
       path: "../../packages/core"
       relative: true
     source: path
-    version: "0.0.1+11"
+    version: "0.1.0"
   expressions:
     dependency: "direct main"
     description:
