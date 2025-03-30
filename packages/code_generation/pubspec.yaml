@@ -1,5 +1,5 @@
 name: ednet_code_generation
-version: 1.0.1
+version: 1.0.0
 description: Generate a new EDNetCore project.
 
 homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_code_generation
