@@ -15,6 +15,34 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`ednet_code_generation` - `v1.0.1`](#ednet_code_generation---v101)
+ - [`ednet_cms` - `v0.0.3-dev.8`](#ednet_cms---v003-dev8)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `ednet_cms` - `v0.0.3-dev.8`
+
+---
+
+#### `ednet_code_generation` - `v1.0.1`
+
+ - First stable API release (1.0.1)
+
+
+## 2025-03-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`ednet_core_types` - `v1.0.1`](#ednet_core_types---v101)
 
 ---

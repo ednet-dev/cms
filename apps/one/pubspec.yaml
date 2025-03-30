@@ -21,7 +21,7 @@ dependencies:
   isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.5
   ednet_core: ^1.0.1
-  ednet_cms: ^0.0.3-dev.7
+  ednet_cms: ^0.0.3-dev.8
 
 dev_dependencies:
   flutter_test:
