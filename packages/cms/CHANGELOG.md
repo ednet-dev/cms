@@ -1,3 +1,7 @@
+## 0.0.3-dev.7
+
+ - **FIX**(cms): provide default domain name in code generation.
+
 ## 0.0.3-dev.5
 
  - **REFACTOR**(ednet_cms): remove unnecessary this.
