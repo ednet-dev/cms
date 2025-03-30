@@ -1,3 +1,7 @@
+## 1.0.1
+
+ - First stable API release (1.0.1)
+
 ## 0.0.3-dev.8
 
  - Update a dependency to the latest release.
