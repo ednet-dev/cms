@@ -1,3 +1,10 @@
+## 1.0.1
+
+ - First stable API release (1.0.1)
+
+ - **DOCS**(core): Entity line docs.
+ - **DOCS**(core): README.md for each domain.
+
 ## 0.1.0
 
 ## 0.0.1+11

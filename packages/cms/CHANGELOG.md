@@ -1,3 +1,7 @@
+## 0.0.3-dev.7
+
+ - Update a dependency to the latest release.
+
 ## 0.0.3-dev.5
 
  - **REFACTOR**(ednet_cms): remove unnecessary this.

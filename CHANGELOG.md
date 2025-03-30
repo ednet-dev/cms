@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-03-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`ednet_core` - `v1.0.1`](#ednet_core---v101)
+ - [`ednet_code_generation` - `v0.0.5+1`](#ednet_code_generation---v0051)
+ - [`ednet_cms` - `v0.0.3-dev.7`](#ednet_cms---v003-dev7)
+ - [`ednet_core_types` - `v0.0.1+1`](#ednet_core_types---v0011)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `ednet_code_generation` - `v0.0.5+1`
+ - `ednet_cms` - `v0.0.3-dev.7`
+ - `ednet_core_types` - `v0.0.1+1`
+
+---
+
+#### `ednet_core` - `v1.0.1`
+
+ - First stable API release (1.0.1)
+
+ - **DOCS**(core): Entity line docs.
+ - **DOCS**(core): README.md for each domain.
+
+
 ## 2025-01-15
 
 ### Changes
