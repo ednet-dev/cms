@@ -31,11 +31,7 @@ class EDNetCodeGenerator {
     // Generate the project for the domain model
     genProject('--genall', targetDir);
 
-    return MetaInfo(
-      domain: domainName,
-      model: modelName,
-      dir: targetDir,
-    );
+    return MetaInfo(domain: domainName, model: modelName, dir: targetDir);
   }
 }
 
@@ -44,11 +40,7 @@ class MetaInfo {
   final String model;
   final String dir;
 
-  MetaInfo({
-    required this.domain,
-    required this.model,
-    required this.dir,
-  });
+  MetaInfo({required this.domain, required this.model, required this.dir});
 }
 
 String firstLetterToUpper(String text) {
@@ -171,14 +163,16 @@ void createDomainModel(String projectPath) {
     ednetCoreRepository = CoreRepository();
     ednetCoreDomain = Domain(firstLetterToUpper(domainName));
     ednetCoreModel = fromJsonToModel(
-        modelJson ?? '', ednetCoreDomain, firstLetterToUpper(modelName), null);
+      modelJson ?? '',
+      ednetCoreDomain,
+      firstLetterToUpper(modelName),
+      null,
+    );
     ednetCoreRepository.domains.add(ednetCoreDomain);
   }
 }
 
-void createDomainModelFromLoadedYaml({
-  required File yamlFile,
-}) {
+void createDomainModelFromLoadedYaml({required File yamlFile}) {
   yamlString = yamlFile.readAsStringSync();
   final yaml = loadYaml(yamlString!) as YamlMap;
 
@@ -193,7 +187,11 @@ void createDomainModelFromLoadedYaml({
     ednetCoreRepository = CoreRepository();
     ednetCoreDomain = Domain(firstLetterToUpper(domainName));
     ednetCoreModel = fromJsonToModel(
-        '', ednetCoreDomain, firstLetterToUpper(modelName), yaml);
+      '',
+      ednetCoreDomain,
+      firstLetterToUpper(modelName),
+      yaml,
+    );
     ednetCoreRepository.domains.add(ednetCoreDomain);
   }
 }
@@ -203,11 +201,7 @@ void createDomainModelFromYaml({
   required String domain,
   required String model,
 }) {
-  yamlString = loadYamlFile(
-    domain: domain,
-    model: model,
-    dir: dir,
-  );
+  yamlString = loadYamlFile(domain: domain, model: model, dir: dir);
 
   final yaml = loadYaml(yamlString!) as YamlMap;
 
@@ -222,7 +216,11 @@ void createDomainModelFromYaml({
     ednetCoreRepository = CoreRepository();
     ednetCoreDomain = Domain(firstLetterToUpper(domainName));
     ednetCoreModel = fromJsonToModel(
-        '', ednetCoreDomain, firstLetterToUpper(modelName), yaml);
+      '',
+      ednetCoreDomain,
+      firstLetterToUpper(modelName),
+      yaml,
+    );
     ednetCoreRepository.domains.add(ednetCoreDomain);
   }
 }
@@ -284,18 +282,22 @@ void renderYaml(String yamlString, String outputTemplate) {
   final concepts = yaml['concepts'] as Iterable;
   for (final concept in concepts) {
     final conceptName = concept['name'] as String;
-    print(outputTemplate
-        .replaceAll('{conceptName}', conceptName)
-        .replaceAll('{attributeName}', '')
-        .replaceAll('{relationName}', ''));
+    print(
+      outputTemplate
+          .replaceAll('{conceptName}', conceptName)
+          .replaceAll('{attributeName}', '')
+          .replaceAll('{relationName}', ''),
+    );
 
     final attributes = concept['attributes'] as Iterable<Map>;
     for (final attribute in attributes) {
       final attributeName = attribute['name'] as String;
-      print(outputTemplate
-          .replaceAll('{conceptName}', conceptName)
-          .replaceAll('{attributeName}', attributeName)
-          .replaceAll('{relationName}', ''));
+      print(
+        outputTemplate
+            .replaceAll('{conceptName}', conceptName)
+            .replaceAll('{attributeName}', attributeName)
+            .replaceAll('{relationName}', ''),
+      );
     }
 
     final relations = yaml['relations'] as Iterable;
@@ -306,17 +308,21 @@ void renderYaml(String yamlString, String outputTemplate) {
       final toFromName = relation['toFromName'] as String;
       if (from == conceptName) {
         final relationName = '$fromToName $to';
-        print(outputTemplate
-            .replaceAll('{conceptName}', conceptName)
-            .replaceAll('{attributeName}', '')
-            .replaceAll('{relationName}', relationName));
+        print(
+          outputTemplate
+              .replaceAll('{conceptName}', conceptName)
+              .replaceAll('{attributeName}', '')
+              .replaceAll('{relationName}', relationName),
+        );
       }
       if (to == conceptName) {
         final relationName = '$toFromName $from';
-        print(outputTemplate
-            .replaceAll('{conceptName}', conceptName)
-            .replaceAll('{attributeName}', '')
-            .replaceAll('{relationName}', relationName));
+        print(
+          outputTemplate
+              .replaceAll('{conceptName}', conceptName)
+              .replaceAll('{attributeName}', '')
+              .replaceAll('{relationName}', relationName),
+        );
       }
     }
   }
@@ -353,23 +359,18 @@ void displayY4aml({
   required String model,
   required String dir,
 }) {
-  final yaml = loadYamlFile(
-    domain: domain,
-    model: model,
-    dir: dir,
-  );
-
-  const outputTemplate = '''
-|  Concept: {conceptName}
-|    Attribute: {attributeName}
-|    Relation: {relationName}
-''';
+  loadYamlFile(domain: domain, model: model, dir: dir);
 
   // renderYaml(yaml, outputTemplate);
 }
 
-void gen(String gen,
-    {String? projectPath, String? dir, String? domain, String? model}) {
+void gen(
+  String gen, {
+  String? projectPath,
+  String? dir,
+  String? domain,
+  String? model,
+}) {
   if (gen == '--genall') {
     if (projectPath != null) {
       genDir(projectPath);
@@ -390,22 +391,20 @@ void gen(String gen,
     if (projectPath != null) {
       genLib(gen, projectPath);
     } else if (dir != null && domain != null && model != null) {
-      createDomainModelFromYaml(
-        dir: dir,
-        domain: domain,
-        model: model,
-      );
+      createDomainModelFromYaml(dir: dir, domain: domain, model: model);
       if (outputDir != null) {
         genLib(gen, outputDir!);
       } else {
         throw ArgumentError(
-            'outputDir is required when calling --gengen with dir, domain,'
-            ' and model arguments');
+          'outputDir is required when calling --gengen with dir, domain,'
+          ' and model arguments',
+        );
       }
     } else {
       throw ArgumentError(
-          'projectPath or dir, domain, and model arguments are required '
-          'when calling --gengen');
+        'projectPath or dir, domain, and model arguments are required '
+        'when calling --gengen',
+      );
     }
   } else {
     throw ArgumentError('valid gen argument is either --genall or --gengen');
