@@ -104,6 +104,14 @@ We welcome improvements and discussions! Feel free to:
 
 If you have questions or ideas, check out the main EDNet.dev community resources.
 
+## Contact
+
+For any questions:
+
+- **Email**: [dev@ednet.dev](mailto:dev@ednet.dev)
+- **GitHub Discussions**: [https://github.com/ednet-dev/cms/discussions](https://github.com/ednet-dev/cms/discussions)
+- **Discord**: [EDNet Dev Community](https://discord.gg/7E7bPjNMG3)
+
 ## License
 
 Part of the EDNet.dev ecosystem. Distributed under the MIT License.
