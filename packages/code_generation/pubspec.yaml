@@ -9,7 +9,6 @@ environment:
   sdk: '>=3.5.0-180.3.beta <4.0.0'
 
 dependencies:
-  ednet_core:
-    path: ../core
+  ednet_core: ^0.1.0
   test: ^1.25.5
   yaml: ^3.1.2

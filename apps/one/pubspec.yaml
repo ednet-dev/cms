@@ -12,10 +12,6 @@ dependencies:
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
   app_links: ^6.3.2
-  ednet_core:
-    path: ../../packages/core
-  ednet_cms:
-    path: ../../packages/cms
   graphview: ^1.2.0
   flame: ^1.22.0
   flutter_svg:
@@ -24,6 +20,8 @@ dependencies:
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.5
+  ednet_core: ^0.1.0
+  ednet_cms: ^0.0.3-dev.6
 
 dev_dependencies:
   flutter_test:
