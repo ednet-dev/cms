@@ -2,7 +2,7 @@
 
 ## Overview
 
-This DSL is designed to define domain models using YAML syntax. It allows the specification of
+This DSL is designed to define domain models using defined YAML syntax. It allows the specification of
 concepts, attributes, and relationships within a domain, facilitating the creation of robust and
 interconnected data models.
 
