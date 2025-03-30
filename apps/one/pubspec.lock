@@ -239,21 +239,21 @@ packages:
       path: "../../packages/cms"
       relative: true
     source: path
-    version: "0.0.3-dev.6"
+    version: "1.0.1"
   ednet_code_generation:
     dependency: "direct overridden"
     description:
       path: "../../packages/code_generation"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "1.0.1"
   ednet_core:
     dependency: "direct main"
     description:
       path: "../../packages/core"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "1.0.1"
   expressions:
     dependency: "direct main"
     description:

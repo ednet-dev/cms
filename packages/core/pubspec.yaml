@@ -4,7 +4,7 @@ version: 1.0.1
 homepage: https://github.com/ednet-dev/cms/tree/main/packages/core
 
 environment:
-  sdk: '>=3.5.0-180.3.beta <4.0.0'
+  sdk: '>=3.7.0 <4.0.0'
 
 dependencies:
   expressions: ^0.2.5+2

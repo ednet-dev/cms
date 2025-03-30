@@ -64,3 +64,23 @@ scripts:
   publish:core:
     run: melos publish --scope="core" --no-dry-run
     description: Publish core to pub.dev.
+
+  test:filter:
+    run: melos exec --dir-exists="test" --scope="*$SCOPE*" -- "flutter test --no-pub --coverage"
+    description: Run tests in packages matching the SCOPE filter
+
+  outdated:
+    run: melos exec -- "dart pub outdated"
+    description: Check for outdated dependencies in all packages
+
+  upgrade:
+    run: melos exec -- "dart pub upgrade"
+    description: Upgrade dependencies in all packages
+
+  clean:
+    run: melos exec -- "flutter clean"
+    description: Clean build artifacts in all packages
+
+  environment:
+    sdk: ">=3.0.0 <4.0.0"
+    flutter: ">=3.29.0"

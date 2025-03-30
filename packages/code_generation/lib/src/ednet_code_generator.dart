@@ -129,7 +129,7 @@ description: ${domainName}_${modelName} application that uses ednet_core for its
 homepage: https://ednet.one/
 
 environment:
-  sdk: '>=3.5.0-180.3.beta <4.0.0'
+  sdk: '>=3.7.0 <4.0.0'
   
 dependencies:
   ednet_core: 

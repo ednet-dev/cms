@@ -8,7 +8,7 @@ homepage: http://ednet.dev
 version: 0.0.1
 description: ${domainName}_${modelName} application that uses ednet_core for its model.
 environment:
-  sdk: '>=3.5.0-180.3.beta <4.0.0'
+  sdk: '>=3.7.0 <4.0.0'
 dependencies:
   browser: '>=0.10.0 <0.11.0'
   ednet_core: '>=2.0.0 <3.0.0'
