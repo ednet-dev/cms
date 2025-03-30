@@ -105,9 +105,9 @@ scripts:
 
   # Publish ednet_code_generation
   publish:code_generation:
-    description: "Publish ednet_code_generation package (create tag, push, and publish)"
+    description: "Publish ednet_code_generation (without affecting dependent packages)"
     run: |
-      melos version --manual-version="ednet_code_generation:$VERSION" && \
+      melos version --manual-version="ednet_code_generation:$VERSION" --no-dependents && \
       git add . && \
       git commit -m "chore(release): 🚀 ednet_code_generation release v$VERSION" && \
       git tag ednet_code_generation-v$VERSION && \
