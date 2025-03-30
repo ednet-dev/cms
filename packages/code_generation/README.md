@@ -177,6 +177,14 @@ We welcome community contributions!
 	•	File issues or feature requests: GitHub Issues
 	•	Pull Requests: Fork the CMS monorepo, update code in packages/code_generation/, and submit your PR.
 
+## Contact
+
+For any questions:
+
+- **Email**: [dev@ednet.dev](mailto:dev@ednet.dev)
+- **GitHub Discussions**: [https://github.com/ednet-dev/cms/discussions](https://github.com/ednet-dev/cms/discussions)
+- **Discord**: [EDNet Dev Community](https://discord.gg/7E7bPjNMG3)
+
 ## License
 
 Part of the EDNet.dev ecosystem. Licensed under the MIT License.

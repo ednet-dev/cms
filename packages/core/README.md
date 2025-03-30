@@ -195,3 +195,11 @@ The stable structure makes it straightforward to test invariants, relationships,
 ## Contributing
 
 We welcome contributions, feedback, and discussions. Start by reviewing the Contribution Guidelines. Submit PRs, suggest RFCs, or engage in community discussions to improve and refine EDNet Core.
+
+## Contact
+
+For any questions:
+
+- **Email**: [dev@ednet.dev](mailto:dev@ednet.dev)
+- **GitHub Discussions**: [https://github.com/ednet-dev/cms/discussions](https://github.com/ednet-dev/cms/discussions)
+- **Discord**: [EDNet Dev Community](https://discord.gg/7E7bPjNMG3)
