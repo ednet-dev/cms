@@ -1,7 +1,7 @@
 name: ednet_one
 description: "Integration app, EDNet Core domain model multi-platform interpreter featuring a Master-Detail layout navigation and management if instance and a Graph visualization of domain model"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+1
+version: 1.0.1
 
 environment:
   sdk: '>=3.5.0-180.3.beta <4.0.0'
