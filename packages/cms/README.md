@@ -138,9 +138,13 @@ contribute, report issues, or just say hi!
 Individual packages and applications within this repository have their own licenses, - see
 the [LICENSE](LICENSE) file for details.
 
-## 📧 Contact
+## Contact
 
-For more information, please contact our [dev team](mailto:dev@ednet.dev).
+For any questions:
+
+- **Email**: [dev@ednet.dev](mailto:dev@ednet.dev)
+- **GitHub Discussions**: [https://github.com/ednet-dev/cms/discussions](https://github.com/ednet-dev/cms/discussions)
+- **Discord**: [EDNet Dev Community](https://discord.gg/7E7bPjNMG3)
 
 ---
 &nbsp;

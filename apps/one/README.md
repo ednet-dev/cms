@@ -192,5 +192,8 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For any questions, ideas, or discussions, please contact our development team at
-dev@ednet.dev.
+For any questions:
+
+- **Email**: [dev@ednet.dev](mailto:dev@ednet.dev)
+- **GitHub Discussions**: [https://github.com/ednet-dev/cms/discussions](https://github.com/ednet-dev/cms/discussions)
+- **Discord**: [EDNet Dev Community](https://discord.gg/7E7bPjNMG3)
