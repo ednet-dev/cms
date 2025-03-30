@@ -246,7 +246,7 @@ class RequirementsProcessor {
       await codeGenerator.generateCode(
         sourceDir: dirname,
         targetDir: newDirPath,
-        domainName: yamlParsed['domain'],
+        domainName: yamlParsed['domain'] ?? 'EDNet',
         models: yamlContent,
         yamlFile: yamlFileLocal,
       );
