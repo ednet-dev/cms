@@ -1,6 +1,6 @@
-## 1.0.1
+## 1.0.0
 
- - First stable API release (1.0.1)
+ - First stab## 1.0.0le API release (1.0.0)
 
 ## 0.0.5+1
 
