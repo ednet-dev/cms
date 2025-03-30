@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`ednet_core_types` - `v1.0.1`](#ednet_core_types---v101)
+
+---
+
+#### `ednet_core_types` - `v1.0.1`
+
+ - First stable API release (1.0.1)
+
+
+## 2025-03-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`ednet_core` - `v1.0.1`](#ednet_core---v101)
  - [`ednet_code_generation` - `v0.0.5+1`](#ednet_code_generation---v0051)
  - [`ednet_cms` - `v0.0.3-dev.7`](#ednet_cms---v003-dev7)
