@@ -61,9 +61,9 @@ scripts:
     run: melos publish --scope="core" --dry-run
     description: Dry run of publishing core to pub.dev.
 
-  publish:core:
-    run: melos publish --scope="core" --no-dry-run
-    description: Publish core to pub.dev.
+  #  publish:core:
+  #    run: melos publish --scope="core" --no-dry-run
+  #    description: Publish core to pub.dev.
 
   test:filter:
     run: melos exec --dir-exists="test" --scope="*$SCOPE*" -- "flutter test --no-pub --coverage"
@@ -81,6 +81,61 @@ scripts:
     run: melos exec -- "flutter clean"
     description: Clean build artifacts in all packages
 
+  # Publish ednet_core
+  publish:core:
+    description: "Publish ednet_core package (create tag, push, and publish)"
+    run: |
+      melos version --manual-version="ednet_core:$VERSION" && \
+      git add . && \
+      git commit -m "chore(release): 🚀 ednet_core release v$VERSION" && \
+      git tag ednet_core-v$VERSION && \
+      git push origin main --tags && \
+      melos publish --scope="ednet_core" --no-dry-run
+
+  # Publish ednet_cms
+  publish:cms:
+    description: "Publish ednet_cms package (create tag, push, and publish)"
+    run: |
+      melos version --manual-version="ednet_cms:$VERSION" && \
+      git add . && \
+      git commit -m "chore(release): 🚀 ednet_cms release v$VERSION" && \
+      git tag ednet_cms-v$VERSION && \
+      git push origin main --tags && \
+      melos publish --scope="ednet_cms" --no-dry-run
+
+  # Publish ednet_code_generation
+  publish:code_generation:
+    description: "Publish ednet_code_generation package (create tag, push, and publish)"
+    run: |
+      melos version --manual-version="ednet_code_generation:$VERSION" && \
+      git add . && \
+      git commit -m "chore(release): 🚀 ednet_code_generation release v$VERSION" && \
+      git tag ednet_code_generation-v$VERSION && \
+      git push origin main --tags && \
+      melos publish --scope="ednet_code_generation" --no-dry-run
+
+  # Publish ednet_core_types
+  publish:core_types:
+    description: "Publish ednet_core_types package (create tag, push, and publish)"
+    run: |
+      melos version --manual-version="ednet_core_types:$VERSION" && \
+      git add . && \
+      git commit -m "chore(release): 🚀 ednet_core_types release v$VERSION" && \
+      git tag ednet_core_types-v$VERSION && \
+      git push origin main --tags && \
+      melos publish --scope="ednet_core_types" --no-dry-run
+
+  # Publish ednet_one
+  publish:one:
+    description: "Publish ednet_one package (create tag, push, and publish)"
+    run: |
+      melos version --manual-version="ednet_one:$VERSION" && \
+      git add . && \
+      git commit -m "chore(release): 🚀 ednet_one release v$VERSION" && \
+      git tag ednet_one-v$VERSION && \
+      git push origin main --tags && \
+      melos publish --scope="ednet_one" --no-dry-run
+
   environment:
-    sdk: ">=3.0.0 <4.0.0"
+    sdk: '>=3.7.0 <4.0.0'
     flutter: ">=3.29.0"
