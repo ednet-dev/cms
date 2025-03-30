@@ -212,7 +212,7 @@ packages:
       path: "../core"
       relative: true
     source: path
-    version: "1.0.1"
+    version: "1.0.0"
   ednet_core_default_app:
     dependency: "direct main"
     description:
