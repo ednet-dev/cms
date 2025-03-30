@@ -15,8 +15,10 @@ class DirectoryManager {
   }
 
   Future<void> runPubGet(String path) async {
-    final result =
-        await Process.run('dart', ['pub', 'get'], workingDirectory: path);
+    final result = await Process.run('dart', [
+      'pub',
+      'get',
+    ], workingDirectory: path);
     if (result.exitCode != 0) {
       log.severe('Failed to run dart pub get in $path: ${result.stderr}');
       throw Exception('dart pub get failed');
@@ -31,7 +33,7 @@ class YamlReader {
       return await yamlFile.readAsString();
     } catch (e) {
       log.severe('Error reading YAML file: $path, Error: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -44,14 +46,12 @@ class YamlReader {
       return yamlData;
     } catch (e) {
       log.severe('Error parsing YAML content: $yamlContent, Error: $e');
-      throw e;
+      rethrow;
     }
   }
 }
 
 class CodeGenerator {
-  final Map<String, String> _domainModelsTable = {};
-
   Future<void> generateCode({
     required String sourceDir,
     required String targetDir,
@@ -68,7 +68,7 @@ class CodeGenerator {
       updateOneApplication(meta);
     } catch (e) {
       log.severe('Error generating code for file: $sourceDir, Error: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -161,8 +161,10 @@ class OneApplication implements IOneApplication {
 
     // Add import if it doesn't already exist
     if (!content.contains("import '$importPath' as $alias;")) {
-      content = content.replaceFirst(importsPlaceholder,
-          "import '$importPath' as $alias;\n$importsPlaceholder");
+      content = content.replaceFirst(
+        importsPlaceholder,
+        "import '$importPath' as $alias;\n$importsPlaceholder",
+      );
     }
 
     // Prepare the initialization code
@@ -187,15 +189,19 @@ class OneApplication implements IOneApplication {
 
     // Add initialization if it doesn't already exist
     if (!content.contains(initCode.trim())) {
-      content =
-          content.replaceFirst(initPlaceholder, "$initCode\n$initPlaceholder");
+      content = content.replaceFirst(
+        initPlaceholder,
+        "$initCode\n$initPlaceholder",
+      );
     }
 
     // Add to the lookup table
     final lookupEntry = "'${meta.domain}${meta.model}': $domainVarName";
     if (!content.contains(lookupEntry.trim())) {
-      content = content.replaceFirst(lookupTablePlaceholder,
-          "'${meta.domain}${meta.model}': $domainVarName,\n$lookupTablePlaceholder");
+      content = content.replaceFirst(
+        lookupTablePlaceholder,
+        "'${meta.domain}${meta.model}': $domainVarName,\n$lookupTablePlaceholder",
+      );
     }
 
     // Write the updated content back to the file
@@ -223,7 +229,10 @@ class RequirementsProcessor {
   });
 
   Future<void> processRequirements(
-      String rootDir, String contentDir, BuildStep buildStep) async {
+    String rootDir,
+    String contentDir,
+    BuildStep buildStep,
+  ) async {
     final requirementsDir = '$rootDir/$contentDir';
     final generatedDir = '$rootDir/generated';
     await directoryManager.ensureDirectoryExists(generatedDir);
@@ -262,16 +271,16 @@ class ContentWatcherBuilder implements Builder {
   final RequirementsProcessor requirementsProcessor;
 
   ContentWatcherBuilder()
-      : requirementsProcessor = RequirementsProcessor(
-          directoryManager: DirectoryManager(),
-          yamlReader: YamlReader(),
-          codeGenerator: CodeGenerator(),
-        );
+    : requirementsProcessor = RequirementsProcessor(
+        directoryManager: DirectoryManager(),
+        yamlReader: YamlReader(),
+        codeGenerator: CodeGenerator(),
+      );
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        '.ednet.yaml': ['_ednet.g.dart'],
-      };
+    '.ednet.yaml': ['_ednet.g.dart'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -282,7 +291,10 @@ class ContentWatcherBuilder implements Builder {
 
     log.info('DEBUG: ${buildStep.inputId.path}');
     await requirementsProcessor.processRequirements(
-        'lib', 'requirements', buildStep);
+      'lib',
+      'requirements',
+      buildStep,
+    );
   }
 }
 

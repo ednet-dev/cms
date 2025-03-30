@@ -10,8 +10,8 @@ class CmsBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        '.ednet.yaml': ['_cms.g.dart'],
-      };
+    '.ednet.yaml': ['_cms.g.dart'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -74,25 +74,6 @@ class CmsBuilder implements Builder {
     //   final exampleFile = File('${contentDir.path}/example.ednet.yaml');
     //   await exampleFile.writeAsString('example');
     // }
-  }
-
-  Future<List<File>> _listFiles(Directory dir) async {
-    final completer = Completer<List<File>>();
-    final files = <File>[];
-
-    void search(Directory dir) {
-      dir.list(recursive: false).listen((entity) {
-        if (entity is File) {
-          files.add(entity);
-        } else if (entity is Directory) {
-          search(entity);
-        }
-      }, onDone: () => completer.complete(files));
-    }
-
-    search(dir);
-
-    return completer.future;
   }
 }
 

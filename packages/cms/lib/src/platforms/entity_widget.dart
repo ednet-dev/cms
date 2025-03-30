@@ -5,7 +5,8 @@ class StringAttributeWidget extends StatelessWidget {
   final String value;
   final Function(String) onChanged;
 
-  StringAttributeWidget({
+  const StringAttributeWidget({
+    super.key,
     required this.label,
     required this.value,
     required this.onChanged,
@@ -16,8 +17,9 @@ class StringAttributeWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
-        decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme.of(context).inputDecorationTheme),
+        decoration: InputDecoration(
+          labelText: label,
+        ).applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value),
         onChanged: onChanged,
       ),
@@ -30,7 +32,8 @@ class IntAttributeWidget extends StatelessWidget {
   final int value;
   final Function(int) onChanged;
 
-  IntAttributeWidget({
+  const IntAttributeWidget({
+    super.key,
     required this.label,
     required this.value,
     required this.onChanged,
@@ -41,8 +44,9 @@ class IntAttributeWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
-        decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme.of(context).inputDecorationTheme),
+        decoration: InputDecoration(
+          labelText: label,
+        ).applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value.toString()),
         keyboardType: TextInputType.number,
         onChanged: (text) => onChanged(int.tryParse(text) ?? 0),
@@ -56,7 +60,8 @@ class DoubleAttributeWidget extends StatelessWidget {
   final double value;
   final Function(double) onChanged;
 
-  DoubleAttributeWidget({
+  const DoubleAttributeWidget({
+    super.key,
     required this.label,
     required this.value,
     required this.onChanged,
@@ -67,8 +72,9 @@ class DoubleAttributeWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
-        decoration: InputDecoration(labelText: label)
-            .applyDefaults(Theme.of(context).inputDecorationTheme),
+        decoration: InputDecoration(
+          labelText: label,
+        ).applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value.toString()),
         keyboardType: TextInputType.numberWithOptions(decimal: true),
         onChanged: (text) => onChanged(double.tryParse(text) ?? 0.0),
@@ -82,7 +88,8 @@ class BoolAttributeWidget extends StatelessWidget {
   final bool value;
   final Function(bool) onChanged;
 
-  BoolAttributeWidget({
+  const BoolAttributeWidget({
+    super.key,
     required this.label,
     required this.value,
     required this.onChanged,
@@ -112,7 +119,8 @@ class DateTimeAttributeWidget extends StatelessWidget {
   final DateTime value;
   final Function(DateTime) onChanged;
 
-  DateTimeAttributeWidget({
+  const DateTimeAttributeWidget({
+    super.key,
     required this.label,
     required this.value,
     required this.onChanged,
@@ -147,13 +155,10 @@ class DateTimeAttributeWidget extends StatelessWidget {
   }
 }
 
-
 String getTitle(Entity entity) {
   if (entity.getAttribute('firstName') != null) {
     if (entity.getAttribute('lastName') != null) {
-      return entity.getAttribute('firstName').toString() +
-          ' ' +
-          entity.getAttribute('lastName').toString();
+      return '${entity.getAttribute('firstName')} ${entity.getAttribute('lastName')}';
     }
     return entity.getAttribute('firstName').toString();
   }
@@ -169,8 +174,7 @@ String getTitle(Entity entity) {
   // if have description trim to 50 characters with ...
   if (entity.getAttribute('description') != null) {
     return entity.getAttribute('description').toString().length > 50
-        ? entity.getAttribute('description').toString().substring(0, 50) +
-        '...'
+        ? '${entity.getAttribute('description').toString().substring(0, 50)}...'
         : entity.getAttribute('description').toString();
   }
 
@@ -193,7 +197,7 @@ String getTitle(Entity entity) {
 class EntityDetailScreen extends StatelessWidget {
   final Entity entity;
 
-  EntityDetailScreen({required this.entity});
+  const EntityDetailScreen({super.key, required this.entity});
 
   @override
   Widget build(BuildContext context) {
@@ -210,16 +214,14 @@ class EntityWidget extends StatelessWidget {
   final Entity entity;
   final void Function(Entity entity)? onEntitySelected;
 
-  EntityWidget({required this.entity, this.onEntitySelected});
+  const EntityWidget({super.key, required this.entity, this.onEntitySelected});
 
   @override
   Widget build(BuildContext context) {
     try {
       // access concept
       entity.concept;
-      print('Concept ${entity.concept} is set for entity: ${entity}');
     } catch (e) {
-      print('Error: Concept is not set for entity: ${entity}');
       return Center(
         child: Text(
           "*** concept is not set ***\nSee also: https://flutter.dev/docs/testing/errors",
@@ -227,7 +229,6 @@ class EntityWidget extends StatelessWidget {
         ),
       );
     }
-    print('Rendering entity with concept: ${entity.concept?.code}');
 
     return Card(
       margin: EdgeInsets.all(16.0),
@@ -238,8 +239,11 @@ class EntityWidget extends StatelessWidget {
             ...entity.concept.attributes.map((attribute) {
               var value = entity.getAttribute(attribute.code);
               return _buildAttributeWidget(
-                  attribute as Attribute, value, context);
-            }).toList(),
+                attribute as Attribute,
+                value,
+                context,
+              );
+            }),
             ...entity.concept.parents.map((parent) {
               var parentEntity = entity.getParent(parent.code) as Entity;
               return ListTile(
@@ -250,31 +254,32 @@ class EntityWidget extends StatelessWidget {
                   }
                 },
               );
-            }).toList(),
+            }),
             ...entity.concept.children.map((child) {
               var childEntities = entity.getChild(child.code) as Entities?;
               return childEntities != null
                   ? ExpansionTile(
-                      title: Text(
-                        child.codeFirstLetterUpper,
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
-                      children: childEntities.map((childEntity) {
-                        return ListTile(
-                          title: Text(
-                            getTitle(childEntity as Entity),
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                          onTap: () {
-                            if (onEntitySelected != null) {
-                              onEntitySelected!(childEntity as Entity);
-                            }
-                          },
-                        );
-                      }).toList(),
-                    )
+                    title: Text(
+                      child.codeFirstLetterUpper,
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    children:
+                        childEntities.map((childEntity) {
+                          return ListTile(
+                            title: Text(
+                              getTitle(childEntity as Entity),
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            onTap: () {
+                              if (onEntitySelected != null) {
+                                onEntitySelected!(childEntity);
+                              }
+                            },
+                          );
+                        }).toList(),
+                  )
                   : Container();
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -282,7 +287,10 @@ class EntityWidget extends StatelessWidget {
   }
 
   Widget _buildAttributeWidget(
-      Attribute attribute, dynamic value, BuildContext context) {
+    Attribute attribute,
+    dynamic value,
+    BuildContext context,
+  ) {
     switch (attribute.type?.code) {
       case 'String':
         return StringAttributeWidget(
@@ -335,7 +343,8 @@ class EntitiesWidget extends StatefulWidget {
   final void Function(Entity entity) onEntitySelected;
   final BookmarkManager bookmarkManager;
 
-  EntitiesWidget({
+  const EntitiesWidget({
+    super.key,
     required this.entities,
     required this.onEntitySelected,
     required this.bookmarkManager,
@@ -347,12 +356,10 @@ class EntitiesWidget extends StatefulWidget {
 }
 
 class _EntitiesWidgetState extends State<EntitiesWidget> {
-  List<FilterCriteria> _filters = [];
+  final List<FilterCriteria> _filters = [];
   List<Entity> _filteredEntities = [];
 
-  ScrollController _scrollController = ScrollController();
-  bool _isBookmarking = false;
-  TextEditingController _bookmarkTitleController = TextEditingController();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -370,14 +377,16 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
 
   void _applyFilters() {
     setState(() {
-      _filteredEntities = widget.entities.where((entity) {
-        for (var filter in _filters) {
-          if (!_matchesFilter(entity as Entity, filter)) {
-            return false;
-          }
-        }
-        return true;
-      }).toList() as List<Entity>;
+      _filteredEntities =
+          widget.entities.where((entity) {
+                for (var filter in _filters) {
+                  if (!_matchesFilter(entity as Entity, filter)) {
+                    return false;
+                  }
+                }
+                return true;
+              }).toList()
+              as List<Entity>;
     });
   }
 
@@ -402,49 +411,6 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
     // Implement logic to load more entities if available
   }
 
-  void _addFilter(FilterCriteria filter) {
-    setState(() {
-      _filters.add(filter);
-      _applyFilters();
-    });
-  }
-
-  void _createBookmark() async {
-    setState(() {
-      _isBookmarking = true;
-    });
-  }
-
-  void _saveBookmark() async {
-    final bookmarkTitle = _bookmarkTitleController.text;
-    if (bookmarkTitle.isNotEmpty) {
-      final bookmark = Bookmark(
-        title: bookmarkTitle,
-        url: Uri(path: '/entities', queryParameters: {
-          'filters': _filters
-              .map((filter) =>
-                  '${filter.attribute}:${filter.operator}:${filter.value}')
-              .join(','),
-          'title': bookmarkTitle,
-        }).toString(),
-      );
-
-      await widget.bookmarkManager.addBookmark(bookmark);
-      widget.onEntitySelected(bookmark);
-    }
-    setState(() {
-      _isBookmarking = false;
-      _bookmarkTitleController.clear();
-    });
-  }
-
-  void _cancelBookmark() {
-    setState(() {
-      _isBookmarking = false;
-      _bookmarkTitleController.clear();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -453,8 +419,9 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
       itemBuilder: (context, index) {
         final entity = _filteredEntities[index];
         return ListTile(
-          title:
-              Text(entity.getStringFromAttribute('name') ?? 'Unnamed Entity'),
+          title: Text(
+            entity.getStringFromAttribute('name') ?? 'Unnamed Entity',
+          ),
           onTap: () {
             widget.onEntitySelected(entity);
           },
@@ -467,14 +434,12 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
 class DashboardScreen extends StatelessWidget {
   final Domains domains;
 
-  DashboardScreen({required this.domains});
+  const DashboardScreen({super.key, required this.domains});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Dashboard'),
-      ),
+      appBar: AppBar(title: Text('Dashboard')),
       body: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -492,7 +457,7 @@ class DashboardScreen extends StatelessWidget {
 class DomainTile extends StatelessWidget {
   final Domain domain;
 
-  DomainTile({required this.domain});
+  const DomainTile({super.key, required this.domain});
 
   @override
   Widget build(BuildContext context) {
@@ -521,14 +486,12 @@ class DomainTile extends StatelessWidget {
 class DomainDetailScreen extends StatelessWidget {
   final Domain domain;
 
-  DomainDetailScreen({required this.domain});
+  const DomainDetailScreen({super.key, required this.domain});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(domain.code),
-      ),
+      appBar: AppBar(title: Text(domain.code)),
       body: ListView.builder(
         itemCount: domain.models.length,
         itemBuilder: (context, index) {
@@ -544,7 +507,7 @@ class ModelTile extends StatelessWidget {
   final Model model;
   final Domain domain;
 
-  ModelTile({required this.model, required this.domain});
+  const ModelTile({super.key, required this.model, required this.domain});
 
   @override
   Widget build(BuildContext context) {
@@ -554,8 +517,8 @@ class ModelTile extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ModelDetailScreen(domain: domain, model: model),
+              builder:
+                  (context) => ModelDetailScreen(domain: domain, model: model),
             ),
           );
         },
@@ -575,14 +538,16 @@ class ModelDetailScreen extends StatelessWidget {
   final Domain domain;
   final Model model;
 
-  ModelDetailScreen({required this.domain, required this.model});
+  const ModelDetailScreen({
+    super.key,
+    required this.domain,
+    required this.model,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(model.code),
-      ),
+      appBar: AppBar(title: Text(model.code)),
       body: ListView.builder(
         itemCount: model.entryConcepts.length,
         itemBuilder: (context, index) {
@@ -599,8 +564,12 @@ class AggregateTile extends StatelessWidget {
   final Model model;
   final Domain domain;
 
-  AggregateTile(
-      {required this.concept, required this.model, required this.domain});
+  const AggregateTile({
+    super.key,
+    required this.concept,
+    required this.model,
+    required this.domain,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -610,8 +579,12 @@ class AggregateTile extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AggregateDetailScreen(
-                  domain: domain, model: model, concept: concept),
+              builder:
+                  (context) => AggregateDetailScreen(
+                    domain: domain,
+                    model: model,
+                    concept: concept,
+                  ),
             ),
           );
         },
@@ -632,23 +605,26 @@ class AggregateDetailScreen extends StatelessWidget {
   final Model model;
   final Concept concept;
 
-  AggregateDetailScreen(
-      {required this.domain, required this.model, required this.concept});
+  const AggregateDetailScreen({
+    super.key,
+    required this.domain,
+    required this.model,
+    required this.concept,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(concept.code),
-      ),
+      appBar: AppBar(title: Text(concept.code)),
       body: ListView.builder(
         itemCount: concept.attributes.length,
         itemBuilder: (context, index) {
           final attribute = concept.attributes.elementAt(index);
           return AttributeTile(
-              attribute: attribute as Attribute,
-              concept: concept,
-              model: model);
+            attribute: attribute as Attribute,
+            concept: concept,
+            model: model,
+          );
         },
       ),
     );
@@ -660,8 +636,12 @@ class AttributeTile extends StatelessWidget {
   final Concept concept;
   final Model model;
 
-  AttributeTile(
-      {required this.attribute, required this.concept, required this.model});
+  const AttributeTile({
+    super.key,
+    required this.attribute,
+    required this.concept,
+    required this.model,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -671,8 +651,12 @@ class AttributeTile extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AttributeDetailScreen(
-                  model: model, concept: concept, attribute: attribute),
+              builder:
+                  (context) => AttributeDetailScreen(
+                    model: model,
+                    concept: concept,
+                    attribute: attribute,
+                  ),
             ),
           );
         },
@@ -693,15 +677,17 @@ class AttributeDetailScreen extends StatelessWidget {
   final Concept concept;
   final Attribute attribute;
 
-  AttributeDetailScreen(
-      {required this.model, required this.concept, required this.attribute});
+  const AttributeDetailScreen({
+    super.key,
+    required this.model,
+    required this.concept,
+    required this.attribute,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(attribute.code),
-      ),
+      appBar: AppBar(title: Text(attribute.code)),
       body: ListView(
         children: [
           Text('Attribute: ${attribute.code}'),
@@ -724,8 +710,10 @@ class BookmarkManager {
     return prefs.getStringList(_bookmarkKey) == false
         ? []
         : []
-            .map((bookmark) =>
-                Bookmark(url: bookmark['url'], title: bookmark['title']))
+            .map(
+              (bookmark) =>
+                  Bookmark(url: bookmark['url'], title: bookmark['title']),
+            )
             .toList();
   }
 
@@ -734,7 +722,9 @@ class BookmarkManager {
     final bookmarks = await getBookmarks();
     bookmarks.add(bookmark);
     await prefs.setStringList(
-        _bookmarkKey, bookmarks.map((bookmark) => bookmark.toJson()).toList());
+      _bookmarkKey,
+      bookmarks.map((bookmark) => bookmark.toJson()).toList(),
+    );
   }
 
   Future<void> removeBookmark(String bookmark) async {
@@ -742,7 +732,9 @@ class BookmarkManager {
     final bookmarks = await getBookmarks();
     bookmarks.remove(bookmark);
     await prefs.setStringList(
-        _bookmarkKey, bookmarks.map((bookmark) => bookmark.toJson()).toList());
+      _bookmarkKey,
+      bookmarks.map((bookmark) => bookmark.toJson()).toList(),
+    );
   }
 }
 
@@ -750,7 +742,11 @@ class ModelsWidget extends StatelessWidget {
   final Models models;
   final void Function(Model model) onModelSelected;
 
-  ModelsWidget({required this.models, required this.onModelSelected});
+  const ModelsWidget({
+    super.key,
+    required this.models,
+    required this.onModelSelected,
+  });
 
   @override
   Widget build(BuildContext context) {

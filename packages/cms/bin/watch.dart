@@ -21,14 +21,11 @@ Future<void> main(List<String> args) async {
     await exampleFile.copy(contentFile.path);
   }
   final p = path.join(rootDir, 'content/');
-  final watcher = Watcher(
-    p,
-    pollingDelay: const Duration(milliseconds: 500),
-  );
+  final watcher = Watcher(p, pollingDelay: const Duration(milliseconds: 500));
 
-  var regenerateDomainModel = print('starting watcher');
-  final debouncer =
-      Debouncer<String>(duration: const Duration(milliseconds: 500));
+  final debouncer = Debouncer<String>(
+    duration: const Duration(milliseconds: 500),
+  );
 
   // Listen to the debounced events
   debouncer.stream.listen((event) {
@@ -44,10 +41,7 @@ Future<void> main(List<String> args) async {
         event.type == ChangeType.REMOVE) {
       final relativePath = path.relative(event.path, from: rootDir);
 
-      final assetId = AssetId(
-        'ednet_cms',
-        relativePath,
-      );
+      final assetId = AssetId('ednet_cms', relativePath);
 
       if (assetId.path.contains('.ednet.yaml')) {
         final relativePath = path.relative(assetId.path, from: rootDir);
@@ -63,7 +57,7 @@ class Debouncer<T> {
   final StreamController<T> _controller;
 
   Debouncer({required this.duration})
-      : _controller = StreamController<T>.broadcast();
+    : _controller = StreamController<T>.broadcast();
 
   Stream<T> get stream => _controller.stream;
 
