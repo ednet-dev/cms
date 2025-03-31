@@ -1,15 +1,122 @@
-.idea
-melos_ednetdev.iml
-**/*.iml
-.dart_tool
-.dart_tool/package_config.json
-package_config.json
-pubspec_overrides.yaml
+# IDE and Editor files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.history/
+
+# Flutter/Dart specific
+.dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-/.dart_tool/
+.packages
+pubspec_overrides.yaml
+build/
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+*.config.dart
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+*.config.dart
+*.gr.dart
+*.gen.dart
+
+# Coverage and test files
+coverage/
+.test_coverage.dart
+.test_runner.dart
+*.vm.json
+
+# macOS specific
 .DS_Store
 **/.DS_Store
-packages/cms/.flutter-plugins
-packages/cms/coverage/test/ednet_cms_test.dart.vm.json
-.run/
+
+# Temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Build outputs
+dist/
+build/
+out/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Package manager files
+.pub-cache/
+.pub/
+pubspec.lock
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Debug files
+*.symbols
+*.map.json
+
+# Android specific
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+*.jks
+*.keystore
+
+# iOS specific
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Linux specific
+**/linux/flutter/ephemeral
+
+# Windows specific
+**/windows/flutter/ephemeral
+**/windows/**/*.suo
+**/windows/**/*.user
+**/windows/**/*.userosscache
+**/windows/**/*.sln.docstates
+**/windows/**/*.cache
