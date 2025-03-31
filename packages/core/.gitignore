@@ -27,3 +27,20 @@ migrate_working_dir/
 .dart_tool/
 .packages
 build/
+
+# Package-specific build outputs
+lib/generated/
+lib/**/*.g.dart
+lib/**/*.freezed.dart
+lib/**/*.mocks.dart
+
+# Package-specific test files
+test/**/*.vm.json
+test/**/*.g.dart
+test/**/*.freezed.dart
+test/**/*.mocks.dart
+
+# Package-specific coverage
+coverage/
+.test_coverage.dart
+.test_runner.dart
