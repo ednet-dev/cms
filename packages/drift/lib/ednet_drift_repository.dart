@@ -1,8 +1,9 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
-library;
+library ednet_drift_repository;
 
-export 'src/drift_core_repository.dart';
+import 'dart:io';
+import 'dart:math';
+import 'package:ednet_core/ednet_core.dart';
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 
-// TODO: Export any libraries intended for clients of this package.
+part 'src/ednet_drift_repository.dart';

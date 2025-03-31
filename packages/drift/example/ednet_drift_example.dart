@@ -1,4 +1,4 @@
-import 'package:ednet_drift/ednet_drift.dart';
+import 'package:ednet_drift/ednet_drift_repository.dart';
 
 void main() {
   var awesome = Awesome();
