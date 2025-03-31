@@ -1,13 +1,13 @@
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ednet_one_interpreter/ednet_one_interpreter.dart';
 
-import 'generated/one_application.dart';
-import 'presentation/blocs/domain_block.dart';
-import 'presentation/blocs/domain_event.dart';
-import 'presentation/blocs/layout_block.dart';
-import 'presentation/blocs/theme_block.dart';
-import 'presentation/screens/home_page.dart';
+import 'package:ednet_one_interpreter/presentation/blocs/domain_block.dart';
+import 'package:ednet_one_interpreter/presentation/blocs/domain_event.dart';
+import 'package:ednet_one_interpreter/presentation/blocs/layout_block.dart';
+import 'package:ednet_one_interpreter/presentation/blocs/theme_block.dart';
+import 'package:ednet_one_interpreter/presentation/screens/home_page.dart';
 
 void main() {
   runApp(
@@ -16,7 +16,7 @@ void main() {
         BlocProvider(create: (_) => ThemeBloc()),
         BlocProvider(create: (_) => LayoutBloc()),
         BlocProvider(
-            create: (_) => DomainBloc(app: OneApplication())
+            create: (_) => DomainBloc(app: ShellApp())
               ..add(InitializeDomainEvent())),
       ],
       child: MyApp(),
