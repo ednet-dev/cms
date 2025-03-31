@@ -19,11 +19,11 @@ dependencies:
   flutter_svg:
   flame_svg: ^1.11.3
   expressions: ^0.2.5+2
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.5
   ednet_core: ^1.0.1
   ednet_cms: ^1.0.1
+  ednet_one_interpreter:
+    path: ../../packages/ednet_one_interpreter
 
 dev_dependencies:
   flutter_test:
@@ -31,7 +31,6 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   build_runner: ^2.4.13
   build_config: ^1.1.1
-  isar_generator: ^3.1.0+1
 flutter:
   uses-material-design: true
   assets:
