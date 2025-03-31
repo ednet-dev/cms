@@ -7,6 +7,7 @@ packages:
   - "packages/cms"
   - "packages/content"
   - "packages/types"
+  - "packages/ednet_one_interpreter"
 
 # Recommended option for projects with Dart 2.17.0 or greater.
 #
