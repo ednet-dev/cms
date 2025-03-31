@@ -59,6 +59,7 @@ out/
 .pub-cache/
 .pub/
 pubspec.lock
+**/pubspec.lock
 
 # Environment files
 .env
@@ -68,6 +69,10 @@ pubspec.lock
 # Debug files
 *.symbols
 *.map.json
+
+# Analysis results
+**/analysis_results.txt
+**/analysis_options.yaml
 
 # Android specific
 **/android/**/gradle-wrapper.jar
@@ -112,11 +117,18 @@ pubspec.lock
 
 # Linux specific
 **/linux/flutter/ephemeral
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugins.cmake
 
 # Windows specific
 **/windows/flutter/ephemeral
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugins.cmake
 **/windows/**/*.suo
 **/windows/**/*.user
 **/windows/**/*.userosscache
 **/windows/**/*.sln.docstates
 **/windows/**/*.cache
+
+# macOS specific Flutter generated files
+**/macos/Flutter/GeneratedPluginRegistrant.swift
