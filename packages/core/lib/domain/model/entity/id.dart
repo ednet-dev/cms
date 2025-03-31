@@ -1,11 +1,34 @@
 part of ednet_core;
 
+/// A unique identifier for a domain entity that implements the [IId] interface.
+///
+/// The [Id] class represents a composite identifier that can be composed of:
+/// - References to parent entities (through [Reference] objects)
+/// - Attribute values that form part of the identifier
+///
+/// The class maintains two internal maps:
+/// - [_referenceMap]: Maps parent codes to their references
+/// - [_attributeMap]: Maps attribute codes to their values
+///
+/// Example usage:
+/// ```dart
+/// final id = Id(productConcept);
+/// id.setAttribute('code', 'PROD-001');
+/// id.setParent('category', categoryEntity);
+/// ```
 class Id implements IId<Id> {
+  /// The [Concept] that defines the metadata for this identifier.
   final Concept _concept;
 
+  /// Maps parent codes to their references.
   final Map<String, Reference?> _referenceMap;
+
+  /// Maps attribute codes to their values.
   final Map<String, Object?> _attributeMap;
 
+  /// Creates a new identifier for the given [concept].
+  /// Initializes empty maps for references and attributes.
+  /// Removes any identifier parents or attributes from the maps.
   Id(this._concept)
       : _referenceMap = <String, Reference?>{},
         _attributeMap = <String, Object?>{} {
@@ -21,46 +44,59 @@ class Id implements IId<Id> {
     }
   }
 
+  /// Gets the [concept] for this identifier.
   @override
   Concept get concept => _concept;
 
+  /// Gets the number of parent references in this identifier.
   @override
   int get referenceLength => _referenceMap.length;
 
+  /// Gets the number of attributes in this identifier.
   @override
   int get attributeLength => _attributeMap.length;
 
+  /// Gets the total number of components (references + attributes) in this identifier.
   @override
   int get length => referenceLength + attributeLength;
 
+  /// Gets the reference for the given parent [code].
   @override
   Reference? getReference(String code) => _referenceMap[code];
 
+  /// Sets the reference for the given parent [code].
   @override
   void setReference(String code, Reference? reference) {
     _referenceMap[code] = reference;
   }
 
+  /// Sets a parent entity reference for the given parent [code].
+  /// Creates a new [Reference] from the entity's OID and concept information.
   void setParent(String code, Entity entity) {
     Reference reference = Reference(entity.oid.toString(), entity.concept.code,
         entity.concept.entryConcept.code);
     setReference(code, reference);
   }
 
+  /// Gets the attribute value for the given attribute [code].
   @override
   Object? getAttribute(String code) => _attributeMap[code];
 
+  /// Sets the attribute value for the given attribute [code].
   @override
   void setAttribute(String code, Object? attribute) {
     _attributeMap[code] = attribute;
   }
 
+  /// Computes the hash code for this identifier based on its concept,
+  /// references, and attributes.
   @override
   int get hashCode =>
       (_concept.hashCode + _referenceMap.hashCode + _attributeMap.hashCode)
           .hashCode;
 
-  /// Two ids are equal if their parents are equal.
+  /// Checks if the parent references of this identifier are equal to those of [id].
+  /// Only compares identifier parents (those marked with [Parent.identifier]).
   bool equalParents(Id id) {
     for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.identifier) {
@@ -74,7 +110,8 @@ class Id implements IId<Id> {
     return true;
   }
 
-  /// Two ids are equal if their attributes are equal.
+  /// Checks if the attributes of this identifier are equal to those of [id].
+  /// Only compares identifier attributes (those marked with [Attribute.identifier]).
   bool equalAttributes(Id id) {
     for (Attribute a in concept.attributes.whereType<Attribute>()) {
       if (a.identifier) {
@@ -86,8 +123,11 @@ class Id implements IId<Id> {
     return true;
   }
 
-  /// Checks if the id is equal in content to the given id.
-  /// Two ids are equal if they have the same content.
+  /// Checks if this identifier is equal in content to the given [id].
+  /// Two identifiers are equal if they have:
+  /// - The same concept
+  /// - Equal parent references
+  /// - Equal attributes
   bool equals(Id id) {
     if (_concept != id.concept) {
       return false;
@@ -101,33 +141,12 @@ class Id implements IId<Id> {
     return true;
   }
 
-  /// == see:
-  /// https://www.dartlang.org/docs/dart-up-and-running/contents/ch02.html#op-equality
-  /// http://work.j832.com/2014/05/equality-and-dart.html
-  ///
-  /// To test whether two objects x and y represent the same thing,
-  /// use the == operator.
-  ///
-  /// (In the rare case where you need to know
-  /// whether two objects are the exact same object, use the identical()
-  /// function instead.)
-  ///
-  /// Here is how the == operator works:
-  ///
-  /// If x or y is null, return true if both are null,
-  /// and false if only one is null.
-  ///
-  /// Return the result of the method invocation x.==(y).
-  ///
-  /// Evolution:
-  ///
-  /// If x===y, return true.
-  /// Otherwise, if either x or y is null, return false.
-  /// Otherwise, return the result of x.equals(y).
-  ///
-  /// The newer spec is:
-  /// a) if either x or y is null, do identical(x, y)
-  /// b) otherwise call operator ==
+  /// Implements the equality operator (==) for comparing identifiers.
+  /// 
+  /// Two identifiers are considered equal if:
+  /// - They are the same object (identical)
+  /// - They are both null
+  /// - They have equal content (same concept, references, and attributes)
   @override
   bool operator ==(Object other) {
     if (other is Id) {
@@ -146,29 +165,14 @@ class Id implements IId<Id> {
     }
   }
 
-  /*
-   bool operator ==(Object other) {
-     if (other is Id) {
-       Id id = other;
-       if (this == null && id == null) {
-         return true;
-       } else if (this == null || id == null) {
-         return false;
-       } else if (identical(this, id)) {
-         return true;
-       } else {
-         return equals(id);
-       }
-     } else {
-       return false;
-     }
-   }
-   */
-
-  /// Compares two ids based on parents.
-  /// If the result is less than 0 then the first id is less than the second,
-  /// if it is equal to 0 they are equal and
-  /// if the result is greater than 0 then the first is greater than the second.
+  /// Compares the parent references of this identifier with those of [id].
+  /// 
+  /// Returns:
+  /// - A negative number if this identifier's parents are less than [id]'s
+  /// - Zero if they are equal
+  /// - A positive number if this identifier's parents are greater than [id]'s
+  /// 
+  /// Throws [IdException] if the identifier has no parents.
   int compareParents(Id id) {
     if (id.referenceLength > 0) {
       var compare = 0;
@@ -190,10 +194,14 @@ class Id implements IId<Id> {
     throw IdException('${_concept.code}.id does not have parents.');
   }
 
-  /// Compares two ids based on attributes.
-  /// If the result is less than 0 then the first id is less than the second,
-  /// if it is equal to 0 they are equal and
-  /// if the result is greater than 0 then the first is greater than the second.
+  /// Compares the attributes of this identifier with those of [id].
+  /// 
+  /// Returns:
+  /// - A negative number if this identifier's attributes are less than [id]'s
+  /// - Zero if they are equal
+  /// - A positive number if this identifier's attributes are greater than [id]'s
+  /// 
+  /// Throws [IdException] if the identifier has no attributes.
   int compareAttributes(Id id) {
     if (id.attributeLength > 0) {
       var compare = 0;
@@ -212,10 +220,14 @@ class Id implements IId<Id> {
     throw IdException('${_concept.code}.id does not have attributes.');
   }
 
-  /// Compares two ids based on parent entity ids and attributes.
-  /// If the result is less than 0 then the first id is less than the second,
-  /// if it is equal to 0 they are equal and
-  /// if the result is greater than 0 then the first is greater than the second.
+  /// Compares this identifier with [id] based on parent references and attributes.
+  /// 
+  /// Returns:
+  /// - A negative number if this identifier is less than [id]
+  /// - Zero if they are equal
+  /// - A positive number if this identifier is greater than [id]
+  /// 
+  /// Throws [IdException] if the identifier is not defined.
   @override
   int compareTo(Id id) {
     if (id.length > 0) {
@@ -231,7 +243,7 @@ class Id implements IId<Id> {
     throw IdException('${_concept.code}.id is not defined.');
   }
 
-  /// Drops the end of a string.
+  /// Removes the given [end] string from the end of [text] if present.
   String _dropEnd(String text, String end) {
     String withoutEnd = text;
     int endPosition = text.lastIndexOf(end);
@@ -242,7 +254,8 @@ class Id implements IId<Id> {
     return withoutEnd;
   }
 
-  /// Returns a string that represents this id.
+  /// Returns a string representation of this identifier.
+  /// The format includes all parent references and attributes.
   @override
   String toString() {
     String result = '';
@@ -250,9 +263,10 @@ class Id implements IId<Id> {
       _referenceMap.forEach((k, v) => result = '$result $v,');
     }
     if (attributeLength > 0) {
-      _attributeMap.forEach((k, v) => result = '$result $v,');
+      _attributeMap.forEach((k, v) => result = '$result $k:$v,');
     }
-    return '(${_dropEnd(result.trim(), ',')})';
+    result = _dropEnd(result, ',');
+    return result;
   }
 
   /// Displays the id in a human-readable format in terminal.
