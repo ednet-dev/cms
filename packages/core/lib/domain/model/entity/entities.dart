@@ -1,32 +1,83 @@
 part of ednet_core;
 
+/// A collection of domain entities that implements the [IEntities] interface.
+///
+/// The [Entities] class manages a collection of domain entities of type [E], where [E] extends [Entity<E>].
+/// It provides functionality for:
+/// - Adding, removing, and updating entities
+/// - Validating entities against domain rules
+/// - Managing entity relationships and references
+/// - Serializing/deserializing entities to/from JSON
+/// - Applying domain policies and validations
+///
+/// The class maintains several internal maps for efficient entity lookup:
+/// - [_oidEntityMap]: Maps OID timestamps to entities
+/// - [_codeEntityMap]: Maps entity codes to entities
+/// - [_idEntityMap]: Maps entity IDs to entities
+///
+/// Example usage:
+/// ```dart
+/// final entities = Entities<Product>();
+/// entities.concept = productConcept;
+/// 
+/// final product = Product();
+/// product.name = 'Laptop';
+/// entities.add(product);
+/// ```
 class Entities<E extends Entity<E>> implements IEntities<E> {
+  /// The [Concept] that defines the metadata for this collection.
+  /// If null, operations will throw [ConceptException].
   Concept? _concept;
+
+  /// The underlying list of entities.
   var _entityList = <E>[];
+
+  /// Maps OID timestamps to entities for fast lookup.
   final _oidEntityMap = <int, E>{};
+
+  /// Maps entity codes to entities for fast lookup.
   final _codeEntityMap = <String, E>{};
+
+  /// Maps entity IDs to entities for fast lookup.
   final _idEntityMap = <String, E>{};
 
+  /// Creates a new empty collection of entities.
   Entities();
 
+  /// Accumulates validation exceptions during entity operations.
   @override
   ValidationExceptions exceptions = ValidationExceptions();
+
+  /// Reference to the source collection if this is a derived collection.
   @override
   Entities<E>? source;
 
+  /// Minimum cardinality constraint (default: '0').
   String minC = '0';
+
+  /// Maximum cardinality constraint (default: 'N' for unlimited).
   String maxC = 'N';
+
+  /// Whether to perform pre-validation checks.
   bool pre = false;
+
+  /// Whether to perform post-validation checks.
   bool post = false;
+
+  /// Whether changes should propagate to the source collection.
   bool propagateToSource = false;
+
+  /// Random number generator for entity selection.
   var randomGen = Random();
 
+  /// Creates a new empty collection with the same concept as this one.
   Entities<E> newEntities() {
     var entities = Entities<E>();
     entities.concept = _concept!;
     return entities;
   }
 
+  /// Sets the [concept] for this collection and initializes validation flags.
   set concept(Concept concept) {
     _concept = concept;
     pre = true;
@@ -34,12 +85,15 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     propagateToSource = true;
   }
 
+  /// Creates a new entity instance with the same concept as this collection.
   Entity<E> newEntity() {
     var conceptEntity = Entity<E>();
     conceptEntity.concept = _concept!;
     return conceptEntity;
   }
 
+  /// Gets the [concept] for this collection.
+  /// Throws [ConceptException] if not set.
   @override
   Concept get concept {
     if (_concept == null) {
@@ -49,31 +103,44 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return _concept!;
   }
 
+  /// Returns the first entity in the collection.
   @override
   E get first => _entityList.first;
 
+  /// Whether the collection is empty.
   @override
   bool get isEmpty => _entityList.isEmpty;
 
+  /// Whether the collection has at least one entity.
   @override
   bool get isNotEmpty => _entityList.isNotEmpty;
 
+  /// Returns an iterator over the entities.
   @override
   Iterator<E> get iterator => _entityList.iterator;
 
+  /// Returns the last entity in the collection.
   @override
   E get last => _entityList.last;
 
+  /// Returns the number of entities in the collection.
   @override
   int get length => _entityList.length;
 
-  int get count => length; // for my soul
+  /// Alias for [length] for convenience.
+  int get count => length;
+
+  /// Returns the single entity in the collection.
+  /// Throws [StateError] if collection is empty or has multiple entities.
   @override
   E get single => _entityList.single;
 
+  /// Returns true if any entity satisfies the predicate [f].
   @override
   bool any(bool Function(E entity) f) => _entityList.any(f);
 
+  /// Checks if the collection contains the given entity.
+  /// Compares entities by their OID.
   @override
   bool contains(Object? entity) {
     E element = _oidEntityMap[(entity as E).oid.timeStamp]!;
@@ -83,81 +150,97 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return false;
   }
 
+  /// Returns the entity at the given [index].
   @override
-  E elementAt(int index) => _entityList.elementAt(index); // should we keep it?
-  E at(int index) => elementAt(index); // should we keep it?
+  E elementAt(int index) => _entityList.elementAt(index);
+
+  /// Alias for [elementAt].
+  E at(int index) => elementAt(index);
+
+  /// Returns true if all entities satisfy the predicate [f].
   @override
   bool every(bool Function(E entity) f) => _entityList.every(f);
 
+  /// Expands each entity into multiple elements using [toElements].
   @override
   Iterable<T> expand<T>(Iterable<T> Function(E element) toElements) =>
-      _entityList.expand(toElements); // should we keep it?
+      _entityList.expand(toElements);
 
+  /// Returns the first entity that satisfies the predicate [f].
+  /// If no entity satisfies [f], returns the result of [orElse] if provided.
   @override
   E firstWhere(bool Function(E entity) f, {E Function()? orElse}) =>
       _entityList.firstWhere(f);
 
-  ///
-  /// 'Entities.fold' ('dynamic Function(dynamic, dynamic Function(dynamic, E))')
-  /// 'Iterable.fold' ('T Function<T>(T, T Function(T, E))'). (Documentation)
-
+  /// Reduces the collection to a single value using [combine].
   @override
   T fold<T>(T initialValue, T Function(T previousValue, E element) combine) =>
       _entityList.fold(initialValue, combine);
 
+  /// Applies [action] to each entity.
   @override
   void forEach(void Function(E element) action) => _entityList.forEach(action);
 
+  /// Joins the string representations of entities with [separator].
   @override
   String join([String separator = '']) => _entityList.join(separator);
 
+  /// Returns the last entity that satisfies the predicate [f].
+  /// If no entity satisfies [f], returns the result of [orElse] if provided.
   @override
   E lastWhere(bool Function(E entity) f, {E Function()? orElse}) =>
       _entityList.lastWhere(f);
 
+  /// Maps each entity to a new value using [f].
   @override
   Iterable<T> map<T>(T Function(E) f) => _entityList.map(f);
 
+  /// Reduces the collection to a single entity using [combine].
   @override
   E reduce(E Function(E value, E entity) combine) =>
-      _entityList.reduce(combine); // E? value
+      _entityList.reduce(combine);
+
+  /// Returns the single entity that satisfies the predicate [f].
+  /// If no entity or multiple entities satisfy [f], returns the result of [orElse] if provided.
   @override
   E singleWhere(bool Function(E entity) f, {E Function()? orElse}) =>
       _entityList.singleWhere(f);
 
-  ///
-  /// 'Entities.firstWhere' ('E Function(bool Function(E), {E Function() orElse})')
-  ///
-  /// 'Iterable.firstWhere' ('E Function(bool Function(E), {E Function()? orElse})').
-  ///
-  ///
+  /// Returns all entities except the first [n].
   @override
   Iterable<E> skip(int n) => _entityList.skip(n);
 
+  /// Returns all entities after the first one that doesn't satisfy [f].
   @override
   Iterable<E> skipWhile(bool Function(E entity) f) => _entityList.skipWhile(f);
 
+  /// Returns the first [n] entities.
   @override
   Iterable<E> take(int n) => _entityList.take(n);
 
+  /// Returns all entities up to but not including the first one that doesn't satisfy [f].
   @override
   Iterable<E> takeWhile(bool Function(E entity) f) => _entityList.takeWhile(f);
 
+  /// Returns a list containing all entities.
   @override
   List<E> toList({bool growable = true}) => _entityList.toList(growable: true);
 
+  /// Returns a set containing all entities.
   @override
   Set<E> toSet() => _entityList.toSet();
 
+  /// Returns all entities that satisfy the predicate [f].
   @override
   Iterable<E> where(bool Function(E entity) f) => _entityList.where(f);
 
-  // set for Polymer only:
-  // entities.internalList = toObservable(entities.internalList);
+  /// Sets the internal list of entities.
+  /// Used for Polymer compatibility.
   set internalList(List<E> observableList) {
     _entityList = observableList;
   }
 
+  /// Returns the first entity that has the given attribute value.
   @override
   E firstWhereAttribute(String code, Object attribute) {
     var selectionEntities = selectWhereAttribute(code, attribute);
@@ -168,6 +251,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         'E firstWhereAttribute(String code, Object attribute): code = $code, attribute = $attribute');
   }
 
+  /// Returns a random entity from the collection.
   @override
   E random() {
     if (!isEmpty) {
@@ -176,6 +260,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     throw EDNetException('E random(): length = $length');
   }
 
+  /// Returns the entity with the given [oid], or null if not found.
   @override
   E? singleWhereOid(Oid oid) {
     if (_oidEntityMap[oid.timeStamp] != null) {
@@ -185,6 +270,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return null;
   }
 
+  /// Returns the entity with the given [oid] from this collection or its internal children.
   @override
   Entity? internalSingle(Oid oid) {
     if (isEmpty) {
@@ -211,6 +297,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return null;
   }
 
+  /// Returns the collection containing the entity with the given [oid].
   @override
   Entities? internalChild(Oid oid) {
     if (isEmpty) {
@@ -236,11 +323,13 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return null;
   }
 
+  /// Returns the entity with the given [code], or null if not found.
   @override
   E? singleWhereCode(String? code) {
     return _codeEntityMap[code];
   }
 
+  /// Returns the entity with the given [id], or null if not found.
   @override
   E? singleWhereId(Id id) {
     var entity = _idEntityMap[id.toString()];
@@ -251,13 +340,14 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return null;
   }
 
+  /// Returns the entity with the given attribute value.
   @override
   E? singleWhereAttributeId(String code, Object attribute) {
     return singleWhereId((Id(_concept!))..setAttribute(code, attribute));
   }
 
-  /// Copies the entities.
-  /// It is not a deep copy.
+  /// Creates a shallow copy of this collection.
+  /// The copy shares the same concept but has its own entity list.
   @override
   Entities<E> copy() {
     if (_concept == null) {
@@ -277,9 +367,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return copiedEntities;
   }
 
-  /// If compare function is not passed, compareTo method will be used.
-  /// If there is no compareTo method on specific entity,
-  /// the Entity.compareTo method will be used (code if not null, otherwise id).
+  /// Orders the entities using the given [compare] function.
+  /// If [compare] is not provided, uses the entity's [compareTo] method.
   @override
   Entities<E> order([int Function(E a, E b)? compare]) {
     if (_concept == null) {
@@ -291,7 +380,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     orderedEntities.post = false;
     orderedEntities.propagateToSource = false;
     List<E> sortedList = toList();
-    // in place sort
     sortedList.sort(compare);
     for (var entity in sortedList) {
       orderedEntities.add(entity);
@@ -303,6 +391,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return orderedEntities;
   }
 
+  /// Returns entities that satisfy the predicate [f].
   @override
   Entities<E> selectWhere(bool Function(E) f) {
     if (_concept == null) {
@@ -325,6 +414,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return selectedEntities;
   }
 
+  /// Returns entities that have the given attribute value.
   @override
   Entities<E> selectWhereAttribute(String code, Object attribute) {
     if (_concept == null) {
@@ -352,6 +442,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return selectedEntities;
   }
 
+  /// Returns entities that have the given parent.
   @override
   Entities<E> selectWhereParent(String code, IEntity parent) {
     if (_concept == null) {
@@ -379,6 +470,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return selectedEntities;
   }
 
+  /// Returns all entities except the first [n].
   @override
   Entities<E> skipFirst(int n) {
     if (_concept == null) {
@@ -400,6 +492,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return selectedEntities;
   }
 
+  /// Returns all entities after the first one that doesn't satisfy [f].
   @override
   Entities<E> skipFirstWhile(bool Function(E entity) f) {
     if (_concept == null) {
@@ -422,6 +515,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return selectedEntities;
   }
 
+  /// Returns the first [n] entities.
   @override
   Entities<E> takeFirst(int n) {
     if (_concept == null) {
@@ -443,6 +537,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return selectedEntities;
   }
 
+  /// Returns all entities up to but not including the first one that doesn't satisfy [f].
   @override
   Entities<E> takeFirstWhile(bool Function(E entity) f) {
     if (_concept == null) {
@@ -465,9 +560,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return selectedEntities;
   }
 
+  /// Converts the collection to a JSON string.
   @override
   String toJson() => jsonEncode(toJsonList());
 
+  /// Converts the collection to a list of JSON maps.
   List<Map<String, Object>> toJsonList() {
     List<Map<String, Object>> entityList = <Map<String, Object>>[];
     for (E entity in _entityList) {
@@ -476,13 +573,15 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return entityList;
   }
 
+  /// Loads entities from a JSON string.
   @override
   void fromJson(String entitiesJson) {
     List<Map<String, Object>> entitiesList = jsonDecode(entitiesJson);
     fromJsonList(entitiesList);
   }
 
-  /// Loads entities without validations to this, which must be empty.
+  /// Loads entities from a list of JSON maps.
+  /// The collection must be empty before loading.
   void fromJsonList(entitiesList, [Entity? internalParent]) {
     if (_concept == null) {
       throw new ConceptException('entities concept does not exist.');
@@ -504,8 +603,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     post = beforePost;
   }
 
-  /// entity
-  /// Returns a string that represents this entity by using oid and code.
+  /// Returns a string representation of this collection.
   @override
   String toString() {
     if (_concept == null) {
@@ -515,6 +613,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return '${_concept!.code}: entities:$length';
   }
 
+  /// Removes all entities from the collection.
   @override
   void clear() {
     _entityList.clear();
@@ -524,15 +623,14 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     exceptions.clear();
   }
 
-  /// If compare function is not passed, compareTo method will be used.
-  /// If there is no compareTo method on specific entity,
-  /// the Entity.compareTo method will be used (code if not null, otherwise id).
+  /// Sorts the entities using the given [compare] function.
+  /// If [compare] is not provided, uses the entity's [compareTo] method.
   @override
   void sort([int Function(E a, E b)? compare]) {
-    // in place sort
     _entityList.sort(compare);
   }
 
+  /// Validates an entity before adding it to the collection.
   @override
   bool isValid(E entity) {
     if (!pre) {
@@ -564,16 +662,10 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return isValid;
   }
 
+  /// Validates uniqueness constraints for an entity.
   bool validateUnique(entity, bool isValid) {
     bool result = true;
 
-    // uniqueness validation
-    // if (entity.code != null && singleWhereCode(entity.code) != null) {
-    //   var exception = new ValidationException(
-    //       'unique', '${entity.concept.code}.code is not unique.');
-    //   exceptions.add(exception);
-    //   result = false;
-    // }
     if (entity.id != null && singleWhereId(entity.id) != null) {
       ValidationException exception = new ValidationException('unique',
           '${entity.concept.code}.id ${entity.id.toString()} is not unique.');
@@ -584,6 +676,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return result;
   }
 
+  /// Validates increment and required constraints for an entity.
   bool validateIncrementAndRequired(entity, bool isValid) {
     for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       var shouldIncrement = a.increment != null;
@@ -626,6 +719,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return isValid;
   }
 
+  /// Validates cardinality constraints.
   bool validateCardinality(bool isValid) {
     if (maxC != 'N') {
       int maxInt;
@@ -647,6 +741,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return isValid;
   }
 
+  /// Adds an entity to the collection if it passes validation.
   @override
   bool add(dynamic entity) {
     bool added = false;
@@ -681,7 +776,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           post = beforePost;
         }
       } else {
-        // not propagated
         var msg = '${entity.concept.code} entity (${entity.oid}) '
             'was not added - propagation to the source ${source?.concept.code} '
             'entities was not successful';
@@ -691,6 +785,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return added;
   }
 
+  /// Validates an entity after adding it to the collection.
   @override
   bool postAdd(E entity) {
     if (!post) {
@@ -707,11 +802,10 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
     bool result = true;
 
-    //...
-
     return result;
   }
 
+  /// Validates an entity before removing it from the collection.
   @override
   bool preRemove(E entity) {
     if (!pre) {
@@ -755,6 +849,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return result;
   }
 
+  /// Removes an entity from the collection if it passes validation.
   @override
   bool remove(E entity) {
     bool removed = false;
@@ -790,7 +885,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           }
         }
       } else {
-        // not propagated
         var msg = '${entity.concept.code} entity (${entity.oid}) '
             'was not removed - propagation to the source ${source!.concept.code} '
             'entities was not successful';
@@ -800,6 +894,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return removed;
   }
 
+  /// Validates an entity after removing it from the collection.
   @override
   bool postRemove(E entity) {
     if (!post) {
@@ -815,17 +910,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
     bool result = true;
 
-    //...
-
     return result;
   }
 
-  /// Updates removes the before entity and adds the after entity, in order to
-  /// update oid, code and id entity maps.
-  ///
-  /// Used only if oid, code or id are set to a new value in the after entity.
-  /// They can be set only with the help of meta:
-  /// concept.updateOid, concept.updateCode or property.update.
+  /// Updates an entity by removing the old version and adding the new version.
+  /// Only works if oid, code, or id are changed.
   bool update(E beforeEntity, E afterEntity) {
     if (_concept == null) {
       throw new ConceptException('Entities.update: concept is not defined.');
@@ -863,6 +952,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return false;
   }
 
+  /// Adds all entities from another collection.
   bool addFrom(Entities<E> entities) {
     bool allAdded = true;
     if (_concept == entities.concept) {
@@ -875,6 +965,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return allAdded;
   }
 
+  /// Removes all entities from another collection.
   bool removeFrom(Entities<E> entities) {
     bool allRemoved = true;
     if (_concept == entities.concept) {
@@ -887,6 +978,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return allRemoved;
   }
 
+  /// Updates attributes of entities from another collection.
   bool setAttributesFrom(Entities<E> entities) {
     bool allSet = true;
     if (_concept == entities.concept) {
@@ -907,7 +999,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return allSet;
   }
 
-  /// Displays (prints) a title, then entities.
+  /// Displays the entities in a formatted way.
   void display(
       {String title = 'Entities',
       String prefix = '',
@@ -928,11 +1020,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       s = '$prefix  ';
     }
     if (title != '') {
-      //print('');
       print('$s======================================');
       print('$s$title                                ');
       print('$s======================================');
-      //print('');
     }
     for (E e in _entityList) {
       e.display(
@@ -943,34 +1033,40 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
   }
 
+  /// Displays the OID map.
   void displayOidMap() {
     _oidEntityMap.forEach((k, v) {
       print('oid $k: $v');
     });
   }
 
+  /// Displays the code map.
   void displayCodeMap() {
     _codeEntityMap.forEach((k, v) {
       print('code $k: $v');
     });
   }
 
+  /// Displays the ID map.
   void displayIdMap() {
     _idEntityMap.forEach((k, v) {
       print('id $k: $v');
     });
   }
 
+  /// Returns an iterable that yields all entities from this collection followed by [other].
   @override
   Iterable<E> followedBy(Iterable<E> other) {
     return _entityList.followedBy(other);
   }
 
+  /// Returns an iterable that yields all entities of type [T].
   @override
   Iterable<T> whereType<T>() {
     return _entityList.whereType<T>();
   }
 
+  /// Integrates entities from another collection.
   @override
   void integrate(IEntities<E> fromEntities) {
     for (var entity in toList()) {
@@ -992,6 +1088,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
   }
 
+  /// Integrates entities to add from another collection.
   @override
   void integrateAdd(IEntities<E> addEntities) {
     for (var addEntity in addEntities) {
@@ -1002,6 +1099,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
   }
 
+  /// Integrates entities to remove from another collection.
   @override
   void integrateRemove(IEntities<E> removeEntities) {
     for (var removeEntity in removeEntities) {
@@ -1012,6 +1110,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
   }
 
+  /// Integrates entities to set from another collection.
   @override
   void integrateSet(IEntities<E> setEntities) {
     for (var setEntity in setEntities) {
@@ -1025,6 +1124,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
   }
 
+  /// Returns an iterable that yields all entities cast to type [T].
   @override
   Iterable<T> cast<T>() {
     final it = () sync* {
@@ -1032,16 +1132,15 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         yield e;
       }
     }();
-    // If this iterable only contains instances of R, all operations will work correctly. If any operation tries to access an element that is not an instance of R, the access will throw instead.
     try {
       it.elementAt(0);
     } on TypeError catch (_) {
       throw TypeError();
     }
-    // When the returned iterable creates a new object that depends on the type R, e.g., from toList, it will have exactly the type R.
     return it as Iterable<T>;
   }
 
+  /// Converts the collection to a graph structure.
   Map<String, dynamic> toGraph() {
     return {
       'type': runtimeType.toString(),
