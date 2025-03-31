@@ -16,9 +16,6 @@ packages:
 # usePubspecOverrides before enabling this feature.
 #
 # See https://melos.invertase.dev/getting-started#setup
-command:
-  bootstrap:
-    usePubspecOverrides: true
 
 scripts:
   analyze:
@@ -135,7 +132,4 @@ scripts:
       git tag ednet_one-v$VERSION && \
       git push origin main --tags && \
       melos publish --scope="ednet_one" --no-dry-run
-
-  environment:
-    sdk: '>=3.7.0 <4.0.0'
-    flutter: ">=3.29.0"
+  
