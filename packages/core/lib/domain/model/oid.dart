@@ -1,27 +1,58 @@
 part of ednet_core;
 
+/// A class representing a unique object identifier (OID) in the domain model.
+///
+/// The [Oid] class provides a way to generate and manage unique identifiers for domain entities.
+/// It uses a combination of timestamp and increment to ensure uniqueness.
+///
+/// Example usage:
+/// ```dart
+/// // Create a new OID with current timestamp
+/// final oid1 = Oid();
+///
+/// // Create an OID with a specific timestamp
+/// final oid2 = Oid.ts(1234567890);
+///
+/// // Compare OIDs
+/// if (oid1.compareTo(oid2) < 0) {
+///   print('oid1 is less than oid2');
+/// }
+/// ```
 class Oid implements Comparable<Oid> {
+  /// Static counter to ensure uniqueness when multiple OIDs are created in the same millisecond.
   static int _increment = 0;
 
+  /// The timestamp value of this OID.
   int _timeStamp = 0;
 
+  /// Creates a new [Oid] instance with the current timestamp.
+  ///
+  /// The timestamp is calculated as the current milliseconds since epoch plus an increment
+  /// to ensure uniqueness even when multiple OIDs are created in the same millisecond.
   Oid() {
     DateTime nowDate = DateTime.now();
-    int nowValue =
-        nowDate.millisecondsSinceEpoch; // versus nowDate.millisecond ?
+    int nowValue = nowDate.millisecondsSinceEpoch;
     _timeStamp = nowValue + _increment++;
   }
 
+  /// Creates a new [Oid] instance with a specific timestamp.
+  ///
+  /// [timeStamp] is the timestamp value to use for this OID.
   Oid.ts(int timeStamp) {
     _timeStamp = timeStamp;
   }
 
+  /// Gets the timestamp value of this OID.
   int get timeStamp => _timeStamp;
 
+  /// Returns the hash code of this OID based on its timestamp.
   @override
   int get hashCode => _timeStamp.hashCode;
 
-  /// Two oids are equal if their time stamps are equal.
+  /// Checks if this OID is equal to another OID.
+  ///
+  /// [oid] is the OID to compare with.
+  /// Returns true if the timestamps are equal, false otherwise.
   bool equals(Oid oid) {
     if (_timeStamp == oid.timeStamp) {
       return true;
@@ -29,32 +60,15 @@ class Oid implements Comparable<Oid> {
     return false;
   }
 
-  /// == see:
-  /// https://www.dartlang.org/docs/dart-up-and-running/contents/ch02.html#op-equality
+  /// Compares this OID with another object for equality.
   ///
-  /// To test whether two objects x and y represent the same thing,
-  /// use the == operator.
+  /// [other] is the object to compare with.
+  /// Returns true if [other] is an OID with the same timestamp, false otherwise.
   ///
-  /// (In the rare case where you need to know
-  /// whether two objects are the exact same object, use the identical()
-  /// function instead.)
-  ///
-  /// Here is how the == operator works:
-  ///
-  /// If x or y is null, return true if both are null,
-  /// and false if only one is null.
-  ///
-  /// Return the result of the method invocation x.==(y).
-  ///
-  /// Evolution:
-  ///
-  /// If x===y, return true.
-  /// Otherwise, if either x or y is null, return false.
-  /// Otherwise, return the result of x.equals(y).
-  ///
-  /// The newer spec is:
-  /// a) if either x or y is null, do identical(x, y)
-  /// b) otherwise call operator ==
+  /// This implementation follows Dart's equality operator guidelines:
+  /// 1. If either object is null, returns true only if both are null
+  /// 2. If the objects are identical, returns true
+  /// 3. Otherwise, compares the timestamps using [equals]
   @override
   bool operator ==(Object other) {
     if (other is Oid) {
@@ -69,32 +83,21 @@ class Oid implements Comparable<Oid> {
     }
   }
 
-  /*
-  bool operator ==(Object other) {
-    if (other is Oid) {
-      Oid oid = other;
-      if (this == null && oid == null) {
-        return true;
-      } else if (this == null || oid == null) {
-        return false;
-      } else if (identical(this, oid)) {
-        return true;
-      } else {
-        return equals(oid);
-      }
-    } else {
-      return false;
-    }
-  }
-  */
-
-  /// Compares two oids based on unique numbers. If the result is less than 0
-  /// then the first entity is less than the second, if it is equal to 0 they
-  /// are equal and if the result is greater than 0 then the first is greater
-  /// than the second.
+  /// Compares this OID with another OID for ordering.
+  ///
+  /// [oid] is the OID to compare with.
+  /// Returns:
+  /// - A negative number if this OID is less than [oid]
+  /// - Zero if this OID is equal to [oid]
+  /// - A positive number if this OID is greater than [oid]
+  ///
+  /// The comparison is based on the timestamp values.
   @override
   int compareTo(Oid oid) => _timeStamp.compareTo(oid._timeStamp);
 
+  /// Returns a string representation of this OID.
+  ///
+  /// Returns the timestamp value as a string.
   @override
   String toString() => _timeStamp.toString();
 }
