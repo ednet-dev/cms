@@ -42,6 +42,8 @@ export 'package:ednet_core/domain/model/queries/interfaces/i_query_handler.dart'
 export 'package:ednet_core/domain/model/queries/query.dart';
 export 'package:ednet_core/domain/model/queries/query_result.dart';
 export 'package:ednet_core/domain/model/queries/query_dispatcher.dart';
+export 'package:ednet_core/domain/model/queries/entity_query_result.dart';
+export 'package:ednet_core/domain/model/queries/concept_query.dart';
 
 part 'model/i_model_entries.dart';
 part 'model/model_entries.dart';
