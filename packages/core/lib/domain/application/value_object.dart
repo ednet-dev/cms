@@ -8,10 +8,9 @@ part of ednet_core;
 /// - Is defined by its attributes
 /// - Is equality-comparable by value, not reference
 ///
-/// Value objects are used to:
-/// - Encapsulate business rules
-/// - Represent concepts that have no continuity or identity
-/// - Ensure data validity and consistency
+/// This class extends the base [model.ValueObject] interface to ensure
+/// compatibility with the core domain model while adding enhanced functionality
+/// like equality comparison, validation, and copying.
 ///
 /// Example usage:
 /// ```dart
@@ -42,9 +41,22 @@ part of ednet_core;
 ///
 ///   @override
 ///   List<Object> get props => [amount, currency];
+///   
+///   @override
+///   Map<String, dynamic> toJson() {
+///     return {
+///       'amount': amount.toString(),
+///       'currency': currency,
+///     };
+///   }
+///   
+///   @override
+///   Money copyWith() {
+///     return Money(amount: amount, currency: currency);
+///   }
 /// }
 /// ```
-abstract class ValueObject {
+abstract class ValueObject implements model.ValueObject {
   /// The list of properties that define this value object.
   ///
   /// This is used for equality comparison and hash code generation.
@@ -109,5 +121,43 @@ abstract class ValueObject {
   @override
   String toString() {
     return '$runtimeType(${props.map((prop) => prop.toString()).join(', ')})';
+  }
+  
+  /// Converts the value object to a map of key-value pairs.
+  /// 
+  /// This method is similar to toJson but can return non-serializable objects.
+  /// Useful for internal transformations.
+  /// 
+  /// Returns:
+  /// A map representation of this value object's properties
+  Map<String, dynamic> toMap() {
+    // Default implementation defers to toJson
+    return toJson();
+  }
+  
+  /// Creates a [SimpleValueObject] representation of this value object.
+  /// 
+  /// This is useful for compatibility with systems that expect
+  /// the model layer's SimpleValueObject format.
+  /// 
+  /// Returns:
+  /// A [model.SimpleValueObject] representation of this value object
+  model.SimpleValueObject toSimpleValueObject() {
+    final map = toMap();
+    final attributes = <model.ValueObjectAttribute>[];
+    
+    map.forEach((key, value) {
+      attributes.add(model.ValueObjectAttribute(
+        key: key,
+        value: value is model.ValueObject ? value.toJson() : value.toString()
+      ));
+    });
+    
+    return model.SimpleValueObject(
+      name: runtimeType.toString(),
+      description: toString(),
+      version: '1.0',
+      attributes: attributes,
+    );
   }
 } 

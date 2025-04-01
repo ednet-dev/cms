@@ -1,4 +1,9 @@
 {
     "IDX.aI.enableInlineCompletion": true,
-    "IDX.aI.enableCodebaseIndexing": true
+    "IDX.aI.enableCodebaseIndexing": true,
+    "cursor.general.enableShadowWorkspace": true,
+    "cursor.general.gitGraphIndexing": "enabled",
+    "cursor.cpp.disabledLanguages": [
+        "markdown"
+    ]
 }

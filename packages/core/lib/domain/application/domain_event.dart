@@ -64,6 +64,14 @@ abstract class IDomainEvent {
 
   /// Converts this event to a JSON representation.
   Map<String, dynamic> toJson();
+  
+  /// Converts this domain event to the base Event type.
+  ///
+  /// This method provides compatibility with the domain model layer.
+  ///
+  /// Returns:
+  /// An [Event] representation of this domain event
+  Event toBaseEvent();
 }
 
 /// Base implementation of a domain event.
@@ -134,4 +142,46 @@ class DomainEvent implements IDomainEvent {
       'entity': entity?.toJson(),
     };
   }
+  
+  @override
+  Event toBaseEvent() {
+    final data = <String, String>{};
+    final jsonMap = toJson();
+    
+    // Convert all values to strings for the Event
+    jsonMap.forEach((key, value) {
+      if (key != 'entity') { // Skip entity which is handled specially
+        data[key] = value.toString();
+      }
+    });
+    
+    return Event(
+      name: name,
+      timestamp: timestamp,
+      id: id,
+      data: data,
+      entityId: entity?.id?.toString(),
+      entityOid: entity?.oid.toString(),
+    );
+  }
+}
+
+/// Creates a domain event from a base Event.
+///
+/// This function provides a way to convert from the domain model Event
+/// to an application layer DomainEvent.
+///
+/// Parameters:
+/// - [baseEvent]: The base Event to convert
+/// - [entity]: Optional entity associated with the event
+///
+/// Returns:
+/// A [DomainEvent] created from the base Event
+IDomainEvent domainEventFromBaseEvent(Event baseEvent, {Entity? entity}) {
+  return DomainEvent(
+    name: baseEvent.name,
+    id: baseEvent.id,
+    timestamp: baseEvent.timestamp,
+    entity: entity,
+  );
 } 
