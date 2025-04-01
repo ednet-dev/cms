@@ -7,6 +7,121 @@ EDNet Core is the foundational Dart library for defining, managing, and evolving
 
 In essence, EDNet Core focuses on the "semantic backbone" of your application—your domain. It helps you describe your concepts, attributes, relationships, invariants, and domain events in a structured, platform-agnostic manner. EDNet Core then serves as a stable foundation for code generation, repository abstractions, UI scaffolds, and integrations with higher-level tools or platforms like EDNet CMS, EDNet DSL, and other EDNet ecosystem offerings.
 
+## Enhanced Query Capabilities
+
+EDNet Core now includes a powerful expression-based query system that enables complex, type-safe querying of domain entities.
+
+### Query Expression System
+
+The expression system allows for composable, type-safe query expressions:
+
+```dart
+// Create a simple attribute expression
+final priceExpression = AttributeExpression('price', ComparisonOperator.lessThan, 100);
+
+// Create a logical AND expression
+final categoryExpression = AttributeExpression('category', ComparisonOperator.equals, 'electronics');
+final combinedExpression = priceExpression.and(categoryExpression);
+
+// Create a relationship expression
+final assignedToJohnExpression = RelationshipExpression(
+  'assignedUser',
+  RelationshipType.parent,
+  AttributeExpression('name', ComparisonOperator.contains, 'John')
+);
+```
+
+### Fluent Query Builder
+
+A fluent query builder is available for constructing complex queries in a readable way:
+
+```dart
+final query = QueryBuilder.forConcept(productConcept, 'FindProducts')
+  .where('price').lessThan(100)
+  .and('name').contains('laptop')
+  .andWhere('category', RelationshipType.parent)
+    .where('name').equals('electronics')
+  .orderBy('price')
+  .paginate(1, 20)
+  .build();
+```
+
+### Key Features
+
+The enhanced query system provides:
+
+- **Composable Expressions**: Combine attribute filters, relationship traversals, and logical operations
+- **Type Safety**: Validate queries against concept metadata
+- **Relationship Traversal**: Query across parent and child relationships
+- **Advanced Filtering**: Support for a wide range of operators and functions
+- **Pagination and Sorting**: Built-in pagination and sorting capabilities
+
+### Expression Types
+
+The system includes various expression types:
+
+- **AttributeExpression**: Filter by attribute values
+- **LogicalExpression**: Combine expressions with AND/OR
+- **RelationshipExpression**: Filter based on related entities
+- **NotExpression**: Negate an expression
+- **FunctionExpression**: Apply functions to attributes
+- **ConstantExpression**: Use fixed boolean values
+
+### Integration with Drift
+
+The query system is fully integrated with the Drift database package:
+
+```dart
+final adapter = DriftExpressionQueryAdapter(driftDatabase);
+final result = await adapter.executeExpressionQuery(expressionQuery);
+```
+
+## Example Usage
+
+Here's a real-world example of using the query system in a product catalog application:
+
+```dart
+Future<EntityQueryResult<Entity<dynamic>>> searchProducts({
+  String? searchTerm,
+  String? category,
+  double? minPrice,
+  double? maxPrice,
+  bool? inStock,
+  int page = 1,
+  int pageSize = 20,
+}) async {
+  final queryBuilder = QueryBuilder.forConcept(_productConcept, 'SearchProducts');
+  
+  if (searchTerm != null && searchTerm.isNotEmpty) {
+    queryBuilder.where('name').contains(searchTerm)
+      .or('description').contains(searchTerm);
+  }
+  
+  if (category != null && category.isNotEmpty) {
+    queryBuilder.andWhere('category', RelationshipType.parent)
+      .where('name').equals(category);
+  }
+  
+  if (minPrice != null) {
+    queryBuilder.and('price').greaterThanOrEqual(minPrice);
+  }
+  
+  if (maxPrice != null) {
+    queryBuilder.and('price').lessThanOrEqual(maxPrice);
+  }
+  
+  if (inStock != null) {
+    queryBuilder.and('stockQuantity').greaterThan(0);
+  }
+  
+  final query = queryBuilder.orderBy('name')
+    .paginate(page, pageSize)
+    .build();
+  
+  return await _dispatcher.dispatch<ExpressionQuery, EntityQueryResult<Entity<dynamic>>>(query);
+}
+```
+
 ## Key Tenets
 EDNet Core elevates the role of domain models in software development. By combining DDD and EventStorming techniques with a meta-level approach, EDNet Core fosters quick iteration, richer semantics, and a smoother path from abstract concepts to fully functional applications. As part of the broader EDNet ecosystem, it lays the groundwork for more expressive, maintainable, and democratized software design.
 
@@ -19,18 +134,30 @@ EDNet Core elevates the role of domain models in software development. By combin
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
-2. [Installation & Setup](#installation--setup)
-3. [Defining a Domain](#defining-a-domain)
-4. [Adding Models and Entities](#adding-models-and-entities)
-5. [Relationships & Constraints](#relationships--constraints)
-6. [Initialization & Data Seeding](#initialization--data-seeding)
-7. [Code Generation with ednet\_code\_generation](#code-generation-with-ednet_code_generation)
-8. [Integration Points](#integration-points)
-9. [Testing & Validation](#testing--validation)
-10. [Best Practices](#best-practices)
-11. [Resources & Community](#resources--community)
-12. [Contributing](#contributing)
+- [EDNet Core](#ednet-core)
+  - [Overview](#overview)
+  - [Enhanced Query Capabilities](#enhanced-query-capabilities)
+    - [Query Expression System](#query-expression-system)
+    - [Fluent Query Builder](#fluent-query-builder)
+    - [Key Features](#key-features)
+    - [Expression Types](#expression-types)
+    - [Integration with Drift](#integration-with-drift)
+  - [Example Usage](#example-usage)
+  - [Key Tenets](#key-tenets)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Installation \& Setup](#installation--setup)
+  - [Defining a Domain](#defining-a-domain)
+  - [Adding Models and Entities](#adding-models-and-entities)
+  - [Relationships \& Constraints](#relationships--constraints)
+  - [Initialization \& Data Seeding](#initialization--data-seeding)
+  - [Code Generation with ednet\_code\_generation](#code-generation-with-ednet_code_generation)
+  - [Integration Points](#integration-points)
+  - [Testing \& Validation](#testing--validation)
+  - [Best Practices](#best-practices)
+  - [Resources \& Community](#resources--community)
+  - [Contributing](#contributing)
+  - [Contact](#contact)
 
 ## Prerequisites
 
@@ -67,7 +194,7 @@ class MyDomain extends Domain {
 }
 ```
 
-Domains contain one or more models (e.g., “Project”, “User”, “Proposal”), each capturing a part of the domain’s complexity.
+Domains contain one or more models (e.g., "Project", "User", "Proposal"), each capturing a part of the domain's complexity.
 
 ## Adding Models and Entities
 
@@ -164,11 +291,11 @@ The generated code provides a stable foundation for further expansions, validati
 
 - **EDNet CMS**: Combine with EDNet CMS to interpret domain models into dynamic web interfaces, collaborative modeling tools, and governance workflows.
 - **EDNet DSL**: Define domain models in a high-level YAML DSL and have EDNet Core generate the underlying code. Non-technical users can adjust the DSL, enabling a no-code or low-code approach.
-- **Custom Repositories and Services**: EDNet Core doesn’t lock you in; integrate your domain model with REST APIs, GraphQL endpoints, microservices, and other data layers as needed.
+- **Custom Repositories and Services**: EDNet Core doesn't lock you in; integrate your domain model with REST APIs, GraphQL endpoints, microservices, and other data layers as needed.
 
 ## Testing & Validation
 
-Leverage EDNet Core’s consistent structure to write comprehensive tests:
+Leverage EDNet Core's consistent structure to write comprehensive tests:
 
 ```dart
 test('Should have initial projects', () {
@@ -184,7 +311,7 @@ The stable structure makes it straightforward to test invariants, relationships,
 1. **Keep Domain Language Clean**: Use descriptive concept and attribute names aligned with real business language.
 2. **Modularization**: Split large domains into multiple models for clarity.
 3. **Leverage DSLs Early**: Start from simple YAML or code-based definitions and generate complex artifacts. Iterate frequently.
-4. **Test Often**: Integrations and invariants should be tested to ensure the domain’s logic remains correct as it evolves.
+4. **Test Often**: Integrations and invariants should be tested to ensure the domain's logic remains correct as it evolves.
 
 ## Resources & Community
 
