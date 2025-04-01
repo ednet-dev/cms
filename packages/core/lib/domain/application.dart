@@ -56,6 +56,7 @@ import 'package:ednet_core/domain/session.dart';
 
 // Export application services
 part 'application/application_service/application_service.dart';
+part 'application/application_service/concept_application_service.dart';
 
 // Export command-related components
 part 'application/command.dart';
@@ -67,6 +68,8 @@ part 'application/query_result.dart';
 part 'application/query_handler.dart';
 part 'application/query_handler/base_query_handler.dart';
 part 'application/query_handler/query_dispatcher.dart';
+part 'application/query_handler/concept_query_handler.dart';
+part 'application/query_handler/default_concept_query_handler.dart';
 
 // Export domain events
 part 'application/domain_event.dart';

@@ -13,14 +13,37 @@ abstract class IQuery {
   /// The name of the query.
   String get name;
   
+  /// The concept code this query targets, if applicable.
+  /// 
+  /// This enables concept-specific query handling and validation.
+  /// If null, the query is not specific to a single concept.
+  String? get conceptCode;
+  
   /// Gets the parameters for this query.
   ///
   /// Returns a map of parameter names to their values.
   Map<String, dynamic> getParameters();
   
+  /// Indicates if this query targets the specified concept.
+  /// 
+  /// This can be used for routing queries to the appropriate handlers
+  /// based on concept metadata.
+  /// 
+  /// [code] is the concept code to check against.
+  /// Returns true if this query targets the specified concept.
+  bool forConcept(String code) {
+    return conceptCode == code;
+  }
+  
   /// Creates a string representation of the query.
   ///
   /// This is useful for logging and debugging purposes.
   @override
-  String toString() => 'Query: $name, Parameters: ${getParameters()}';
+  String toString() {
+    String base = 'Query: $name, Parameters: ${getParameters()}';
+    if (conceptCode != null) {
+      base += ', Concept: $conceptCode';
+    }
+    return base;
+  }
 } 
