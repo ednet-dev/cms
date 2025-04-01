@@ -1,4 +1,6 @@
-part of ednet_core;
+part of application;
+
+import 'package:ednet_core/domain/model.dart' as model;
 
 /// Represents an application service that orchestrates domain operations.
 ///
@@ -21,7 +23,11 @@ part of ednet_core;
 ///     required List<ApplicationService> dependencies,
 ///   }) : super(repository, name: name, dependencies: dependencies);
 ///
-///   Future<OrderResult> createOrder(CreateOrderCommand command) async {
+///   Future<CommandResult> createOrder(CreateOrderCommand command) async {
+///     // Implementation
+///   }
+///   
+///   Future<QueryResult<List<Order>>> findActiveOrders(FindActiveOrdersQuery query) async {
 ///     // Implementation
 ///   }
 /// }
@@ -41,6 +47,12 @@ abstract class ApplicationService<T extends AggregateRoot> {
   /// This session bridges the application and domain layers,
   /// allowing application commands to be executed in the domain context.
   final IDomainSession? session;
+  
+  /// Query dispatcher for handling query operations.
+  ///
+  /// This dispatcher routes queries to their appropriate handlers,
+  /// providing a centralized entry point for query processing.
+  final QueryDispatcher? queryDispatcher;
 
   /// Creates a new application service.
   ///
@@ -49,13 +61,17 @@ abstract class ApplicationService<T extends AggregateRoot> {
   /// - [name]: Name of the service
   /// - [dependencies]: Other services this one depends on
   /// - [session]: Optional domain session for transaction management
+  /// - [queryDispatcher]: Optional query dispatcher for handling queries
   ApplicationService(
     this.repository, {
     required this.name,
     this.dependencies = const [],
     this.session,
+    this.queryDispatcher,
   });
 
+  // Command handling methods
+  
   /// Executes a command within a transactional context.
   /// 
   /// This method:
@@ -161,6 +177,64 @@ abstract class ApplicationService<T extends AggregateRoot> {
   /// - [event]: The event to process
   Future<void> processEvent(IDomainEvent event) async {
     // Base implementation - subclasses should override
+  }
+  
+  // Query handling methods
+  
+  /// Executes a query and returns a result.
+  ///
+  /// This method:
+  /// 1. Validates the query
+  /// 2. Dispatches it to the appropriate handler
+  /// 3. Returns the result
+  ///
+  /// This method supports the CQRS pattern by providing a clear
+  /// separation between command and query operations.
+  ///
+  /// Type parameters:
+  /// - [Q]: The type of query to execute
+  /// - [R]: The expected result type
+  ///
+  /// Parameters:
+  /// - [query]: The query to execute
+  ///
+  /// Returns:
+  /// A Future with the query result
+  Future<R> executeQuery<Q extends IQuery, R extends IQueryResult>(Q query) async {
+    if (!query.validate()) {
+      return QueryResult.failure("Query validation failed") as R;
+    }
+    
+    try {
+      if (queryDispatcher != null) {
+        // Use the query dispatcher if available
+        return await queryDispatcher!.dispatch<Q, R>(query);
+      } else {
+        // If no dispatcher is available, handle the query directly
+        return await _executeQueryInternal(query) as R;
+      }
+    } catch (e) {
+      // Handle exceptions
+      return QueryResult.failure("Query execution failed: $e") as R;
+    }
+  }
+  
+  /// Internal method to execute a query.
+  ///
+  /// This method should be overridden by subclasses to implement
+  /// direct query handling when no dispatcher is available.
+  ///
+  /// Parameters:
+  /// - [query]: The query to execute
+  ///
+  /// Returns:
+  /// A Future with the query result
+  Future<IQueryResult> _executeQueryInternal(IQuery query) async {
+    // Base implementation - subclasses should override
+    throw UnimplementedError(
+      "Query execution not implemented. Either provide a queryDispatcher " +
+      "or override _executeQueryInternal in your ApplicationService subclass."
+    );
   }
   
   /// Retrieves an aggregate by its identifier.

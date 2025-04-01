@@ -35,6 +35,14 @@ export 'package:ednet_core/domain/model/oid.dart';
 export 'package:ednet_core/domain/model/aggregate_root/aggregate_root.dart';
 export 'package:ednet_core/domain/model/criteria/filter_criteria.dart';
 
+// Export query-related components
+export 'package:ednet_core/domain/model/queries/interfaces/i_query.dart';
+export 'package:ednet_core/domain/model/queries/interfaces/i_query_result.dart';
+export 'package:ednet_core/domain/model/queries/interfaces/i_query_handler.dart';
+export 'package:ednet_core/domain/model/queries/query.dart';
+export 'package:ednet_core/domain/model/queries/query_result.dart';
+export 'package:ednet_core/domain/model/queries/query_dispatcher.dart';
+
 part 'model/i_model_entries.dart';
 part 'model/model_entries.dart';
 

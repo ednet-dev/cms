@@ -11,6 +11,7 @@
 /// - Use case orchestration
 /// - Transaction management
 /// - Command handling
+/// - Query handling (CQRS)
 /// - Event processing
 /// - External system integration
 ///
@@ -27,9 +28,14 @@
 /// // Use application services
 /// final orderService = OrderApplicationService(orderRepository);
 /// 
-/// // Execute commands
+/// // Execute commands (write operations)
 /// final result = await orderService.executeCommand(
 ///   CreateOrderCommand(customerId: '123', items: []),
+/// );
+/// 
+/// // Execute queries (read operations)
+/// final orders = await orderService.executeQuery(
+///   FindOrdersByCustomerQuery(customerId: '123'),
 /// );
 /// 
 /// // Process results
@@ -54,6 +60,13 @@ part 'application/application_service/application_service.dart';
 // Export command-related components
 part 'application/command.dart';
 part 'application/command_result.dart';
+
+// Export query-related components (CQRS)
+part 'application/query.dart';
+part 'application/query_result.dart';
+part 'application/query_handler.dart';
+part 'application/query_handler/base_query_handler.dart';
+part 'application/query_handler/query_dispatcher.dart';
 
 // Export domain events
 part 'application/domain_event.dart';
@@ -88,6 +101,24 @@ class ApplicationModelIntegration {
       'Direct conversion from application ICommand to domain ICommand ' +
       'not yet implemented. Use an application command that extends the ' +
       'domain command interface.'
+    );
+  }
+  
+  /// Converts application layer queries to domain model queries.
+  /// 
+  /// This is useful when passing queries from the application layer
+  /// to components that expect domain model queries.
+  static model.IQuery toDomainQuery(IQuery query) {
+    // If the query already implements the domain model interface, return it
+    if (query is model.IQuery) {
+      return query;
+    }
+    
+    // Otherwise, create an adapter
+    throw UnimplementedError(
+      'Direct conversion from application IQuery to domain IQuery ' +
+      'not yet implemented. Use an application query that extends the ' +
+      'domain query interface.'
     );
   }
   
