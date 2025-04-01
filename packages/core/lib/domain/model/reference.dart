@@ -7,8 +7,11 @@ part of ednet_core;
 /// - The parent entity's concept code
 /// - The entry concept code of the parent entity
 ///
-/// This class is particularly useful in maintaining entity relationships and
-/// navigating between related entities in the domain model.
+/// This class is particularly useful in:
+/// - Maintaining entity relationships
+/// - Navigating between related entities
+/// - Persistence and serialization scenarios
+/// - Cross-aggregate references
 ///
 /// Example usage:
 /// ```dart
@@ -20,7 +23,7 @@ part of ednet_core;
 ///
 /// final parentOid = reference.oid;
 /// ```
-class Reference {
+class Reference implements Serializable {
   /// The string representation of the parent entity's OID timestamp.
   final String parentOidString;
 
@@ -38,6 +41,21 @@ class Reference {
   Reference(
       this.parentOidString, this.parentConceptCode, this.entryConceptCode);
 
+  /// Creates a reference from an entity.
+  ///
+  /// This factory method creates a reference directly from an entity,
+  /// making it easier to establish relationships between entities.
+  ///
+  /// [entity] is the entity to create a reference to.
+  /// Returns a new [Reference] to the entity.
+  factory Reference.fromEntity(Entity entity) {
+    return Reference(
+      entity.oid.toString(),
+      entity.concept.code,
+      entity.concept.entryConcept.code,
+    );
+  }
+
   /// Gets the [Oid] object from the parent OID string.
   ///
   /// Converts the string timestamp to an integer and creates a new [Oid] instance.
@@ -54,11 +72,11 @@ class Reference {
 
   /// Returns a string representation of this reference.
   ///
-  /// Currently returns just the parent OID string, but this could be enhanced
-  /// to provide more detailed information about the reference.
+  /// Returns a more detailed string representation that includes
+  /// both the parent concept code and the OID.
   @override
   String toString() {
-    return parentOidString;
+    return '$parentConceptCode:$parentOidString';
   }
 
   /// Compares this reference with [other] for equality.
@@ -69,17 +87,49 @@ class Reference {
   /// - The same entry concept code
   @override
   bool operator ==(Object other) {
-    return this.parentOidString == (other as Reference).parentOidString &&
-        this.parentConceptCode == other.parentConceptCode &&
-        this.entryConceptCode == other.entryConceptCode;
+    if (identical(this, other)) return true;
+    if (other is! Reference) return false;
+    
+    return parentOidString == (other as Reference).parentOidString &&
+        parentConceptCode == other.parentConceptCode &&
+        entryConceptCode == other.entryConceptCode;
   }
 
   /// Computes the hash code for this reference.
   ///
-  /// Currently only uses the parent OID string for hashing, but this could be
-  /// enhanced to include all fields for better distribution.
+  /// Uses all fields for hash code calculation to ensure proper distribution.
   @override
-  int get hashCode => parentOidString.hashCode;
+  int get hashCode => 
+      Object.hash(parentOidString, parentConceptCode, entryConceptCode);
+
+  /// Converts this reference to a JSON map.
+  ///
+  /// This method implements the [Serializable] interface and provides
+  /// a standardized way to serialize references for persistence or
+  /// communication purposes.
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'oid': parentOidString,
+      'concept': parentConceptCode,
+      'entry': entryConceptCode,
+    };
+  }
+
+  /// Creates a reference from a JSON map.
+  ///
+  /// This static method provides a standardized way to deserialize
+  /// references from JSON data.
+  ///
+  /// [json] is the JSON map to deserialize.
+  /// Returns a new [Reference] instance.
+  static Reference fromJson(Map<String, dynamic> json) {
+    return Reference(
+      json['oid'] as String,
+      json['concept'] as String,
+      json['entry'] as String,
+    );
+  }
 
   /// Converts this reference to a graph structure.
   ///
@@ -91,5 +141,26 @@ class Reference {
       'parentConceptCode': parentConceptCode,
       'entryConceptCode': entryConceptCode
     };
+  }
+  
+  /// Returns true if this reference can be resolved in the given model entries.
+  ///
+  /// This method attempts to find the referenced entity in the model entries.
+  ///
+  /// [modelEntries] is the collection of model entries to search in.
+  /// Returns true if the referenced entity exists, false otherwise.
+  bool isResolvable(IModelEntries modelEntries) {
+    var entity = modelEntries.internalSingle(entryConceptCode, oid);
+    return entity != null;
+  }
+
+  /// Resolves this reference to the actual entity in the given model entries.
+  ///
+  /// This method retrieves the referenced entity from the model entries.
+  ///
+  /// [modelEntries] is the collection of model entries to search in.
+  /// Returns the referenced entity if found, null otherwise.
+  Entity? resolve(IModelEntries modelEntries) {
+    return modelEntries.internalSingle(entryConceptCode, oid);
   }
 }

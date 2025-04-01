@@ -37,6 +37,9 @@ abstract class ApplicationService<T extends AggregateRoot> {
   final Repository<T> repository;
   
   /// The domain session for transaction management.
+  ///
+  /// This session bridges the application and domain layers,
+  /// allowing application commands to be executed in the domain context.
   final IDomainSession? session;
 
   /// Creates a new application service.
@@ -109,7 +112,26 @@ abstract class ApplicationService<T extends AggregateRoot> {
   Future<CommandResult> _executeCommandInternal(ICommand command) async {
     // Execute the command in the domain
     if (session != null) {
-      session!.executeCommand(command);
+      // Bridge between application and domain layer commands
+      if (session is DomainSession) {
+        // Direct access to DomainSession implementation
+        (session as DomainSession).executeCommand(command);
+      } else {
+        // If we're dealing with a custom session implementation,
+        // we need to ensure it can handle our command type
+        try {
+          session!.executeCommand(command);
+        } catch (e) {
+          // If there's a type mismatch, try converting the command
+          try {
+            final domainCommand = ApplicationModelIntegration.toDomainCommand(command);
+            session!.executeCommand(domainCommand);
+          } catch (_) {
+            // Re-throw the original exception if conversion fails
+            rethrow;
+          }
+        }
+      }
       return CommandResult.success();
     } else {
       // If no session provided, execute directly
@@ -170,4 +192,40 @@ abstract class ApplicationService<T extends AggregateRoot> {
   Future<List<T>> getByCriteria(Criteria<T> criteria) async {
     return await repository.findByCriteria(criteria);
   }
+  
+  /// Creates a new domain session if one doesn't exist.
+  ///
+  /// This method provides a convenient way to obtain a session
+  /// for transaction management, creating a new one if needed.
+  ///
+  /// Returns:
+  /// The existing session or a new one from the domain models
+  IDomainSession getOrCreateSession() {
+    if (session != null) {
+      return session!;
+    }
+    
+    // Create a new session if possible
+    if (repository is DomainAwareRepository) {
+      final domainModels = (repository as DomainAwareRepository).getDomainModels();
+      return domainModels.newSession();
+    }
+    
+    throw StateError(
+      'Cannot create a new session: no existing session provided and ' +
+      'repository does not implement DomainAwareRepository'
+    );
+  }
+}
+
+/// Interface for repositories that are aware of their domain models.
+///
+/// This interface allows repositories to provide access to their
+/// domain models, which can be used to create new sessions.
+abstract class DomainAwareRepository {
+  /// Gets the domain models associated with this repository.
+  ///
+  /// Returns:
+  /// The domain models for this repository
+  IDomainModels getDomainModels();
 }

@@ -14,6 +14,12 @@
 /// - Event processing
 /// - External system integration
 ///
+/// Integration with Domain Model Layer:
+/// The application layer extends and enhances the domain model layer (model.*),
+/// maintaining compatibility through inheritance and adapter patterns. When using
+/// the application layer components, they will integrate seamlessly with the
+/// underlying domain model components.
+///
 /// Example usage:
 /// ```dart
 /// import 'package:ednet_core/domain/application.dart';
@@ -35,6 +41,13 @@
 /// ```
 library application;
 
+// Domain model imports with aliases to clarify relationships
+import 'package:ednet_core/domain/model.dart' as model;
+import 'package:ednet_core/domain/model/commands/interfaces/i_command.dart' as commands;
+import 'package:ednet_core/domain/model/event/interfaces/i_past.dart';
+import 'package:ednet_core/domain/model/event/event.dart';
+import 'package:ednet_core/domain/session.dart';
+
 // Export application services
 part 'application/application_service/application_service.dart';
 
@@ -52,4 +65,40 @@ part 'application/value_object.dart';
 part 'application/aggregate_root.dart';
 
 // Export authorization capabilities
-part 'application/i_authorizable_entity.dart'; 
+part 'application/i_authorizable_entity.dart';
+
+/// Utility class that provides conversion methods between application layer
+/// and domain model layer components.
+///
+/// This class helps bridge the gap between the two layers, ensuring seamless
+/// integration when components from both layers need to interoperate.
+class ApplicationModelIntegration {
+  /// Converts application layer commands to domain model commands.
+  /// 
+  /// This is useful when passing commands from the application layer
+  /// to components that expect domain model commands.
+  static commands.ICommand toDomainCommand(ICommand command) {
+    // If the command already implements the domain model interface, return it
+    if (command is commands.ICommand) {
+      return command;
+    }
+    
+    // Otherwise, create an adapter
+    throw UnimplementedError(
+      'Direct conversion from application ICommand to domain ICommand ' +
+      'not yet implemented. Use an application command that extends the ' +
+      'domain command interface.'
+    );
+  }
+  
+  /// Converts domain events from the application layer to model events.
+  /// 
+  /// This is useful when dealing with event systems that expect model events.
+  static List<Event> toDomainEvents(List<IDomainEvent> events) {
+    return events.map((e) => Event(
+      name: e.name,
+      timestamp: e.timestamp,
+      id: e.id
+    )).toList();
+  }
+} 
