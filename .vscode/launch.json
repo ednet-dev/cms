@@ -2,47 +2,25 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "cms",
+      "name": "Flutter (lib/main.dart)",
+      "type": "dart",
       "request": "launch",
-      "type": "dart"
+      "cwd": "apps/one",
+      "program": "lib/main.dart"
     },
     {
-      "name": "ednet_one",
-      "cwd": "apps\\ednet_one",
-      "request": "launch",
-      "type": "dart"
-    },
-    {
-      "name": "ednet_one (profile mode)",
-      "cwd": "apps\\ednet_one",
+      "name": "one (profile mode)",
+      "cwd": "apps/one",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "ednet_one (release mode)",
-      "cwd": "apps\\ednet_one",
+      "name": "one (release mode)",
+      "cwd": "apps/one",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"
-    },
-    {
-      "name": "core",
-      "cwd": "packages\\core",
-      "request": "launch",
-      "type": "dart"
-    },
-    {
-      "name": "ednet_cms",
-      "cwd": "packages\\ednet_cms",
-      "request": "launch",
-      "type": "dart"
-    },
-    {
-      "name": "ednet_code_generation",
-      "cwd": "packages\\ednet_code_generation",
-      "request": "launch",
-      "type": "dart"
     },
     {
       "name": "Attach to Flutter Web",
@@ -54,11 +32,22 @@
       ]
     },
     {
-      "name": "Flutter (lib/main.dart)",
-      "type": "dart",
+      "name": "core",
+      "cwd": "packages/core",
       "request": "launch",
-      "cwd": "apps/ednet_one",
-      "program": "lib/main.dart"
+      "type": "dart"
+    },
+    {
+      "name": "ednet_cms",
+      "cwd": "packages/ednet_cms",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "ednet_code_generation",
+      "cwd": "packages/ednet_code_generation",
+      "request": "launch",
+      "type": "dart"
     }
   ]
 }
