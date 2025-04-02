@@ -30,7 +30,7 @@ void main() {
           description: 'Age must be between 18 and 100',
           attributeName: 'age',
           validator: AttributeValidators.isBetween(18, 100));
-      registry.registerPolicy('agePolicy', agePolicy);
+      registry.registeruditPolicy('agePolicy', agePolicy);
 
       testEntity.setAttribute('age', 25);
       var result = evaluator.evaluate(testEntity);

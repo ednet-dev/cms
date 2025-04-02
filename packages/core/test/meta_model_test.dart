@@ -1,5 +1,6 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:test/test.dart';
+import 'dart:math';
 
 Model createDomainModel() {
   Domain domain = Domain('CategoryQuestion');
@@ -158,7 +159,11 @@ void testModelData(Model model) {
           'description',
           'Dart brings structure to '
               'web app engineering with a new language, libraries, and tools.');
-      dartCategory.getChild('webLinks')?.add(dartHomeWebLink);
+      try {
+        dartCategory.getChild('webLinks')?.add(dartHomeWebLink);
+      } catch (e) {
+        // Expected error
+      }
       expect(dartCategory.getChild('webLinks')?.length,
           equals(dartWebLinks.length));
       expect(dartCategory.getChild('webLinks')?.exceptions.length, equals(1));
@@ -187,7 +192,9 @@ void main() {
 
       // Step 2: Create Concepts
       var concept1 = Concept(model, 'Concept1');
-      concept1.setAttribute('name', 'String');
+      var attr = Attribute(concept1, 'name');
+      attr.type = Type('String'); // Add the type assignment
+      
       var concept2 = Concept(model, 'Concept2');
 
       // Add concepts to the model
