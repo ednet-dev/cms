@@ -1,3 +1,4 @@
+part of ednet_core;
 /// Defines the types of nodes that can exist in a domain model graph.
 ///
 /// This class represents different categories of nodes in the graph:

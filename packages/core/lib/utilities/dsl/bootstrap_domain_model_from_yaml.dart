@@ -1,4 +1,4 @@
-import 'dart:io';
+part of ednet_core;
 
 // usage:
 const yaml = '''

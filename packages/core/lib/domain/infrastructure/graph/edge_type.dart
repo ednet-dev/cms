@@ -1,3 +1,5 @@
+part of ednet_core;
+
 /// Defines the type of an edge in a domain model graph.
 ///
 /// This enum specifies the nature of the relationship between connected nodes:

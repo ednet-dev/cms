@@ -1,3 +1,5 @@
+part of ednet_core;
+
 /// Defines the direction of an edge in a domain model graph.
 ///
 /// This enum specifies how an edge is oriented between its source and target nodes:
