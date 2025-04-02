@@ -1,6 +1,4 @@
-part of application;
-
-import 'package:ednet_core/domain/model.dart' as model show Query;
+part of ednet_core;
 
 /// Represents a query in the application layer.
 ///

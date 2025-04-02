@@ -1,4 +1,4 @@
-part of application;
+part of ednet_core;
 
 /// A secure application service that enforces authorization rules.
 ///

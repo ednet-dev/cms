@@ -143,9 +143,22 @@ part 'domain/application/event_store.dart';
 part 'domain/application/event_type_registry.dart';
 part 'domain/application/i_authorizable_entity.dart';
 part 'domain/application/value_object.dart';
+part 'domain/application/query.dart';
+part 'domain/application/query_result.dart';
+part 'domain/application/query_handler.dart';
 
 part 'domain/application/entitlement/entitlement.dart';
 part 'domain/application/entitlement/security_context.dart';
 part 'domain/application/entitlement/authorize_attribute.dart';
 part 'domain/application/entitlement/entitlement_configuration.dart';
 part 'domain/application/entitlement/authorization_mixin.dart';
+part 'domain/application/entitlement/secure_query_handler.dart';
+part 'domain/application/entitlement/secure_application_service.dart';
+
+part 'domain/application/application_service/application_service.dart';
+part 'domain/application/application_service/concept_application_service.dart';
+
+part 'domain/application/query_handler/base_query_handler.dart';
+part 'domain/application/query_handler/query_dispatcher.dart';
+part 'domain/application/query_handler/concept_query_handler.dart';
+part 'domain/application/query_handler/default_concept_query_handler.dart';

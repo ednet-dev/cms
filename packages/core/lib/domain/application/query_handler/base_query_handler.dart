@@ -1,4 +1,4 @@
-part of application;
+part of ednet_core;
 
 /// Base implementation of the query handler interface.
 ///

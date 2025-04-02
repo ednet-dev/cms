@@ -1,3 +1,5 @@
+part of ednet_core;
+
 /// Application layer for the EDNet Core framework.
 ///
 /// This library provides application-level components that coordinate the domain layer:
@@ -25,7 +27,7 @@
 ///
 /// Example usage:
 /// ```dart
-/// import 'package:ednet_core/domain/application.dart';
+/// import 'package:ednet_core/ednet_core.dart';
 /// 
 /// // Use application services
 /// final orderService = OrderApplicationService(orderRepository);
@@ -47,51 +49,6 @@
 ///   print('Error: ${result.errorMessage}');
 /// }
 /// ```
-library application;
-
-// Domain model imports with aliases to clarify relationships
-import 'package:ednet_core/domain/model.dart' as model;
-import 'package:ednet_core/domain/model/commands/interfaces/i_command.dart' as commands;
-import 'package:ednet_core/domain/model/event/interfaces/i_past.dart';
-import 'package:ednet_core/domain/model/event/event.dart';
-import 'package:ednet_core/domain/session.dart';
-
-// Export application services
-part 'application/application_service/application_service.dart';
-part 'application/application_service/concept_application_service.dart';
-
-// Export command-related components
-part 'application/command.dart';
-part 'application/command_result.dart';
-
-// Export query-related components (CQRS)
-part 'application/query.dart';
-part 'application/query_result.dart';
-part 'application/query_handler.dart';
-part 'application/query_handler/base_query_handler.dart';
-part 'application/query_handler/query_dispatcher.dart';
-part 'application/query_handler/concept_query_handler.dart';
-part 'application/query_handler/default_concept_query_handler.dart';
-
-// Export domain events
-part 'application/domain_event.dart';
-
-// Export value objects
-part 'application/value_object.dart';
-
-// Export aggregate roots
-part 'application/aggregate_root.dart';
-
-// Export authorization capabilities
-part 'application/i_authorizable_entity.dart';
-
-// Export entitlement system
-part 'application/entitlement/entitlement.dart';
-part 'application/entitlement/security_context.dart';
-part 'application/entitlement/secure_application_service.dart';
-part 'application/entitlement/secure_query_handler.dart';
-part 'application/entitlement/authorize_attribute.dart';
-part 'application/entitlement/entitlement_configuration.dart';
 
 /// Utility class that provides conversion methods between application layer
 /// and domain model layer components.

@@ -1,6 +1,4 @@
-part of application;
-
-import 'package:ednet_core/domain/model.dart' as model;
+part of ednet_core;
 
 /// Represents an application service that orchestrates domain operations.
 ///
