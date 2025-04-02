@@ -6,6 +6,8 @@ import 'package:drift/native.dart'; // or whichever drift backend
 import 'dart:io';
 
 import 'package:ednet_core/ednet_core.dart';
+import 'drift_query.dart';
+import 'drift_query_handler.dart';
 
 // -------------------------------------------------------------
 // EDNet Core-Like Model (Concept / Attribute / DomainEntity)
@@ -101,7 +103,7 @@ class EDNetDriftDatabase extends _$EDNetDriftDatabase {
           // If no create or upgrade, we can still do a check for newly added dynamic columns
           if (!details.wasCreated && !details.hadUpgrade) {
             for (final c in domain.concepts.where((c) => !c.isStatic)) {
-              // Possibly create the table if it doesn’t exist
+              // Possibly create the table if it doesn't exist
               await _createOrEnsureTable(m.database, c);
               // Then check columns
               await _alterTableForConceptIfNeeded(m.database, c);
@@ -262,11 +264,15 @@ part 'ednet_drift_database.g.dart';
 // - Dynamic creation and CRUD for unknown domain concepts
 // - Reactive streams for dynamic tables via StreamQueryStore or manual approach
 // - Transaction and batch usage
+// - Integration with EDNet Core's unified query system
 // -------------------------------------------------------------
 
 class EDNetDriftRepository {
   final Domain _domain;
   late final EDNetDriftDatabase _db;
+  
+  /// Query dispatcher for handling unified queries.
+  final QueryDispatcher? queryDispatcher;
 
   // For dynamic concept watchers, we can keep a local StreamQueryStore or
   // keep references to StreamControllers. We'll do the simpler approach
@@ -279,6 +285,7 @@ class EDNetDriftRepository {
     required Domain domain,
     required String sqlitePath,
     int? schemaVersion,
+    this.queryDispatcher,
   }) : _domain = domain {
     // Initialize the underlying drift database:
     final executor = NativeDatabase(File(sqlitePath));
@@ -288,6 +295,11 @@ class EDNetDriftRepository {
     if (schemaVersion != null) {
       // we can do: _db.schemaVersion override, or pass it in constructor if you adopt a custom approach.
       // For demonstration, we keep the default.
+    }
+    
+    // Register query handlers if a dispatcher is provided
+    if (queryDispatcher != null) {
+      _registerQueryHandlers();
     }
   }
 
@@ -449,8 +461,182 @@ class EDNetDriftRepository {
   ///   await batch((b) => b.insertAll(...));
   /// For dynamic approach, let's do a custom single statement with multiple rows if needed.
 
+  // *** UNIFIED QUERY SYSTEM INTEGRATION ***
+
+  /// Registers query handlers with the query dispatcher.
+  ///
+  /// This method registers handlers for both static typed tables and
+  /// dynamic concept tables based on the domain model.
+  void _registerQueryHandlers() {
+    if (queryDispatcher == null) return;
+
+    // Register handlers for dynamic concepts
+    for (final concept in _domain.concepts.where((c) => !c.isStatic)) {
+      final tableName = concept.name.toLowerCase();
+      
+      // Define a mapper function for this concept
+      T Function<T extends Entity>(Map<String, dynamic> row) mapper = <T extends Entity>(row) {
+        if (T == DomainEntity) {
+          return DomainEntity(concept, Map<String, dynamic>.from(row)) as T;
+        } else {
+          // For other entity types, you would need a custom mapper
+          throw ArgumentError('Cannot map to type $T - only DomainEntity is supported for dynamic concepts');
+        }
+      };
+      
+      // Register a concept query handler
+      queryDispatcher!.registerConceptHandler<ConceptQuery, EntityQueryResult<DomainEntity>>(
+        concept.code,
+        'FindAll',
+        DriftQueryHandler<DomainEntity, ConceptQuery, EntityQueryResult<DomainEntity>>(
+          repository: this,
+          tableName: tableName,
+          isStatic: false,
+          concept: concept,
+          mapToEntity: (row) => DomainEntity(concept, Map<String, dynamic>.from(row)),
+        ),
+      );
+      
+      // Register a handler for drift-specific queries
+      queryDispatcher!.registerHandler<DriftQuery, EntityQueryResult<DomainEntity>>(
+        DriftQueryHandler<DomainEntity, DriftQuery, EntityQueryResult<DomainEntity>>(
+          repository: this,
+          tableName: tableName,
+          isStatic: false,
+          concept: concept,
+          mapToEntity: (row) => DomainEntity(concept, Map<String, dynamic>.from(row)),
+        ),
+      );
+    }
+    
+    // Register handlers for static tables
+    // For the Users table as an example
+    queryDispatcher!.registerConceptHandler<ConceptQuery, EntityQueryResult<User>>(
+      'Users',
+      'FindAll',
+      DriftQueryHandler<User, ConceptQuery, EntityQueryResult<User>>(
+        repository: this,
+        tableName: 'users',
+        isStatic: true,
+        concept: _domain.findConcept('Users'),
+        mapToEntity: (row) => User.fromJson(row),
+      ),
+    );
+  }
+  
+  /// Executes a query using the unified query system.
+  ///
+  /// This method provides a convenient way to execute queries against
+  /// this repository without manually setting up handlers.
+  ///
+  /// Parameters:
+  /// - [query]: The query to execute
+  ///
+  /// Returns:
+  /// A Future with the query result
+  Future<IQueryResult> executeQuery(IQuery query) async {
+    if (queryDispatcher == null) {
+      throw StateError('Cannot execute query: no query dispatcher provided');
+    }
+    
+    return queryDispatcher!.dispatch(query);
+  }
+  
+  /// Executes a concept query using the unified query system.
+  ///
+  /// This method provides a convenient way to execute concept queries
+  /// without having to create a ConceptQuery manually.
+  ///
+  /// Parameters:
+  /// - [conceptCode]: The code of the concept to query
+  /// - [queryName]: The name of the query to execute
+  /// - [parameters]: Optional parameters for the query
+  ///
+  /// Returns:
+  /// A Future with the query result
+  Future<IQueryResult> executeConceptQuery(
+    String conceptCode,
+    String queryName, [
+    Map<String, dynamic>? parameters,
+  ]) async {
+    if (queryDispatcher == null) {
+      throw StateError('Cannot execute query: no query dispatcher provided');
+    }
+    
+    final concept = _domain.findConcept(conceptCode);
+    if (concept == null) {
+      return QueryResult.failure('Unknown concept: $conceptCode');
+    }
+    
+    final query = ConceptQuery(queryName, concept);
+    if (parameters != null) {
+      query.withParameters(parameters);
+    }
+    
+    return queryDispatcher!.dispatch(query);
+  }
+  
+  /// Creates a DriftQuery for more advanced query capabilities.
+  ///
+  /// This method provides a convenient way to create a DriftQuery
+  /// with Drift-specific features.
+  ///
+  /// Parameters:
+  /// - [name]: The name of the query
+  /// - [conceptCode]: The code of the concept to query
+  /// - [rawSql]: Optional raw SQL WHERE clause
+  /// - [sqlVariables]: Optional variables for the raw SQL
+  /// - [parameters]: Optional standard parameters
+  ///
+  /// Returns:
+  /// A DriftQuery ready to be executed
+  DriftQuery createDriftQuery(
+    String name,
+    String conceptCode, {
+    String? rawSql,
+    List<Variable>? sqlVariables,
+    Map<String, dynamic>? parameters,
+  }) {
+    final concept = _domain.findConcept(conceptCode);
+    if (concept == null) {
+      throw ArgumentError('Unknown concept: $conceptCode');
+    }
+    
+    return DriftQuery(
+      name,
+      conceptCode: conceptCode,
+      rawSql: rawSql,
+      sqlVariables: sqlVariables,
+      parameters: parameters ?? {},
+    );
+  }
+
   // *** UTILITY ***
 
   EDNetDriftDatabase get database => _db;
+  
+  /// Gets the domain model.
+  Domain get domain => _domain;
+}
+
+/// Extension method for User to convert from JSON.
+extension UserJsonMapping on User {
+  /// Creates a User from a JSON map.
+  static User fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      isAdmin: json['is_admin'] as bool? ?? false,
+    );
+  }
+  
+  /// Converts this User to a JSON map.
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'is_admin': isAdmin,
+    };
+  }
 }
 
