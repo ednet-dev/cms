@@ -1,37 +1,26 @@
-import 'interfaces/i_query_result.dart';
+part of ednet_core;
 
-/// Implementation of the [IQueryResult] interface.
+/// Represents the result of a query operation in the application layer.
 ///
-/// This class provides a standard implementation of query results,
-/// supporting success/failure status, data payloads, and result metadata.
+/// The [QueryResult] class extends the domain model's query result class,
+/// providing application-specific enhancements like pagination, filtering,
+/// and performance metrics.
 ///
 /// Example usage:
 /// ```dart
-/// // Success result with data
-/// final successResult = QueryResult.success(
+/// // Create a successful result with pagination metadata
+/// final tasks = await repository.findByCriteria(criteria);
+/// return QueryResult.success(
 ///   tasks,
-///   metadata: {'totalCount': 42, 'page': 1}
+///   metadata: {
+///     'totalCount': await repository.countByCriteria(criteria),
+///     'page': page,
+///     'pageSize': pageSize,
+///     'executionTimeMs': stopwatch.elapsedMilliseconds,
+///   }
 /// );
-///
-/// // Failure result with error message
-/// final failureResult = QueryResult.failure('Tasks not found');
 /// ```
-class QueryResult<T> implements IQueryResult<T> {
-  @override
-  final bool isSuccess;
-  
-  @override
-  final T? data;
-  
-  @override
-  final String? errorMessage;
-  
-  @override
-  final Map<String, dynamic> metadata;
-  
-  @override
-  final String? conceptCode;
-  
+class QueryResult<T> extends model.QueryResult<T> implements IQueryResult<T> {+
   /// Creates a new query result.
   ///
   /// Parameters:
@@ -39,30 +28,28 @@ class QueryResult<T> implements IQueryResult<T> {
   /// - [data]: The result data (null if the query failed)
   /// - [errorMessage]: Error message (null if the query succeeded)
   /// - [metadata]: Additional metadata for the result
-  /// - [conceptCode]: Optional code of the concept related to this result
   QueryResult({
-    required this.isSuccess,
-    this.data,
-    this.errorMessage,
-    this.metadata = const {},
-    this.conceptCode,
-  });
+    required bool isSuccess,
+    T? data,
+    String? errorMessage,
+    Map<String, dynamic> metadata = const {},
+  }) : super(
+    isSuccess: isSuccess,
+    data: data,
+    errorMessage: errorMessage,
+    metadata: metadata,
+  );
   
   /// Creates a successful query result.
   ///
   /// Parameters:
   /// - [data]: The result data
   /// - [metadata]: Additional metadata for the result
-  /// - [conceptCode]: Optional code of the concept related to this result
-  factory QueryResult.success(T data, {
-    Map<String, dynamic> metadata = const {},
-    String? conceptCode,
-  }) {
+  factory QueryResult.success(T data, {Map<String, dynamic> metadata = const {}}) {
     return QueryResult(
       isSuccess: true,
       data: data,
       metadata: metadata,
-      conceptCode: conceptCode,
     );
   }
   
@@ -71,16 +58,11 @@ class QueryResult<T> implements IQueryResult<T> {
   /// Parameters:
   /// - [errorMessage]: The error message
   /// - [metadata]: Additional metadata for the result
-  /// - [conceptCode]: Optional code of the concept related to this result
-  factory QueryResult.failure(String errorMessage, {
-    Map<String, dynamic> metadata = const {},
-    String? conceptCode,
-  }) {
+  factory QueryResult.failure(String errorMessage, {Map<String, dynamic> metadata = const {}}) {
     return QueryResult(
       isSuccess: false,
       errorMessage: errorMessage,
       metadata: metadata,
-      conceptCode: conceptCode,
     );
   }
   
@@ -90,26 +72,22 @@ class QueryResult<T> implements IQueryResult<T> {
   ///
   /// Parameters:
   /// - [metadata]: Additional metadata for the result
-  /// - [conceptCode]: Optional code of the concept related to this result
-  factory QueryResult.empty({
-    Map<String, dynamic> metadata = const {},
-    String? conceptCode,
-  }) {
+  factory QueryResult.empty({Map<String, dynamic> metadata = const {}}) {
     return QueryResult(
       isSuccess: true,
       metadata: metadata,
-      conceptCode: conceptCode,
     );
   }
   
-  /// Creates a new result with updated pagination information.
+  /// Adds pagination metadata to the result.
   ///
   /// Parameters:
   /// - [page]: The current page number
   /// - [pageSize]: The number of items per page
   /// - [totalCount]: The total number of items
   ///
-  /// Returns a new query result with updated metadata
+  /// Returns:
+  /// A new query result with updated metadata
   QueryResult<T> withPagination({
     required int page,
     required int pageSize,
@@ -128,7 +106,27 @@ class QueryResult<T> implements IQueryResult<T> {
       data: data,
       errorMessage: errorMessage,
       metadata: newMetadata,
-      conceptCode: conceptCode,
     );
   }
+}
+
+/// Interface for application-level query results.
+///
+/// This interface extends the domain model query result interface,
+/// providing a contract for application-specific result capabilities.
+abstract class IQueryResult<T> implements model.IQueryResult<T> {
+  /// Creates a new query result with updated pagination information.
+  ///
+  /// Parameters:
+  /// - [page]: The current page number
+  /// - [pageSize]: The number of items per page
+  /// - [totalCount]: The total number of items
+  ///
+  /// Returns:
+  /// A new query result with updated metadata
+  IQueryResult<T> withPagination({
+    required int page,
+    required int pageSize,
+    required int totalCount,
+  });
 } 

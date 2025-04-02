@@ -1,3 +1,5 @@
+part of ednet_core;
+
 /// Represents the result of a query operation in CQRS.
 ///
 /// The [IQueryResult] interface provides a standardized way to handle

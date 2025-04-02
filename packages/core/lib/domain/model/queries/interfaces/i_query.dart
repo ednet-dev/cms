@@ -1,3 +1,5 @@
+part of ednet_core;
+
 /// Represents a query in the CQRS pattern.
 ///
 /// Queries are used to retrieve data from the domain model without causing
