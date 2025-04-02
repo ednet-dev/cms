@@ -27,8 +27,15 @@ part of ednet_core;
 ///     }
 ///     
 ///     status = OrderStatus.shipped;
-///     addEvent(OrderShippedEvent(orderId: id.toString()));
+///     applyChange(OrderShippedEvent(orderId: id.toString()));
 ///     return true;
+///   }
+///   
+///   @override
+///   void apply(IDomainEvent event) {
+///     if (event is OrderShippedEvent) {
+///       status = OrderStatus.shipped;
+///     }
 ///   }
 /// }
 /// ```
@@ -38,6 +45,14 @@ abstract class AggregateRoot<T extends AggregateRoot<T>> extends model.Aggregate
 
   /// A version number for optimistic concurrency control.
   int version = 0;
+  
+  /// The unique identifier for this aggregate instance.
+  /// This is typically set when the aggregate is created or reconstituted.
+  String get aggregateId => id?.toString() ?? '';
+  
+  /// The type name of this aggregate, used for event sourcing.
+  /// By default, this is the class name, but can be overridden.
+  String get aggregateType => runtimeType.toString();
 
   /// Processes a command and applies its effects to this aggregate.
   ///
@@ -54,12 +69,40 @@ abstract class AggregateRoot<T extends AggregateRoot<T>> extends model.Aggregate
   bool processCommand(ICommand command) {
     return command.doIt();
   }
+  
+  /// Applies a change to the aggregate by creating and applying an event.
+  ///
+  /// This is the primary way to modify an aggregate. Instead of changing
+  /// state directly, you create an event and apply it. This ensures that
+  /// all state changes are captured as events.
+  ///
+  /// Parameters:
+  /// - [event]: The domain event representing the change
+  void applyChange(IDomainEvent event) {
+    // Set aggregate metadata on the event
+    _setEventMetadata(event);
+    
+    // Apply the event to change the aggregate's state
+    apply(event);
+    
+    // Track the event for later publishing
+    _uncommittedEvents.add(event);
+    
+    // Increment version with each applied change
+    incrementVersion();
+  }
 
-  /// Adds a domain event to the list of uncommitted events.
+  /// Adds a domain event to the list of uncommitted events without applying it.
+  ///
+  /// This method is used when you need to track an event but don't want to
+  /// apply its effects (for example, for events that don't change state).
   ///
   /// Parameters:
   /// - [event]: The domain event to add
+  ///
+  /// @deprecated Use applyChange instead, which properly captures state changes
   void addEvent(IDomainEvent event) {
+    _setEventMetadata(event);
     _uncommittedEvents.add(event);
   }
 
@@ -80,15 +123,13 @@ abstract class AggregateRoot<T extends AggregateRoot<T>> extends model.Aggregate
 
   /// Applies a domain event to this aggregate.
   ///
-  /// This method should be called when:
-  /// - Reconstructing an aggregate from its event history
-  /// - Applying new events during command processing
+  /// This method should update the aggregate's state based on the event.
+  /// It must be implemented by subclasses to define how each event type
+  /// affects the aggregate's state.
   ///
   /// Parameters:
   /// - [event]: The domain event to apply
-  void applyEvent(IDomainEvent event) {
-    // To be implemented by subclasses
-  }
+  void apply(IDomainEvent event);
 
   /// Increments the version number of this aggregate.
   ///
@@ -97,6 +138,30 @@ abstract class AggregateRoot<T extends AggregateRoot<T>> extends model.Aggregate
   /// - When reconstituting from event history
   void incrementVersion() {
     version++;
+  }
+  
+  /// Loads the aggregate state from a series of domain events.
+  ///
+  /// This method is used to reconstitute an aggregate from its event history.
+  /// Each event is applied in sequence to rebuild the aggregate's state.
+  ///
+  /// Parameters:
+  /// - [events]: The list of domain events to apply
+  void loadFromHistory(List<IDomainEvent> events) {
+    for (final event in events) {
+      apply(event);
+      incrementVersion();
+    }
+  }
+  
+  /// Sets metadata on the event related to this aggregate.
+  ///
+  /// Parameters:
+  /// - [event]: The event to update with metadata
+  void _setEventMetadata(IDomainEvent event) {
+    event.aggregateId = aggregateId;
+    event.aggregateType = aggregateType;
+    event.aggregateVersion = version;
   }
   
   /// Converts this aggregate's uncommitted events to the base Event type
