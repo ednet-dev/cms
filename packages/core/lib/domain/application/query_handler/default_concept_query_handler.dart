@@ -1,6 +1,4 @@
-part of application;
-
-import 'package:ednet_core/domain/model.dart' as model;
+part of ednet_core;
 
 /// Standard implementation of a concept query handler that supports common queries.
 ///

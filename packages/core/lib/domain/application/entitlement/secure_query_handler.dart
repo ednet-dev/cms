@@ -1,4 +1,4 @@
-part of application;
+part of ednet_core;
 
 /// A secure query handler that enforces authorization rules.
 ///
