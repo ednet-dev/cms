@@ -64,6 +64,10 @@ part 'src/cqrs/multi_tenant_repository.dart';
 // Auditing components
 part 'src/cqrs/auditable_repository.dart';
 
+export 'src/drift_query.dart';
+export 'src/drift_query_handler.dart';
+export 'src/ednet_drift_repository.dart';
+
 /// Creates a CQRS-enabled repository with all enterprise features.
 ///
 /// This function creates a repository configured with:
@@ -274,4 +278,88 @@ class ServiceLocator {
   void clear() {
     _services.clear();
   }
+}
+
+/// Creates a Drift-aware entity query result.
+///
+/// This utility function makes it easier to create entity query results
+/// with Drift-specific metadata.
+///
+/// Type parameters:
+/// - [T]: The entity type
+///
+/// Parameters:
+/// - [entities]: The list of entities to include in the result
+/// - [concept]: The concept these entities represent
+/// - [sql]: The SQL query that produced this result
+/// - [executionTimeMs]: How long the query took to execute
+///
+/// Returns:
+/// An EntityQueryResult containing the entities and metadata
+EntityQueryResult<T> createDriftQueryResult<T extends Entity>({
+  required List<T> entities,
+  required Concept concept,
+  String? sql,
+  int? executionTimeMs,
+  int? totalCount,
+  int? page,
+  int? pageSize,
+}) {
+  final metadata = <String, dynamic>{};
+  
+  if (sql != null) {
+    metadata['sql'] = sql;
+  }
+  
+  if (executionTimeMs != null) {
+    metadata['executionTimeMs'] = executionTimeMs;
+  }
+  
+  if (totalCount != null) {
+    metadata['totalCount'] = totalCount;
+  }
+  
+  if (page != null) {
+    metadata['page'] = page;
+  }
+  
+  if (pageSize != null) {
+    metadata['pageSize'] = pageSize;
+  }
+  
+  return EntityQueryResult.success(
+    entities,
+    concept: concept,
+    metadata: metadata,
+  );
+}
+
+/// Creates a DriftQuery for a specific concept.
+///
+/// This utility function makes it easier to create DriftQueries
+/// without having to import the internal implementation classes.
+///
+/// Parameters:
+/// - [name]: The name of the query
+/// - [concept]: The concept this query targets
+/// - [rawSql]: Optional raw SQL WHERE clause
+/// - [sqlVariables]: Optional variables for the raw SQL
+/// - [parameters]: Optional standard parameters
+///
+/// Returns:
+/// A DriftQuery ready to be executed
+IQuery createDriftQuery(
+  String name,
+  Concept concept, {
+  String? rawSql,
+  List<Variable>? sqlVariables,
+  Map<String, dynamic> parameters = const {},
+}) {
+  return DriftQuery.forConcept(
+    name,
+    concept,
+    rawSql: rawSql,
+    sqlVariables: sqlVariables,
+    parameters: parameters,
+  );
 } 
