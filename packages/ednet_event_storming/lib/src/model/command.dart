@@ -13,6 +13,9 @@ class EventStormingCommand extends EventStormingElement {
 
   /// The ID of the domain event that this command might trigger.
   String? triggersDomainEventId;
+  
+  /// The ID of the role that initiates this command (may be null).
+  String? roleId;
 
   /// Parameters expected by this command.
   final Map<String, dynamic> parameters;
@@ -26,6 +29,7 @@ class EventStormingCommand extends EventStormingElement {
     required Position position,
     this.aggregateId,
     this.triggersDomainEventId,
+    this.roleId,
     required String createdBy,
     required DateTime createdAt,
     String color = '#1E90FF', // Blue by default
@@ -51,6 +55,7 @@ class EventStormingCommand extends EventStormingElement {
       position: Position.fromJson(json['position'] as Map<String, dynamic>),
       aggregateId: json['aggregateId'] as String?,
       triggersDomainEventId: json['triggersDomainEventId'] as String?,
+      roleId: json['roleId'] as String?,
       createdBy: json['createdBy'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       color: json['color'] as String? ?? '#1E90FF',
@@ -68,6 +73,7 @@ class EventStormingCommand extends EventStormingElement {
       'position': position.toJson(),
       'aggregateId': aggregateId,
       'triggersDomainEventId': triggersDomainEventId,
+      'roleId': roleId,
       'createdBy': createdBy,
       'createdAt': createdAt.toIso8601String(),
       'color': color,
@@ -85,6 +91,7 @@ class EventStormingCommand extends EventStormingElement {
     Position? position,
     String? aggregateId,
     String? triggersDomainEventId,
+    String? roleId,
     String? createdBy,
     DateTime? createdAt,
     String? color,
@@ -98,6 +105,7 @@ class EventStormingCommand extends EventStormingElement {
       position: position ?? this.position,
       aggregateId: aggregateId ?? this.aggregateId,
       triggersDomainEventId: triggersDomainEventId ?? this.triggersDomainEventId,
+      roleId: roleId ?? this.roleId,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
       color: color ?? this.color,
