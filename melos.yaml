@@ -8,6 +8,7 @@ packages:
   - "packages/content"
   - "packages/types"
   - "packages/ednet_one_interpreter"
+  - "packages/ednet_event_storming"
 
 # Recommended option for projects with Dart 2.17.0 or greater.
 #
@@ -133,4 +134,3 @@ scripts:
       git tag ednet_one-v$VERSION && \
       git push origin main --tags && \
       melos publish --scope="ednet_one" --no-dry-run
-  
