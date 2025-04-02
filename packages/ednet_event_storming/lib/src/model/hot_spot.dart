@@ -1,58 +1,47 @@
 import 'domain_event.dart';
+import 'element.dart';
 
 /// Represents a hot spot in an Event Storming session.
 ///
 /// In Event Storming, hot spots identify areas of confusion, disagreement,
 /// or complexity in the domain. They are typically represented by
 /// red sticky notes on the event storming board.
-class EventStormingHotSpot {
-  /// The unique identifier for this hot spot.
-  final String id;
-
+class EventStormingHotSpot extends EventStormingElement {
   /// The title of this hot spot (e.g., "Unclear Payment Process").
   final String title;
-
-  /// A more detailed description of what this hot spot represents.
-  final String description;
-
-  /// Tags or categories to help organize and filter hot spots.
-  final List<String> tags;
-
-  /// The position of this hot spot on the event storming board.
-  final Position position;
-
+  
   /// The importance level of this hot spot (1-5).
   final int importance;
 
   /// IDs of elements (e.g., events, commands) related to this hot spot.
   final List<String> relatedElementIds;
 
-  /// Who created this hot spot during the storming session.
-  final String createdBy;
-
-  /// When this hot spot was added to the board.
-  final DateTime createdAt;
-
-  /// The color used to represent this hot spot on the board (red by default).
-  final String color;
-
   /// Proposed solutions for addressing this hot spot.
   final List<String> proposedSolutions;
 
   /// Creates a new hot spot.
   EventStormingHotSpot({
-    required this.id,
+    required String id,
     required this.title,
-    this.description = '',
-    this.tags = const [],
-    required this.position,
+    String description = '',
+    List<String> tags = const [],
+    required Position position,
     this.importance = 3,
     this.relatedElementIds = const [],
-    required this.createdBy,
-    required this.createdAt,
-    this.color = '#FF0000', // Red by default
+    required String createdBy,
+    required DateTime createdAt,
+    String color = '#FF0000', // Red by default
     this.proposedSolutions = const [],
-  });
+  }) : super(
+          id: id,
+          name: title, // Use title as the name for the base class
+          description: description,
+          tags: tags,
+          position: position,
+          createdBy: createdBy,
+          createdAt: createdAt,
+          color: color,
+        );
 
   /// Creates a hot spot from a map representation.
   factory EventStormingHotSpot.fromJson(Map<String, dynamic> json) {
@@ -71,11 +60,12 @@ class EventStormingHotSpot {
     );
   }
 
-  /// Converts this hot spot to a map representation.
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'title': title,
+      'name': name,
       'description': description,
       'tags': tags,
       'position': position.toJson(),
@@ -85,10 +75,11 @@ class EventStormingHotSpot {
       'createdAt': createdAt.toIso8601String(),
       'color': color,
       'proposedSolutions': proposedSolutions,
+      'elementType': elementType,
     };
   }
 
-  /// Creates a copy of this hot spot with the given fields replaced with new values.
+  @override
   EventStormingHotSpot copyWith({
     String? id,
     String? title,
@@ -150,4 +141,17 @@ class EventStormingHotSpot {
       proposedSolutions: proposedSolutions.where((s) => s != solution).toList(),
     );
   }
+  
+  @override
+  ednet_core.model.Entity toCoreModelEntity() {
+    // Hot spots might not have a direct parallel in the EDNet Core model
+    // So we'll create a custom representation
+    final entity = ednet_core.model.Entity(
+      name: title,
+    );
+    return entity;
+  }
+  
+  @override
+  String get elementType => 'hotspot';
 } 

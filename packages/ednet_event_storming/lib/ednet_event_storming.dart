@@ -11,6 +11,8 @@ library ednet_event_storming;
 
 import 'package:ednet_core/ednet_core.dart';
 
+// Core model
+export 'src/model/element.dart';
 export 'src/model/domain_event.dart';
 export 'src/model/command.dart';
 export 'src/model/aggregate.dart';
@@ -19,10 +21,15 @@ export 'src/model/external_system.dart';
 export 'src/model/hot_spot.dart';
 export 'src/model/read_model.dart';
 
+// Session management
 export 'src/session/storming_session.dart';
 export 'src/session/event_storming_board.dart';
 export 'src/session/participant.dart';
 
+// Visualization, analysis and export
 export 'src/visualization/board_renderer.dart';
 export 'src/analysis/domain_analyzer.dart';
-export 'src/export/model_exporter.dart'; 
+export 'src/export/model_exporter.dart';
+
+// Compatibility with ednet_core
+export 'src/compatibility/es_adapter.dart';

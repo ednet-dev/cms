@@ -1,59 +1,45 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'domain_event.dart';
+import 'element.dart';
 
 /// Represents a policy in an Event Storming session.
 ///
 /// In Event Storming, policies represent business rules that react to
 /// domain events and might trigger new commands. They are typically
 /// represented by purple or lilac sticky notes on the event storming board.
-class EventStormingPolicy {
-  /// The unique identifier for this policy.
-  final String id;
-
-  /// The name of this policy (e.g., "Order Approval Policy").
-  final String name;
-
-  /// A more detailed description of what this policy does.
-  final String description;
-
-  /// Tags or categories to help organize and filter policies.
-  final List<String> tags;
-
-  /// The position of this policy on the event storming board.
-  final Position position;
-
+class EventStormingPolicy extends EventStormingElement {
   /// IDs of domain events that trigger this policy.
   final List<String> triggeringEventIds;
 
   /// IDs of commands that this policy might initiate.
   final List<String> resultingCommandIds;
 
-  /// Who created this policy during the storming session.
-  final String createdBy;
-
-  /// When this policy was added to the board.
-  final DateTime createdAt;
-
-  /// The color used to represent this policy on the board (purple by default).
-  final String color;
-
   /// The condition or rule that defines when this policy is triggered.
   final String condition;
 
   /// Creates a new policy.
   EventStormingPolicy({
-    required this.id,
-    required this.name,
-    this.description = '',
-    this.tags = const [],
-    required this.position,
+    required String id,
+    required String name,
+    String description = '',
+    List<String> tags = const [],
+    required Position position,
     this.triggeringEventIds = const [],
     this.resultingCommandIds = const [],
-    required this.createdBy,
-    required this.createdAt,
-    this.color = '#DDA0DD', // Plum by default
+    required String createdBy,
+    required DateTime createdAt,
+    String color = '#DDA0DD', // Plum by default
     this.condition = '',
-  });
+  }) : super(
+          id: id,
+          name: name,
+          description: description,
+          tags: tags,
+          position: position,
+          createdBy: createdBy,
+          createdAt: createdAt,
+          color: color,
+        );
 
   /// Creates a policy from a map representation.
   factory EventStormingPolicy.fromJson(Map<String, dynamic> json) {
@@ -72,7 +58,7 @@ class EventStormingPolicy {
     );
   }
 
-  /// Converts this policy to a map representation.
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -86,10 +72,11 @@ class EventStormingPolicy {
       'createdAt': createdAt.toIso8601String(),
       'color': color,
       'condition': condition,
+      'elementType': elementType,
     };
   }
 
-  /// Creates a copy of this policy with the given fields replaced with new values.
+  @override
   EventStormingPolicy copyWith({
     String? id,
     String? name,
@@ -162,4 +149,15 @@ class EventStormingPolicy {
       policies: [],
     );
   }
+  
+  @override
+  ednet_core.model.Entity toCoreModelEntity() {
+    // Since EDNet Core might not have a direct Policy class in its model package,
+    // we might need a different approach to represent this in EDNet Core
+    // For now, we'll return our custom policy conversion
+    return toCorePolicy();
+  }
+  
+  @override
+  String get elementType => 'policy';
 } 

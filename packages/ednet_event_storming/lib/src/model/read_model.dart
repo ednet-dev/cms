@@ -1,55 +1,41 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'domain_event.dart';
+import 'element.dart';
 
 /// Represents a read model in an Event Storming session.
 ///
 /// In Event Storming, read models represent views or projections of the domain
 /// that are used for querying data. They are typically represented by
 /// green sticky notes on the event storming board.
-class EventStormingReadModel {
-  /// The unique identifier for this read model.
-  final String id;
-
-  /// The name of this read model (e.g., "CustomerSummaryView").
-  final String name;
-
-  /// A more detailed description of what this read model represents.
-  final String description;
-
-  /// Tags or categories to help organize and filter read models.
-  final List<String> tags;
-
-  /// The position of this read model on the event storming board.
-  final Position position;
-
+class EventStormingReadModel extends EventStormingElement {
   /// IDs of domain events that update this read model.
   final List<String> updatedByEventIds;
 
   /// The properties or fields of this read model.
   final Map<String, String> fields;
 
-  /// Who created this read model during the storming session.
-  final String createdBy;
-
-  /// When this read model was added to the board.
-  final DateTime createdAt;
-
-  /// The color used to represent this read model on the board (green by default).
-  final String color;
-
   /// Creates a new read model.
   EventStormingReadModel({
-    required this.id,
-    required this.name,
-    this.description = '',
-    this.tags = const [],
-    required this.position,
+    required String id,
+    required String name,
+    String description = '',
+    List<String> tags = const [],
+    required Position position,
     this.updatedByEventIds = const [],
     this.fields = const {},
-    required this.createdBy,
-    required this.createdAt,
-    this.color = '#90EE90', // Light green by default
-  });
+    required String createdBy,
+    required DateTime createdAt,
+    String color = '#90EE90', // Light green by default
+  }) : super(
+          id: id,
+          name: name,
+          description: description,
+          tags: tags,
+          position: position,
+          createdBy: createdBy,
+          createdAt: createdAt,
+          color: color,
+        );
 
   /// Creates a read model from a map representation.
   factory EventStormingReadModel.fromJson(Map<String, dynamic> json) {
@@ -70,7 +56,7 @@ class EventStormingReadModel {
     );
   }
 
-  /// Converts this read model to a map representation.
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -83,10 +69,11 @@ class EventStormingReadModel {
       'createdBy': createdBy,
       'createdAt': createdAt.toIso8601String(),
       'color': color,
+      'elementType': elementType,
     };
   }
 
-  /// Creates a copy of this read model with the given fields replaced with new values.
+  @override
   EventStormingReadModel copyWith({
     String? id,
     String? name,
@@ -168,4 +155,13 @@ class EventStormingReadModel {
 
     return concept;
   }
+  
+  @override
+  ednet_core.model.Entity toCoreModelEntity() {
+    // Read models would likely be represented as Concepts in EDNet Core
+    return toCoreConcept();
+  }
+  
+  @override
+  String get elementType => 'read_model';
 } 

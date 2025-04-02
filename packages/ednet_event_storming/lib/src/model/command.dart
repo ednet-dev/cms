@@ -1,59 +1,45 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'domain_event.dart';
+import 'element.dart';
 
 /// Represents a command in an Event Storming session.
 ///
 /// In Event Storming, commands represent the intent to perform an action
 /// that might result in a domain event. They are typically represented
 /// by blue sticky notes on the event storming board.
-class EventStormingCommand {
-  /// The unique identifier for this command.
-  final String id;
-
-  /// The name of the command (e.g., "PlaceOrder", "ProcessPayment").
-  final String name;
-
-  /// A more detailed description of what this command does.
-  final String description;
-
-  /// Tags or categories to help organize and filter commands.
-  final List<String> tags;
-
-  /// The position of this command on the event storming board.
-  final Position position;
-
+class EventStormingCommand extends EventStormingElement {
   /// The aggregate that this command targets (may be null during initial discovery).
   String? aggregateId;
 
   /// The ID of the domain event that this command might trigger.
   String? triggersDomainEventId;
 
-  /// Who created this command during the storming session.
-  final String createdBy;
-
-  /// When this command was added to the board.
-  final DateTime createdAt;
-
-  /// The color used to represent this command on the board (blue by default).
-  final String color;
-
   /// Parameters expected by this command.
   final Map<String, dynamic> parameters;
 
   /// Creates a new command.
   EventStormingCommand({
-    required this.id,
-    required this.name,
-    this.description = '',
-    this.tags = const [],
-    required this.position,
+    required String id,
+    required String name,
+    String description = '',
+    List<String> tags = const [],
+    required Position position,
     this.aggregateId,
     this.triggersDomainEventId,
-    required this.createdBy,
-    required this.createdAt,
-    this.color = '#1E90FF', // Blue by default
+    required String createdBy,
+    required DateTime createdAt,
+    String color = '#1E90FF', // Blue by default
     this.parameters = const {},
-  });
+  }) : super(
+          id: id,
+          name: name,
+          description: description,
+          tags: tags,
+          position: position,
+          createdBy: createdBy,
+          createdAt: createdAt,
+          color: color,
+        );
 
   /// Creates a command from a map representation.
   factory EventStormingCommand.fromJson(Map<String, dynamic> json) {
@@ -72,7 +58,7 @@ class EventStormingCommand {
     );
   }
 
-  /// Converts this command to a map representation.
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -86,10 +72,11 @@ class EventStormingCommand {
       'createdAt': createdAt.toIso8601String(),
       'color': color,
       'parameters': parameters,
+      'elementType': elementType,
     };
   }
 
-  /// Creates a copy of this command with the given fields replaced with new values.
+  @override
   EventStormingCommand copyWith({
     String? id,
     String? name,
@@ -125,4 +112,19 @@ class EventStormingCommand {
       description: description,
     );
   }
+  
+  @override
+  ednet_core.model.Entity toCoreModelEntity() {
+    final command = ednet_core.model.Command(
+      name: name
+    );
+    
+    // Add properties if needed
+    // This would need to be adapted based on the EDNet Core API
+    
+    return command;
+  }
+  
+  @override
+  String get elementType => 'command';
 } 
