@@ -46,6 +46,7 @@ export 'domain/application/entitlement/secure_application_service.dart';
 export 'domain/application/entitlement/secure_query_handler.dart';
 export 'domain/application/entitlement/authorize_attribute.dart';
 export 'domain/application/entitlement/entitlement_configuration.dart';
+export 'domain/application/entitlement/authorization_mixin.dart';
 
 part 'core_repository.dart';
 part 'domain/bounded_context.dart';
@@ -147,3 +148,4 @@ part 'domain/application/entitlement/entitlement.dart';
 part 'domain/application/entitlement/security_context.dart';
 part 'domain/application/entitlement/authorize_attribute.dart';
 part 'domain/application/entitlement/entitlement_configuration.dart';
+part 'domain/application/entitlement/authorization_mixin.dart';
