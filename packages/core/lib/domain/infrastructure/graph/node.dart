@@ -1,3 +1,5 @@
+part of ednet_core;
+
 // import 'package:ednet_core/ednet_core.dart';
 // import 'package:flutter/material.dart';
 //

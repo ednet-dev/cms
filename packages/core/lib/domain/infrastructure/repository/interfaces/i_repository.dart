@@ -1,3 +1,5 @@
+part of ednet_core;
+
 /// Defines the core repository interface for domain entities.
 ///
 /// The [IRepository] interface provides a contract for:
