@@ -179,14 +179,9 @@ abstract class ApplicationService<T extends AggregateRoot> {
   
   // Query handling methods
   
-  /// Executes a query and returns a result.
+  /// Executes a query using the CQRS pattern.
   ///
-  /// This method:
-  /// 1. Validates the query
-  /// 2. Dispatches it to the appropriate handler
-  /// 3. Returns the result
-  ///
-  /// This method supports the CQRS pattern by providing a clear
+  /// This method provides a standard way to execute queries, maintaining
   /// separation between command and query operations.
   ///
   /// Type parameters:
@@ -214,6 +209,35 @@ abstract class ApplicationService<T extends AggregateRoot> {
     } catch (e) {
       // Handle exceptions
       return QueryResult.failure("Query execution failed: $e") as R;
+    }
+  }
+  
+  /// Executes a query by name.
+  ///
+  /// This method provides a convenient way to execute queries by name,
+  /// which is useful for dynamic query execution.
+  ///
+  /// Parameters:
+  /// - [queryName]: The name of the query to execute
+  /// - [parameters]: Optional parameters for the query
+  ///
+  /// Returns:
+  /// A Future with the query result
+  Future<IQueryResult> executeQueryByName(
+    String queryName,
+    [Map<String, dynamic>? parameters]
+  ) async {
+    if (queryDispatcher == null) {
+      return QueryResult.failure(
+        "Cannot execute query by name: no query dispatcher available"
+      );
+    }
+    
+    try {
+      // Use the dispatchByNameOnly method from the unified QueryDispatcher
+      return await queryDispatcher!.dispatchByNameOnly(queryName, parameters);
+    } catch (e) {
+      return QueryResult.failure("Query execution failed: $e");
     }
   }
   
