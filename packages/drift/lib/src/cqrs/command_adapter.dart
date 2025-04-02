@@ -228,7 +228,7 @@ class DriftCommandAdapter {
     final sql = 'DELETE FROM $tableName WHERE ${primaryKey.code} = ?';
     final rowsAffected = await _db.customUpdate(
       sql,
-      variables: [Variable(_convertValueForDatabase(primaryKeyValue, primaryKey))],
+      variables: [Variable(_convertValueForDatabase(primaryKeyValue, primaryKey))]
     );
     
     // Signal that the table has been modified

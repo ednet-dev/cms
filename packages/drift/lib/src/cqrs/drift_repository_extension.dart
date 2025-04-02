@@ -181,3 +181,106 @@ extension EDNetDriftRepositoryCqrsExtension on EDNetDriftRepository {
     );
   }
 } 
+
+/// Extensions for concept-aware querying with Drift.
+extension ConceptQueryExtensions on  EDNetDriftRepository {
+  /// Creates a query repository for a specific concept.
+  ///
+  /// This method provides access to the full range of query capabilities
+  /// for the specified concept, making it easier to work with domain entities.
+  ///
+  /// [conceptCode] is the code of the concept to query.
+  ///
+  /// Returns a DriftQueryRepository for the concept, or throws an exception
+  /// if the concept is not found.
+  DriftQueryRepository<Entity<dynamic>> forConcept(String conceptCode) {
+    final concept = domain.findConcept(conceptCode);
+    if (concept == null) {
+      throw ArgumentError('Concept not found: $conceptCode');
+    }
+    return DriftQueryRepository<Entity<dynamic>>(database, concept);
+  }
+  
+  /// Executes a query using the expression builder pattern.
+  ///
+  /// This method provides a clean way to build and execute complex queries
+  /// without manually constructing expression objects.
+  ///
+  /// [conceptCode] is the code of the concept to query.
+  /// [buildQuery] is a function that configures the query builder.
+  ///
+  /// Returns a Future with the query result.
+  Future<EntityQueryResult<Entity<dynamic>>> queryWhere(
+    String conceptCode,
+    void Function(QueryBuilder builder) buildQuery
+  ) async {
+    return forConcept(conceptCode).findWhere(buildQuery);
+  }
+  
+  /// Executes a search query with multiple optional filters.
+  ///
+  /// This method is designed for search screens and advanced filtering
+  /// scenarios, handling all the common filtering patterns.
+  ///
+  /// Parameters:
+  /// - [conceptCode]: The concept to query
+  /// - [searchText]: Optional text to search for in text fields
+  /// - [filters]: Optional attribute filters
+  /// - [sort]: Optional field to sort by
+  /// - [sortDirection]: Optional sort direction
+  /// - [page]: Page number for pagination
+  /// - [pageSize]: Page size for pagination
+  ///
+  /// Returns a Future with the search results.
+  Future<EntityQueryResult<Entity<dynamic>>> search({
+    required String conceptCode,
+    String? searchText,
+    Map<String, dynamic>? filters,
+    String? sort,
+    bool ascending = true,
+    int page = 1,
+    int pageSize = 20,
+  }) async {
+    return queryWhere(conceptCode, (builder) {
+      // Add text search if provided
+      if (searchText != null && searchText.isNotEmpty) {
+        // Find text attributes to search
+        final concept = domain.findConcept(conceptCode)!;
+        final textAttributes = concept.attributes
+            .whereType<Attribute>()
+            .where((a) => a.type?.code == 'String')
+            .toList();
+        
+        if (textAttributes.isNotEmpty) {
+          // Create OR conditions for each text attribute
+          var first = true;
+          for (final attr in textAttributes) {
+            if (first) {
+              builder.where(attr.code).contains(searchText);
+              first = false;
+            } else {
+              builder.or(attr.code).contains(searchText);
+            }
+          }
+        }
+      }
+      
+      // Add filters if provided
+      if (filters != null && filters.isNotEmpty) {
+        filters.forEach((key, value) {
+          if (value != null) {
+            builder.and(key).equals(value);
+          }
+        });
+      }
+      
+      // Add sorting if provided
+      if (sort != null) {
+        builder.orderBy(sort, ascending: ascending);
+      }
+      
+      // Add pagination
+      builder.paginate(page, pageSize);
+    });
+  }
+} 

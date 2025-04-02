@@ -30,6 +30,7 @@ import 'package:ednet_core/domain/domain_models.dart';
 import 'ednet_drift_repository.dart';
 
 part 'src/cqrs/query_adapter.dart';
+part 'src/cqrs/drift_query_repository.dart';
 part 'src/cqrs/command_adapter.dart';
 part 'src/cqrs/query_handler.dart';
 part 'src/cqrs/drift_repository_extension.dart';
