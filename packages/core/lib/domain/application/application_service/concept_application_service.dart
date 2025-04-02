@@ -50,12 +50,33 @@ class ConceptApplicationService<T extends AggregateRoot> extends ApplicationServ
     dependencies: dependencies,
     session: session,
     queryDispatcher: queryDispatcher,
-  );
+  ) {
+    _validateConcept();
+  }
+
+  /// Validates that the concept is compatible with the service.
+  void _validateConcept() {
+    if (concept == null) {
+      throw ArgumentError('Concept cannot be null');
+    }
+
+    if (!concept.isValid) {
+      throw ArgumentError('Invalid concept: ${concept.name}');
+    }
+
+    // Verify that the concept's type matches the service's type parameter
+    if (T != concept.type) {
+      throw ArgumentError(
+        'Concept type mismatch: Expected ${T.toString()}, got ${concept.type.toString()}',
+      );
+    }
+  }
   
   /// Executes a concept-specific query with the given parameters.
   ///
   /// This method creates a [model.ConceptQuery] from the provided
-  /// query name and parameters, then executes it.
+  /// query name and parameters, then executes it using the unified query
+  /// dispatcher.
   ///
   /// Parameters:
   /// - [queryName]: The name of the query to execute
@@ -67,21 +88,28 @@ class ConceptApplicationService<T extends AggregateRoot> extends ApplicationServ
     String queryName, [
     Map<String, dynamic>? parameters,
   ]) async {
-    // Create a concept query
-    final query = model.ConceptQuery(queryName, concept);
-    if (parameters != null) {
-      query.withParameters(parameters);
-    }
-    
-    // Validate against concept structure
-    if (!query.validate()) {
+    if (queryName.isEmpty) {
       return model.EntityQueryResult.failure(
-        'Query validation failed: parameters do not match concept structure',
+        'Query name cannot be empty',
         concept: concept,
       );
     }
-    
+
     try {
+      // Create a concept query
+      final query = model.ConceptQuery(queryName, concept);
+      if (parameters != null) {
+        query.withParameters(parameters);
+      }
+      
+      // Validate against concept structure
+      if (!query.validate()) {
+        return model.EntityQueryResult.failure(
+          'Query validation failed: parameters do not match concept structure',
+          concept: concept,
+        );
+      }
+      
       // Try to execute using dispatcher if available
       if (queryDispatcher != null) {
         final result = await queryDispatcher!.dispatch(query);
@@ -117,9 +145,116 @@ class ConceptApplicationService<T extends AggregateRoot> extends ApplicationServ
         // If no dispatcher, handle directly using repository
         return await _executeConceptQueryWithRepository(query);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       return model.EntityQueryResult.failure(
-        'Error executing query: $e',
+        'Error executing query: $e\n$stackTrace',
+        concept: concept,
+      );
+    }
+  }
+  
+  /// Creates and executes an expression-based concept query.
+  ///
+  /// This method provides a more powerful way to query entities using
+  /// the expression query system, which supports complex filtering and
+  /// traversal operations.
+  ///
+  /// Parameters:
+  /// - [queryName]: The name of the query to execute
+  /// - [expression]: The query expression to apply
+  /// - [pagination]: Optional pagination parameters
+  /// - [sorting]: Optional sorting parameters
+  ///
+  /// Returns:
+  /// A Future with the query result, specialized for entities
+  Future<model.EntityQueryResult<T>> executeExpressionQuery(
+    String queryName,
+    model.QueryExpression expression, {
+    Map<String, dynamic>? pagination,
+    Map<String, dynamic>? sorting,
+  }) async {
+    if (queryName.isEmpty) {
+      return model.EntityQueryResult.failure(
+        'Query name cannot be empty',
+        concept: concept,
+      );
+    }
+
+    if (expression == null) {
+      return model.EntityQueryResult.failure(
+        'Expression cannot be null',
+        concept: concept,
+      );
+    }
+
+    try {
+      // Create an expression query
+      final query = model.ExpressionQuery(queryName, concept, expression);
+      
+      // Add pagination if specified
+      if (pagination != null) {
+        int? page = pagination['page'] as int?;
+        int? pageSize = pagination['pageSize'] as int?;
+        
+        if (page != null && pageSize != null) {
+          if (page < 1 || pageSize < 1) {
+            return model.EntityQueryResult.failure(
+              'Invalid pagination parameters: page and pageSize must be positive',
+              concept: concept,
+            );
+          }
+          query.withParameters({
+            'page': page,
+            'pageSize': pageSize,
+          });
+        }
+      }
+      
+      // Add sorting if specified
+      if (sorting != null) {
+        String? sortBy = sorting['sortBy'] as String?;
+        String? sortDirection = sorting['sortDirection'] as String?;
+        
+        if (sortBy != null) {
+          // Validate sort field exists in concept
+          if (!concept.hasAttribute(sortBy)) {
+            return model.EntityQueryResult.failure(
+              'Invalid sort field: $sortBy does not exist in concept',
+              concept: concept,
+            );
+          }
+          
+          query.withParameters({
+            'sortBy': sortBy,
+            'sortDirection': sortDirection ?? 'asc',
+          });
+        }
+      }
+      
+      // Try to execute using dispatcher if available
+      if (queryDispatcher != null) {
+        final result = await queryDispatcher!.dispatch(query);
+        
+        // If the result is already an EntityQueryResult, return it
+        if (result is model.EntityQueryResult<T>) {
+          return result;
+        }
+        
+        // Default fallback if types don't match
+        return model.EntityQueryResult.failure(
+          'Unexpected result type: ${result.runtimeType}',
+          concept: concept,
+        );
+      } else {
+        // If no dispatcher is available, handle directly
+        return model.EntityQueryResult.failure(
+          'No query dispatcher available to execute expression query',
+          concept: concept,
+        );
+      }
+    } catch (e, stackTrace) {
+      return model.EntityQueryResult.failure(
+        'Error executing expression query: $e\n$stackTrace',
         concept: concept,
       );
     }
@@ -142,6 +277,16 @@ class ConceptApplicationService<T extends AggregateRoot> extends ApplicationServ
       int? page = query.getParameters()['page'] as int?;
       int? pageSize = query.getParameters()['pageSize'] as int?;
       
+      // Validate pagination parameters
+      if (page != null && pageSize != null) {
+        if (page < 1 || pageSize < 1) {
+          return model.EntityQueryResult.failure(
+            'Invalid pagination parameters: page and pageSize must be positive',
+            concept: concept,
+          );
+        }
+      }
+      
       // Create criteria from query parameters
       final criteria = model.FilterCriteria<T>();
       
@@ -155,6 +300,14 @@ class ConceptApplicationService<T extends AggregateRoot> extends ApplicationServ
           continue;
         }
         
+        // Validate attribute exists in concept
+        if (!concept.hasAttribute(key)) {
+          return model.EntityQueryResult.failure(
+            'Invalid filter field: $key does not exist in concept',
+            concept: concept,
+          );
+        }
+        
         // Add criterion for this attribute
         criteria.addCriterion(model.Criterion(key, value));
       }
@@ -164,6 +317,14 @@ class ConceptApplicationService<T extends AggregateRoot> extends ApplicationServ
       final sortDirection = query.getParameters()['sortDirection'] as String?;
       
       if (sortBy != null) {
+        // Validate sort field exists in concept
+        if (!concept.hasAttribute(sortBy)) {
+          return model.EntityQueryResult.failure(
+            'Invalid sort field: $sortBy does not exist in concept',
+            concept: concept,
+          );
+        }
+        
         criteria.orderBy(
           sortBy,
           ascending: sortDirection != 'desc',
@@ -190,6 +351,7 @@ class ConceptApplicationService<T extends AggregateRoot> extends ApplicationServ
             'page': page,
             'pageSize': pageSize,
             'totalCount': totalCount,
+            'totalPages': (totalCount / pageSize).ceil(),
           },
         );
       } else {
@@ -200,11 +362,33 @@ class ConceptApplicationService<T extends AggregateRoot> extends ApplicationServ
           concept: concept,
         );
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       return model.EntityQueryResult.failure(
-        'Error executing query with repository: $e',
+        'Error executing query with repository: $e\n$stackTrace',
         concept: concept,
       );
     }
+  }
+
+  /// Validates that a given attribute exists in the concept.
+  ///
+  /// Parameters:
+  /// - [attributeName]: The name of the attribute to validate
+  ///
+  /// Returns:
+  /// True if the attribute exists, false otherwise
+  bool hasAttribute(String attributeName) {
+    return concept.hasAttribute(attributeName);
+  }
+
+  /// Gets the type of a given attribute in the concept.
+  ///
+  /// Parameters:
+  /// - [attributeName]: The name of the attribute
+  ///
+  /// Returns:
+  /// The type of the attribute, or null if it doesn't exist
+  Type? getAttributeType(String attributeName) {
+    return concept.getAttributeType(attributeName);
   }
 } 
