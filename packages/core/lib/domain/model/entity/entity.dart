@@ -546,7 +546,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     return _childMap[name];
   }
 
-  /// Bulk-updates this entity’s attributes from another entity if [whenSet] is older.
+  /// Bulk-updates this entity's attributes from another entity if [whenSet] is older.
   /// Only non-identifier attributes are considered. Returns true if all updated.
   bool setAttributesFrom(Entity entity) {
     bool allSet = true;
@@ -744,7 +744,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     print(toString());
   }
 
-  /// Displays this entity’s details, including attributes, parents, children.
+  /// Displays this entity's details, including attributes, parents, children.
   ///
   /// Parameters:
   /// - [prefix]: indentation or formatting prefix.
@@ -832,194 +832,160 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     print('');
   }
 
-  /// Serializes this entity to JSON using [toJsonMap].
-  @override
+  /// Converts this entity to a JSON string.
   String toJson() => jsonEncode(toJsonMap());
 
-  /// Builds a JSON-like [Map] of this entity's data, including parent references.
-  Map<String, Object> toJsonMap() {
-    Map<String, Object> entityMap = <String, Object>{};
+  /// Converts this entity to a JSON object.
+  Map<String, dynamic> toJsonMap() {
+    Map<String, dynamic> entityMap = <String, dynamic>{};
+    entityMap['oid'] = _oid.toString();
+    if (_code != null) {
+      entityMap['code'] = _code;
+    }
+    if (_whenAdded != null) {
+      entityMap['whenAdded'] = _whenAdded!.millisecondsSinceEpoch;
+    }
+    if (_whenSet != null) {
+      entityMap['whenSet'] = _whenSet!.millisecondsSinceEpoch;
+    }
+    if (_whenRemoved != null) {
+      entityMap['whenRemoved'] = _whenRemoved!.millisecondsSinceEpoch;
+    }
+    entityMap['concept'] = _concept!.code;
 
-    // Store parent references.
-    for (Parent parent in _concept!.parents.whereType<Parent>()) {
-      Entity? parentEntity = getParent(parent.code) as Entity?;
-      if (parentEntity != null) {
-        var reference = <String, String>{};
-        reference['oid'] = parentEntity.oid.toString();
-        reference['parent'] = parentEntity.concept.code;
-        reference['entry'] = parentEntity.concept.entryConcept.code;
-        entityMap[parent.code] = reference;
-      } else {
-        entityMap[parent.code] = 'null';
+    // Add attributes
+    Map<String, dynamic> attributeMap = <String, dynamic>{};
+    for (Attribute attribute in _concept!.attributes.whereType<Attribute>()) {
+      final value = _attributeMap[attribute.code];
+      if (value != null) {
+        attributeMap[attribute.code] = value;
       }
     }
-
-    // Basic fields.
-    entityMap['oid'] = _oid.toString();
-    entityMap['code'] = _code ?? '';
-    entityMap['whenAdded'] = _whenAdded.toString();
-    entityMap['whenSet'] = _whenSet.toString();
-    entityMap['whenRemoved'] = _whenRemoved.toString();
-
-    // Attributes.
-    for (var k in _attributeMap.keys) {
-      entityMap[k] = getStringFromAttribute(k) as Object;
+    if (attributeMap.isNotEmpty) {
+      entityMap['attributes'] = attributeMap;
     }
 
-    // Internal children as lists.
-    for (var k in _internalChildMap.keys) {
-      entityMap[k] = (getInternalChild(k) as Entities).toJsonList();
+    // Add parents
+    Map<String, dynamic> parentMap = <String, dynamic>{};
+    for (Parent parent in _concept!.parents.whereType<Parent>()) {
+      final ref = _referenceMap[parent.code];
+      if (ref != null) {
+        parentMap[parent.code] = ref.toJson();
+      }
     }
+    if (parentMap.isNotEmpty) {
+      entityMap['parents'] = parentMap;
+    }
+
+    // Add children
+    Map<String, dynamic> childMap = <String, dynamic>{};
+    for (Child child in _concept!.children.whereType<Child>()) {
+      final childEntities = getChild(child.code);
+      if (childEntities != null) {
+        childMap[child.code] = (getInternalChild(child.code) as Entities).toJsonList();
+      }
+    }
+    if (childMap.isNotEmpty) {
+      entityMap['children'] = childMap;
+    }
+
     return entityMap;
   }
 
-  /// Populates this entity's data from a JSON string.
-  /// Deserializes via [fromJsonMap].
-  @override
-  void fromJson<K extends Entity<K>>(String entityJson) {
-    Map<String, Object> entityMap = jsonDecode(entityJson);
-    fromJsonMap(entityMap);
+  /// Loads this entity from a JSON string.
+  void fromJson(String entityJson) {
+    try {
+      Map<String, dynamic> entityMap = jsonDecode(entityJson);
+      fromJsonMap(entityMap);
+    } catch (e) {
+      throw TypeException('${entityJson} oid is not int: $e');
+    }
   }
 
-  /// Internal: loads entity data from a map [entityMap], optionally linking to an [internalParent].
-  void fromJsonMap(entityMap, [Entity? internalParent]) {
-    int timeStamp = 0;
+  /// Loads this entity from a JSON object.
+  void fromJsonMap(Map<String, dynamic> entityMap) {
+    // Load basic properties
+    var oidStr = entityMap['oid'];
     try {
-      var key = entityMap['oid'];
-      if (key != null) {
-        timeStamp = int.parse(key.toString());
-      }
-    } on FormatException catch (e) {
+      int timeStamp = int.parse(oidStr);
+      oid = Oid.ts(timeStamp);
+    } catch (e) {
       throw TypeException('${entityMap['oid']} oid is not int: $e');
     }
 
-    // Temporarily allow OID update.
-    var beforeUpdateOid = concept.updateOid;
-    concept.updateOid = true;
-    oid = Oid.ts(timeStamp);
-    concept.updateOid = beforeUpdateOid;
-
-    // Temporarily allow code update.
-    var beforeUpdateCode = concept.updateCode;
-    concept.updateCode = true;
-    code = entityMap['code'] as String;
-    concept.updateCode = beforeUpdateCode;
-
-    // Temporarily allow when.* updates.
-    var beforeUpdateWhen = concept.updateWhen;
-    concept.updateWhen = true;
-
-    // Parse timestamps.
-    DateTime? whenAddedTime;
-    try {
-      String? when = entityMap['whenAdded'] as String?;
-      if (when != null && when != 'null') {
-        whenAddedTime = DateTime.parse(when);
-      }
-    } on FormatException catch (e) {
-      throw TypeException(
-          '${entityMap['whenAdded']} whenAdded is not DateTime: $e');
+    // Set code if present
+    if (entityMap.containsKey('code')) {
+      code = entityMap['code'] as String?;
     }
-    whenAdded = whenAddedTime;
 
-    DateTime? whenSetTime;
-    try {
-      String? when = entityMap['whenSet'] as String?;
-      if (when != null && when != 'null') {
-        whenSetTime = DateTime.parse(when);
-      }
-    } on FormatException catch (e) {
-      throw TypeException(
-          '${entityMap['whenSet']} whenSet is not DateTime: $e');
-    }
-    whenSet = whenSetTime;
-
-    DateTime? whenRemovedTime;
-    try {
-      String? when = entityMap['whenRemoved'] as String?;
-      if (when != null && when != 'null') {
-        whenRemovedTime = DateTime.parse(when);
-      }
-    } on FormatException catch (e) {
-      throw TypeException(
-          '${entityMap['whenRemoved']} whenRemoved is not DateTime: $e');
-    }
-    whenRemoved = whenRemovedTime;
-
-    concept.updateWhen = beforeUpdateWhen;
-
-    var beforePre = pre;
-    pre = false;
-
-    // For each attribute, parse the stored string.
-    for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
-      if (attribute.identifier) {
-        var beforeUpdate = attribute.update;
-        attribute.update = true;
-        setStringToAttribute(attribute.code, entityMap[attribute.code]);
-        attribute.update = beforeUpdate;
-      } else {
-        setStringToAttribute(attribute.code, entityMap[attribute.code]);
+    // Set timestamps if present
+    if (entityMap.containsKey('whenAdded')) {
+      try {
+        int timeStamp = entityMap['whenAdded'] as int;
+        _whenAdded = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+      } catch (e) {
+        throw TypeException(
+            'whenAdded is not valid timestamp: ${entityMap['whenAdded']} - $e');
       }
     }
 
-    // Load neighbors: parent references, child sets.
-    _neighborsFromJsonMap(entityMap, internalParent);
-
-    pre = beforePre;
-  }
-
-  /// Internal helper to load parent references and internal child data from [entityMap].
-  void _neighborsFromJsonMap(entityMap, [Entity? internalParent]) {
-    // Internal children.
-    for (Child child in concept.children.whereType<Child>()) {
-      if (child.internal) {
-        var entitiesList = entityMap[child.code];
-        var childEntities = getChild(child.code) as Entities?;
-        childEntities?.fromJsonList(entitiesList, this);
-        setChild(child.code, childEntities as Object);
+    if (entityMap.containsKey('whenSet')) {
+      try {
+        int timeStamp = entityMap['whenSet'] as int;
+        _whenSet = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+      } catch (e) {
+        throw TypeException(
+            'whenSet is not valid timestamp: ${entityMap['whenSet']} - $e');
       }
     }
 
-    // Parents.
-    for (Parent parent in concept.parents.whereType<Parent>()) {
-      if (entityMap[parent.code] == null || entityMap[parent.code] == 'null') {
-        if (parent.minc != '0') {
-          throw ParentException('${parent.code} parent cannot be null.');
+    if (entityMap.containsKey('whenRemoved')) {
+      try {
+        int timeStamp = entityMap['whenRemoved'] as int;
+        _whenRemoved = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+      } catch (e) {
+        throw TypeException(
+            'whenRemoved is not valid timestamp: ${entityMap['whenRemoved']} - $e');
+      }
+    }
+
+    // Load attributes
+    if (entityMap.containsKey('attributes')) {
+      Map<String, dynamic> attributeMap = entityMap['attributes'] as Map<String, dynamic>;
+      for (Attribute attribute in _concept!.attributes.whereType<Attribute>()) {
+        if (attributeMap.containsKey(attribute.code)) {
+          setAttribute(attribute.code, attributeMap[attribute.code]);
         }
-      } else if (entityMap[parent.code] != null) {
-        String? parentOidString = entityMap[parent.code]['oid'];
-        String? entryConceptCode = entityMap[parent.code]['entry'];
-        if (entityMap[parent.code]['parent'] != null &&
-            parentOidString != null &&
-            entryConceptCode != null) {
+      }
+    }
+
+    // Load parents (references)
+    if (entityMap.containsKey('parents')) {
+      Map<String, dynamic> parentMap = entityMap['parents'] as Map<String, dynamic>;
+      for (Parent parent in _concept!.parents.whereType<Parent>()) {
+        if (parentMap.containsKey(parent.code)) {
+          String parentOidString = parentMap[parent.code]['oid'] as String;
+          String parentConceptCode = parentMap[parent.code]['concept'] as String;
+          String parentEntryConceptCode = parentMap[parent.code]['entryConcept'] as String;
+          
           Reference reference = Reference(parentOidString,
-              entityMap[parent.code]['parent'], entryConceptCode);
+              parentConceptCode, parentEntryConceptCode);
           Oid parentOid = reference.oid;
-          setReference(parent.code, reference);
+          
+          _referenceMap[parent.code] = reference;
+        }
+      }
+    }
 
-          if (parent.internal) {
-            if (parentOid == internalParent?.oid) {
-              setParent(parent.code, internalParent);
-            } else {
-              var msg = """
-
-              =============================================
-              Internal parent oid is wrong, create issue for ${parent.code}
-              on https://github.com/context-dev/cms/issues/new?title=_neighborsFromJsonMap%20bug                           
-              ---------------------------------------------                            
-              model_entries.dart: entity.setParent(parent.code, internalParent); 
-              internal parent oid: ${internalParent?.oid}                  
-              entity concept: ${concept.code}                   
-              entity oid: $oid                                
-              parent oid: $parentOidString                           
-              parent code: ${parent.code}                              
-              parent concept: ${entityMap[parent.code]['parent']}                     
-              entry concept for parent: $entryConceptCode            
-              ---------------------------------------------
-            """;
-              throw ParentException(msg);
-            }
+    // Load children
+    if (entityMap.containsKey('children')) {
+      Map<String, dynamic> childMap = entityMap['children'] as Map<String, dynamic>;
+      for (Child child in concept.children.whereType<Child>()) {
+        if (childMap.containsKey(child.code)) {
+          List<dynamic> childrenJson = childMap[child.code] as List<dynamic>;
+          var childEntities = getChild(child.code) as Entities?;
+          if (childEntities != null) {
+            childEntities.fromJsonList(childrenJson, this);
           }
         }
       }
