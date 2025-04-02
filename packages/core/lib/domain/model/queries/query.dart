@@ -1,74 +1,69 @@
-import 'interfaces/i_query.dart';
+part of ednet_core;
 
-/// Base implementation of the [IQuery] interface.
+/// Represents a query in the application layer.
 ///
-/// This class provides a common foundation for all queries in the system,
-/// handling basic query functionality like name and parameter management.
+/// The [Query] class extends the domain model's query class, adding
+/// application-specific functionality while maintaining compatibility with
+/// the domain model layer.
+///
+/// This class serves as the foundation for all application-level queries,
+/// providing enhanced features like validation and metadata.
 ///
 /// Example usage:
 /// ```dart
-/// class FindTasksByStatusQuery extends Query {
-///   final String status;
+/// class FindActiveTasksQuery extends Query {
+///   final DateTime cutoffDate;
 ///
-///   FindTasksByStatusQuery(this.status) : super('FindTasksByStatus');
+///   FindActiveTasksQuery(this.cutoffDate) : super('FindActiveTasks');
 ///
 ///   @override
-///   Map<String, dynamic> getParameters() => {'status': status};
+///   Map<String, dynamic> getParameters() => {
+///     'cutoffDate': cutoffDate.toIso8601String(),
+///   };
+///
+///   @override
+///   bool validate() => cutoffDate.isAfter(DateTime.now());
 /// }
 /// ```
-class Query implements IQuery {
-  @override
-  final String name;
+class Query extends model.Query implements IQuery {
+  /// Metadata associated with this query.
+  final Map<String, dynamic> metadata;
   
-  @override
-  final String? conceptCode;
-  
-  /// Parameters for this query.
-  final Map<String, dynamic> _parameters = {};
-  
-  /// Creates a new query with the specified name.
+  /// Creates a new application-level query.
   ///
-  /// The [name] parameter should clearly indicate the query's purpose,
-  /// typically using a verb-noun format that describes what is being retrieved.
-  /// 
-  /// [conceptCode] optionally specifies which concept this query targets.
-  Query(this.name, {this.conceptCode});
+  /// Parameters:
+  /// - [name]: The name of the query
+  /// - [conceptCode]: Optional concept code this query targets
+  /// - [metadata]: Additional metadata for the query
+  Query(
+    String name, {
+    String? conceptCode,
+    this.metadata = const {},
+  }) : super(name, conceptCode: conceptCode);
   
-  /// Creates a new query targeting a specific concept.
-  /// 
-  /// This factory constructor makes it explicit that the query is for a particular
-  /// concept, which can be used for validation and routing.
-  /// 
-  /// [name] is the name of the query.
-  /// [conceptCode] is the code of the concept being queried.
-  /// Returns a new concept-specific query.
-  factory Query.forConcept(String name, String conceptCode) {
-    return Query(name, conceptCode: conceptCode);
-  }
-  
-  /// Adds a parameter to this query.
-  /// 
-  /// This is useful for building queries with multiple parameters.
-  /// 
-  /// [name] is the parameter name.
-  /// [value] is the parameter value.
-  /// Returns this query for method chaining.
-  Query withParameter(String name, dynamic value) {
-    _parameters[name] = value;
-    return this;
-  }
-  
-  /// Adds multiple parameters to this query.
-  /// 
-  /// This is useful for building queries with multiple parameters at once.
-  /// 
-  /// [parameters] is a map of parameter names to values.
-  /// Returns this query for method chaining.
-  Query withParameters(Map<String, dynamic> parameters) {
-    _parameters.addAll(parameters);
-    return this;
-  }
+  /// Validates the query before execution.
+  ///
+  /// Override this method to implement specific validation logic
+  /// for queries in your application.
+  ///
+  /// Returns true if the query is valid, false otherwise.
+  bool validate() => true;
   
   @override
-  Map<String, dynamic> getParameters() => Map.unmodifiable(_parameters);
+  Map<String, dynamic> getParameters() => super.getParameters();
+}
+
+/// Interface for application-level queries.
+///
+/// This interface extends the domain model query interface,
+/// providing a contract for application-specific query capabilities.
+/// 
+/// This interface is being maintained for backward compatibility,
+/// but future code should prefer using model.IQuery directly.
+abstract class IQuery implements model.IQuery {
+  /// Validates the query before execution.
+  bool validate();
+  
+  /// Metadata associated with this query.
+  Map<String, dynamic> get metadata;
 } 

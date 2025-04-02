@@ -1,15 +1,13 @@
-import 'dart:async';
-
-import 'interfaces/i_query.dart';
-import 'interfaces/i_query_handler.dart';
-import 'interfaces/i_query_result.dart';
-import 'query_result.dart';
+part of ednet_core;
 
 /// Dispatches queries to their appropriate handlers.
 ///
 /// The [QueryDispatcher] class is responsible for routing queries to their
 /// registered handlers, providing a centralized entry point for query processing.
 /// This follows the mediator pattern, decoupling query senders from handlers.
+///
+/// This dispatcher serves as the single unified query handling mechanism for both
+/// domain model and application layers, eliminating duplication and inconsistency.
 ///
 /// Example usage:
 /// ```dart
@@ -27,6 +25,9 @@ class QueryDispatcher {
   
   /// Map of concept codes to their handlers
   final Map<String, Map<String, IQueryHandler>> _conceptHandlers = {};
+
+  /// Map of query names to handlers (for application-level queries without concepts)
+  final Map<String, IQueryHandler> _namedHandlers = {};
   
   /// Registers a query handler for a specific query type.
   ///
@@ -63,13 +64,31 @@ class QueryDispatcher {
     _conceptHandlers.putIfAbsent(conceptCode, () => {});
     _conceptHandlers[conceptCode]![queryName] = handler;
   }
+
+  /// Registers a query handler for a specific query name without a concept.
+  ///
+  /// This is useful for application-level queries that don't target a specific concept.
+  ///
+  /// Type parameters:
+  /// - [Q]: The type of query to handle
+  /// - [R]: The type of result the handler returns
+  ///
+  /// Parameters:
+  /// - [queryName]: The name of the query this handler processes
+  /// - [handler]: The handler to register
+  void registerNamedHandler<Q extends IQuery, R extends IQueryResult>(
+    String queryName,
+    IQueryHandler<Q, R> handler
+  ) {
+    _namedHandlers[queryName] = handler;
+  }
   
   /// Dispatches a query to its registered handler.
   ///
-  /// This method:
-  /// 1. Finds the appropriate handler for the query type
-  /// 2. Invokes the handler with the query
-  /// 3. Returns the result or an error
+  /// This method implements a dispatch strategy that tries multiple approaches:
+  /// 1. First tries concept-based dispatch if applicable
+  /// 2. Then falls back to name-based dispatch 
+  /// 3. Finally tries type-based dispatch
   ///
   /// Type parameters:
   /// - [Q]: The type of query to dispatch
@@ -81,7 +100,7 @@ class QueryDispatcher {
   /// Returns:
   /// A Future with the query result
   Future<R> dispatch<Q extends IQuery, R extends IQueryResult>(Q query) async {
-    // First try concept-based dispatch if applicable
+    // Try concept-based dispatch if applicable
     if (query.conceptCode != null) {
       final conceptHandlerMap = _conceptHandlers[query.conceptCode];
       if (conceptHandlerMap != null) {
@@ -92,20 +111,22 @@ class QueryDispatcher {
       }
     }
     
+    // Try name-based dispatch
+    final namedHandler = _namedHandlers[query.name];
+    if (namedHandler != null) {
+      return await (namedHandler as IQueryHandler<Q, R>).handle(query);
+    }
+    
     // Fall back to type-based dispatch
     final handler = _handlers[Q];
     
     if (handler == null) {
-      // Create a failure result of the expected type
-      // This is a bit complex due to dart generics
-      throw StateError('No handler registered for query type ${Q.toString()}');
+      throw StateError('No handler registered for query type ${Q.toString()} with name ${query.name}');
     }
     
     try {
       return await (handler as IQueryHandler<Q, R>).handle(query);
     } catch (e) {
-      // We can't create a typed QueryResult.failure here easily due to type erasure
-      // So we have to throw and let the caller handle it
       throw StateError('Error handling query: ${e.toString()}');
     }
   }
@@ -155,6 +176,42 @@ class QueryDispatcher {
       return QueryResult.failure(
         'Error handling query: ${e.toString()}',
         conceptCode: conceptCode,
+      );
+    }
+  }
+
+  /// Dispatches a query by name without requiring a concept.
+  ///
+  /// This method is useful for application-level queries that don't target a specific concept.
+  ///
+  /// Parameters:
+  /// - [queryName]: The name of the query to dispatch
+  /// - [parameters]: Query parameters
+  ///
+  /// Returns:
+  /// A Future with the query result
+  Future<IQueryResult> dispatchByNameOnly(
+    String queryName,
+    [Map<String, dynamic>? parameters]
+  ) async {
+    final handler = _namedHandlers[queryName];
+    if (handler == null) {
+      return QueryResult.failure(
+        'No handler registered for query: $queryName',
+      );
+    }
+    
+    try {
+      // Create a dynamic query
+      final query = Query(queryName);
+      if (parameters != null) {
+        query.withParameters(parameters);
+      }
+      
+      return await handler.handle(query);
+    } catch (e) {
+      return QueryResult.failure(
+        'Error handling query: ${e.toString()}',
       );
     }
   }

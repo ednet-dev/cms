@@ -1,4 +1,4 @@
-import 'query_result.dart';
+part of ednet_core;
 
 /// Represents a query result specifically for entity operations.
 ///

@@ -1,5 +1,4 @@
-import 'i_query.dart';
-import 'i_query_result.dart';
+part of ednet_core;
 
 /// Interface for query handlers in CQRS.
 ///

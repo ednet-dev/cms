@@ -1,4 +1,4 @@
-import 'query.dart';
+part of ednet_core;
 
 /// Represents a query specifically for concept operations.
 ///
