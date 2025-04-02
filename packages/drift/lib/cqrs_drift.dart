@@ -10,7 +10,12 @@
 library cqrs_drift;
 
 import 'dart:async';
+import 'dart:convert';
+
+// External packages
 import 'package:drift/drift.dart';
+
+// EDNet Core imports
 import 'package:ednet_core/domain/model.dart' as model;
 import 'package:ednet_core/domain/application.dart' as app;
 import 'package:ednet_core/ednet_core.dart';
@@ -27,12 +32,17 @@ import 'package:ednet_core/domain/application/query_dispatcher.dart' as app;
 import 'package:ednet_core/i_repository.dart';
 import 'package:ednet_core/domain/domain_models.dart';
 
+// Local imports
 import 'ednet_drift_repository.dart';
 
+// Core components
+part 'src/cqrs/value_converter.dart';
 part 'src/cqrs/query_adapter.dart';
-part 'src/cqrs/drift_query_repository.dart';
 part 'src/cqrs/command_adapter.dart';
+
+// Specialized components
+part 'src/cqrs/drift_query_repository.dart';
+part 'src/cqrs/expression_query_adapter.dart';
 part 'src/cqrs/query_handler.dart';
-part 'src/cqrs/drift_repository_extension.dart';
 part 'src/cqrs/rest_query_adapter.dart';
-part 'src/cqrs/expression_query_adapter.dart'; 
+part 'src/cqrs/drift_repository_extension.dart'; 

@@ -34,20 +34,27 @@ class DriftCommandAdapter {
   /// Returns a Future with the command result.
   Future<app.CommandResult> executeCommand(app.ICommand command) async {
     // Get the command type to determine the operation
-    final commandType = command.runtimeType.toString();
+    final commandName = command.name.toLowerCase();
     
     try {
       // Wrap the operation in a transaction
       return await _db.transaction(() async {
-        // Handle different command types
-        if (commandType.contains('Add') || commandType.contains('Create')) {
+        // Handle different command types based on command name
+        if (commandName.contains('add') || 
+            commandName.contains('create') || 
+            commandName.contains('insert')) {
           return await _handleAddCommand(command);
-        } else if (commandType.contains('Update') || commandType.contains('Set')) {
+        } else if (commandName.contains('update') || 
+                  commandName.contains('edit') || 
+                  commandName.contains('modify') ||
+                  commandName.contains('set')) {
           return await _handleUpdateCommand(command);
-        } else if (commandType.contains('Remove') || commandType.contains('Delete')) {
+        } else if (commandName.contains('remove') || 
+                  commandName.contains('delete') || 
+                  commandName.contains('erase')) {
           return await _handleRemoveCommand(command);
         } else {
-          // For custom commands, extract the entity and determine the operation
+          // For unknown command types, try to determine based on the data
           return await _handleCustomCommand(command);
         }
       });
@@ -82,7 +89,7 @@ class DriftCommandAdapter {
       if (value != null || attribute.required) {
         columns.add(attribute.code);
         placeholders.add('?');
-        variables.add(Variable(_convertValueForDatabase(value, attribute)));
+        variables.add(Variable(DriftValueConverter.toDatabaseValue(value, attribute)));
       }
     }
     
@@ -90,13 +97,13 @@ class DriftCommandAdapter {
     if (entity.whenAdded != null) {
       columns.add('whenAdded');
       placeholders.add('?');
-      variables.add(Variable(_convertValueForDatabase(entity.whenAdded, null)));
+      variables.add(Variable(DriftValueConverter.toDatabaseValue(entity.whenAdded)));
     }
     
     if (entity.whenSet != null) {
       columns.add('whenSet');
       placeholders.add('?');
-      variables.add(Variable(_convertValueForDatabase(entity.whenSet, null)));
+      variables.add(Variable(DriftValueConverter.toDatabaseValue(entity.whenSet)));
     }
     
     // Build and execute the insert statement
@@ -141,10 +148,14 @@ class DriftCommandAdapter {
     }
     
     if (primaryKey == null || primaryKeyValue == null) {
-      // If no primary key attribute, try using the OID
-      primaryKey = Attribute();
-      primaryKey.code = 'oid';
-      primaryKeyValue = entity.oid.toString();
+      // If no primary key attribute, try using the ID or OID
+      if (entity.getAttribute('id') != null) {
+        primaryKey = Attribute()..code = 'id';
+        primaryKeyValue = entity.getAttribute('id');
+      } else {
+        primaryKey = Attribute()..code = 'oid';
+        primaryKeyValue = entity.oid.toString();
+      }
     }
     
     // Build the SET clause
@@ -160,17 +171,17 @@ class DriftCommandAdapter {
       
       final value = entity.getAttribute(attribute.code);
       setClauses.add('${attribute.code} = ?');
-      variables.add(Variable(_convertValueForDatabase(value, attribute)));
+      variables.add(Variable(DriftValueConverter.toDatabaseValue(value, attribute)));
     }
     
     // Handle timestamps
     if (entity.whenSet != null) {
       setClauses.add('whenSet = ?');
-      variables.add(Variable(_convertValueForDatabase(entity.whenSet, null)));
+      variables.add(Variable(DriftValueConverter.toDatabaseValue(entity.whenSet)));
     }
     
     // Add primary key value for WHERE clause
-    variables.add(Variable(_convertValueForDatabase(primaryKeyValue, primaryKey)));
+    variables.add(Variable(DriftValueConverter.toDatabaseValue(primaryKeyValue, primaryKey)));
     
     // Build and execute the update statement
     if (setClauses.isNotEmpty) {
@@ -218,17 +229,21 @@ class DriftCommandAdapter {
     }
     
     if (primaryKey == null || primaryKeyValue == null) {
-      // If no primary key attribute, try using the OID
-      primaryKey = Attribute();
-      primaryKey.code = 'oid';
-      primaryKeyValue = entity.oid.toString();
+      // If no primary key attribute, try using the ID or OID
+      if (entity.getAttribute('id') != null) {
+        primaryKey = Attribute()..code = 'id';
+        primaryKeyValue = entity.getAttribute('id');
+      } else {
+        primaryKey = Attribute()..code = 'oid';
+        primaryKeyValue = entity.oid.toString();
+      }
     }
     
     // Build and execute the delete statement
     final sql = 'DELETE FROM $tableName WHERE ${primaryKey.code} = ?';
     final rowsAffected = await _db.customUpdate(
       sql,
-      variables: [Variable(_convertValueForDatabase(primaryKeyValue, primaryKey))]
+      variables: [Variable(DriftValueConverter.toDatabaseValue(primaryKeyValue, primaryKey))]
     );
     
     // Signal that the table has been modified
@@ -247,70 +262,62 @@ class DriftCommandAdapter {
   ///
   /// Returns a Future with the command result.
   Future<app.CommandResult> _handleCustomCommand(app.ICommand command) async {
-    // Try to determine the operation type from the command
-    final commandName = command.name.toLowerCase();
+    // Try to extract an entity first
+    final entity = _extractEntityFromCommand(command);
     
-    if (commandName.contains('add') || 
-        commandName.contains('create') || 
-        commandName.contains('insert')) {
-      return await _handleAddCommand(command);
-    } else if (commandName.contains('update') || 
-               commandName.contains('edit') || 
-               commandName.contains('modify') ||
-               commandName.contains('set')) {
-      return await _handleUpdateCommand(command);
-    } else if (commandName.contains('remove') || 
-               commandName.contains('delete') || 
-               commandName.contains('erase')) {
-      return await _handleRemoveCommand(command);
-    } else {
-      // If we can't determine the operation, use a fallback
-      return app.CommandResult.failure(
-        'Unsupported command type: ${command.runtimeType}. ' +
-        'Command must indicate operation type (add/update/remove).'
-      );
+    if (entity != null) {
+      // Check if the entity has an ID to determine if it's an update or insert
+      final hasId = entity.attributes.any((attr) => 
+        attr.code == 'id' && entity.getAttribute('id') != null);
+      
+      if (hasId) {
+        return _handleUpdateCommand(command);
+      } else {
+        return _handleAddCommand(command);
+      }
     }
+    
+    // If we couldn't determine the operation, return an error
+    return app.CommandResult.failure(
+      'Unsupported command type: ${command.runtimeType}. ' +
+      'Command must indicate operation type (add/update/remove).'
+    );
   }
   
   /// Extracts the entity from a command.
   ///
   /// This method attempts to find the entity in the command's data
-  /// or parameters.
+  /// or parameters, or constructs one from the data if possible.
   ///
   /// [command] is the command to extract from.
   ///
   /// Returns the entity or null if not found.
   Entity<dynamic>? _extractEntityFromCommand(app.ICommand command) {
-    // Try different approaches to find the entity
-    
-    // Check if command has a getEntity() method
-    try {
-      final entity = command.getEntity?.call();
-      if (entity is Entity) {
-        return entity;
-      }
-    } catch (_) {}
-    
-    // Check if the command has an entity property
-    try {
-      final entity = command.entity;
-      if (entity is Entity) {
-        return entity;
-      }
-    } catch (_) {}
-    
-    // Check command parameters
+    // Get the command parameters
     final params = command.getParameters();
     
-    // Look for common entity parameter names
-    for (final key in ['entity', 'data', 'model', 'item']) {
+    // Option 1: Check if command has a direct entity property
+    // or getter method (depending on command implementation)
+    try {
+      if (command.entity is Entity) {
+        return command.entity as Entity;
+      }
+    } catch (_) {}
+    
+    try {
+      if (command.getEntity?.call() is Entity) {
+        return command.getEntity?.call() as Entity;
+      }
+    } catch (_) {}
+    
+    // Option 2: Check command parameters for entity directly
+    for (final key in ['entity', 'model', 'item']) {
       if (params.containsKey(key) && params[key] is Entity) {
         return params[key] as Entity;
       }
     }
     
-    // If we still haven't found the entity, check if we have enough
-    // data to create a new entity
+    // Option 3: Create an entity from concept and data
     if (params.containsKey('concept') && params.containsKey('data')) {
       final concept = params['concept'];
       if (concept is Concept) {
@@ -330,48 +337,19 @@ class DriftCommandAdapter {
       }
     }
     
+    // Option 4: If the command has an 'id' parameter, try to construct
+    // a minimal entity with just the ID for delete/update operations
+    if (params.containsKey('id') && params.containsKey('concept')) {
+      final concept = params['concept'];
+      if (concept is Concept) {
+        final entity = Entity<dynamic>();
+        entity.concept = concept;
+        entity.setAttribute('id', params['id']);
+        return entity;
+      }
+    }
+    
     // Couldn't find or create an entity
     return null;
-  }
-  
-  /// Converts a value for storage in the database.
-  ///
-  /// This method ensures that values from the domain model
-  /// are correctly converted for the database.
-  ///
-  /// [value] is the value to convert.
-  /// [attribute] is the attribute that defines the expected type.
-  ///
-  /// Returns the converted value suitable for SQL.
-  dynamic _convertValueForDatabase(dynamic value, Attribute? attribute) {
-    if (value == null) {
-      return null;
-    }
-    
-    // If we have an attribute, use its type for conversion
-    if (attribute != null && attribute.type != null) {
-      if (attribute.type!.code == 'DateTime' && value is DateTime) {
-        // Store as milliseconds since epoch
-        return value.millisecondsSinceEpoch;
-      } else if (attribute.type!.code == 'bool' && value is bool) {
-        // Store as integer (0/1)
-        return value ? 1 : 0;
-      } else if (attribute.type!.code == 'Uri' && value is Uri) {
-        // Store as string
-        return value.toString();
-      }
-    } else {
-      // No attribute, use the runtime type
-      if (value is DateTime) {
-        return value.millisecondsSinceEpoch;
-      } else if (value is bool) {
-        return value ? 1 : 0;
-      } else if (value is Uri) {
-        return value.toString();
-      }
-    }
-    
-    // For other types, return as is
-    return value;
   }
 } 

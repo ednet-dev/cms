@@ -23,6 +23,9 @@ class EDNetDriftCqrsRepository extends EDNetDriftRepository {
   /// The query adapter for handling queries
   late final DriftQueryAdapter _queryAdapter;
   
+  /// The expression query adapter for handling complex queries
+  late final DriftExpressionQueryAdapter _expressionQueryAdapter;
+  
   /// The query dispatcher for routing queries to handlers
   late final app.QueryDispatcher _queryDispatcher;
   
@@ -52,20 +55,21 @@ class EDNetDriftCqrsRepository extends EDNetDriftRepository {
     // Create adapters
     _commandAdapter = DriftCommandAdapter(_db);
     _queryAdapter = DriftQueryAdapter(_db);
+    _expressionQueryAdapter = DriftExpressionQueryAdapter(_db);
     _queryDispatcher = app.QueryDispatcher();
     _restQueryAdapter = RestQueryAdapter();
     
     // Register default handlers for all concepts
+    _registerQueryHandlers();
+  }
+  
+  /// Registers query handlers for all concepts in the domain.
+  void _registerQueryHandlers() {
     final handlerFactory = DriftQueryHandlerFactory(_db);
     handlerFactory.registerAllConceptHandlers(
       _domain,
       _queryDispatcher,
-      (concept) {
-        // Create a dynamic repository for the concept
-        // This is a simple implementation - in a real app, you might
-        // have specialized repositories for different concepts
-        return this;
-      },
+      (concept) => this,
     );
   }
   
@@ -92,38 +96,105 @@ class EDNetDriftCqrsRepository extends EDNetDriftRepository {
   ///
   /// Returns a Future with the query result
   Future<model.IQueryResult> executeQuery(model.IQuery query) {
-    return _queryDispatcher.dispatch(query);
+    if (query is model.ConceptQuery) {
+      return _queryDispatcher.dispatch(query);
+    } else if (query is model.ExpressionQuery) {
+      return _expressionQueryAdapter.executeExpressionQuery(query);
+    } else {
+      return Future.value(
+        model.QueryResult.failure('Unsupported query type: ${query.runtimeType}')
+      );
+    }
   }
   
-  /// Executes a query for the specified concept with parameters.
+  /// Creates and executes a query for a concept with optional filters.
   ///
   /// This is a convenience method for creating and executing
-  /// concept queries with parameters.
+  /// simple concept queries without needing to construct a query object.
   ///
   /// Parameters:
   /// - [conceptCode]: The code of the concept to query
-  /// - [queryName]: The name of the query to execute
-  /// - [parameters]: Optional parameters for the query
+  /// - [filters]: Optional filters (attribute-value pairs)
+  /// - [sort]: Optional field to sort by
+  /// - [sortDirection]: Optional sort direction ('asc' or 'desc')
+  /// - [page]: Optional page number for pagination
+  /// - [pageSize]: Optional page size for pagination
   ///
   /// Returns a Future with the query result
-  Future<model.IQueryResult> executeConceptQuery(
-    String conceptCode,
-    String queryName, [
-    Map<String, dynamic>? parameters,
-  ]) {
+  Future<model.EntityQueryResult<Entity<dynamic>>> query(
+    String conceptCode, {
+    Map<String, dynamic>? filters,
+    String? sort,
+    String? sortDirection,
+    int? page,
+    int? pageSize,
+  }) async {
     final concept = _domain.findConcept(conceptCode);
     if (concept == null) {
-      return Future.value(
-        model.QueryResult.failure('Concept not found: $conceptCode')
+      return model.EntityQueryResult.failure(
+        'Concept not found: $conceptCode',
+        concept: null,
       );
     }
     
-    final query = model.ConceptQuery(queryName, concept);
-    if (parameters != null) {
-      query.withParameters(parameters);
+    final query = model.ConceptQuery('FindByCriteria', concept);
+    
+    // Apply filters
+    if (filters != null) {
+      filters.forEach((key, value) {
+        query.withParameter(key, value);
+      });
     }
     
-    return executeQuery(query);
+    // Apply sorting
+    if (sort != null) {
+      query.withSorting(sort, ascending: sortDirection?.toLowerCase() != 'desc');
+    }
+    
+    // Apply pagination
+    if (page != null && pageSize != null) {
+      query.withPagination(page: page, pageSize: pageSize);
+    }
+    
+    final result = await executeQuery(query);
+    
+    if (result is model.EntityQueryResult<Entity<dynamic>>) {
+      return result;
+    } else {
+      return model.EntityQueryResult.failure(
+        'Query returned unexpected result type',
+        concept: concept,
+      );
+    }
+  }
+  
+  /// Creates and executes a query builder for a concept.
+  ///
+  /// This method provides a fluent interface for constructing
+  /// expression-based queries without needing to construct complex objects.
+  ///
+  /// Parameters:
+  /// - [conceptCode]: The code of the concept to query
+  /// - [buildQuery]: A function that configures the query builder
+  ///
+  /// Returns a Future with the query result
+  Future<model.EntityQueryResult<Entity<dynamic>>> queryWhere(
+    String conceptCode,
+    void Function(QueryBuilder builder) buildQuery
+  ) async {
+    final concept = _domain.findConcept(conceptCode);
+    if (concept == null) {
+      return model.EntityQueryResult.failure(
+        'Concept not found: $conceptCode',
+        concept: null,
+      );
+    }
+    
+    final builder = QueryBuilder.forConcept(concept, 'FindWhere');
+    buildQuery(builder);
+    final query = builder.build();
+    
+    return _expressionQueryAdapter.executeExpressionQuery(query);
   }
   
   /// Executes a query from REST API request parameters.
@@ -137,15 +208,16 @@ class EDNetDriftCqrsRepository extends EDNetDriftRepository {
   /// - [queryName]: Optional query name (defaults to 'FindByCriteria')
   ///
   /// Returns a Future with the query result
-  Future<model.IQueryResult> executeRestQuery(
+  Future<model.EntityQueryResult<Entity<dynamic>>> executeRestQuery(
     String conceptCode,
     Map<String, dynamic> params, [
     String queryName = RestQueryAdapter.DEFAULT_QUERY_NAME,
-  ]) {
+  ]) async {
     final concept = _domain.findConcept(conceptCode);
     if (concept == null) {
-      return Future.value(
-        model.QueryResult.failure('Concept not found: $conceptCode')
+      return model.EntityQueryResult.failure(
+        'Concept not found: $conceptCode',
+        concept: null,
       );
     }
     
@@ -155,7 +227,133 @@ class EDNetDriftCqrsRepository extends EDNetDriftRepository {
       queryName,
     );
     
-    return executeQuery(query);
+    return executeQuery(query) as Future<model.EntityQueryResult<Entity<dynamic>>>;
+  }
+  
+  /// Find a single entity by its ID.
+  ///
+  /// This is a convenience method for finding an entity by its ID
+  /// without needing to construct a query.
+  ///
+  /// Parameters:
+  /// - [conceptCode]: The code of the concept to query
+  /// - [id]: The ID of the entity to find
+  ///
+  /// Returns a Future with the entity, or null if not found
+  Future<Entity<dynamic>?> findById(
+    String conceptCode,
+    dynamic id
+  ) async {
+    final result = await query(conceptCode, filters: {'id': id});
+    
+    if (result.isSuccess && result.data!.isNotEmpty) {
+      return result.data!.first;
+    }
+    
+    return null;
+  }
+  
+  /// Create a new entity.
+  ///
+  /// This is a convenience method for creating an entity
+  /// without needing to construct a command.
+  ///
+  /// Parameters:
+  /// - [conceptCode]: The code of the concept to create
+  /// - [data]: The attribute values for the new entity
+  ///
+  /// Returns a Future with the command result
+  Future<app.CommandResult> create(
+    String conceptCode,
+    Map<String, dynamic> data
+  ) async {
+    final concept = _domain.findConcept(conceptCode);
+    if (concept == null) {
+      return app.CommandResult.failure('Concept not found: $conceptCode');
+    }
+    
+    final command = GenericCommand('Create$conceptCode')
+      ..withParameter('concept', concept)
+      ..withParameter('data', data);
+    
+    return executeCommand(command);
+  }
+  
+  /// Update an existing entity.
+  ///
+  /// This is a convenience method for updating an entity
+  /// without needing to construct a command.
+  ///
+  /// Parameters:
+  /// - [conceptCode]: The code of the concept to update
+  /// - [id]: The ID of the entity to update
+  /// - [data]: The attribute values to update
+  ///
+  /// Returns a Future with the command result
+  Future<app.CommandResult> update(
+    String conceptCode,
+    dynamic id,
+    Map<String, dynamic> data
+  ) async {
+    final concept = _domain.findConcept(conceptCode);
+    if (concept == null) {
+      return app.CommandResult.failure('Concept not found: $conceptCode');
+    }
+    
+    // Ensure the ID is included in the data
+    final updateData = Map<String, dynamic>.from(data);
+    updateData['id'] = id;
+    
+    final command = GenericCommand('Update$conceptCode')
+      ..withParameter('concept', concept)
+      ..withParameter('data', updateData);
+    
+    return executeCommand(command);
+  }
+  
+  /// Delete an entity.
+  ///
+  /// This is a convenience method for deleting an entity
+  /// without needing to construct a command.
+  ///
+  /// Parameters:
+  /// - [conceptCode]: The code of the concept to delete
+  /// - [id]: The ID of the entity to delete
+  ///
+  /// Returns a Future with the command result
+  Future<app.CommandResult> delete(
+    String conceptCode,
+    dynamic id
+  ) async {
+    final concept = _domain.findConcept(conceptCode);
+    if (concept == null) {
+      return app.CommandResult.failure('Concept not found: $conceptCode');
+    }
+    
+    final command = GenericCommand('Delete$conceptCode')
+      ..withParameter('concept', concept)
+      ..withParameter('data', {'id': id});
+    
+    return executeCommand(command);
+  }
+  
+  /// Gets a typed repository for a specific concept.
+  ///
+  /// This method provides access to a type-safe repository
+  /// for the specified concept, making it easier to work with
+  /// strongly-typed entities.
+  ///
+  /// Parameters:
+  /// - [conceptCode]: The code of the concept to get a repository for
+  ///
+  /// Returns a DriftQueryRepository for the concept
+  DriftQueryRepository<Entity<dynamic>> getRepository(String conceptCode) {
+    final concept = _domain.findConcept(conceptCode);
+    if (concept == null) {
+      throw ArgumentError('Concept not found: $conceptCode');
+    }
+    
+    return DriftQueryRepository<Entity<dynamic>>(_db, concept);
   }
 }
 
@@ -171,19 +369,18 @@ extension EDNetDriftRepositoryCqrsExtension on EDNetDriftRepository {
   ///
   /// Returns a new EDNetDriftCqrsRepository with the same configuration
   EDNetDriftCqrsRepository withCqrs() {
-    // We can't directly access private fields, so this is a workaround
-    // In a real implementation, you might want to add factory methods to the
-    // original repository class instead
     return EDNetDriftCqrsRepository(
       domain: _domain,
-      sqlitePath: '', // This is a limitation of the current implementation
+      sqlitePath: _db.executor is NativeDatabase && _db.executor.path.isNotEmpty
+          ? (_db.executor as NativeDatabase).path
+          : ':memory:',
       schemaVersion: _db.schemaVersion,
     );
   }
 } 
 
 /// Extensions for concept-aware querying with Drift.
-extension ConceptQueryExtensions on  EDNetDriftRepository {
+extension ConceptQueryExtensions on EDNetDriftRepository {
   /// Creates a query repository for a specific concept.
   ///
   /// This method provides access to the full range of query capabilities
@@ -194,93 +391,45 @@ extension ConceptQueryExtensions on  EDNetDriftRepository {
   /// Returns a DriftQueryRepository for the concept, or throws an exception
   /// if the concept is not found.
   DriftQueryRepository<Entity<dynamic>> forConcept(String conceptCode) {
-    final concept = domain.findConcept(conceptCode);
+    final concept = _domain.findConcept(conceptCode);
     if (concept == null) {
       throw ArgumentError('Concept not found: $conceptCode');
     }
     return DriftQueryRepository<Entity<dynamic>>(database, concept);
   }
+}
+
+/// A generic command implementation for the CQRS repository.
+///
+/// This class provides a simple command implementation that can be used
+/// with the EDNetDriftCqrsRepository for common operations.
+class GenericCommand implements app.ICommand {
+  final String _name;
+  final Map<String, dynamic> _parameters = {};
   
-  /// Executes a query using the expression builder pattern.
-  ///
-  /// This method provides a clean way to build and execute complex queries
-  /// without manually constructing expression objects.
-  ///
-  /// [conceptCode] is the code of the concept to query.
-  /// [buildQuery] is a function that configures the query builder.
-  ///
-  /// Returns a Future with the query result.
-  Future<EntityQueryResult<Entity<dynamic>>> queryWhere(
-    String conceptCode,
-    void Function(QueryBuilder builder) buildQuery
-  ) async {
-    return forConcept(conceptCode).findWhere(buildQuery);
+  GenericCommand(this._name);
+  
+  @override
+  String get name => _name;
+  
+  @override
+  Map<String, dynamic> getParameters() => Map.unmodifiable(_parameters);
+  
+  /// Adds a parameter to this command.
+  GenericCommand withParameter(String name, dynamic value) {
+    _parameters[name] = value;
+    return this;
   }
   
-  /// Executes a search query with multiple optional filters.
-  ///
-  /// This method is designed for search screens and advanced filtering
-  /// scenarios, handling all the common filtering patterns.
-  ///
-  /// Parameters:
-  /// - [conceptCode]: The concept to query
-  /// - [searchText]: Optional text to search for in text fields
-  /// - [filters]: Optional attribute filters
-  /// - [sort]: Optional field to sort by
-  /// - [sortDirection]: Optional sort direction
-  /// - [page]: Page number for pagination
-  /// - [pageSize]: Page size for pagination
-  ///
-  /// Returns a Future with the search results.
-  Future<EntityQueryResult<Entity<dynamic>>> search({
-    required String conceptCode,
-    String? searchText,
-    Map<String, dynamic>? filters,
-    String? sort,
-    bool ascending = true,
-    int page = 1,
-    int pageSize = 20,
-  }) async {
-    return queryWhere(conceptCode, (builder) {
-      // Add text search if provided
-      if (searchText != null && searchText.isNotEmpty) {
-        // Find text attributes to search
-        final concept = domain.findConcept(conceptCode)!;
-        final textAttributes = concept.attributes
-            .whereType<Attribute>()
-            .where((a) => a.type?.code == 'String')
-            .toList();
-        
-        if (textAttributes.isNotEmpty) {
-          // Create OR conditions for each text attribute
-          var first = true;
-          for (final attr in textAttributes) {
-            if (first) {
-              builder.where(attr.code).contains(searchText);
-              first = false;
-            } else {
-              builder.or(attr.code).contains(searchText);
-            }
-          }
-        }
-      }
-      
-      // Add filters if provided
-      if (filters != null && filters.isNotEmpty) {
-        filters.forEach((key, value) {
-          if (value != null) {
-            builder.and(key).equals(value);
-          }
-        });
-      }
-      
-      // Add sorting if provided
-      if (sort != null) {
-        builder.orderBy(sort, ascending: ascending);
-      }
-      
-      // Add pagination
-      builder.paginate(page, pageSize);
-    });
+  /// Adds multiple parameters to this command.
+  GenericCommand withParameters(Map<String, dynamic> parameters) {
+    _parameters.addAll(parameters);
+    return this;
   }
+  
+  @override
+  List<app.IDomainEvent> getEvents() => [];
+  
+  @override
+  bool doIt() => true;
 } 

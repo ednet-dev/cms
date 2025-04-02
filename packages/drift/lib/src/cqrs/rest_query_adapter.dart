@@ -86,7 +86,7 @@ class RestQueryAdapter {
         for (var entry in filter.entries) {
           final field = entry.key.toString();
           final value = entry.value;
-          query.withParameter(field, _convertParameterValue(value));
+          query.withParameter(field, DriftValueConverter.fromRestParameter(value));
         }
       } else if (filter is String) {
         // Try to parse JSON string: { filter: '{"field":"value"}' }
@@ -96,7 +96,7 @@ class RestQueryAdapter {
             for (var entry in filterMap.entries) {
               final field = entry.key.toString();
               final value = entry.value;
-              query.withParameter(field, _convertParameterValue(value));
+              query.withParameter(field, DriftValueConverter.fromRestParameter(value));
             }
           }
         } catch (_) {
@@ -110,7 +110,7 @@ class RestQueryAdapter {
       if (key.startsWith('filter[') && key.endsWith(']')) {
         final field = key.substring(7, key.length - 1);
         final value = params[key];
-        query.withParameter(field, _convertParameterValue(value));
+        query.withParameter(field, DriftValueConverter.fromRestParameter(value));
       }
     }
   }
@@ -215,57 +215,6 @@ class RestQueryAdapter {
     if (searchTerm != null && searchTerm.isNotEmpty) {
       query.withParameter('search', searchTerm);
     }
-  }
-  
-  /// Converts a parameter value to the appropriate type.
-  ///
-  /// This method tries to convert string values to their
-  /// appropriate types (number, boolean, date, etc.).
-  ///
-  /// Parameters:
-  /// - [value]: The value to convert
-  ///
-  /// Returns the converted value
-  dynamic _convertParameterValue(dynamic value) {
-    if (value == null) {
-      return null;
-    }
-    
-    // If it's not a string, return as is
-    if (value is! String) {
-      return value;
-    }
-    
-    // Try to convert string to appropriate type
-    String stringValue = value.trim();
-    
-    // Boolean values
-    if (stringValue.toLowerCase() == 'true') {
-      return true;
-    } else if (stringValue.toLowerCase() == 'false') {
-      return false;
-    } else if (stringValue.toLowerCase() == 'null') {
-      return null;
-    }
-    
-    // Numeric values
-    if (RegExp(r'^\d+$').hasMatch(stringValue)) {
-      return int.tryParse(stringValue);
-    } else if (RegExp(r'^\d+\.\d+$').hasMatch(stringValue)) {
-      return double.tryParse(stringValue);
-    }
-    
-    // Date values
-    if (RegExp(r'^\d{4}-\d{2}-\d{2}').hasMatch(stringValue)) {
-      try {
-        return DateTime.parse(stringValue);
-      } catch (_) {
-        // Not a valid date, return as string
-      }
-    }
-    
-    // Return as string by default
-    return stringValue;
   }
   
   /// Converts a ConceptQuery to REST API query parameters.

@@ -66,7 +66,7 @@ class DriftQueryAdapter {
         // Handle different filter operations (equal, like, greater than, etc.)
         // Currently supporting only equality
         whereClauses.add('$key = ?');
-        variables.add(Variable(_convertParameterValue(value)));
+        variables.add(Variable(DriftValueConverter.toDatabaseValue(value)));
       }
       
       // Build the WHERE clause
@@ -107,7 +107,7 @@ class DriftQueryAdapter {
       ).get();
       
       // Convert rows to domain entities
-      final entities = rows.map((row) => _rowToEntity(row, concept)).toList();
+      final entities = rows.map((row) => DriftValueConverter.rowToEntity(row, concept)).toList();
       
       // Build and return the query result
       if (page != null && pageSize != null) {
@@ -134,83 +134,7 @@ class DriftQueryAdapter {
     }
   }
   
-  /// Converts a Drift query result row to a domain entity.
-  ///
-  /// [row] is the database row to convert.
-  /// [concept] is the concept that defines the entity structure.
-  ///
-  /// Returns a domain entity populated with data from the row.
-  Entity<dynamic> _rowToEntity(QueryRow row, model.Concept concept) {
-    final entity = Entity<dynamic>();
-    entity.concept = concept;
-    
-    // Set entity data from row
-    row.data.forEach((key, value) {
-      // Try to find the attribute for this column
-      final attribute = concept.getAttribute<Attribute>(key);
-      if (attribute != null) {
-        // Convert value based on attribute type if needed
-        final convertedValue = _convertValueForAttribute(value, attribute);
-        entity.setAttribute(key, convertedValue);
-      }
-    });
-    
-    // If the concept has timestamps and they exist in the data
-    if (row.data.containsKey('whenAdded')) {
-      final whenAdded = row.read<dynamic>('whenAdded');
-      if (whenAdded != null) {
-        entity.whenAdded = _convertToDateTime(whenAdded);
-      }
-    }
-    
-    if (row.data.containsKey('whenSet')) {
-      final whenSet = row.read<dynamic>('whenSet');
-      if (whenSet != null) {
-        entity.whenSet = _convertToDateTime(whenSet);
-      }
-    }
-    
-    if (row.data.containsKey('whenRemoved')) {
-      final whenRemoved = row.read<dynamic>('whenRemoved');
-      if (whenRemoved != null) {
-        entity.whenRemoved = _convertToDateTime(whenRemoved);
-      }
-    }
-    
-    return entity;
-  }
-  
-  /// Converts a database value to the appropriate type for an attribute.
-  ///
-  /// This method ensures that the value retrieved from the database
-  /// is of the correct type for the domain model.
-  ///
-  /// [value] is the value to convert.
-  /// [attribute] is the attribute that defines the expected type.
-  ///
-  /// Returns the converted value.
-  dynamic _convertValueForAttribute(dynamic value, Attribute attribute) {
-    if (value == null) {
-      return null;
-    }
-    
-    if (attribute.type?.code == 'DateTime') {
-      return _convertToDateTime(value);
-    } else if (attribute.type?.code == 'bool') {
-      return value == 1 || value == true;
-    } else if (attribute.type?.code == 'int') {
-      return value is int ? value : int.tryParse(value.toString());
-    } else if (attribute.type?.code == 'double') {
-      return value is double ? value : double.tryParse(value.toString());
-    } else if (attribute.type?.code == 'Uri') {
-      return value is Uri ? value : Uri.tryParse(value.toString());
-    }
-    
-    // For other types, return as is
-    return value;
-  }
-  
-  /// Converts a parameter value for use in a SQL query.
+  /// Converts a database value for use in a SQL query parameter.
   ///
   /// This method ensures that values from the domain model
   /// are correctly converted for the database.
@@ -218,44 +142,21 @@ class DriftQueryAdapter {
   /// [value] is the value to convert.
   ///
   /// Returns the converted value suitable for SQL.
+  /// 
+  /// @deprecated Use DriftValueConverter.toDatabaseValue instead
   dynamic _convertParameterValue(dynamic value) {
-    if (value == null) {
-      return null;
-    }
-    
-    if (value is DateTime) {
-      // Store as milliseconds since epoch
-      return value.millisecondsSinceEpoch;
-    } else if (value is bool) {
-      // Store as integer (0/1)
-      return value ? 1 : 0;
-    } else if (value is Uri) {
-      // Store as string
-      return value.toString();
-    }
-    
-    // For other types, return as is
-    return value;
+    return DriftValueConverter.toDatabaseValue(value);
   }
   
-  /// Converts a database value to a DateTime.
+  /// Converts a QueryRow to a domain entity.
   ///
-  /// Handles different storage formats for DateTime values.
+  /// [row] is the database row to convert.
+  /// [concept] is the concept that defines the entity structure.
   ///
-  /// [value] is the value to convert.
-  ///
-  /// Returns a DateTime.
-  DateTime _convertToDateTime(dynamic value) {
-    if (value is DateTime) {
-      return value;
-    } else if (value is int) {
-      // Stored as milliseconds since epoch
-      return DateTime.fromMillisecondsSinceEpoch(value);
-    } else if (value is String) {
-      // Stored as ISO 8601 string
-      return DateTime.parse(value);
-    } else {
-      throw ArgumentError('Cannot convert $value to DateTime');
-    }
+  /// Returns a domain entity populated with data from the row.
+  /// 
+  /// @deprecated Use DriftValueConverter.rowToEntity instead
+  Entity<dynamic> _rowToEntity(QueryRow row, model.Concept concept) {
+    return DriftValueConverter.rowToEntity(row, concept);
   }
 } 
