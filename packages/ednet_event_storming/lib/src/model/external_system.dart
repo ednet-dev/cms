@@ -1,58 +1,44 @@
 import 'domain_event.dart';
+import 'element.dart';
 
 /// Represents an external system in an Event Storming session.
 ///
 /// In Event Storming, external systems represent third-party systems or services
 /// that interact with the domain. They are typically represented by
 /// pink sticky notes on the event storming board.
-class EventStormingExternalSystem {
-  /// The unique identifier for this external system.
-  final String id;
-
-  /// The name of this external system (e.g., "Payment Gateway").
-  final String name;
-
-  /// A more detailed description of what this external system does.
-  final String description;
-
-  /// Tags or categories to help organize and filter external systems.
-  final List<String> tags;
-
-  /// The position of this external system on the event storming board.
-  final Position position;
-
+class EventStormingExternalSystem extends EventStormingElement {
   /// IDs of domain events that this external system might receive.
   final List<String> receivedEventIds;
 
   /// IDs of domain events that this external system might produce.
   final List<String> producedEventIds;
 
-  /// Who created this external system during the storming session.
-  final String createdBy;
-
-  /// When this external system was added to the board.
-  final DateTime createdAt;
-
-  /// The color used to represent this external system on the board (pink by default).
-  final String color;
-
   /// Additional information about this external system.
   final Map<String, dynamic> properties;
 
   /// Creates a new external system.
   EventStormingExternalSystem({
-    required this.id,
-    required this.name,
-    this.description = '',
-    this.tags = const [],
-    required this.position,
+    required String id,
+    required String name,
+    String description = '',
+    List<String> tags = const [],
+    required Position position,
     this.receivedEventIds = const [],
     this.producedEventIds = const [],
-    required this.createdBy,
-    required this.createdAt,
-    this.color = '#FFC0CB', // Pink by default
+    required String createdBy,
+    required DateTime createdAt,
+    String color = '#FFC0CB', // Pink by default
     this.properties = const {},
-  });
+  }) : super(
+          id: id,
+          name: name,
+          description: description,
+          tags: tags,
+          position: position,
+          createdBy: createdBy,
+          createdAt: createdAt,
+          color: color,
+        );
 
   /// Creates an external system from a map representation.
   factory EventStormingExternalSystem.fromJson(Map<String, dynamic> json) {
@@ -71,7 +57,7 @@ class EventStormingExternalSystem {
     );
   }
 
-  /// Converts this external system to a map representation.
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -85,10 +71,11 @@ class EventStormingExternalSystem {
       'createdAt': createdAt.toIso8601String(),
       'color': color,
       'properties': properties,
+      'elementType': elementType,
     };
   }
 
-  /// Creates a copy of this external system with the given fields replaced with new values.
+  @override
   EventStormingExternalSystem copyWith({
     String? id,
     String? name,
@@ -150,4 +137,17 @@ class EventStormingExternalSystem {
       producedEventIds: producedEventIds.where((id) => id != eventId).toList(),
     );
   }
+  
+  @override
+  ednet_core.model.Entity toCoreModelEntity() {
+    // External systems might be represented as a special type in EDNet Core
+    // For now, we'll use a generic entity
+    final entity = ednet_core.model.Entity(
+      name: name,
+    );
+    return entity;
+  }
+  
+  @override
+  String get elementType => 'external_system';
 } 

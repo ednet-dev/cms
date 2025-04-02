@@ -1,54 +1,40 @@
 import 'package:ednet_core/ednet_core.dart';
+import 'element.dart';
 
 /// Represents a domain event in an Event Storming session.
 ///
 /// In Event Storming, domain events are the core elements that represent
 /// something that happened in the domain. They are typically represented
 /// by orange sticky notes on the event storming board.
-class EventStormingDomainEvent {
-  /// The unique identifier for this event.
-  final String id;
-
-  /// The name of the event (e.g., "OrderPlaced", "PaymentReceived").
-  final String name;
-
-  /// A more detailed description of what this event represents.
-  final String description;
-
-  /// Tags or categories to help organize and filter events.
-  final List<String> tags;
-
-  /// The position of this event on the event storming board.
-  final Position position;
-
+class EventStormingDomainEvent extends EventStormingElement {
   /// The aggregate that this event belongs to (may be null during initial discovery).
   String? aggregateId;
-
-  /// Who created this event during the storming session.
-  final String createdBy;
-
-  /// When this event was added to the board.
-  final DateTime createdAt;
-
-  /// The color used to represent this event on the board (orange by default).
-  final String color;
 
   /// Data that gets captured by this event.
   final Map<String, dynamic> properties;
 
   /// Creates a new domain event.
   EventStormingDomainEvent({
-    required this.id,
-    required this.name,
-    this.description = '',
-    this.tags = const [],
-    required this.position,
+    required String id,
+    required String name,
+    String description = '',
+    List<String> tags = const [],
+    required Position position,
     this.aggregateId,
-    required this.createdBy,
-    required this.createdAt,
-    this.color = '#FFA500', // Orange by default
+    required String createdBy,
+    required DateTime createdAt,
+    String color = '#FFA500', // Orange by default
     this.properties = const {},
-  });
+  }) : super(
+          id: id,
+          name: name,
+          description: description,
+          tags: tags,
+          position: position,
+          createdBy: createdBy,
+          createdAt: createdAt,
+          color: color,
+        );
 
   /// Creates a domain event from a map representation.
   factory EventStormingDomainEvent.fromJson(Map<String, dynamic> json) {
@@ -66,7 +52,7 @@ class EventStormingDomainEvent {
     );
   }
 
-  /// Converts this domain event to a map representation.
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -79,10 +65,11 @@ class EventStormingDomainEvent {
       'createdAt': createdAt.toIso8601String(),
       'color': color,
       'properties': properties,
+      'elementType': elementType,
     };
   }
 
-  /// Creates a copy of this domain event with the given fields replaced with new values.
+  @override
   EventStormingDomainEvent copyWith({
     String? id,
     String? name,
@@ -117,6 +104,21 @@ class EventStormingDomainEvent {
       aggregateType: aggregateId != null ? 'Unknown' : null,
     );
   }
+  
+  @override
+  ednet_core.model.Entity toCoreModelEntity() {
+    final event = ednet_core.model.Event(
+      name: name,
+    );
+    
+    // Add properties if needed
+    // This would need to be adapted based on the EDNet Core API
+    
+    return event;
+  }
+  
+  @override
+  String get elementType => 'event';
 }
 
 /// Represents a position on the event storming board.
@@ -147,5 +149,13 @@ class Position {
       'x': x,
       'y': y,
     };
+  }
+  
+  /// Creates a copy of this position with new coordinates.
+  Position copyWith({double? x, double? y}) {
+    return Position(
+      x: x ?? this.x,
+      y: y ?? this.y,
+    );
   }
 } 

@@ -1,59 +1,45 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'domain_event.dart';
+import 'element.dart';
 
 /// Represents an aggregate in an Event Storming session.
 ///
 /// In Event Storming, aggregates are clusters of domain events and commands
 /// that belong together. They represent consistency boundaries in the domain.
 /// Aggregates are typically represented by yellow sticky notes on the event storming board.
-class EventStormingAggregate {
-  /// The unique identifier for this aggregate.
-  final String id;
-
-  /// The name of this aggregate (e.g., "Order", "Customer").
-  final String name;
-
-  /// A more detailed description of what this aggregate represents.
-  final String description;
-
-  /// Tags or categories to help organize and filter aggregates.
-  final List<String> tags;
-
-  /// The position of this aggregate on the event storming board.
-  final Position position;
-
+class EventStormingAggregate extends EventStormingElement {
   /// IDs of domain events that belong to this aggregate.
   final List<String> domainEventIds;
 
   /// IDs of commands that target this aggregate.
   final List<String> commandIds;
 
-  /// Who created this aggregate during the storming session.
-  final String createdBy;
-
-  /// When this aggregate was added to the board.
-  final DateTime createdAt;
-
-  /// The color used to represent this aggregate on the board (yellow by default).
-  final String color;
-
   /// Properties or attributes of this aggregate.
   final Map<String, dynamic> properties;
 
   /// Creates a new aggregate.
   EventStormingAggregate({
-    required this.id,
-    required this.name,
-    this.description = '',
-    this.tags = const [],
-    required this.position,
+    required String id,
+    required String name,
+    String description = '',
+    List<String> tags = const [],
+    required Position position,
     this.domainEventIds = const [],
     this.commandIds = const [],
-    required this.createdBy,
-    required this.createdAt,
-    this.color = '#FFFF00', // Yellow by default
+    required String createdBy,
+    required DateTime createdAt,
+    String color = '#FFFF00', // Yellow by default
     this.properties = const {},
-  });
+  }) : super(
+          id: id,
+          name: name,
+          description: description,
+          tags: tags,
+          position: position,
+          createdBy: createdBy,
+          createdAt: createdAt,
+          color: color,
+        );
 
   /// Creates an aggregate from a map representation.
   factory EventStormingAggregate.fromJson(Map<String, dynamic> json) {
@@ -72,7 +58,7 @@ class EventStormingAggregate {
     );
   }
 
-  /// Converts this aggregate to a map representation.
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -86,10 +72,11 @@ class EventStormingAggregate {
       'createdAt': createdAt.toIso8601String(),
       'color': color,
       'properties': properties,
+      'elementType': elementType,
     };
   }
 
-  /// Creates a copy of this aggregate with the given fields replaced with new values.
+  @override
   EventStormingAggregate copyWith({
     String? id,
     String? name,
@@ -160,4 +147,13 @@ class EventStormingAggregate {
       description: description,
     );
   }
+  
+  @override
+  ednet_core.model.Entity toCoreModelEntity() {
+    // In EDNet Core, an aggregate would likely be modeled as a Concept or similar
+    return toCoreAggregateConcept();
+  }
+  
+  @override
+  String get elementType => 'aggregate';
 } 
