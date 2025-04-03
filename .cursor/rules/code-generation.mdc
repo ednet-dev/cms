@@ -1,8 +1,9 @@
 ---
-description: Use when working with code generation components, YAML schema definitions, or implementing new generator templates.
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
+
 # EDNet Code Generation Rule
 
 When implementing or modifying code generation functionality, adhere to these principles:
