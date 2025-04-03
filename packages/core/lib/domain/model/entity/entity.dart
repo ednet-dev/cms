@@ -872,7 +872,12 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     for (Attribute attribute in _concept!.attributes.whereType<Attribute>()) {
       final value = _attributeMap[attribute.code];
       if (value != null) {
-        attributeMap[attribute.code] = value;
+        // Convert DateTime to millisecondsSinceEpoch for JSON serialization
+        if (value is DateTime) {
+          attributeMap[attribute.code] = value.millisecondsSinceEpoch;
+        } else {
+          attributeMap[attribute.code] = value;
+        }
       }
     }
     if (attributeMap.isNotEmpty) {
@@ -895,9 +900,11 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     Map<String, dynamic> childMap = <String, dynamic>{};
     for (Child child in _concept!.children.whereType<Child>()) {
       final childEntities = getChild(child.code);
-      if (childEntities != null) {
-        childMap[child.code] =
-            (getInternalChild(child.code) as Entities).toJsonList();
+      final internalChildEntities = getInternalChild(child.code);
+      if (childEntities != null && internalChildEntities != null) {
+        childMap[child.code] = (internalChildEntities as Entities).toJsonList();
+      } else if (childEntities != null) {
+        childMap[child.code] = (childEntities as Entities).toJsonList();
       }
     }
     if (childMap.isNotEmpty) {
@@ -924,7 +931,16 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     var oidStr = entityMap['oid'];
     try {
       int timeStamp = int.parse(oidStr);
+      // Temporarily allow OID update
+      bool originalUpdateOid = _concept?.updateOid ?? false;
+      if (_concept != null) {
+        _concept!.updateOid = true;
+      }
       oid = Oid.ts(timeStamp);
+      // Restore original setting
+      if (_concept != null) {
+        _concept!.updateOid = originalUpdateOid;
+      }
     } catch (e) {
       throw TypeException('${entityMap['oid']} oid is not int: $e');
     }
@@ -972,7 +988,14 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           entityMap['attributes'] as Map<String, dynamic>;
       for (Attribute attribute in _concept!.attributes.whereType<Attribute>()) {
         if (attributeMap.containsKey(attribute.code)) {
-          setAttribute(attribute.code, attributeMap[attribute.code]);
+          var attributeValue = attributeMap[attribute.code];
+          // Convert timestamp to DateTime if the attribute type is DateTime
+          if (attribute.type?.code == 'DateTime' && attributeValue is int) {
+            attributeValue = DateTime.fromMillisecondsSinceEpoch(
+              attributeValue,
+            );
+          }
+          setAttribute(attribute.code, attributeValue);
         }
       }
     }
@@ -983,11 +1006,14 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           entityMap['parents'] as Map<String, dynamic>;
       for (Parent parent in _concept!.parents.whereType<Parent>()) {
         if (parentMap.containsKey(parent.code)) {
-          String parentOidString = parentMap[parent.code]['oid'] as String;
-          String parentConceptCode =
-              parentMap[parent.code]['concept'] as String;
-          String parentEntryConceptCode =
-              parentMap[parent.code]['entryConcept'] as String;
+          var parentOidString = parentMap[parent.code]['oid']?.toString() ?? '';
+          var parentConceptCode =
+              parentMap[parent.code]['concept']?.toString() ?? '';
+          // The entryConcept field might be missing in some serialized data
+          var parentEntryConceptCode =
+              parentMap[parent.code]['entryConcept']?.toString() ??
+              parentMap[parent.code]['entry']?.toString() ??
+              parentConceptCode;
 
           Reference reference = Reference(
             parentOidString,

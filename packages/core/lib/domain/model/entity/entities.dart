@@ -571,10 +571,10 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   String toJson() => jsonEncode(toJsonList());
 
   /// Converts the collection to a list of JSON maps.
-  List<Map<String, Object>> toJsonList() {
-    List<Map<String, Object>> entityList = <Map<String, Object>>[];
+  List<Map<String, dynamic>> toJsonList() {
+    List<Map<String, dynamic>> entityList = <Map<String, dynamic>>[];
     for (E entity in _entityList) {
-      entityList.add(entity.toJsonMap() as Map<String, Object>);
+      entityList.add(entity.toJsonMap() as Map<String, dynamic>);
     }
     return entityList;
   }
@@ -582,7 +582,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   /// Loads entities from a JSON string.
   @override
   void fromJson(String entitiesJson) {
-    List<Map<String, Object>> entitiesList = jsonDecode(entitiesJson);
+    List<Map<String, dynamic>> entitiesList = jsonDecode(entitiesJson);
     fromJsonList(entitiesList);
   }
 
@@ -709,20 +709,21 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         }
       } else if (isRequired && !exists) {
         const category = 'required';
-        final message = '${entity.concept.code}.${a.code} attribute is null.';
+        final message =
+            '${entity.concept.code}.${a.code} attribute is required.';
         final exception = ValidationException(category, message);
 
-        exceptions.add(exception as IValidationExceptions);
+        exceptions.add(exception);
         isValid = false;
       }
     }
     for (Parent p in _concept!.parents.whereType<Parent>()) {
       if (p.required && entity.getParent(p.code) == null) {
         const category = 'required';
-        final message = '${entity.concept.code}.${p.code} parent is null.';
+        final message = '${entity.concept.code}.${p.code} parent is required.';
         final exception = ValidationException(category, message);
 
-        exceptions.add(exception as IValidationExceptions);
+        exceptions.add(exception);
         isValid = false;
       }
     }
@@ -740,7 +741,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           final message = '${_concept!.code}.max is $maxC.';
           var exception = ValidationException(category, message);
 
-          exceptions.add(exception as IValidationExceptions);
+          exceptions.add(exception);
           isValid = false;
         }
       } on FormatException catch (e) {
@@ -855,7 +856,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
             message,
           );
 
-          exceptions.add(exception as IValidationExceptions);
+          exceptions.add(exception);
           result = false;
         }
       } on FormatException catch (e) {
@@ -958,7 +959,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           final message =
               '${_concept!.code}.update fails to add after update entity.';
           var exception = ValidationException(category, message);
-          exceptions.add(exception as IValidationExceptions);
+          exceptions.add(exception);
         } else {
           throw UpdateException(
             '${_concept!.code}.update fails to add back before update entity.',
@@ -971,7 +972,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           '${_concept!.code}.update fails to remove before update entity.';
       var exception = ValidationException(category, message);
 
-      exceptions.add(exception as IValidationExceptions);
+      exceptions.add(exception);
     }
     return false;
   }
