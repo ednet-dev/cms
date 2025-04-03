@@ -381,4 +381,207 @@ class EDNetDemocracyDomain {
     initiative.setParent('creator', creator);
     return initiative;
   }
+
+  /// Creates a delegate (which extends citizen) with predefined attributes
+  Delegate createDelegate({
+    required String name,
+    required String email,
+    required String idNumber,
+    String? specialty,
+    int delegatorCount = 0,
+    bool verified = true,
+    DateTime? registerDate,
+  }) {
+    // First create the underlying citizen
+    final citizen = createCitizen(
+      name: name,
+      email: email,
+      idNumber: idNumber,
+      verified: verified,
+      registerDate: registerDate,
+    );
+
+    // Create delegate that extends the citizen
+    final delegate = Delegate();
+    delegate.concept = delegateConcept;
+    delegate.setAttribute('delegatorCount', delegatorCount);
+    if (specialty != null) {
+      delegate.setAttribute('specialty', specialty);
+    }
+    delegate.setParent('citizen', citizen);
+
+    return delegate;
+  }
+
+  /// Creates an expert (which extends citizen) with predefined attributes
+  Expert createExpert({
+    required String name,
+    required String email,
+    required String idNumber,
+    required String areaOfExpertise,
+    String? credentials,
+    bool verified = true,
+    DateTime? registerDate,
+  }) {
+    // First create the underlying citizen
+    final citizen = createCitizen(
+      name: name,
+      email: email,
+      idNumber: idNumber,
+      verified: verified,
+      registerDate: registerDate,
+    );
+
+    // Create expert that extends the citizen
+    final expert = Expert();
+    expert.concept = expertConcept;
+    expert.setAttribute('areaOfExpertise', areaOfExpertise);
+    if (credentials != null) {
+      expert.setAttribute('credentials', credentials);
+    }
+    expert.setParent('citizen', citizen);
+
+    return expert;
+  }
+
+  /// Creates a complete voting scenario with citizens, referendum, and votes
+  Map<String, dynamic> createVotingScenario({
+    int citizenCount = 5,
+    String referendumTitle = 'Test Referendum',
+    String referendumDescription = 'Test Description',
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? choices,
+  }) {
+    final citizens = <Citizen>[];
+    final votes = <Vote>[];
+    final voterChoices = choices ?? ['Yes', 'No', 'Abstain'];
+    final now = DateTime.now();
+    final start = startDate ?? now.subtract(const Duration(days: 1));
+    final end = endDate ?? now.add(const Duration(days: 7));
+
+    // Create referendum
+    final referendum = createReferendum(
+      title: referendumTitle,
+      description: referendumDescription,
+      startDate: start,
+      endDate: end,
+      quorum: citizenCount ~/ 2, // Set quorum to half the citizens
+    );
+
+    // Create citizens and their votes
+    for (int i = 1; i <= citizenCount; i++) {
+      final citizen = createCitizen(
+        name: 'Voter $i',
+        email: 'voter$i@democracy.org',
+        idNumber: 'C10000$i',
+        verified: true,
+      );
+      citizens.add(citizen);
+
+      // Assign a choice to this citizen based on position
+      final choiceIndex = i % voterChoices.length;
+      final choice = voterChoices[choiceIndex];
+
+      final vote = createVote(
+        citizen: citizen,
+        referendum: referendum,
+        choice: choice,
+      );
+
+      votes.add(vote);
+    }
+
+    return {'citizens': citizens, 'referendum': referendum, 'votes': votes};
+  }
+
+  /// Creates a complete initiative scenario with creator, initiative, and supporting citizens
+  Map<String, dynamic> createInitiativeScenario({
+    required String title,
+    required String description,
+    int requiredSignatures = 10,
+    int supporterCount = 5,
+    String creatorName = 'Initiative Creator',
+  }) {
+    // Create initiative creator
+    final creator = createCitizen(
+      name: creatorName,
+      email: 'creator@democracy.org',
+      idNumber: 'C999999',
+      verified: true,
+    );
+
+    // Create initiative
+    final initiative = createInitiative(
+      creator: creator,
+      title: title,
+      description: description,
+      requiredSignatures: requiredSignatures,
+      currentSignatures: supporterCount, // Initial supporters
+    );
+
+    // Create supporters
+    final supporters = <Citizen>[];
+    for (int i = 1; i <= supporterCount; i++) {
+      final supporter = createCitizen(
+        name: 'Supporter $i',
+        email: 'supporter$i@democracy.org',
+        idNumber: 'S10000$i',
+        verified: true,
+      );
+      supporters.add(supporter);
+    }
+
+    return {
+      'creator': creator,
+      'initiative': initiative,
+      'supporters': supporters,
+    };
+  }
+
+  /// Creates a liquid democracy scenario with voters delegating to delegates
+  Map<String, dynamic> createLiquidDemocracyScenario({
+    int delegateCount = 3,
+    int voterCount = 10,
+    List<String>? specialties,
+  }) {
+    final areas = specialties ?? ['Economic', 'Environmental', 'Social'];
+    final delegates = <Delegate>[];
+    final voters = <Citizen>[];
+
+    // Create delegates for each specialty area
+    for (int i = 0; i < delegateCount; i++) {
+      final specialty = areas[i % areas.length];
+      final delegate = createDelegate(
+        name: '$specialty Delegate',
+        email: '${specialty.toLowerCase()}@democracy.org',
+        idNumber: 'D10000$i',
+        specialty: specialty,
+        delegatorCount: 0, // Will be updated as voters delegate
+      );
+      delegates.add(delegate);
+    }
+
+    // Create voters who delegate to specialists
+    for (int i = 1; i <= voterCount; i++) {
+      final voter = createCitizen(
+        name: 'Delegating Voter $i',
+        email: 'voter$i@democracy.org',
+        idNumber: 'V10000$i',
+        verified: true,
+      );
+      voters.add(voter);
+
+      // Assign each voter to a delegate based on position
+      final delegateIndex = i % delegateCount;
+      final assignedDelegate = delegates[delegateIndex];
+
+      // Increase the delegate's count (simulating delegation)
+      final currentCount =
+          assignedDelegate.getAttribute('delegatorCount') as int;
+      assignedDelegate.setAttribute('delegatorCount', currentCount + 1);
+    }
+
+    return {'delegates': delegates, 'voters': voters};
+  }
 }

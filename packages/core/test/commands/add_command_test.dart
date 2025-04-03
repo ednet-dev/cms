@@ -1,56 +1,30 @@
 import 'package:test/test.dart';
 import 'package:ednet_core/ednet_core.dart';
-
-class Citizen extends Entity<Citizen> {
-  Citizen() : super();
-}
+import '../mocks/ednet_democracy_domain.dart';
 
 void main() {
   group('Add Command in Direct Democracy Domain', () {
-    late Domain domain;
-    late Model model;
-    late Concept citizenConcept;
-    late Entities<Citizen> citizens;
-    late DomainModels domainModels;
+    late EDNetDemocracyDomain domain;
     late DomainSession session;
-    late Citizen citizen;
+    late Entities<Citizen> citizens;
 
     setUp(() {
-      // Initialize domain, model, and concepts
-      domain = Domain('DirectDemocracy');
-      model = Model(domain, 'EDNetModel');
-
-      // Create citizen concept
-      citizenConcept = Concept(model, 'Citizen');
-      citizenConcept.entry = true;
-
-      // Add attributes to Citizen concept
-      final nameAttribute = Attribute(citizenConcept, 'name');
-      nameAttribute.type = domain.getType('String');
-      citizenConcept.attributes.add(nameAttribute);
-
-      final emailAttribute = Attribute(citizenConcept, 'email');
-      emailAttribute.type = domain.getType('Email');
-      citizenConcept.attributes.add(emailAttribute);
-
-      // Setup entities collection
-      citizens = Entities<Citizen>();
-      citizens.concept = citizenConcept;
-
-      // Initialize domain models and session
-      domainModels = DomainModels(domain);
-      session = DomainSession(domainModels);
-
-      // Create a citizen to add
-      citizen = Citizen();
-      citizen.concept = citizenConcept;
-      citizen.setAttribute('name', 'Jane Citizen');
-      citizen.setAttribute('email', 'jane@democracy.org');
+      // Initialize domain using the common mock
+      domain = EDNetDemocracyDomain();
+      session = domain.session;
+      citizens = domain.citizens;
     });
 
     test('Add Command should add citizen to citizens', () {
       // Verify citizens is empty initially
       expect(citizens.isEmpty, isTrue);
+
+      // Create citizen to add
+      final citizen = domain.createCitizen(
+        name: 'Jane Citizen',
+        email: 'jane@democracy.org',
+        idNumber: 'C123456',
+      );
 
       // Create and execute add command
       final addCommand = AddCommand(session, citizens, citizen);
@@ -77,6 +51,13 @@ void main() {
     });
 
     test('Add Command should be undoable', () {
+      // Create citizen to add
+      final citizen = domain.createCitizen(
+        name: 'Jane Citizen',
+        email: 'jane@democracy.org',
+        idNumber: 'C123456',
+      );
+
       // Create and execute add command
       final addCommand = AddCommand(session, citizens, citizen);
       addCommand.doIt();
@@ -98,6 +79,13 @@ void main() {
     });
 
     test('Add Command should be redoable after undo', () {
+      // Create citizen to add
+      final citizen = domain.createCitizen(
+        name: 'Jane Citizen',
+        email: 'jane@democracy.org',
+        idNumber: 'C123456',
+      );
+
       // Create and execute add command
       final addCommand = AddCommand(session, citizens, citizen);
       addCommand.doIt();
@@ -120,17 +108,24 @@ void main() {
     });
 
     test('Transaction can group multiple add commands', () {
-      // Create a second citizen
-      final citizen2 = Citizen();
-      citizen2.concept = citizenConcept;
-      citizen2.setAttribute('name', 'John Citizen');
-      citizen2.setAttribute('email', 'john@democracy.org');
+      // Create citizens to add
+      final citizen1 = domain.createCitizen(
+        name: 'Jane Citizen',
+        email: 'jane@democracy.org',
+        idNumber: 'C123456',
+      );
+
+      final citizen2 = domain.createCitizen(
+        name: 'John Citizen',
+        email: 'john@democracy.org',
+        idNumber: 'C654321',
+      );
 
       // Create a transaction with name and session
       final transaction = Transaction('AddCitizensTransaction', session);
 
       // Add commands to transaction
-      final addCommand1 = AddCommand(session, citizens, citizen);
+      final addCommand1 = AddCommand(session, citizens, citizen1);
       addCommand1.partOfTransaction = true;
       transaction.add(addCommand1);
 
@@ -146,7 +141,7 @@ void main() {
 
       // Both citizens should be added
       expect(citizens.length, equals(2));
-      expect(citizens.contains(citizen), isTrue);
+      expect(citizens.contains(citizen1), isTrue);
       expect(citizens.contains(citizen2), isTrue);
 
       // Only the transaction should be in the past (not individual commands)
@@ -163,28 +158,36 @@ void main() {
     });
 
     test('Adding invalid entity should fail validation', () {
-      // Create an invalid citizen (missing required email)
+      // Create an invalid citizen (missing required idNumber)
       final invalidCitizen = Citizen();
-      invalidCitizen.concept = citizenConcept;
-
-      // Make email required
-      final emailAttr = citizenConcept.attributes.singleWhereCode('email');
-      emailAttr?.required = true;
+      invalidCitizen.concept = domain.citizenConcept;
+      invalidCitizen.setAttribute('name', 'Invalid Citizen');
+      invalidCitizen.setAttribute('email', 'invalid@democracy.org');
+      // Intentionally not setting the required idNumber attribute
 
       // Try to add invalid citizen
-      citizens.add(invalidCitizen);
+      final addCommand = AddCommand(session, citizens, invalidCitizen);
+      bool result = addCommand.doIt();
 
       // Should fail validation
+      expect(result, isFalse);
       expect(citizens.isEmpty, isTrue);
 
       // Should have validation exceptions
       expect(citizens.exceptions.length, greaterThan(0));
 
-      // Expected exception message
-      expect(citizens.exceptions.toString().contains('required'), isTrue);
+      // Command should not be added to past when failing
+      expect(session.past.commands.isEmpty, isTrue);
     });
 
     test('Past can be used to execute commands', () {
+      // Create citizen to add
+      final citizen = domain.createCitizen(
+        name: 'Jane Citizen',
+        email: 'jane@democracy.org',
+        idNumber: 'C123456',
+      );
+
       // Create add command
       final addCommand = AddCommand(session, citizens, citizen);
 

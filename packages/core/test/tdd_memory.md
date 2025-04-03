@@ -148,10 +148,10 @@
   - [ ] Operations
 
 ## Current Status
-- Next test to implement: Transaction Validation and Past Command Handling
-- Current phase: Command Implementation and Testing
-- Last completed test: Set Attribute Command
-- Recent refactoring: Extracted common EDNetOne direct democracy domain model
+- Next test to implement: Repository Operations and Policy Components
+- Current phase: Refactoring and Enhancing Domain Model
+- Last completed test: Past Command Tests
+- Recent refactoring: Extended common EDNetOne direct democracy domain model with rich business interactions
 
 ## Completed Tests
 1. Model Testing - Basic Initialization (✓)
@@ -222,34 +222,35 @@
 
 ## Next Steps
 1. Continue enhancing test suite with more comprehensive cases
-2. Refactor other test files to use the common domain model
-3. Add tests for Repository operations
-4. Add tests for Policy components
+2. Implement repository operation tests using enhanced domain model 
+3. Implement policy component tests using enhanced domain model
+4. Add tests for serialization/deserialization
 
 ## Recent Refactoring
-- Created a shared EDNetOne domain model in `mocks/ednet_democracy_domain.dart`
-- Implemented a comprehensive model following the EDNetOne domain guidelines
-- Domain includes Citizens, Delegates, Experts, Referendums, Votes, and Initiatives
-- Refactored Transaction tests to use the shared model
-- Refactored Past Command tests to use the shared model
-- Reduced duplicate code across test files
-- Improved test readability and maintainability
+- Refactored all command test files to use the shared EDNetOne domain model
+- Enhanced the domain model with additional helper methods for creating more complex domain objects:
+  - Added delegate and expert creation methods
+  - Added methods to create complete voting scenarios with citizens, referendums, and votes
+  - Added methods to create initiative scenarios with creators and supporters
+  - Added methods to create liquid democracy scenarios with delegates and voters
+- Unified test approach across all command tests
+- Fixed validation-related issues in refactored tests
+- Added stronger typing and error handling to domain model
 
 ## Technical Debt and Improvements
-- Continue refactoring remaining test files to use the common domain model
-- Consider creating more specific helper methods in the domain model class
-- Evaluate possibility of separating validation concerns from entity collection management
-- Need to ensure consistent validation behavior across different operations
-- The Entity relationship handling requires a complex setup of entry concepts and core concept
+- The entity and entities tests are still empty stubs - need implementation
+- Consider creating a separate test util package for test helpers
+- Consider extracting domain specific validation into policy components
+- Create visualization helpers to aid in understanding test scenarios
+- Enhance domain model with more business rules and constraints
 
-refactor(core): extract shared EDNetOne domain model for tests
+refactor(core): enhance shared domain model with rich business interactions
 
-- Create a comprehensive EDNetOne democracy domain model for test reuse
-- Implement domain entities following domain-model requirements (Citizens, Referendums, Votes, etc.)
-- Refactor transaction and past command tests to use the shared domain model
-- Improve test consistency and maintainability
-- Reduce duplicate domain setup code across test files
-- Fix test assertions to accommodate stricter validation in shared model
+- Refactor all command test files to use the common EDNetOne domain model
+- Enhance domain model with methods for complex domain scenarios
+- Add methods for voting, initiative, and liquid democracy scenarios
+- Fix validation issues in tests after refactoring
+- Add stronger typing and documentation to domain model
 
 test(core): add tests for Add, Remove, and SetAttribute commands
 

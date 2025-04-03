@@ -1,56 +1,25 @@
 import 'package:test/test.dart';
 import 'package:ednet_core/ednet_core.dart';
-
-class Citizen extends Entity<Citizen> {
-  Citizen() : super();
-}
+import '../mocks/ednet_democracy_domain.dart';
 
 void main() {
   group('Set Attribute Command in Direct Democracy Domain', () {
-    late Domain domain;
-    late Model model;
-    late Concept citizenConcept;
-    late DomainModels domainModels;
+    late EDNetDemocracyDomain domain;
     late DomainSession session;
     late Citizen citizen;
 
     setUp(() {
-      // Initialize domain, model, and concepts
-      domain = Domain('DirectDemocracy');
-      model = Model(domain, 'EDNetModel');
-
-      // Create citizen concept
-      citizenConcept = Concept(model, 'Citizen');
-      citizenConcept.entry = true;
-
-      // Add attributes to Citizen concept
-      final nameAttribute = Attribute(citizenConcept, 'name');
-      nameAttribute.type = domain.getType('String');
-      citizenConcept.attributes.add(nameAttribute);
-
-      final emailAttribute = Attribute(citizenConcept, 'email');
-      emailAttribute.type = domain.getType('Email');
-      citizenConcept.attributes.add(emailAttribute);
-
-      final statusAttribute = Attribute(citizenConcept, 'status');
-      statusAttribute.type = domain.getType('String');
-      citizenConcept.attributes.add(statusAttribute);
-
-      final votingRightsAttribute = Attribute(citizenConcept, 'votingRights');
-      votingRightsAttribute.type = domain.getType('bool');
-      citizenConcept.attributes.add(votingRightsAttribute);
-
-      // Initialize domain models and session
-      domainModels = DomainModels(domain);
-      session = DomainSession(domainModels);
+      // Initialize domain using the common mock
+      domain = EDNetDemocracyDomain();
+      session = domain.session;
 
       // Create a citizen to modify
-      citizen = Citizen();
-      citizen.concept = citizenConcept;
-      citizen.setAttribute('name', 'Jane Citizen');
-      citizen.setAttribute('email', 'jane@democracy.org');
-      citizen.setAttribute('status', 'Active');
-      citizen.setAttribute('votingRights', true);
+      citizen = domain.createCitizen(
+        name: 'Jane Citizen',
+        email: 'jane@democracy.org',
+        idNumber: 'C123456',
+        verified: true,
+      );
     });
 
     test('Set Attribute Command should update citizen attribute', () {
@@ -87,27 +56,27 @@ void main() {
 
     test('Set Attribute Command should preserve before value', () {
       // Verify initial attribute value
-      expect(citizen.getAttribute('status'), equals('Active'));
+      expect(citizen.getAttribute('verified'), equals(true));
 
       // Create and execute set attribute command
       final setAttributeCommand = SetAttributeCommand(
         session,
         citizen,
-        'status',
-        'Verified',
+        'verified',
+        false,
       );
 
       // Check the before value before executing
-      expect(setAttributeCommand.before, equals('Active'));
+      expect(setAttributeCommand.before, equals(true));
 
       // Execute the command
       setAttributeCommand.doIt();
 
       // Attribute should be updated
-      expect(citizen.getAttribute('status'), equals('Verified'));
+      expect(citizen.getAttribute('verified'), equals(false));
 
       // Before value should still be preserved
-      expect(setAttributeCommand.before, equals('Active'));
+      expect(setAttributeCommand.before, equals(true));
     });
 
     test('Set Attribute Command should be undoable', () {
@@ -144,8 +113,8 @@ void main() {
       final setAttributeCommand = SetAttributeCommand(
         session,
         citizen,
-        'votingRights',
-        false,
+        'idNumber',
+        'C789012',
       );
       setAttributeCommand.doIt();
 
@@ -162,7 +131,7 @@ void main() {
       expect(setAttributeCommand.state, equals('redone'));
 
       // Attribute should be set to new value again
-      expect(citizen.getAttribute('votingRights'), equals(false));
+      expect(citizen.getAttribute('idNumber'), equals('C789012'));
     });
 
     test('Transaction can group multiple attribute changes', () {
@@ -188,14 +157,14 @@ void main() {
       emailCommand.partOfTransaction = true;
       transaction.add(emailCommand);
 
-      final statusCommand = SetAttributeCommand(
+      final verifiedCommand = SetAttributeCommand(
         session,
         citizen,
-        'status',
-        'Verified',
+        'verified',
+        false,
       );
-      statusCommand.partOfTransaction = true;
-      transaction.add(statusCommand);
+      verifiedCommand.partOfTransaction = true;
+      transaction.add(verifiedCommand);
 
       // Execute the transaction
       bool result = transaction.doIt();
@@ -206,7 +175,7 @@ void main() {
       // All attributes should be updated
       expect(citizen.getAttribute('name'), equals('Jane Updated'));
       expect(citizen.getAttribute('email'), equals('updated@democracy.org'));
-      expect(citizen.getAttribute('status'), equals('Verified'));
+      expect(citizen.getAttribute('verified'), equals(false));
 
       // Only the transaction should be in the past (not individual commands)
       expect(session.past.commands.length, equals(1));
@@ -216,13 +185,13 @@ void main() {
       transaction.undo();
       expect(citizen.getAttribute('name'), equals('Jane Citizen'));
       expect(citizen.getAttribute('email'), equals('jane@democracy.org'));
-      expect(citizen.getAttribute('status'), equals('Active'));
+      expect(citizen.getAttribute('verified'), equals(true));
 
       // Redo the transaction should apply all attribute changes again
       transaction.redo();
       expect(citizen.getAttribute('name'), equals('Jane Updated'));
       expect(citizen.getAttribute('email'), equals('updated@democracy.org'));
-      expect(citizen.getAttribute('status'), equals('Verified'));
+      expect(citizen.getAttribute('verified'), equals(false));
     });
 
     test('Setting attribute to same value should still succeed', () {
@@ -245,26 +214,34 @@ void main() {
     });
 
     test('Setting attribute to empty value should clear it', () {
+      // First add a non-required attribute that can be set to empty
+      final specialty = Attribute(domain.citizenConcept, 'specialty');
+      specialty.type = domain.domain.getType('String');
+      domain.citizenConcept.attributes.add(specialty);
+
+      // Set initial value
+      citizen.setAttribute('specialty', 'Voting Systems');
+
       // Create and execute set attribute command with empty string
       final setAttributeCommand = SetAttributeCommand(
         session,
         citizen,
-        'status',
-        '', // Empty string instead of null
+        'specialty',
+        '', // Empty string
       );
 
       // Execute the command
       bool result = setAttributeCommand.doIt();
 
-      // Command should succeed
+      // Command should succeed since this is not a required attribute
       expect(result, isTrue);
 
       // Value should be set to empty string
-      expect(citizen.getAttribute('status'), equals(''));
+      expect(citizen.getAttribute('specialty'), equals(''));
 
       // Undo should restore original value
       setAttributeCommand.undo();
-      expect(citizen.getAttribute('status'), equals('Active'));
+      expect(citizen.getAttribute('specialty'), equals('Voting Systems'));
     });
 
     test('Multiple SetAttribute operations should show sequential changes', () {

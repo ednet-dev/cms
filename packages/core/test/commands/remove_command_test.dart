@@ -1,57 +1,33 @@
 import 'package:test/test.dart';
 import 'package:ednet_core/ednet_core.dart';
-
-class Citizen extends Entity<Citizen> {
-  Citizen() : super();
-}
+import '../mocks/ednet_democracy_domain.dart';
 
 void main() {
   group('Remove Command in Direct Democracy Domain', () {
-    late Domain domain;
-    late Model model;
-    late Concept citizenConcept;
-    late Entities<Citizen> citizens;
-    late DomainModels domainModels;
+    late EDNetDemocracyDomain domain;
     late DomainSession session;
+    late Entities<Citizen> citizens;
     late Citizen citizen;
     late Citizen citizen2;
 
     setUp(() {
-      // Initialize domain, model, and concepts
-      domain = Domain('DirectDemocracy');
-      model = Model(domain, 'EDNetModel');
-
-      // Create citizen concept
-      citizenConcept = Concept(model, 'Citizen');
-      citizenConcept.entry = true;
-
-      // Add attributes to Citizen concept
-      final nameAttribute = Attribute(citizenConcept, 'name');
-      nameAttribute.type = domain.getType('String');
-      citizenConcept.attributes.add(nameAttribute);
-
-      final emailAttribute = Attribute(citizenConcept, 'email');
-      emailAttribute.type = domain.getType('Email');
-      citizenConcept.attributes.add(emailAttribute);
-
-      // Setup entities collection
-      citizens = Entities<Citizen>();
-      citizens.concept = citizenConcept;
-
-      // Initialize domain models and session
-      domainModels = DomainModels(domain);
-      session = DomainSession(domainModels);
+      // Initialize domain using the common mock
+      domain = EDNetDemocracyDomain();
+      session = domain.session;
+      citizens = domain.citizens;
 
       // Create citizens
-      citizen = Citizen();
-      citizen.concept = citizenConcept;
-      citizen.setAttribute('name', 'Jane Citizen');
-      citizen.setAttribute('email', 'jane@democracy.org');
+      citizen = domain.createCitizen(
+        name: 'Jane Citizen',
+        email: 'jane@democracy.org',
+        idNumber: 'C123456',
+      );
 
-      citizen2 = Citizen();
-      citizen2.concept = citizenConcept;
-      citizen2.setAttribute('name', 'John Citizen');
-      citizen2.setAttribute('email', 'john@democracy.org');
+      citizen2 = domain.createCitizen(
+        name: 'John Citizen',
+        email: 'john@democracy.org',
+        idNumber: 'C654321',
+      );
 
       // Add citizens to collection for testing removal
       citizens.add(citizen);
@@ -184,10 +160,11 @@ void main() {
       citizens.clear();
 
       // Create a new citizen that is not in the collection
-      final nonexistentCitizen = Citizen();
-      nonexistentCitizen.concept = citizenConcept;
-      nonexistentCitizen.setAttribute('name', 'Unknown Citizen');
-      nonexistentCitizen.setAttribute('email', 'unknown@democracy.org');
+      final nonexistentCitizen = domain.createCitizen(
+        name: 'Unknown Citizen',
+        email: 'unknown@democracy.org',
+        idNumber: 'C999999',
+      );
 
       // Create and execute remove command
       final removeCommand = RemoveCommand(
