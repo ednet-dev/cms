@@ -18,13 +18,13 @@ part of ednet_core;
 /// ```dart
 /// final domain = Domain('OrderManagement');
 /// final domainModels = DomainModels(domain);
-/// 
+///
 /// // Add model entries
 /// domainModels.addModelEntries(orderModelEntries);
-/// 
+///
 /// // Create a new session
 /// final session = domainModels.newSession();
-/// 
+///
 /// // Start command reactions
 /// domainModels.startCommandReaction(orderReaction);
 /// ```
@@ -41,33 +41,34 @@ class DomainModels implements IDomainModels {
   final List<ICommandReaction> _actionReactions;
 
   /// Creates a new [DomainModels] instance for the given [domain].
-  /// 
+  ///
   /// Initializes:
   /// - An empty model entries map
   /// - An empty command reactions list
-  /// 
+  ///
   /// Parameters:
   /// - [domain]: The domain that owns these models
   DomainModels(this._domain)
-      : _modelEntriesMap = <String, ModelEntries>{},
-        _actionReactions = <ICommandReaction>[];
+    : _modelEntriesMap = <String, ModelEntries>{},
+      _actionReactions = <ICommandReaction>[];
 
   /// Adds model entries to this domain models collection.
-  /// 
+  ///
   /// This method:
   /// - Validates domain consistency
   /// - Ensures model uniqueness
   /// - Registers the model entries
-  /// 
+  ///
   /// Parameters:
   /// - [modelEntries]: The model entries to add
-  /// 
+  ///
   /// Throws:
   /// - [CodeException] if domain mismatch or duplicate model
   void addModelEntries(ModelEntries modelEntries) {
     var domainCode = modelEntries.model.domain.code;
     if (_domain.code != domainCode) {
-      var msg = 'The $domainCode domain of the model is different from '
+      var msg =
+          'The $domainCode domain of the model is different from '
           'the ${_domain.code} domain.';
       throw CodeException(msg);
     }
@@ -77,7 +78,8 @@ class DomainModels implements IDomainModels {
       _modelEntriesMap[modelCode] = modelEntries;
     } else {
       throw CodeException(
-          'The $modelCode model exists already in the ${_domain.code} domain.');
+        'The $modelCode model exists already in the ${_domain.code} domain.',
+      );
     }
   }
 
@@ -85,10 +87,10 @@ class DomainModels implements IDomainModels {
   Domain get domain => _domain;
 
   /// Retrieves a model by its code.
-  /// 
+  ///
   /// Parameters:
   /// - [modelCode]: The code of the model to retrieve
-  /// 
+  ///
   /// Returns:
   /// The model if found, null otherwise
   @override
@@ -97,10 +99,10 @@ class DomainModels implements IDomainModels {
   }
 
   /// Retrieves model entries by model code.
-  /// 
+  ///
   /// Parameters:
   /// - [modelCode]: The code of the model entries to retrieve
-  /// 
+  ///
   /// Returns:
   /// The model entries if found, null otherwise
   @override
@@ -108,7 +110,7 @@ class DomainModels implements IDomainModels {
       _modelEntriesMap[modelCode];
 
   /// Creates a new domain session for executing commands.
-  /// 
+  ///
   /// Returns:
   /// A new [DomainSession] instance
   @override
@@ -117,7 +119,7 @@ class DomainModels implements IDomainModels {
   }
 
   /// Registers a command reaction to be notified of command execution.
-  /// 
+  ///
   /// Parameters:
   /// - [reaction]: The command reaction to register
   @override
@@ -126,7 +128,7 @@ class DomainModels implements IDomainModels {
   }
 
   /// Removes a command reaction from notification.
-  /// 
+  ///
   /// Parameters:
   /// - [reaction]: The command reaction to remove
   @override
@@ -136,9 +138,9 @@ class DomainModels implements IDomainModels {
   }
 
   /// Adds model entries to this collection.
-  /// 
+  ///
   /// This is an implementation of the [IDomainModels] interface.
-  /// 
+  ///
   /// Parameters:
   /// - [modelEntries]: The model entries to add
   @override
@@ -147,7 +149,7 @@ class DomainModels implements IDomainModels {
   }
 
   /// Notifies all registered command reactions of a command execution.
-  /// 
+  ///
   /// Parameters:
   /// - [action]: The command that was executed
   @override

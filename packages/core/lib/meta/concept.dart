@@ -1,7 +1,7 @@
 part of ednet_core;
 
 class Concept extends Entity<Concept> {
-  bool entry = true;
+  bool entry = false;
   bool abstract = false;
 
   String min = '0';
@@ -32,11 +32,11 @@ class Concept extends Entity<Concept> {
   Children sourceChildren;
 
   Concept(this.model, String conceptCode)
-      : attributes = Attributes(),
-        parents = Parents(),
-        children = Children(),
-        sourceParents = Parents(),
-        sourceChildren = Children() {
+    : attributes = Attributes(),
+      parents = Parents(),
+      children = Children(),
+      sourceParents = Parents(),
+      sourceChildren = Children() {
     code = conceptCode;
     model.concepts.add(this);
   }
@@ -173,10 +173,11 @@ class Concept extends Entity<Concept> {
     return incrementList;
   }
 
-  List<Attribute> get nonIncrementAttributes => attributes
-      .whereType<Attribute>()
-      .where((a) => a.increment == null)
-      .toList();
+  List<Attribute> get nonIncrementAttributes =>
+      attributes
+          .whereType<Attribute>()
+          .where((a) => a.increment == null)
+          .toList();
 
   List<Attribute> get essentialAttributes {
     var essentialList = <Attribute>[];
@@ -348,7 +349,8 @@ class Concept extends Entity<Concept> {
       String? entryConceptSourceConceptInternalPath =
           sourceConcept.entryConceptThisConceptInternalPath;
       Concept destinationConcept = child.destinationConcept;
-      String childCodeInternalPath = '$entryConceptSourceConceptInternalPath'
+      String childCodeInternalPath =
+          '$entryConceptSourceConceptInternalPath'
           '_${child.code}_${destinationConcept.code}';
       childList.add(childCodeInternalPath);
       if (!child.reflexive) {
@@ -358,14 +360,19 @@ class Concept extends Entity<Concept> {
     return childList;
   }
 
-  static Concept safeGetConcept(Model model, Entity entity,
-      {Concept? defaultValue}) {
+  static Concept safeGetConcept(
+    Model model,
+    Entity entity, {
+    Concept? defaultValue,
+  }) {
     try {
       return entity.concept;
     } catch (EDNetException) {
       return defaultValue ??
-          Concept(model,
-              '*** concept is not set ***'); // return a default Concept object or null
+          Concept(
+            model,
+            '*** concept is not set ***',
+          ); // return a default Concept object or null
     }
   }
 
