@@ -144,14 +144,16 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           _attributeMap[a.code] = int.parse(a.init);
         } on FormatException catch (e) {
           throw TypeException(
-              '${a.code} attribute init (default) value is not int: $e');
+            '${a.code} attribute init (default) value is not int: $e',
+          );
         }
       } else if (a.type?.code == 'double') {
         try {
           _attributeMap[a.code] = double.parse(a.init);
         } on FormatException catch (e) {
           throw TypeException(
-              '${a.code} attribute init (default) value is not double: $e');
+            '${a.code} attribute init (default) value is not double: $e',
+          );
         }
       } else if (a.type?.code == 'num') {
         try {
@@ -161,7 +163,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
             _attributeMap[a.code] = double.parse(a.init);
           } on FormatException catch (e2) {
             throw TypeException(
-                '${a.code} attribute init (default) value is not num: $e1; $e2');
+              '${a.code} attribute init (default) value is not num: $e1; $e2',
+            );
           }
         }
       } else if (a.type?.code == 'Uri') {
@@ -169,7 +172,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           _attributeMap[a.code] = Uri.parse(a.init);
         } on ArgumentError catch (e) {
           throw TypeException(
-              '${a.code} attribute init (default) value is not Uri: $e');
+            '${a.code} attribute init (default) value is not Uri: $e',
+          );
         }
       } else {
         // For other types, store raw init.
@@ -393,7 +397,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         pre = false;
         post = false;
         if (beforeValue == null || !setAttribute(name, beforeValue)) {
-          var msg = '${_concept?.code}.${attribute.code} '
+          var msg =
+              '${_concept?.code}.${attribute.code} '
               'was set to a new value, post was not successful, '
               'set to the before value was not successful';
           throw RemoveException(msg);
@@ -474,8 +479,10 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       try {
         return setAttribute(name, DateTime.parse(string));
       } on ArgumentError catch (e) {
-        throw TypeException('${_concept?.code}.${attribute.code} '
-            'attribute value is not DateTime: $e');
+        throw TypeException(
+          '${_concept?.code}.${attribute.code} '
+          'attribute value is not DateTime: $e',
+        );
       }
     } else if (attribute.type?.code == 'bool') {
       if (string == 'true') {
@@ -489,15 +496,19 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       try {
         return setAttribute(name, int.parse(string));
       } on FormatException catch (e) {
-        throw TypeException('${attribute.code} '
-            'attribute value is not int: $e');
+        throw TypeException(
+          '${attribute.code} '
+          'attribute value is not int: $e',
+        );
       }
     } else if (attribute.type?.code == 'double') {
       try {
         return setAttribute(name, double.parse(string));
       } on FormatException catch (e) {
-        throw TypeException('${attribute.code} '
-            'attribute value is not double: $e');
+        throw TypeException(
+          '${attribute.code} '
+          'attribute value is not double: $e',
+        );
       }
     } else if (attribute.type?.code == 'num') {
       try {
@@ -507,7 +518,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           return setAttribute(name, double.parse(string));
         } on FormatException catch (e2) {
           throw TypeException(
-              '${attribute.code} attribute value is not num: $e1; $e2');
+            '${attribute.code} attribute value is not num: $e1; $e2',
+          );
         }
       }
     } else if (attribute.type?.code == 'Uri') {
@@ -806,11 +818,12 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
             print('**********');
           } else {
             (v as Entities).display(
-                title: '$s$k',
-                prefix: '$s  ',
-                withOid: withOid,
-                withChildren: withChildren,
-                withInternalChildren: withInternalChildren);
+              title: '$s$k',
+              prefix: '$s  ',
+              withOid: withOid,
+              withChildren: withChildren,
+              withInternalChildren: withInternalChildren,
+            );
           }
         });
       } else {
@@ -820,11 +833,12 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
             print('**********');
           } else {
             (v as Entities).display(
-                title: '$s$k',
-                prefix: '$s  ',
-                withOid: withOid,
-                withChildren: withChildren,
-                withInternalChildren: withInternalChildren);
+              title: '$s$k',
+              prefix: '$s  ',
+              withOid: withOid,
+              withChildren: withChildren,
+              withInternalChildren: withInternalChildren,
+            );
           }
         });
       }
@@ -882,7 +896,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     for (Child child in _concept!.children.whereType<Child>()) {
       final childEntities = getChild(child.code);
       if (childEntities != null) {
-        childMap[child.code] = (getInternalChild(child.code) as Entities).toJsonList();
+        childMap[child.code] =
+            (getInternalChild(child.code) as Entities).toJsonList();
       }
     }
     if (childMap.isNotEmpty) {
@@ -893,7 +908,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   /// Loads this entity from a JSON string.
-  void fromJson(String entityJson) {
+  @override
+  void fromJson<K extends Entity<K>>(String entityJson) {
     try {
       Map<String, dynamic> entityMap = jsonDecode(entityJson);
       fromJsonMap(entityMap);
@@ -925,7 +941,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         _whenAdded = DateTime.fromMillisecondsSinceEpoch(timeStamp);
       } catch (e) {
         throw TypeException(
-            'whenAdded is not valid timestamp: ${entityMap['whenAdded']} - $e');
+          'whenAdded is not valid timestamp: ${entityMap['whenAdded']} - $e',
+        );
       }
     }
 
@@ -935,7 +952,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         _whenSet = DateTime.fromMillisecondsSinceEpoch(timeStamp);
       } catch (e) {
         throw TypeException(
-            'whenSet is not valid timestamp: ${entityMap['whenSet']} - $e');
+          'whenSet is not valid timestamp: ${entityMap['whenSet']} - $e',
+        );
       }
     }
 
@@ -944,14 +962,14 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         int timeStamp = entityMap['whenRemoved'] as int;
         _whenRemoved = DateTime.fromMillisecondsSinceEpoch(timeStamp);
       } catch (e) {
-        throw TypeException(
-            'whenRemoved is not valid timestamp: ${entityMap['whenRemoved']} - $e');
+        throw ('whenRemoved is not valid timestamp: ${entityMap['whenRemoved']} - $e');
       }
     }
 
     // Load attributes
     if (entityMap.containsKey('attributes')) {
-      Map<String, dynamic> attributeMap = entityMap['attributes'] as Map<String, dynamic>;
+      Map<String, dynamic> attributeMap =
+          entityMap['attributes'] as Map<String, dynamic>;
       for (Attribute attribute in _concept!.attributes.whereType<Attribute>()) {
         if (attributeMap.containsKey(attribute.code)) {
           setAttribute(attribute.code, attributeMap[attribute.code]);
@@ -961,17 +979,22 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     // Load parents (references)
     if (entityMap.containsKey('parents')) {
-      Map<String, dynamic> parentMap = entityMap['parents'] as Map<String, dynamic>;
+      Map<String, dynamic> parentMap =
+          entityMap['parents'] as Map<String, dynamic>;
       for (Parent parent in _concept!.parents.whereType<Parent>()) {
         if (parentMap.containsKey(parent.code)) {
           String parentOidString = parentMap[parent.code]['oid'] as String;
-          String parentConceptCode = parentMap[parent.code]['concept'] as String;
-          String parentEntryConceptCode = parentMap[parent.code]['entryConcept'] as String;
-          
-          Reference reference = Reference(parentOidString,
-              parentConceptCode, parentEntryConceptCode);
-          Oid parentOid = reference.oid;
-          
+          String parentConceptCode =
+              parentMap[parent.code]['concept'] as String;
+          String parentEntryConceptCode =
+              parentMap[parent.code]['entryConcept'] as String;
+
+          Reference reference = Reference(
+            parentOidString,
+            parentConceptCode,
+            parentEntryConceptCode,
+          );
+
           _referenceMap[parent.code] = reference;
         }
       }
@@ -979,7 +1002,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     // Load children
     if (entityMap.containsKey('children')) {
-      Map<String, dynamic> childMap = entityMap['children'] as Map<String, dynamic>;
+      Map<String, dynamic> childMap =
+          entityMap['children'] as Map<String, dynamic>;
       for (Child child in concept.children.whereType<Child>()) {
         if (childMap.containsKey(child.code)) {
           List<dynamic> childrenJson = childMap[child.code] as List<dynamic>;
@@ -1057,8 +1081,11 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     }
 
     if (entity != null && getParent(name) == null) {
-      var reference = Reference(entity.oid.toString(), entity.concept.code,
-          entity.concept.entryConcept.code);
+      var reference = Reference(
+        entity.oid.toString(),
+        entity.concept.code,
+        entity.concept.entryConcept.code,
+      );
       _parentMap[name] = entity;
       _referenceMap[name] = reference;
 
@@ -1070,8 +1097,11 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
       return true;
     } else if (entity != null && parent.update) {
-      var reference = Reference(entity.oid.toString(), entity.concept.code,
-          entity.concept.entryConcept.code);
+      var reference = Reference(
+        entity.oid.toString(),
+        entity.concept.code,
+        entity.concept.entryConcept.code,
+      );
       _parentMap[name] = entity;
       _referenceMap[name] = reference;
 
@@ -1149,8 +1179,11 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     // Parent references.
     for (var k in _parentMap.keys) {
       var parent = getParent(k) as Entity;
-      var reference = Reference(parent.oid.toString(), parent.concept.code,
-          parent.concept.entryConcept.code);
+      var reference = Reference(
+        parent.oid.toString(),
+        parent.concept.code,
+        parent.concept.entryConcept.code,
+      );
       graph[k] = reference.toGraph();
     }
 

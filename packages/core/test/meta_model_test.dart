@@ -1,6 +1,5 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:test/test.dart';
-import 'dart:math';
 
 Model createDomainModel() {
   Domain domain = Domain('CategoryQuestion');
@@ -23,10 +22,16 @@ Model createDomainModel() {
   Attribute(webLinkConcept, 'description');
   assert(webLinkConcept.attributes.length == 3);
 
-  Child categoryWebLinksNeighbor =
-      Child(categoryConcept, webLinkConcept, 'webLinks');
-  Parent webLinkCategoryNeighbor =
-      Parent(webLinkConcept, categoryConcept, 'category');
+  Child categoryWebLinksNeighbor = Child(
+    categoryConcept,
+    webLinkConcept,
+    'webLinks',
+  );
+  Parent webLinkCategoryNeighbor = Parent(
+    webLinkConcept,
+    categoryConcept,
+    'category',
+  );
   webLinkCategoryNeighbor.identifier = true;
   categoryWebLinksNeighbor.opposite = webLinkCategoryNeighbor;
   webLinkCategoryNeighbor.opposite = categoryWebLinksNeighbor;
@@ -55,7 +60,9 @@ ModelEntries createModelData(Model model) {
   html5Category.concept = categories.concept;
   html5Category.setAttribute('name', 'HTML5');
   html5Category.setAttribute(
-      'description', 'HTML5 is the ubiquitous platform for the web.');
+    'description',
+    'HTML5 is the ubiquitous platform for the web.',
+  );
   categories.add(html5Category);
 
   Entities? dartWebLinks = dartCategory.getChild('webLinks') as Entities?;
@@ -66,8 +73,10 @@ ModelEntries createModelData(Model model) {
   dartHomeWebLink.concept = dartWebLinks!.concept;
   dartHomeWebLink.setAttribute('subject', 'Dart Home');
   dartHomeWebLink.setAttribute('url', 'http://www.dartlang.org/');
-  dartHomeWebLink.setAttribute('description',
-      'Dart brings structure to web app engineering with a new language, libraries, and tools.');
+  dartHomeWebLink.setAttribute(
+    'description',
+    'Dart brings structure to web app engineering with a new language, libraries, and tools.',
+  );
   dartHomeWebLink.setParent('category', dartCategory);
   dartWebLinks.add(dartHomeWebLink);
   assert(dartWebLinks.length == 1);
@@ -77,8 +86,10 @@ ModelEntries createModelData(Model model) {
   tryDartWebLink.concept = dartWebLinks.concept;
   tryDartWebLink.setAttribute('subject', 'Try Dart');
   tryDartWebLink.setAttribute('url', 'http://try.dartlang.org/');
-  tryDartWebLink.setAttribute('description',
-      'Try out the Dart Language from the comfort of your web browser.');
+  tryDartWebLink.setAttribute(
+    'description',
+    'Try out the Dart Language from the comfort of your web browser.',
+  );
   tryDartWebLink.setParent('category', dartCategory);
   dartWebLinks.add(tryDartWebLink);
   assert(dartWebLinks.length == 2);
@@ -109,8 +120,9 @@ void testModelData(Model model) {
       Id dartHomeId = Id(entries!.getConcept('WebLink'));
       dartHomeId.setParent('category', dartCategory as Entity);
       dartHomeId.setAttribute('subject', 'Dart Home');
-      var dartHomeWebLink =
-          dartWebLinks?.singleWhereId(dartHomeId as IId<Entity>);
+      var dartHomeWebLink = dartWebLinks?.singleWhereId(
+        dartHomeId as IId<Entity>,
+      );
       expect(dartHomeWebLink, isNotNull);
       expect(dartHomeWebLink?.getAttribute('subject'), equals('Dart Home'));
     });
@@ -118,7 +130,8 @@ void testModelData(Model model) {
       var categories = entries?.getEntry('Category');
       categories!.sort();
       categories.display(
-          title: 'Categories Sorted By Id (code not used, id is name)');
+        title: 'Categories Sorted By Id (code not used, id is name)',
+      );
     });
     test('Sort Dart Web Links by Name', () {
       var categories = entries?.getEntry('Category');
@@ -135,8 +148,10 @@ void testModelData(Model model) {
       webFrameworkCategory.concept = categories.concept!;
       webFrameworkCategory.setAttribute('name', 'Web Framework');
       expect(webFrameworkCategory, isNotNull);
-      expect((webFrameworkCategory.getChild('webLinks') as Entities).length,
-          equals(0));
+      expect(
+        (webFrameworkCategory.getChild('webLinks') as Entities).length,
+        equals(0),
+      );
       categories.add(webFrameworkCategory);
       expect(categories.length, equals(++categoryCount));
 
@@ -156,19 +171,24 @@ void testModelData(Model model) {
       dartHomeWebLink.setAttribute('subject', 'Dart Home');
       dartHomeWebLink.setAttribute('url', 'http://www.dartlang.org/');
       dartHomeWebLink.setAttribute(
-          'description',
-          'Dart brings structure to '
-              'web app engineering with a new language, libraries, and tools.');
+        'description',
+        'Dart brings structure to '
+            'web app engineering with a new language, libraries, and tools.',
+      );
       try {
         dartCategory.getChild('webLinks')?.add(dartHomeWebLink);
       } catch (e) {
         // Expected error
       }
-      expect(dartCategory.getChild('webLinks')?.length,
-          equals(dartWebLinks.length));
+      expect(
+        dartCategory.getChild('webLinks')?.length,
+        equals(dartWebLinks.length),
+      );
       expect(dartCategory.getChild('webLinks')?.exceptions.length, equals(1));
-      expect(dartCategory.getChild('webLinks')?.exceptions.toList()[0].category,
-          equals('required'));
+      expect(
+        dartCategory.getChild('webLinks')?.exceptions.toList()[0].category,
+        equals('required'),
+      );
       dartCategory
           .getChild('webLinks')
           ?.exceptions
@@ -193,8 +213,8 @@ void main() {
       // Step 2: Create Concepts
       var concept1 = Concept(model, 'Concept1');
       var attr = Attribute(concept1, 'name');
-      attr.type = Type('String'); // Add the type assignment
-      
+      attr.type = AttributeType(domain, 'String');
+
       var concept2 = Concept(model, 'Concept2');
 
       // Add concepts to the model

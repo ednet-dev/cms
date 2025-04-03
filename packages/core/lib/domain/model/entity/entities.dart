@@ -19,7 +19,7 @@ part of ednet_core;
 /// ```dart
 /// final entities = Entities<Product>();
 /// entities.concept = productConcept;
-/// 
+///
 /// final product = Product();
 /// product.name = 'Laptop';
 /// entities.add(product);
@@ -248,7 +248,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       return selectionEntities.first;
     }
     throw EDNetException(
-        'E firstWhereAttribute(String code, Object attribute): code = $code, attribute = $attribute');
+      'E firstWhereAttribute(String code, Object attribute): code = $code, attribute = $attribute',
+    );
   }
 
   /// Returns a random entity from the collection.
@@ -396,7 +397,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   Entities<E> selectWhere(bool Function(E) f) {
     if (_concept == null) {
       throw new ConceptException(
-          'Entities.selectWhere: concept is not defined.');
+        'Entities.selectWhere: concept is not defined.',
+      );
     }
 
     Entities<E> selectedEntities = newEntities();
@@ -419,7 +421,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   Entities<E> selectWhereAttribute(String code, Object attribute) {
     if (_concept == null) {
       throw new ConceptException(
-          'Entities.selectWhereAttribute($code, $attribute): concept is not defined.');
+        'Entities.selectWhereAttribute($code, $attribute): concept is not defined.',
+      );
     }
 
     Entities<E> selectedEntities = newEntities();
@@ -447,7 +450,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   Entities<E> selectWhereParent(String code, IEntity parent) {
     if (_concept == null) {
       throw new ConceptException(
-          'Entities.selectWhereParent($code, $parent): concept is not defined.');
+        'Entities.selectWhereParent($code, $parent): concept is not defined.',
+      );
     }
 
     Entities<E> selectedEntities = newEntities();
@@ -497,7 +501,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   Entities<E> skipFirstWhile(bool Function(E entity) f) {
     if (_concept == null) {
       throw new ConceptException(
-          'Entities.skipFirstWhile: concept is not defined.');
+        'Entities.skipFirstWhile: concept is not defined.',
+      );
     }
 
     Entities<E> selectedEntities = newEntities();
@@ -542,7 +547,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   Entities<E> takeFirstWhile(bool Function(E entity) f) {
     if (_concept == null) {
       throw new ConceptException(
-          'Entities.takeFirstWhile: concept is not defined.');
+        'Entities.takeFirstWhile: concept is not defined.',
+      );
     }
 
     Entities<E> selectedEntities = newEntities();
@@ -568,7 +574,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   List<Map<String, Object>> toJsonList() {
     List<Map<String, Object>> entityList = <Map<String, Object>>[];
     for (E entity in _entityList) {
-      entityList.add(entity.toJsonMap());
+      entityList.add(entity.toJsonMap() as Map<String, Object>);
     }
     return entityList;
   }
@@ -596,7 +602,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     post = false;
     for (var entityMap in entitiesList) {
       var entity = newEntity();
-      entity.fromJsonMap(entityMap, internalParent);
+      entity.fromJsonMap(entityMap);
       add(entity as E);
     }
     pre = beforePre;
@@ -639,7 +645,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
     if (entity._concept == null) {
       throw new ConceptException(
-          'Entity(oid: ${entity.oid}) concept is not defined.');
+        'Entity(oid: ${entity.oid}) concept is not defined.',
+      );
     }
     if (_concept == null) {
       throw new ConceptException('Entities.add: concept is not defined.');
@@ -667,9 +674,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     bool result = true;
 
     if (entity.id != null && singleWhereId(entity.id) != null) {
-      ValidationException exception = new ValidationException('unique',
-          '${entity.concept.code}.id ${entity.id.toString()} is not unique.');
-      exceptions.add(exception);
+      ValidationException exception = new ValidationException(
+        'unique',
+        '${entity.concept.code}.id ${entity.id.toString()} is not unique.',
+      );
+      exceptions.add(exception as IValidationExceptions);
       result = false;
     }
 
@@ -695,14 +704,15 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           a.update = attributeUpdate;
         } else {
           throw TypeException(
-              '${a.code} attribute value cannot be incremented.');
+            '${a.code} attribute value cannot be incremented.',
+          );
         }
       } else if (isRequired && !exists) {
         const category = 'required';
         final message = '${entity.concept.code}.${a.code} attribute is null.';
         final exception = ValidationException(category, message);
 
-        exceptions.add(exception);
+        exceptions.add(exception as IValidationExceptions);
         isValid = false;
       }
     }
@@ -712,7 +722,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         final message = '${entity.concept.code}.${p.code} parent is null.';
         final exception = ValidationException(category, message);
 
-        exceptions.add(exception);
+        exceptions.add(exception as IValidationExceptions);
         isValid = false;
       }
     }
@@ -730,12 +740,13 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           final message = '${_concept!.code}.max is $maxC.';
           var exception = ValidationException(category, message);
 
-          exceptions.add(exception);
+          exceptions.add(exception as IValidationExceptions);
           isValid = false;
         }
       } on FormatException catch (e) {
         throw AddException(
-            'Entities max is neither N nor a positive integer string: $e');
+          'Entities max is neither N nor a positive integer string: $e',
+        );
       }
     }
     return isValid;
@@ -766,7 +777,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           pre = false;
           post = false;
           if (!remove(entity)) {
-            var msg = '${entity.concept.code} entity (${entity.oid}) '
+            var msg =
+                '${entity.concept.code} entity (${entity.oid}) '
                 'was added, post was not successful, remove was not successful';
             throw RemoveException(msg);
           } else {
@@ -776,7 +788,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           post = beforePost;
         }
       } else {
-        var msg = '${entity.concept.code} entity (${entity.oid}) '
+        var msg =
+            '${entity.concept.code} entity (${entity.oid}) '
             'was not added - propagation to the source ${source?.concept.code} '
             'entities was not successful';
         throw AddException(msg);
@@ -794,7 +807,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
     if (entity._concept == null) {
       throw new ConceptException(
-          'Entity(oid: ${entity.oid}) concept is not defined.');
+        'Entity(oid: ${entity.oid}) concept is not defined.',
+      );
     }
     if (_concept == null) {
       throw new ConceptException('Entities.add: concept is not defined.');
@@ -814,14 +828,16 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
     if (entity._concept == null) {
       throw new ConceptException(
-          'Entity(oid: ${entity.oid}) concept is not defined.');
+        'Entity(oid: ${entity.oid}) concept is not defined.',
+      );
     }
     if (_concept == null) {
       throw new ConceptException('Entities.remove: concept is not defined.');
     }
     if (!_concept!.remove) {
       throw new RemoveException(
-          'An entity cannot be removed from ${_concept!.code}.');
+        'An entity cannot be removed from ${_concept!.code}.',
+      );
     }
 
     bool result = true;
@@ -834,15 +850,18 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         if (length == minInt) {
           const category = 'min';
           final message = '${_concept!.code}.min is $minC.';
-          ValidationException exception =
-              ValidationException(category, message);
+          ValidationException exception = ValidationException(
+            category,
+            message,
+          );
 
-          exceptions.add(exception);
+          exceptions.add(exception as IValidationExceptions);
           result = false;
         }
       } on FormatException catch (e) {
         throw RemoveException(
-            'Entities min is not a positive integer string: $e');
+          'Entities min is not a positive integer string: $e',
+        );
       }
     }
 
@@ -874,7 +893,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
             pre = false;
             post = false;
             if (!add(entity)) {
-              var msg = '${entity.concept.code} entity (${entity.oid}) '
+              var msg =
+                  '${entity.concept.code} entity (${entity.oid}) '
                   'was removed, post was not successful, add was not successful';
               throw AddException(msg);
             } else {
@@ -885,7 +905,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           }
         }
       } else {
-        var msg = '${entity.concept.code} entity (${entity.oid}) '
+        var msg =
+            '${entity.concept.code} entity (${entity.oid}) '
             'was not removed - propagation to the source ${source!.concept.code} '
             'entities was not successful';
         throw RemoveException(msg);
@@ -903,7 +924,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
     if (entity._concept == null) {
       throw new ConceptException(
-          'Entity(oid: ${entity.oid}) concept is not defined.');
+        'Entity(oid: ${entity.oid}) concept is not defined.',
+      );
     }
     if (_concept == null) {
       throw new ConceptException('Entities.add: concept is not defined.');
@@ -923,7 +945,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         beforeEntity.code == afterEntity.code &&
         beforeEntity.id == afterEntity.id) {
       throw UpdateException(
-          '${_concept!.code}.update can only be used if oid, code or id set.');
+        '${_concept!.code}.update can only be used if oid, code or id set.',
+      );
     }
     if (remove(beforeEntity)) {
       if (add(afterEntity)) {
@@ -935,10 +958,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           final message =
               '${_concept!.code}.update fails to add after update entity.';
           var exception = ValidationException(category, message);
-          exceptions.add(exception);
+          exceptions.add(exception as IValidationExceptions);
         } else {
           throw UpdateException(
-              '${_concept!.code}.update fails to add back before update entity.');
+            '${_concept!.code}.update fails to add back before update entity.',
+          );
         }
       }
     } else {
@@ -947,7 +971,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           '${_concept!.code}.update fails to remove before update entity.';
       var exception = ValidationException(category, message);
 
-      exceptions.add(exception);
+      exceptions.add(exception as IValidationExceptions);
     }
     return false;
   }
@@ -1000,12 +1024,13 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   /// Displays the entities in a formatted way.
-  void display(
-      {String title = 'Entities',
-      String prefix = '',
-      bool withOid = true,
-      bool withChildren = true,
-      bool withInternalChildren = true}) {
+  void display({
+    String title = 'Entities',
+    String prefix = '',
+    bool withOid = true,
+    bool withChildren = true,
+    bool withInternalChildren = true,
+  }) {
     if (_concept == null) {
       throw new ConceptException('Entities.display: concept is not defined.');
     }
@@ -1026,10 +1051,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
     for (E e in _entityList) {
       e.display(
-          prefix: s,
-          withOid: withOid,
-          withChildren: withChildren,
-          withInternalChildren: withInternalChildren);
+        prefix: s,
+        withOid: withOid,
+        withChildren: withChildren,
+        withInternalChildren: withInternalChildren,
+      );
     }
   }
 

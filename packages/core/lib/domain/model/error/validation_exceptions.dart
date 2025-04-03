@@ -11,10 +11,11 @@ class ValidationExceptions implements IValidationExceptions {
   bool get isEmpty => length == 0;
 
   Iterator<ValidationException> get iterator => _exceptionList.iterator;
-
   @override
-  void add(ValidationException exception) {
-    _exceptionList.add(exception);
+  void add(IValidationExceptions exception) {
+    if (exception is ValidationException) {
+      _exceptionList.add(exception as ValidationException);
+    }
   }
 
   @override
@@ -23,7 +24,8 @@ class ValidationExceptions implements IValidationExceptions {
   }
 
   @override
-  List<ValidationException> toList() => _exceptionList.toList();
+  List<IValidationExceptions> toList() =>
+      _exceptionList.cast<IValidationExceptions>().toList();
 
   /// Returns a string that represents the exceptions.
   @override
@@ -36,10 +38,7 @@ class ValidationExceptions implements IValidationExceptions {
   }
 
   /// Displays (prints) a title, then exceptions.
-  void display({
-    String title = 'Entities',
-    bool withOid = true,
-  }) {
+  void display({String title = 'Entities', bool withOid = true}) {
     if (title == 'Entities') {
       title = 'Errors';
     }
@@ -52,4 +51,7 @@ class ValidationExceptions implements IValidationExceptions {
       exception.display(prefix: '*** ');
     }
   }
+
+  @override
+  String get category => 'Validation';
 }

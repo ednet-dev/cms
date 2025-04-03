@@ -16,21 +16,26 @@ void main() {
     evaluator = PolicyEvaluator(registry);
 
     testConcept = Concept(model, 'TestConcept');
-    testConcept.attributes.add(Attribute(testConcept, 'age')
-      ..type = AttributeType(Domain('Test'), 'int'));
-    testConcept.attributes.add(Attribute(testConcept, 'name')
-      ..type = AttributeType(Domain('Test'), 'String'));
+    testConcept.attributes.add(
+      Attribute(testConcept, 'age')
+        ..type = AttributeType(Domain('Test'), 'int'),
+    );
+    testConcept.attributes.add(
+      Attribute(testConcept, 'name')
+        ..type = AttributeType(Domain('Test'), 'String'),
+    );
     testEntity = Entity<Concept>()..concept = testConcept;
   });
 
   group('AttributePolicy Tests', () {
     test('Age Policy', () {
       var agePolicy = AttributePolicy(
-          name: 'Age Policy',
-          description: 'Age must be between 18 and 100',
-          attributeName: 'age',
-          validator: AttributeValidators.isBetween(18, 100));
-      registry.registeruditPolicy('agePolicy', agePolicy);
+        name: 'Age Policy',
+        description: 'Age must be between 18 and 100',
+        attributeName: 'age',
+        validator: AttributeValidators.isBetween(18, 100),
+      );
+      registry.registerPolicy('agePolicy', agePolicy);
 
       testEntity.setAttribute('age', 25);
       var result = evaluator.evaluate(testEntity);
@@ -51,10 +56,11 @@ void main() {
 
     test('Name Policy', () {
       var namePolicy = AttributePolicy(
-          name: 'Name Policy',
-          description: 'Name must not be empty',
-          attributeName: 'name',
-          validator: AttributeValidators.isNotNull);
+        name: 'Name Policy',
+        description: 'Name must not be empty',
+        attributeName: 'name',
+        validator: AttributeValidators.isNotNull,
+      );
       registry.registerPolicy('namePolicy', namePolicy);
 
       testEntity.setAttribute('name', 'John Doe');
@@ -78,8 +84,9 @@ void main() {
     setUp(() {
       parentConcept = Concept(model, 'ParentConcept');
       childConcept = Concept(model, 'ChildConcept');
-      parentConcept.children
-          .add(Child(parentConcept, childConcept, 'children'));
+      parentConcept.children.add(
+        Child(parentConcept, childConcept, 'children'),
+      );
 
       parentEntity = Entity<Concept>()..concept = parentConcept;
       childEntities = Entities<Concept>()..concept = childConcept;
@@ -88,11 +95,12 @@ void main() {
 
     test('Child Count Policy', () {
       var childCountPolicy = RelationshipPolicy(
-          name: 'Child Count Policy',
-          description: 'Entity must have at least 2 children',
-          relationshipName: 'children',
-          relationshipType: RelationshipType.child,
-          validator: RelationshipValidators.hasMinimumChildren(2));
+        name: 'Child Count Policy',
+        description: 'Entity must have at least 2 children',
+        relationshipName: 'children',
+        relationshipType: RelationshipType.child,
+        validator: RelationshipValidators.hasMinimumChildren(2),
+      );
       registry.registerPolicy('childCountPolicy', childCountPolicy);
 
       var result = evaluator.evaluate(parentEntity);
@@ -111,22 +119,25 @@ void main() {
   group('CompositePolicy Tests', () {
     test('All Policies', () {
       var agePolicy = AttributePolicy(
-          name: 'Age Policy',
-          description: 'Age must be between 18 and 100',
-          attributeName: 'age',
-          validator: AttributeValidators.isBetween(18, 100));
+        name: 'Age Policy',
+        description: 'Age must be between 18 and 100',
+        attributeName: 'age',
+        validator: AttributeValidators.isBetween(18, 100),
+      );
 
       var namePolicy = AttributePolicy(
-          name: 'Name Policy',
-          description: 'Name must not be empty',
-          attributeName: 'name',
-          validator: AttributeValidators.isNotNull);
+        name: 'Name Policy',
+        description: 'Name must not be empty',
+        attributeName: 'name',
+        validator: AttributeValidators.isNotNull,
+      );
 
       var compositePolicy = CompositePolicy(
-          name: 'User Validation Policy',
-          description: 'Composite policy for user validation',
-          policies: [agePolicy, namePolicy],
-          type: CompositePolicyType.all);
+        name: 'User Validation Policy',
+        description: 'Composite policy for user validation',
+        policies: [agePolicy, namePolicy],
+        type: CompositePolicyType.all,
+      );
 
       registry.registerPolicy('userValidationPolicy', compositePolicy);
 
@@ -164,11 +175,12 @@ void main() {
 
     test('Expiration Policy', () {
       var expirationPolicy = TimeBasedPolicy(
-          name: 'Expiration Policy',
-          description: 'Entity must not be expired',
-          timeAttributeName: 'expirationDate',
-          validator: TimeValidators.isAfter(Duration.zero),
-          clock: clock);
+        name: 'Expiration Policy',
+        description: 'Entity must not be expired',
+        timeAttributeName: 'expirationDate',
+        validator: TimeValidators.isAfter(Duration.zero),
+        clock: clock,
+      );
 
       registry.registerPolicy('expirationPolicy', expirationPolicy);
 
@@ -185,16 +197,19 @@ void main() {
 
     test('Within Last Week Policy', () {
       var withinLastWeekPolicy = TimeBasedPolicy(
-          name: 'Within Last Week Policy',
-          description: 'Entity must have been created within the last week',
-          timeAttributeName: 'creationDate',
-          validator: TimeValidators.isWithinLast(Duration(days: 7)),
-          clock: clock);
+        name: 'Within Last Week Policy',
+        description: 'Entity must have been created within the last week',
+        timeAttributeName: 'creationDate',
+        validator: TimeValidators.isWithinLast(Duration(days: 7)),
+        clock: clock,
+      );
 
       registry.registerPolicy('withinLastWeekPolicy', withinLastWeekPolicy);
 
       testEntity.setAttribute(
-          'creationDate', clock.now().subtract(Duration(days: 3)));
+        'creationDate',
+        clock.now().subtract(Duration(days: 3)),
+      );
       var result = evaluator.evaluate(testEntity);
       expect(result.success, isTrue);
 

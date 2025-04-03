@@ -23,7 +23,7 @@ part of ednet_core;
 ///
 /// final parentOid = reference.oid;
 /// ```
-class Reference implements Serializable {
+class Reference {
   /// The string representation of the parent entity's OID timestamp.
   final String parentOidString;
 
@@ -39,7 +39,10 @@ class Reference implements Serializable {
   /// [parentConceptCode] is the code identifying the parent entity's concept.
   /// [entryConceptCode] is the code identifying the entry concept of the parent entity.
   Reference(
-      this.parentOidString, this.parentConceptCode, this.entryConceptCode);
+    this.parentOidString,
+    this.parentConceptCode,
+    this.entryConceptCode,
+  );
 
   /// Creates a reference from an entity.
   ///
@@ -89,7 +92,7 @@ class Reference implements Serializable {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! Reference) return false;
-    
+
     return parentOidString == (other as Reference).parentOidString &&
         parentConceptCode == other.parentConceptCode &&
         entryConceptCode == other.entryConceptCode;
@@ -99,7 +102,7 @@ class Reference implements Serializable {
   ///
   /// Uses all fields for hash code calculation to ensure proper distribution.
   @override
-  int get hashCode => 
+  int get hashCode =>
       Object.hash(parentOidString, parentConceptCode, entryConceptCode);
 
   /// Converts this reference to a JSON map.
@@ -139,10 +142,10 @@ class Reference implements Serializable {
     return {
       'parentOidString': parentOidString,
       'parentConceptCode': parentConceptCode,
-      'entryConceptCode': entryConceptCode
+      'entryConceptCode': entryConceptCode,
     };
   }
-  
+
   /// Returns true if this reference can be resolved in the given model entries.
   ///
   /// This method attempts to find the referenced entity in the model entries.
@@ -161,6 +164,6 @@ class Reference implements Serializable {
   /// [modelEntries] is the collection of model entries to search in.
   /// Returns the referenced entity if found, null otherwise.
   Entity? resolve(IModelEntries modelEntries) {
-    return modelEntries.internalSingle(entryConceptCode, oid);
+    return modelEntries.internalSingle(entryConceptCode, oid) as Entity?;
   }
 }

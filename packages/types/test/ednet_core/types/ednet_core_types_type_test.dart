@@ -4,8 +4,11 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_core_types/ednet_core_types.dart' as dt;
 import 'package:test/test.dart';
 
-void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
-    dt.TypesModel typesModel, dt.CoreTypes types) {
+void testEDNetCoreTypesTypes(
+  dt.EDNetCoreDomain ednetCoreDomain,
+  dt.TypesModel typesModel,
+  dt.CoreTypes types,
+) {
   DomainSession session;
   group('Testing EDNetCore.Types.Type', () {
     session = ednetCoreDomain.newSession();
@@ -74,10 +77,10 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
       var added = types.add(type);
       expect(added, isFalse);
       expect(types.length, equals(typeCount));
-      expect(types.exceptions..length, greaterThan(0));
-      expect(types.exceptions..toList()[0].category, equals('required'));
+      expect(types.exceptions.length, greaterThan(0));
+      expect(types.exceptions.toList()[0].category, equals('required'));
 
-      types.exceptions..display(title: 'Add type required error');
+      types.exceptions.display(title: 'Add type required error');
     });
 
     test('Add type unique error', () {
@@ -120,11 +123,14 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
 
     test('Select types by attribute', () {
       var randomType = types.random();
-      var selectedTypes =
-          types.selectWhereAttribute('started', randomType.started);
+      var selectedTypes = types.selectWhereAttribute(
+        'started',
+        randomType.started,
+      );
       expect(selectedTypes.isEmpty, isFalse);
-      selectedTypes
-          .forEach((se) => expect(se.started, equals(randomType.started)));
+      selectedTypes.forEach(
+        (se) => expect(se.started, equals(randomType.started)),
+      );
 
       //selectedTypes.display(title: "Select types by started");
     });
@@ -154,7 +160,8 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
       type.completed = false;
       type.whatever = 'room';
       type.web = Uri.parse(
-          'http://fr.slideshare.net/adamnash/personal-finance-for-engineers-twitter-2013');
+        'http://fr.slideshare.net/adamnash/personal-finance-for-engineers-twitter-2013',
+      );
       type.other = 'abstract';
       type.note = 'service';
       var added = selectedTypes.add(type);
@@ -205,10 +212,12 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
       expect(copiedTypes.isEmpty, isFalse);
       expect(copiedTypes.length, equals(types.length));
       expect(copiedTypes, isNot(same(types)));
-      copiedTypes
-          .forEach((e) => expect(e, equals(types.singleWhereOid(e.oid))));
-      copiedTypes
-          .forEach((e) => expect(e, isNot(same(types.singleWhereId(e.id!)))));
+      copiedTypes.forEach(
+        (e) => expect(e, equals(types.singleWhereOid(e.oid))),
+      );
+      copiedTypes.forEach(
+        (e) => expect(e, isNot(same(types.singleWhereId(e.id!)))),
+      );
 
       //copiedTypes.display(title: "Copy types");
     });
@@ -297,7 +306,8 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
       type.completed = true;
       type.whatever = 'selfdo';
       type.web = Uri.parse(
-          'http://internationalliving.com/2013/01/theres-no-such-thing-as-boredom-in-boquete-panama/');
+        'http://internationalliving.com/2013/01/theres-no-such-thing-as-boredom-in-boquete-panama/',
+      );
       type.other = 'ship';
       type.note = 'school';
       types.add(type);
@@ -327,7 +337,8 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
       type.completed = false;
       type.whatever = 'tape';
       type.web = Uri.parse(
-          'http://chimera.labs.oreilly.com/books/1234000001654/index.html');
+        'http://chimera.labs.oreilly.com/books/1234000001654/index.html',
+      );
       type.other = 'answer';
       type.note = 'executive';
       types.add(type);
@@ -431,7 +442,9 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
       var action2 = new RemoveCommand(session, types, type2);
 
       var transaction = new Transaction(
-          'two removes on types, with an error on the second', session);
+        'two removes on types, with an error on the second',
+        session,
+      );
       transaction.add(action1);
       transaction.add(action2);
       var done = transaction.doIt();
@@ -457,7 +470,8 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
       type.completed = false;
       type.whatever = 'privacy';
       type.web = Uri.parse(
-          'http://tinyhouseblog.com/yurts/tiny-spiritual-retreat-cabins/');
+        'http://tinyhouseblog.com/yurts/tiny-spiritual-retreat-cabins/',
+      );
       type.other = 'do';
       type.note = 'pattern';
       types.add(type);
@@ -471,8 +485,12 @@ void testEDNetCoreTypesTypes(dt.EDNetCoreDomain ednetCoreDomain,
       expect(types.length, equals(++typeCount));
       expect(reaction.reactedOnAdd, isTrue);
 
-      var setAttributeCommand =
-          new SetAttributeCommand(session, type, 'title', 'message');
+      var setAttributeCommand = new SetAttributeCommand(
+        session,
+        type,
+        'title',
+        'message',
+      );
       setAttributeCommand.doIt();
       expect(reaction.reactedOnUpdate, isTrue);
       ednetCoreDomain.cancelCommandReaction(reaction as ICommandReaction);
@@ -502,5 +520,8 @@ void main() {
   assert(typesModel != null);
   var types = (typesModel as dt.TypesModel).types;
   testEDNetCoreTypesTypes(
-      ednetCoreDomain as dt.EDNetCoreDomain, typesModel, types);
+    ednetCoreDomain as dt.EDNetCoreDomain,
+    typesModel,
+    types,
+  );
 }

@@ -77,10 +77,9 @@ attributes:
                     ''';
 // final model = DomainModel.fromYaml(yaml);
 
-String loadYaml(
-    {String domainModelName = "domain_model_name",
-    String filePath = "domain_model_definition"}) {
-  var yamlFile = File("$filePath/$domainModelName.yaml");
-  return yamlFile.readAsStringSync();
-}
-
+// String loadYaml(
+//     {String domainModelName = "domain_model_name",
+//     String filePath = "domain_model_definition"}) {
+//   var yamlFile = File("$filePath/$domainModelName.yaml");
+//   return yamlFile.readAsStringSync();
+// }
