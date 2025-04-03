@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:ednet_core/domain/domain_models.dart'; // Import only what we need
+import 'package:ednet_core/ednet_core.dart';
 
 void main() {
   group('Domain Model Tests', () {
@@ -18,4 +18,4 @@ void main() {
       expect(domain.models.first, equals(model));
     });
   });
-} 
+}

@@ -1,4 +1,5 @@
-library ednet_cms;
+library;
+
 import 'package:ednet_core/ednet_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,6 +11,7 @@ export 'src/builders/domain_model_builder.dart';
 export 'src/builders/post_process_builder.dart';
 
 part 'src/platforms/entity_widget.dart';
+
 // Other parts of your library can be included here as needed
 // part 'src/integrations/build.dart';
 // part 'src/generation/cms_builder.dart';

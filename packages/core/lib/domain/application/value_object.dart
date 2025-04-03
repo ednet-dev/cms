@@ -41,7 +41,7 @@ part of ednet_core;
 ///
 ///   @override
 ///   List<Object> get props => [amount, currency];
-///   
+///
 ///   @override
 ///   Map<String, dynamic> toJson() {
 ///     return {
@@ -49,14 +49,14 @@ part of ednet_core;
 ///       'currency': currency,
 ///     };
 ///   }
-///   
+///
 ///   @override
 ///   Money copyWith() {
 ///     return Money(amount: amount, currency: currency);
 ///   }
 /// }
 /// ```
-abstract class ValueObject implements model.ValueObject {
+abstract class ValueObject {
   /// The list of properties that define this value object.
   ///
   /// This is used for equality comparison and hash code generation.
@@ -122,42 +122,44 @@ abstract class ValueObject implements model.ValueObject {
   String toString() {
     return '$runtimeType(${props.map((prop) => prop.toString()).join(', ')})';
   }
-  
-  /// Converts the value object to a map of key-value pairs.
-  /// 
-  /// This method is similar to toJson but can return non-serializable objects.
-  /// Useful for internal transformations.
-  /// 
-  /// Returns:
-  /// A map representation of this value object's properties
-  Map<String, dynamic> toMap() {
-    // Default implementation defers to toJson
-    return toJson();
-  }
-  
-  /// Creates a [SimpleValueObject] representation of this value object.
-  /// 
-  /// This is useful for compatibility with systems that expect
-  /// the model layer's SimpleValueObject format.
-  /// 
-  /// Returns:
-  /// A [model.SimpleValueObject] representation of this value object
-  model.SimpleValueObject toSimpleValueObject() {
-    final map = toMap();
-    final attributes = <model.ValueObjectAttribute>[];
-    
-    map.forEach((key, value) {
-      attributes.add(model.ValueObjectAttribute(
-        key: key,
-        value: value is model.ValueObject ? value.toJson() : value.toString()
-      ));
-    });
-    
-    return model.SimpleValueObject(
-      name: runtimeType.toString(),
-      description: toString(),
-      version: '1.0',
-      attributes: attributes,
-    );
-  }
-} 
+
+  // /// Converts the value object to a map of key-value pairs.
+  // ///
+  // /// This method is similar to toJson but can return non-serializable objects.
+  // /// Useful for internal transformations.
+  // ///
+  // /// Returns:
+  // /// A map representation of this value object's properties
+  // Map<String, dynamic> toMap() {
+  //   // Default implementation defers to toJson
+  //   return toJson();
+  // }
+  //
+  // /// Creates a [SimpleValueObject] representation of this value object.
+  // ///
+  // /// This is useful for compatibility with systems that expect
+  // /// the model layer's SimpleValueObject format.
+  // ///
+  // /// Returns:
+  // /// A [model.SimpleValueObject] representation of this value object
+  // model.SimpleValueObject toSimpleValueObject() {
+  //   final map = toMap();
+  //   final attributes = <model.ValueObjectAttribute>[];
+  //
+  //   map.forEach((key, value) {
+  //     attributes.add(
+  //       model.ValueObjectAttribute(
+  //         key: key,
+  //         value: value is model.ValueObject ? value.toJson() : value.toString(),
+  //       ),
+  //     );
+  //   });
+  //
+  //   return model.SimpleValueObject(
+  //     name: runtimeType.toString(),
+  //     description: toString(),
+  //     version: '1.0',
+  //     attributes: attributes,
+  //   );
+  // }
+}

@@ -1,4 +1,4 @@
-part of ednet_cms;
+part of '../../ednet_cms.dart';
 
 class StringAttributeWidget extends StatelessWidget {
   final String label;
@@ -391,20 +391,89 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
   }
 
   bool _matchesFilter(Entity entity, FilterCriteria filter) {
-    final attributeValue = entity.getAttribute(filter.attribute)?.getValue();
-    switch (filter.operator) {
-      case '=':
-        return attributeValue == filter.value;
-      case '!=':
-        return attributeValue != filter.value;
-      case '>':
-        return attributeValue > filter.value;
-      case '<':
-        return attributeValue < filter.value;
-      // Add more operators as needed
-      default:
-        return false;
+    // Check if entity matches all criteria in the filter
+    for (final criterion in filter.criteria) {
+      final attributeValue =
+          entity.getAttribute(criterion.attribute)?.getValue();
+
+      // Use string-based comparison for backward compatibility
+      // and to avoid importing ComparisonOperator directly
+      final op = criterion.operator.toString().split('.').last;
+
+      switch (op) {
+        case 'equals':
+          if (attributeValue != criterion.value) return false;
+          break;
+        case 'notEquals':
+          if (attributeValue == criterion.value) return false;
+          break;
+        case 'greaterThan':
+          if (attributeValue is! Comparable ||
+              attributeValue.compareTo(criterion.value) <= 0) {
+            return false;
+          }
+          break;
+        case 'lessThan':
+          if (attributeValue is! Comparable ||
+              attributeValue.compareTo(criterion.value) >= 0) {
+            return false;
+          }
+          break;
+        case 'greaterThanOrEquals':
+          if (attributeValue is! Comparable ||
+              attributeValue.compareTo(criterion.value) < 0) {
+            return false;
+          }
+          break;
+        case 'lessThanOrEquals':
+          if (attributeValue is! Comparable ||
+              attributeValue.compareTo(criterion.value) > 0) {
+            return false;
+          }
+          break;
+        case 'contains':
+          if (attributeValue is! String ||
+              !attributeValue.contains(criterion.value)) {
+            return false;
+          }
+          break;
+        case 'startsWith':
+          if (attributeValue is! String ||
+              !attributeValue.startsWith(criterion.value)) {
+            return false;
+          }
+          break;
+        case 'endsWith':
+          if (attributeValue is! String ||
+              !attributeValue.endsWith(criterion.value)) {
+            return false;
+          }
+          break;
+        case 'in_':
+          if (criterion.value is! List ||
+              !criterion.value.contains(attributeValue)) {
+            return false;
+          }
+          break;
+        case 'notIn':
+          if (criterion.value is! List ||
+              criterion.value.contains(attributeValue)) {
+            return false;
+          }
+          break;
+        case 'isNull':
+          if (attributeValue != null) return false;
+          break;
+        case 'isNotNull':
+          if (attributeValue == null) return false;
+          break;
+        default:
+          return false;
+      }
     }
+
+    // If all criteria passed, the entity matches the filter
+    return true;
   }
 
   void _loadMoreEntities() {
