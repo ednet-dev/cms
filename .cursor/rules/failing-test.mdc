@@ -1,0 +1,28 @@
+---
+description: When facing failed test
+globs: 
+alwaysApply: false
+---
+# EDNet Test Failure Analysis Rule
+
+When encountering failing tests in the EDNet ecosystem, follow this structured approach:
+
+## Analysis Hierarchy
+1. **Test Correctness**: First evaluate if the test itself is correct in its expectations
+2. **Implementation Issue**: Check if the implementation has a straightforward bug
+3. **Semantic Consistency**: Investigate if the System Under Test (SUT) maintains semantic coherence with the domain model
+4. **Cross-Component Coherence**: Assess potential inconsistencies between different parts of the codebase
+
+## Domain Integrity Focus
+- Prioritize maintaining semantic consistency over quick fixes
+- Consider if the test reveals deeper architectural inconsistencies 
+- Verify that domain concepts are implemented consistently across components
+- Validate that invariants and domain rules are properly enforced
+
+## Resolution Approach
+- Document your reasoning about semantic inconsistencies found
+- Propose targeted refactoring that improves architectural coherence
+- Consider wider implications across the codebase when fixing domain model issues
+- Update related tests to reflect correct domain understanding
+
+Tests are more than validation tools - they are semantic guardians. Failing tests often reveal opportunities to improve domain model coherence.

@@ -1,0 +1,35 @@
+---
+description: Use when working with code generation components, YAML schema definitions, or implementing new generator templates.
+globs: 
+alwaysApply: false
+---
+# EDNet Testing Strategy Rule
+
+When writing or maintaining tests for the EDNet ecosystem, follow these guidelines:
+
+## Test Categories
+- **Unit Tests**: For individual components, models, and utilities
+- **Integration Tests**: For interactions between packages
+- **Domain Behavior Tests**: To validate semantic consistency
+- **Generator Tests**: Verify code generation outputs match expectations
+- **Cross-platform Tests**: Ensure consistent behavior across platforms
+
+## Domain Testing Principles
+- Test domain integrity and invariant validation
+- Verify that domain events trigger appropriate reactions
+- Ensure command handlers maintain domain consistency
+- Validate repository implementations against domain contracts
+
+## Mocking Strategy
+- Create test doubles for external dependencies
+- Use in-memory repositories for domain tests
+- Mock HTTP responses for API integrations
+- Simulate database operations for repository tests
+
+## Test Organization
+- Structure tests to mirror the package and class organization
+- Group tests by feature/component rather than just by class
+- Include performance/load tests for critical operations
+- Document test scenarios with descriptive test names
+
+Quality validation is essential in a meta-framework - tests not only verify functionality but also ensure the semantic integrity of domain models across implementations.

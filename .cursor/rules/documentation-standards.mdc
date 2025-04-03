@@ -1,0 +1,34 @@
+---
+description: Use when writing documentation, updating READMEs, or creating learning resources for EDNet components.
+globs: 
+alwaysApply: false
+---
+# EDNet Documentation Standards Rule
+
+When writing or updating documentation, follow these guidelines:
+
+## Code Documentation
+- Document all public APIs with detailed dartdoc comments
+- Include examples for complex functionality
+- Explain the "why" behind design decisions
+- Use consistent terminology across all documentation
+
+## README Structure
+- Start with clear problem statement and solution overview
+- Include installation and quick start instructions
+- Provide comprehensive examples for common use cases
+- Link to related packages and further resources
+
+## Diagrams and Visuals
+- Maintain up-to-date UML diagrams for domain models
+- Use C4 diagrams for architectural documentation
+- Include sequence diagrams for complex interactions
+- Ensure diagrams match actual implementation
+
+## Learning Resources
+- Create progressive learning paths from basics to advanced
+- Document domain modeling patterns and best practices
+- Include migration guides for version updates
+- Provide troubleshooting guidance for common issues
+
+Documentation is critical for a meta-framework - it should enable both understanding of concepts and practical implementation guidance.
