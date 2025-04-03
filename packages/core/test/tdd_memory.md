@@ -1,3 +1,21 @@
+# TDD Memory - Ednet Core Library
+
+## Context Summary
+- This is a Test-Driven Development (TDD) implementation for the `ednet_core` library
+- Located in `/Users/slavisam/projects/cms/packages/core`
+- Current focus: Domain Modeling components
+- Recent progress: Completed basic Model and Concept testing, including parent-child relationships
+- Next focus: Concept Attribute Management
+
+## AI Assistant Role
+- Implement TDD approach for the `ednet_core` library
+- Create and maintain test files following TDD principles
+- Track progress and plan next steps in this memory file
+- Ensure comprehensive test coverage
+- Follow RGR (Red-Green-Refactor) cycle
+- Document test cases clearly
+- Maintain test isolation
+
 # Ednet Core TDD Test Plan
 
 ## Core Components
@@ -7,6 +25,22 @@
   - [ ] Error handling
 
 ## Domain Modeling
+- [x] Model
+  - [x] Basic initialization
+  - [x] Domain association
+  - [x] Policy components initialization
+  - [x] Concept management
+    - [x] Basic concept creation
+    - [x] Entry concept handling
+    - [x] Parent-child relationships
+  - [ ] Model validation
+- [ ] Concept
+  - [x] Basic initialization
+  - [x] Default values
+  - [x] Collection management
+  - [ ] Attribute management
+  - [ ] Parent/Child relationship validation
+  - [ ] Policy integration
 - [ ] Serializable
   - [ ] Serialization/deserialization
   - [ ] Error handling
@@ -73,9 +107,30 @@
   - [ ] Operations
 
 ## Current Status
-- Next test to implement: Model Testing
-- Current phase: Initial setup
-- Last completed test: None
+- Next test to implement: Concept Attribute Management
+- Current phase: Domain Modeling
+- Last completed test: Concept Parent-Child Relationships
+
+## Completed Tests
+1. Model Testing - Basic Initialization (✓)
+   - Empty concepts initialization
+   - Domain and code assignment
+   - Policy components initialization
+   - Domain models registration
+
+2. Concept Testing - Basic Functionality (✓)
+   - Default values
+   - Model association
+   - Entry concept handling
+   - Parent-child relationships
+
+## Next Steps
+1. Implement Concept Attribute Management tests:
+   - Adding attributes
+   - Attribute validation
+   - Required attributes
+   - Identifier attributes
+   - Attribute type handling
 
 ## Notes
 - Focus on one component at a time
@@ -83,3 +138,10 @@
 - Ensure comprehensive test coverage
 - Document test cases clearly
 - Maintain test isolation 
+
+test(core): add model and concept tests
+
+- Add basic model initialization tests
+- Add concept base functionality tests
+- Add parent-child relationship tests
+- Update TDD memory file with progress tracking 
