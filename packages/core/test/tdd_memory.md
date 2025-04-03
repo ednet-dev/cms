@@ -60,6 +60,7 @@
     - [x] Entry concept handling
     - [x] Parent-child relationships
   - [ ] Model validation
+
 - [ ] Concept
   - [x] Basic initialization
   - [x] Default values
@@ -150,6 +151,7 @@
 - Next test to implement: Transaction Validation and Past Command Handling
 - Current phase: Command Implementation and Testing
 - Last completed test: Set Attribute Command
+- Recent refactoring: Extracted common EDNetOne direct democracy domain model
 
 ## Completed Tests
 1. Model Testing - Basic Initialization (✓)
@@ -206,29 +208,48 @@
    - Setting null/empty values
    - Sequential attribute changes
 
-## Next Steps
-1. Implement Transaction tests with direct democracy examples:
-   - Test transaction validation (e.g., required fields within transaction)
-   - Test rollback handling when a command within a transaction fails
-   - Complex nested transactions
-2. Implement Past command tests:
-   - Test undo/redo limits
-   - Test clear history functionality
-   - Test past reactions (if applicable)
+9. Transaction Testing - Using Direct Democracy Domain (✓)
+   - Transaction with valid commands
+   - Transaction rollback with invalid commands
+   - Undo/redo transaction
+   - Transaction with different command types
 
-## Notes
-- Focus on one component at a time
-- Follow RGR (Red-Green-Refactor) cycle
-- Ensure comprehensive test coverage
-- Document test cases clearly
-- Maintain test isolation
-- Direct democracy domain examples provide meaningful context
+10. Past Command Testing - Using Direct Democracy Domain (✓)
+    - Command tracking
+    - Undo/redo functionality
+    - History clearing
+    - History management after undo
+
+## Next Steps
+1. Continue enhancing test suite with more comprehensive cases
+2. Refactor other test files to use the common domain model
+3. Add tests for Repository operations
+4. Add tests for Policy components
+
+## Recent Refactoring
+- Created a shared EDNetOne domain model in `mocks/ednet_democracy_domain.dart`
+- Implemented a comprehensive model following the EDNetOne domain guidelines
+- Domain includes Citizens, Delegates, Experts, Referendums, Votes, and Initiatives
+- Refactored Transaction tests to use the shared model
+- Refactored Past Command tests to use the shared model
+- Reduced duplicate code across test files
+- Improved test readability and maintainability
 
 ## Technical Debt and Improvements
-- Consider refactoring the validation logic in Entities class to make it more modular
+- Continue refactoring remaining test files to use the common domain model
+- Consider creating more specific helper methods in the domain model class
 - Evaluate possibility of separating validation concerns from entity collection management
 - Need to ensure consistent validation behavior across different operations
 - The Entity relationship handling requires a complex setup of entry concepts and core concept
+
+refactor(core): extract shared EDNetOne domain model for tests
+
+- Create a comprehensive EDNetOne democracy domain model for test reuse
+- Implement domain entities following domain-model requirements (Citizens, Referendums, Votes, etc.)
+- Refactor transaction and past command tests to use the shared domain model
+- Improve test consistency and maintainability
+- Reduce duplicate domain setup code across test files
+- Fix test assertions to accommodate stricter validation in shared model
 
 test(core): add tests for Add, Remove, and SetAttribute commands
 
