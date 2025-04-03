@@ -244,14 +244,6 @@
 - Create visualization helpers to aid in understanding test scenarios
 - Enhance domain model with more business rules and constraints
 
-refactor(core): enhance shared domain model with rich business interactions
-
-- Refactor all command test files to use the common EDNetOne domain model
-- Enhance domain model with methods for complex domain scenarios
-- Add methods for voting, initiative, and liquid democracy scenarios
-- Fix validation issues in tests after refactoring
-- Add stronger typing and documentation to domain model
-
 test(core): add tests for Add, Remove, and SetAttribute commands
 
 - Implement comprehensive tests for AddCommand using Citizen entities
