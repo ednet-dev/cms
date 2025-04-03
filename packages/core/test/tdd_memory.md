@@ -79,10 +79,10 @@
   - [ ] Error handling
 
 ## Entity Components
-- [ ] OID (Object ID)
-  - [ ] Generation
-  - [ ] Comparison
-  - [ ] Validation
+- [x] OID (Object ID)
+  - [x] Generation
+  - [x] Comparison
+  - [x] Validation
 - [x] Entity
   - [x] Creation
   - [x] Modification
@@ -98,8 +98,8 @@
 - [x] Entities
   - [x] Collection operations
   - [x] Validation logic
-  - [ ] Filtering
-  - [ ] Sorting
+  - [x] Filtering
+  - [x] Sorting
 
 ## Commands
 - [x] Add Command
@@ -220,6 +220,21 @@
     - History clearing
     - History management after undo
 
+11. OID Testing - Using Direct Democracy Domain (✓)
+    - OID generation
+    - OID comparison and equality
+    - Timestamp handling
+    - OID entity lookup operations
+    - String representation
+
+12. Entities Filtering and Sorting - Using Direct Democracy Domain (✓)
+    - Basic filtering with selectWhere method
+    - Complex filtering with multiple conditions
+    - Attribute-based filtering with selectWhereAttribute
+    - Collection sorting with order method
+    - Iteration and transformation with map and where
+    - Operation chaining for complex queries
+
 ## Next Steps
 1. Continue enhancing test suite with more comprehensive cases
 2. Implement repository operation tests using enhanced domain model 
@@ -250,4 +265,12 @@ test(core): add tests for Add, Remove, and SetAttribute commands
 - Implement comprehensive tests for RemoveCommand using Citizen entities
 - Implement comprehensive tests for SetAttributeCommand using Citizen entities
 - Verify command execution, undo/redo, transaction grouping, and edge cases
-- Use direct democracy domain examples consistently 
+- Use direct democracy domain examples consistently
+
+test(core): implement OID and Entities filtering tests
+
+- Add comprehensive OID tests for generation, comparison, and entity lookup
+- Add comprehensive Entities filtering tests using the selectWhere method
+- Add comprehensive Entities sorting tests using the order method
+- Complete test coverage for entity and collection operations
+- Use consistent direct democracy domain examples throughout tests 
