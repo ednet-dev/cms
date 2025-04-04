@@ -12,6 +12,7 @@ export 'src/entities.dart';
 
 // Utilities
 export 'src/dhondt_calculator.dart';
+export 'src/demographics_generator.dart';
 
 // Repository
 export 'src/repository.dart';
