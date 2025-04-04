@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:ednet_core/ednet_core.dart';
 import 'model.dart';
-import 'entities.dart';
+import 'entities.dart' hide SerbianElectionEntries;
+import 'repository.dart';
 import 'dhondt_calculator.dart';
 
 /// Serbian election domain model
@@ -14,8 +15,6 @@ class SerbianElectionDomain extends DomainModels {
     add(_entries);
   }
 
-  // Helper methods for creating entities
-
   // Helper method to get entries
   SerbianElectionEntries get entries => _entries as SerbianElectionEntries;
 
@@ -27,6 +26,11 @@ class SerbianElectionDomain extends DomainModels {
   Kandidati get kandidati => entries.kandidati;
   IzborneJedinice get izborneJedinice => entries.izborneJedinice;
   Glasovi get glasovi => entries.glasovi;
+  Izboris get izbori => entries.izbori;
+  IzborniZakons get izborniZakoni => entries.izborniZakoni;
+  IzbornaKomisijas get izborneKomisije => entries.izborneKomisije;
+  TipIzboras get tipoviIzbora => entries.tipoviIzbora;
+  IzborniSistems get izborniSistemi => entries.izborniSistemi;
 
   // Factory methods
   Glasac createGlasac({
@@ -62,6 +66,8 @@ class SerbianElectionDomain extends DomainModels {
     required String predsednik,
     required int brojClanova,
     bool manjinskaStranka = false,
+    String? nacionalnaManjina,
+    bool registrovana = true,
   }) {
     final stranka = PolitickaStranka(politickeStranke.concept)
       ..naziv = naziv
@@ -70,7 +76,12 @@ class SerbianElectionDomain extends DomainModels {
       ..ideologija = ideologija
       ..predsednik = predsednik
       ..brojClanova = brojClanova
-      ..manjinskaStranka = manjinskaStranka;
+      ..manjinskaStranka = manjinskaStranka
+      ..registrovana = registrovana;
+
+    if (nacionalnaManjina != null) {
+      stranka.nacionalnaManjina = nacionalnaManjina;
+    }
 
     politickeStranke.add(stranka);
     return stranka;
@@ -159,6 +170,8 @@ class SerbianElectionDomain extends DomainModels {
     required int brojStanovnika,
     required int brojUpisanihBiraca,
     int brojGlasalih = 0,
+    int brojMandata = 0,
+    double izlaznost = 0.0,
     IzbornaJedinica? nadredjenaJedinica,
   }) {
     final jedinica = IzbornaJedinica(izborneJedinice.concept)
@@ -167,7 +180,9 @@ class SerbianElectionDomain extends DomainModels {
       ..nivo = nivo
       ..brojStanovnika = brojStanovnika
       ..brojUpisanihBiraca = brojUpisanihBiraca
-      ..brojGlasalih = brojGlasalih;
+      ..brojGlasalih = brojGlasalih
+      ..brojMandata = brojMandata
+      ..izlaznost = izlaznost;
 
     if (nadredjenaJedinica != null) {
       jedinica.nadredjenaJedinica = nadredjenaJedinica;
@@ -266,7 +281,7 @@ class SerbianElectionDomain extends DomainModels {
     final rezultatiSaMandatima = kalkulator.izracunajMandate(
       rezultati,
       ukupnoMandata,
-      cenzus,
+      cenzus: cenzus,
     );
 
     // Ažuriranje lista sa brojem mandata
@@ -275,5 +290,181 @@ class SerbianElectionDomain extends DomainModels {
     }
 
     return liste;
+  }
+
+  /// Kreira izbore
+  Izbori createIzbori({
+    required String naziv,
+    required DateTime datumOdrzavanja,
+    required DateTime datumRaspisivanja,
+    required String nivoVlasti,
+    required int brojUpisanihBiraca,
+    bool redovni = true,
+    int brojGlasalih = 0,
+    int brojNevazecihListica = 0,
+    double izlaznost = 0.0,
+    TipIzbora? tipIzbora,
+    IzbornaKomisija? izbornaKomisija,
+    IzborniZakon? izborniZakon,
+    IzborniSistem? izborniSistem,
+  }) {
+    final izboriObj = Izbori(izbori.concept)
+      ..naziv = naziv
+      ..datumOdrzavanja = datumOdrzavanja
+      ..datumRaspisivanja = datumRaspisivanja
+      ..nivoVlasti = nivoVlasti
+      ..brojUpisanihBiraca = brojUpisanihBiraca
+      ..redovni = redovni
+      ..brojGlasalih = brojGlasalih
+      ..brojNevazecihListica = brojNevazecihListica
+      ..izlaznost = izlaznost;
+
+    if (tipIzbora != null) {
+      izboriObj.tipIzbora = tipIzbora;
+    }
+
+    if (izbornaKomisija != null) {
+      izboriObj.izbornaKomisija = izbornaKomisija;
+    }
+
+    if (izborniZakon != null) {
+      izboriObj.izborniZakon = izborniZakon;
+    }
+
+    if (izborniSistem != null) {
+      izboriObj.izborniSistem = izborniSistem;
+    }
+
+    izbori.add(izboriObj);
+    return izboriObj;
+  }
+
+  /// Kreira izborni zakon
+  IzborniZakon createIzborniZakon({
+    required String naziv,
+    required String tipZakona,
+    required DateTime datumDonosenja,
+    required String nivoVlasti,
+    bool naSnazi = true,
+    String? opisZakona,
+    double cenzus = 0.03,
+    bool cenzusZaManjine = false,
+    double kvoraZene = 0.4,
+  }) {
+    // Get the concept directly from the model instead of the collection
+    final model = entries.model;
+    final izborniZakonConcept =
+        model.concepts.singleWhereCode(SerbianElectionModel.IZBORNI_ZAKON);
+
+    if (izborniZakonConcept == null) {
+      throw Exception('IzborniZakon concept not found in model');
+    }
+
+    final zakon = IzborniZakon(izborniZakonConcept)
+      ..naziv = naziv
+      ..tipZakona = tipZakona
+      ..datumDonosenja = datumDonosenja
+      ..nivoVlasti = nivoVlasti
+      ..naSnazi = naSnazi
+      ..cenzus = cenzus
+      ..cenzusZaManjine = cenzusZaManjine
+      ..kvoraZene = kvoraZene;
+
+    if (opisZakona != null) {
+      zakon.opisZakona = opisZakona;
+    }
+
+    izborniZakoni.add(zakon);
+    return zakon;
+  }
+
+  /// Kreira izbornu komisiju
+  IzbornaKomisija createIzbornaKomisija({
+    required String naziv,
+    required String nivo,
+    required int brojClanova,
+    required String predsednik,
+  }) {
+    // Get the concept directly from the model
+    final model = entries.model;
+    final izbornaKomisijaConcept =
+        model.concepts.singleWhereCode(SerbianElectionModel.IZBORNA_KOMISIJA);
+
+    if (izbornaKomisijaConcept == null) {
+      throw Exception('IzbornaKomisija concept not found in model');
+    }
+
+    final komisija = IzbornaKomisija(izbornaKomisijaConcept)
+      ..naziv = naziv
+      ..nivo = nivo
+      ..brojClanova = brojClanova
+      ..predsednik = predsednik;
+
+    izborneKomisije.add(komisija);
+    return komisija;
+  }
+
+  /// Kreira tip izbora
+  TipIzbora createTipIzbora({
+    required String naziv,
+    required String nivoVlasti,
+    required int periodMandataGodina,
+    String? opis,
+  }) {
+    // Get the concept directly from the model
+    final model = entries.model;
+    final tipIzboraConcept =
+        model.concepts.singleWhereCode(SerbianElectionModel.TIP_IZBORA);
+
+    if (tipIzboraConcept == null) {
+      throw Exception('TipIzbora concept not found in model');
+    }
+
+    final tip = TipIzbora(tipIzboraConcept)
+      ..naziv = naziv
+      ..nivoVlasti = nivoVlasti
+      ..periodMandataGodina = periodMandataGodina;
+
+    if (opis != null) {
+      tip.opis = opis;
+    }
+
+    tipoviIzbora.add(tip);
+    return tip;
+  }
+
+  /// Kreira izborni sistem
+  IzborniSistem createIzborniSistem({
+    required String naziv,
+    required String nivoVlasti,
+    bool proporcionalni = true,
+    bool vecinskiPrvi = false,
+    String metoda = 'DHont',
+    double cenzus = 0.03,
+    String? opis,
+  }) {
+    // Get the concept directly from the model
+    final model = entries.model;
+    final izborniSistemConcept =
+        model.concepts.singleWhereCode(SerbianElectionModel.IZBORNI_SISTEM);
+
+    if (izborniSistemConcept == null) {
+      throw Exception('IzborniSistem concept not found in model');
+    }
+
+    final sistem = IzborniSistem(izborniSistemConcept)
+      ..naziv = naziv
+      ..nivoVlasti = nivoVlasti
+      ..proporcionalni = proporcionalni
+      ..vecinskiPrvi = vecinskiPrvi
+      ..metoda = metoda
+      ..cenzus = cenzus;
+
+    if (opis != null) {
+      sistem.opis = opis;
+    }
+
+    izborniSistemi.add(sistem);
+    return sistem;
   }
 }

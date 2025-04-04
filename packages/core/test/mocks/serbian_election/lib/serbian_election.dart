@@ -7,15 +7,15 @@ library serbian_election;
 // Model exports
 export 'src/model.dart';
 
-// Entities
-export 'src/entities.dart';
+// Entities - hiding SerbianElectionEntries to avoid conflict with repository
+export 'src/entities.dart' hide SerbianElectionEntries;
 
 // Utilities
 export 'src/dhondt_calculator.dart';
 export 'src/demographics_generator.dart';
 
-// Repository
-export 'src/repository.dart';
-
 // Domain
 export 'src/domain.dart';
+
+// Repository - contains SerbianElectionRepo class
+export 'src/repository.dart';
