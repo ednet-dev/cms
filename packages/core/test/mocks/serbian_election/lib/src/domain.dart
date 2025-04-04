@@ -467,4 +467,145 @@ class SerbianElectionDomain extends DomainModels {
     izborniSistemi.add(sistem);
     return sistem;
   }
+
+  /// Creates an Izbori as an AggregateRoot to properly manage required relationships
+  IzboriAggregateRoot createIzboriAggregate({
+    required String naziv,
+    required DateTime datumOdrzavanja,
+    required DateTime datumRaspisivanja,
+    required String nivoVlasti,
+    required int brojUpisanihBiraca,
+    bool redovni = true,
+    int brojGlasalih = 0,
+    int brojNevazecihListica = 0,
+    double izlaznost = 0.0,
+    TipIzbora? tipIzbora,
+    IzbornaKomisija? izbornaKomisija,
+    IzborniZakon? izborniZakon,
+    IzborniSistem? izborniSistem,
+  }) {
+    // First, create a regular Izbori entity
+    final izboriObj = createIzbori(
+      naziv: naziv,
+      datumOdrzavanja: datumOdrzavanja,
+      datumRaspisivanja: datumRaspisivanja,
+      nivoVlasti: nivoVlasti,
+      brojUpisanihBiraca: brojUpisanihBiraca,
+      redovni: redovni,
+      brojGlasalih: brojGlasalih,
+      brojNevazecihListica: brojNevazecihListica,
+      izlaznost: izlaznost,
+      tipIzbora: tipIzbora,
+      izbornaKomisija: izbornaKomisija,
+      izborniZakon: izborniZakon,
+      izborniSistem: izborniSistem,
+    );
+
+    // Then wrap it in an AggregateRoot
+    return IzboriAggregateRoot(izboriObj);
+  }
+}
+
+/// IzboriAggregateRoot is an Aggregate Root implementation for the Izbori entity
+/// It manages the consistency of the entire electoral process, including lists, units, and votes
+class IzboriAggregateRoot implements Entity<Izbori> {
+  final Izbori _izbori;
+
+  /// Internal collections to track entities within this aggregate
+  final List<IzbornaLista> _izborneListe = [];
+  final List<IzbornaJedinica> _izborneJedinice = [];
+  final List<Glas> _glasovi = [];
+
+  IzboriAggregateRoot(this._izbori);
+
+  /// Get the wrapped Izbori entity
+  Izbori get entity => _izbori;
+
+  /// Forwards Entity<Izbori> methods to the wrapped entity
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    return _izbori.noSuchMethod(invocation);
+  }
+
+  /// Adds an electoral list to this election and sets the required parent relationship
+  void addIzbornaLista(IzbornaLista lista) {
+    // Set the parent relationship to fix the validation warning
+    // This is what was missing in the original code
+    if (lista.getParent(SerbianElectionModel.IZBORI_REL) == null) {
+      lista.setParent(SerbianElectionModel.IZBORI_REL, _izbori);
+    }
+    _izborneListe.add(lista);
+  }
+
+  /// Adds an electoral unit to this election and sets the required parent relationship
+  void addIzbornaJedinica(IzbornaJedinica jedinica) {
+    // Set the parent relationship to fix the validation warning
+    if (jedinica.getParent(SerbianElectionModel.IZBORI_REL) == null) {
+      jedinica.setParent(SerbianElectionModel.IZBORI_REL, _izbori);
+    }
+    _izborneJedinice.add(jedinica);
+  }
+
+  /// Adds a vote to this election and sets all required parent relationships
+  void addGlas(Glas glas) {
+    // Set the parent relationship to fix the validation warning
+    if (glas.getParent(SerbianElectionModel.IZBORI_REL) == null) {
+      glas.setParent(SerbianElectionModel.IZBORI_REL, _izbori);
+    }
+    _glasovi.add(glas);
+  }
+
+  /// Validates that all required relationships are properly established
+  ValidationExceptions validateRelationships() {
+    final exceptions = ValidationExceptions();
+
+    // Validate electoral lists
+    for (var lista in _izborneListe) {
+      if (lista.getParent(SerbianElectionModel.IZBORI_REL) == null) {
+        exceptions.add(ValidationException(
+            'required', 'IzbornaLista.izbori parent is required',
+            entity: lista, attribute: SerbianElectionModel.IZBORI_REL));
+      }
+    }
+
+    // Validate electoral units
+    for (var jedinica in _izborneJedinice) {
+      if (jedinica.getParent(SerbianElectionModel.IZBORI_REL) == null) {
+        exceptions.add(ValidationException(
+            'required', 'IzbornaJedinica.izbori parent is required',
+            entity: jedinica, attribute: SerbianElectionModel.IZBORI_REL));
+      }
+    }
+
+    // Validate votes
+    for (var glas in _glasovi) {
+      if (glas.getParent(SerbianElectionModel.IZBORI_REL) == null) {
+        exceptions.add(ValidationException(
+            'required', 'Glas.izbori parent is required',
+            entity: glas, attribute: SerbianElectionModel.IZBORI_REL));
+      }
+    }
+
+    return exceptions;
+  }
+
+  /// Enforces all the business invariants of an election
+  ValidationExceptions validateBusinessInvariants() {
+    final exceptions = ValidationExceptions();
+
+    // Check that electoral units have proper number of mandates
+    int totalMandates = 0;
+    for (var jedinica in _izborneJedinice) {
+      totalMandates += jedinica.brojMandata;
+
+      // Additional business rules specific to each electoral level
+      if (_izbori.nivoVlasti == 'Republika' && totalMandates != 250) {
+        exceptions.add(ValidationException('business_rule',
+            'National elections must have exactly 250 mandates',
+            entity: _izbori, attribute: 'brojMandata'));
+      }
+    }
+
+    return exceptions;
+  }
 }

@@ -19,7 +19,7 @@ part 'domain/core/serializable.dart';
 part 'domain/domain_models.dart';
 
 part 'domain/i_domain_models.dart';
-// part 'domain/model/aggregate_root/aggregate_root.dart';
+part 'domain/model/aggregate_root/aggregate_root.dart';
 
 // Entity components
 part 'domain/model/oid.dart';
