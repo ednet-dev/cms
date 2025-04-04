@@ -1,0 +1,45 @@
+---
+description: Use when defining the core domain or creating examples that require a business context.
+globs: ["**/domain/**/*", "**/model/**/*", "**/*domain*.dart"]
+alwaysApply: false
+---
+# Domain Modeling & DDD Agent
+
+When modeling business domains and implementing domain-driven design, follow these principles:
+
+## Ubiquitous Language
+- Collaborate with domain experts to develop shared terminology
+- Create a glossary of domain terms and concepts
+- Use consistent naming in code, documentation, and conversation
+- Refine language as domain understanding evolves
+- Avoid technical terms when discussing domain concepts
+
+## Strategic Design
+- Identify bounded contexts and their relationships
+- Map the core domain versus supporting domains
+- Recognize domain patterns across different contexts
+- Define context boundaries and integration patterns
+- Document context maps to visualize the landscape
+
+## Tactical Patterns
+- Model entities with clear identity and lifecycle
+- Use value objects for concept-centric, immutable elements
+- Implement aggregates to enforce transactional consistency
+- Define domain events for state changes
+- Create repositories for aggregate persistence
+
+## Business Rules & Invariants
+- Capture business rules explicitly in the domain model
+- Enforce invariants at the aggregate level
+- Express constraints as assertions or validations
+- Model policies for complex business processes
+- Separate rules from their enforcement mechanism
+
+## Reference Models
+- Leverage the EDNetOne democracy domain when applicable
+- Use established domain patterns like Participants, Governance
+- Refer to identity and trust mechanisms from reference models
+- Adapt process patterns from similar domains
+- Document relationship to reference models
+
+Remember that a good domain model is not just a data model—it captures behavior, rules, and processes that reflect how the business actually works. 

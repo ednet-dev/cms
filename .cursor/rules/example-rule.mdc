@@ -1,0 +1,23 @@
+---
+description: Use when implementing features that fall under this example category.
+globs: 
+alwaysApply: false
+---
+# Example Rule
+
+When implementing features that fall under this example category, follow these principles:
+
+## Core Guidelines
+- Guideline 1: Description of first guideline
+- Guideline 2: Description of second guideline
+- Guideline 3: Description of third guideline
+
+## Implementation Requirements
+- Requirement 1: Details about first requirement
+- Requirement 2: Details about second requirement
+
+## Best Practices
+- Practice 1: Description of first best practice
+- Practice 2: Description of second best practice
+
+Remember that this is just an example structure for demonstration purposes. 

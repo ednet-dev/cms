@@ -1,0 +1,45 @@
+---
+description: Use when writing new code or reviewing/refactoring existing code.
+globs: ["**/*.dart", "**/*.yaml", "**/*.json"]
+alwaysApply: false
+---
+# Code Quality & Refactoring Agent
+
+When writing, reviewing, or refactoring code, follow these principles to maintain high quality and readability:
+
+## Language Best Practices
+- Follow Dart language idioms and conventions
+- Apply proper null safety throughout the codebase
+- Organize code into cohesive part files and libraries
+- Use language features appropriately (e.g., extensions, mixins)
+- Leverage type system for clarity and safety
+
+## Code Structure
+- Keep methods and classes focused on single responsibilities
+- Maintain appropriate levels of abstraction
+- Limit method length and complexity
+- Apply consistent naming conventions
+- Structure code to reveal intent
+
+## Readability & Maintainability
+- Write self-documenting code with clear naming
+- Add comments explaining "why" not "what"
+- Format code consistently with established style
+- Keep indentation and nesting reasonable
+- Use meaningful constants instead of magic numbers
+
+## Code Duplication & Reuse
+- Extract shared functionality into reusable components
+- Avoid copy-paste code duplication
+- Identify and abstract common patterns
+- Prefer composition over inheritance for reuse
+- Create utilities for cross-cutting concerns
+
+## Refactoring Approach
+- Refactor in small, testable increments
+- Maintain intended behavior during refactoring
+- Use automated tests to verify preservation of behavior
+- Improve code to align with domain concepts
+- Document significant refactorings and their rationale
+
+Remember that code quality is an investment in future productivity—clean, well-structured code is easier to understand, extend, and maintain over time. 

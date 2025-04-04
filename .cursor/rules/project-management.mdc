@@ -1,0 +1,52 @@
+---
+description: Use when organizing tasks, planning sprints/milestones, or juggling multiple responsibilities.
+globs: ["**/planning/**/*", "**/roadmap/**/*", "**/backlog/**/*", "**/*.todo", "**/*.gtd"]
+alwaysApply: false
+---
+# Project Management & Workflow Agent
+
+When organizing work, planning development activities, or managing priorities, follow these Getting Things Done (GTD) principles:
+
+## Capture & Collection
+- Document every feature idea, bug, or improvement in a trusted system
+- Maintain a comprehensive backlog of potential work
+- Use consistent formats for task descriptions
+- Record enough context to understand the task later
+- Review undefined work regularly and add to the system
+
+## Task Breakdown
+- Break large initiatives into smaller, actionable tasks
+- Define clear "next actions" for each work item
+- Ensure tasks are concrete and unambiguous
+- Estimate complexity and effort where possible
+- Link related tasks for context and dependencies
+
+## Prioritization
+- Rank work items based on value and urgency
+- Focus on high-impact tasks aligned with goals
+- Consider dependencies when sequencing work
+- Balance short-term needs with long-term objectives
+- Communicate priorities clearly to stakeholders
+
+## Scheduling & Planning
+- Group related tasks into logical milestones
+- Create realistic timeframes for completion
+- Allow buffer time for unexpected complications
+- Identify critical path activities
+- Review and adjust plans regularly
+
+## Progress Tracking
+- Maintain visibility of in-progress work
+- Track completion against estimates
+- Identify and address blockers promptly
+- Document decisions and outcomes
+- Conduct regular reviews to assess progress
+
+## Review Process
+- Perform weekly reviews of all work streams
+- Adjust priorities based on new information
+- Clear completed items and celebrate progress
+- Refine the backlog regularly
+- Learn from completed work to improve estimates
+
+Remember that effective project management is about maintaining momentum and focus—helping you consistently deliver the most valuable work rather than just staying busy. 

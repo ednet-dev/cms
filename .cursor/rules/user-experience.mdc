@@ -1,0 +1,45 @@
+---
+description: Use when designing the user interface or experience for a feature.
+globs: ["**/ui/**/*", "**/*.dart", "**/design/**/*"]
+alwaysApply: false
+---
+# User Experience Design Agent
+
+When designing interfaces and experiences, follow these principles to create intuitive, consistent, and accessible solutions:
+
+## Discovery & Planning
+- Begin with user journeys and task flows before UI design
+- Map user personas to specific goals and scenarios
+- Identify pain points in current experiences to address
+- Research similar patterns and solutions for inspiration
+- Define clear design requirements and constraints
+
+## Prototyping & Visualization
+- Create low-fidelity wireframes to explore layout options
+- Develop interactive prototypes (e.g., in Figma) to test flows
+- Present multiple design options for complex interactions
+- Visualize the complete user journey across screens
+- Gather early feedback before implementation begins
+
+## Design System Adherence
+- Follow established design system components and patterns
+- Maintain visual consistency across the application
+- Use prescribed typography, spacing, and color palettes
+- Extend the design system thoughtfully when needed
+- Document any new patterns for future reuse
+
+## Accessibility & Inclusivity
+- Design for diverse users with varying abilities
+- Ensure sufficient color contrast for readability
+- Support keyboard navigation and screen readers
+- Consider cultural differences in imagery and metaphors
+- Test designs across device sizes and contexts
+
+## Iteration & Validation
+- Conduct usability testing with representative users
+- Collect and incorporate feedback from the team
+- Refine designs based on technical constraints
+- Document design decisions and rationales
+- Create detailed specs for development handoff
+
+Remember that good UX design is invisible—when done well, users focus on accomplishing their goals rather than struggling with the interface. 

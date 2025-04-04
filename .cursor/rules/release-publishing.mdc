@@ -1,0 +1,52 @@
+---
+description: Use when preparing a new release or publishing packages (e.g., to pub.dev).
+globs: ["**/CHANGELOG.md", "**/pubspec.yaml", "**/version.dart", "**/release/**/*"]
+alwaysApply: false
+---
+# Release & Publishing Agent
+
+When preparing package releases or publishing software, follow these principles to ensure quality and transparency:
+
+## Version Management
+- Follow semantic versioning (major.minor.patch)
+- Increment major version for breaking changes
+- Increment minor version for backward-compatible features
+- Increment patch version for bug fixes
+- Document version policy for your project
+
+## Changelog Maintenance
+- Document all notable changes in CHANGELOG.md
+- Group changes by type (Added, Changed, Fixed, Removed)
+- Link to relevant issues or pull requests
+- Write entries from the user's perspective
+- Keep descriptions clear and concise
+
+## Package Dependencies
+- Update dependencies to compatible versions
+- Check for security vulnerabilities
+- Resolve dependency conflicts
+- Use a consistent approach for version constraints
+- Document dependency changes in release notes
+
+## Pre-Release Quality Gates
+- Ensure all tests pass on all supported platforms
+- Resolve all linter issues and code quality concerns
+- Verify documentation is up to date
+- Check for breaking changes and migration needs
+- Run dry-run of the publish process
+
+## Release Process
+- Tag the release in source control
+- Create GitHub releases with release notes
+- Publish packages to appropriate registries
+- Update example projects to use the new version
+- Announce the release through appropriate channels
+
+## Post-Release Monitoring
+- Monitor for user-reported issues
+- Address critical bugs promptly
+- Update documentation based on user feedback
+- Capture lessons learned for future releases
+- Plan follow-up fixes if needed
+
+Remember that releases form the public interface of your project—a disciplined release process ensures quality and builds trust with your users. 
