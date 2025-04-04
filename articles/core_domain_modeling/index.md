@@ -1,4 +1,3 @@
-
 # EDNet Core Domain Modeling Series Index
 
 ## Series Articles
@@ -27,3 +26,22 @@
 8. **The Command-Event-Policy Cycle**  
    *Building reactive domain models with the full command-event-policy cycle that drives autonomous domain behavior.*
 
+## Upcoming Features (Roadmap)
+
+1. **Persistent Domain Models with EDNet Drift**  
+   *How to use the drift package to provide robust, type-safe persistence for EDNet domain models using SQLite.*
+
+2. **Domain-Specific Languages with EDNet One Interpreter**  
+    *Creating and executing domain-specific languages with the EDNet One Interpreter to empower domain experts.*
+
+3. **API-First Domain Models with EDNet OpenAPI**  
+    *Exposing domain models as RESTful APIs with proper documentation using OpenAPI integration.*
+
+4. **Type-Safe Domain Modeling with EDNet Types**  
+    *Enhanced type safety and validation for domain models using the EDNet Types package.*
+
+5. **Distributed Domain Models with EDNet P2P**  
+    *Building resilient, distributed domain models using peer-to-peer networking with EDNet P2P.*
+
+6. **Universal Data Modeling: From Politics to Science**  
+    *How EDNet's domain modeling approach can be applied across diverse domains from electoral systems to scientific research.*
