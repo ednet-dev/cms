@@ -1,7 +1,6 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'dart:math';
 import 'serbian_election.dart';
-import 'gen/entities.dart';
 
 /// Simulacija srpskog izbornog sistema
 void main() {
@@ -12,9 +11,8 @@ void main() {
   try {
     // 1. Inicijalizacija repozitorijuma
     final repo = SerbianElectionRepo();
-    final domain =
-        repo.getDomainModels(SerbianElectionModel.MODEL_DOMAIN)
-            as SerbianElectionDomain?;
+    final domain = repo.getDomainModels(SerbianElectionModel.MODEL_DOMAIN)
+        as SerbianElectionDomain?;
     if (domain == null) {
       print('Greška: Domen nije inicijalizovan');
       return;
@@ -93,8 +91,7 @@ void main() {
     );
 
     print(
-      'Kreirana koalicija: ${opozicijaKoalicija.naziv} sa ${opozicijaKoalicija.clanice.length} članica\n',
-    );
+        'Kreirana koalicija: ${opozicijaKoalicija.naziv} sa ${opozicijaKoalicija.clanice.length} članica\n');
 
     // 4. Kreiranje izbornih jedinica
     print('Kreiranje izbornih jedinica...');
@@ -361,8 +358,7 @@ void main() {
 
     final ukupnoGlasalo = domain.glasovi.length;
     print(
-      'Ukupno glasalo: $ukupnoGlasalo glasača (${(ukupnoGlasalo / domain.glasaci.length * 100).toStringAsFixed(2)}% izlaznost)\n',
-    );
+        'Ukupno glasalo: $ukupnoGlasalo glasača (${(ukupnoGlasalo / domain.glasaci.length * 100).toStringAsFixed(2)}% izlaznost)\n');
 
     // 9. Računanje rezultata izbora
     print('=============================================================');
@@ -374,11 +370,8 @@ void main() {
     final cenzus = 0.03; // 3% cenzus
     final ukupnoMandata = 250; // Ukupno mandata u Narodnoj skupštini
 
-    domain.raspodelaMandataDontovomMetodom(
-      liste,
-      ukupnoMandata,
-      cenzus: cenzus,
-    );
+    domain.raspodelaMandataDontovomMetodom(liste, ukupnoMandata,
+        cenzus: cenzus);
 
     // Prikaz rezultata
     print('Ukupno važećih glasova: ${domain.glasovi.length}');
@@ -387,8 +380,7 @@ void main() {
       final procenat = ((lista.brojGlasova ?? 0) / domain.glasovi.length * 100)
           .toStringAsFixed(2);
       print(
-        '${lista.naziv}: ${lista.brojGlasova} glasova ($procenat%) - ${lista.brojMandata} mandata',
-      );
+          '${lista.naziv}: ${lista.brojGlasova} glasova ($procenat%) - ${lista.brojMandata} mandata');
     }
     print('=============================================================');
   } catch (e, stackTrace) {
