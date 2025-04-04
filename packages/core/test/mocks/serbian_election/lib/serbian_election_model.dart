@@ -15,30 +15,24 @@ class SerbianElectionModel extends Model {
     var glasacConcept = Concept(this, 'Glasac')..entry = true;
     glasacConcept.code = 'Glasac';
 
-    var imeAttr =
-        Attribute(glasacConcept, 'ime')
-          ..type = domain.getType('String')
-          ..required = true;
-    var jmbgAttr =
-        Attribute(glasacConcept, 'jmbg')
-          ..type = domain.getType('String')
-          ..required = true;
-    var datumRodjenjaAttr =
-        Attribute(glasacConcept, 'datumRodjenja')
-          ..type = domain.getType('DateTime')
-          ..required = true;
-    var polAttr =
-        Attribute(glasacConcept, 'pol')
-          ..type = domain.getType('String')
-          ..required = true;
-    var opstinaAttr =
-        Attribute(glasacConcept, 'opstina')
-          ..type = domain.getType('String')
-          ..required = true;
-    var glasaoAttr =
-        Attribute(glasacConcept, 'glasao')
-          ..type = domain.getType('bool')
-          ..init = 'false';
+    var imeAttr = Attribute(glasacConcept, 'ime')
+      ..type = domain.getType('String')
+      ..required = true;
+    var jmbgAttr = Attribute(glasacConcept, 'jmbg')
+      ..type = domain.getType('String')
+      ..required = true;
+    var datumRodjenjaAttr = Attribute(glasacConcept, 'datumRodjenja')
+      ..type = domain.getType('DateTime')
+      ..required = true;
+    var polAttr = Attribute(glasacConcept, 'pol')
+      ..type = domain.getType('String')
+      ..required = true;
+    var opstinaAttr = Attribute(glasacConcept, 'opstina')
+      ..type = domain.getType('String')
+      ..required = true;
+    var glasaoAttr = Attribute(glasacConcept, 'glasao')
+      ..type = domain.getType('bool')
+      ..init = 'false';
 
     concepts.add(glasacConcept);
 
@@ -47,30 +41,25 @@ class SerbianElectionModel extends Model {
       ..entry = true;
     politickaStrankaConcept.code = 'PolitickaStranka';
 
-    var nazivStrankeAttr =
-        Attribute(politickaStrankaConcept, 'naziv')
-          ..type = domain.getType('String')
-          ..required = true;
-    var skraceniNazivAttr =
-        Attribute(politickaStrankaConcept, 'skraceniNaziv')
-          ..type = domain.getType('String')
-          ..required = true;
+    var nazivStrankeAttr = Attribute(politickaStrankaConcept, 'naziv')
+      ..type = domain.getType('String')
+      ..required = true;
+    var skraceniNazivAttr = Attribute(politickaStrankaConcept, 'skraceniNaziv')
+      ..type = domain.getType('String')
+      ..required = true;
     var datumOsnivanjaAttr =
         Attribute(politickaStrankaConcept, 'datumOsnivanja')
           ..type = domain.getType('DateTime')
           ..required = true;
-    var ideologijaAttr =
-        Attribute(politickaStrankaConcept, 'ideologija')
-          ..type = domain.getType('String')
-          ..required = true;
-    var predsednikAttr =
-        Attribute(politickaStrankaConcept, 'predsednik')
-          ..type = domain.getType('String')
-          ..required = true;
-    var brojClanovaAttr =
-        Attribute(politickaStrankaConcept, 'brojClanova')
-          ..type = domain.getType('int')
-          ..required = true;
+    var ideologijaAttr = Attribute(politickaStrankaConcept, 'ideologija')
+      ..type = domain.getType('String')
+      ..required = true;
+    var predsednikAttr = Attribute(politickaStrankaConcept, 'predsednik')
+      ..type = domain.getType('String')
+      ..required = true;
+    var brojClanovaAttr = Attribute(politickaStrankaConcept, 'brojClanova')
+      ..type = domain.getType('int')
+      ..required = true;
     var manjinskaStrankaAttr =
         Attribute(politickaStrankaConcept, 'manjinskaStranka')
           ..type = domain.getType('bool')
@@ -82,18 +71,15 @@ class SerbianElectionModel extends Model {
     var koalicijaConcept = Concept(this, 'Koalicija')..entry = true;
     koalicijaConcept.code = 'Koalicija';
 
-    var nazivKoalicijeAttr =
-        Attribute(koalicijaConcept, 'naziv')
-          ..type = domain.getType('String')
-          ..required = true;
-    var datumFormiranjaAttr =
-        Attribute(koalicijaConcept, 'datumFormiranja')
-          ..type = domain.getType('DateTime')
-          ..required = true;
-    var nosiocKoalicijeAttr =
-        Attribute(koalicijaConcept, 'nosiocKoalicije')
-          ..type = domain.getType('String')
-          ..required = true;
+    var nazivKoalicijeAttr = Attribute(koalicijaConcept, 'naziv')
+      ..type = domain.getType('String')
+      ..required = true;
+    var datumFormiranjaAttr = Attribute(koalicijaConcept, 'datumFormiranja')
+      ..type = domain.getType('DateTime')
+      ..required = true;
+    var nosiocKoalicijeAttr = Attribute(koalicijaConcept, 'nosiocKoalicije')
+      ..type = domain.getType('String')
+      ..required = true;
 
     concepts.add(koalicijaConcept);
 
@@ -101,26 +87,21 @@ class SerbianElectionModel extends Model {
     var izbornaListaConcept = Concept(this, 'IzbornaLista')..entry = true;
     izbornaListaConcept.code = 'IzbornaLista';
 
-    var nazivListeAttr =
-        Attribute(izbornaListaConcept, 'naziv')
-          ..type = domain.getType('String')
-          ..required = true;
-    var redniBrojAttr =
-        Attribute(izbornaListaConcept, 'redniBroj')
-          ..type = domain.getType('int')
-          ..required = true;
-    var brojGlasovaAttr =
-        Attribute(izbornaListaConcept, 'brojGlasova')
-          ..type = domain.getType('int')
-          ..init = '0';
-    var brojMandataAttr =
-        Attribute(izbornaListaConcept, 'brojMandata')
-          ..type = domain.getType('int')
-          ..init = '0';
-    var manjinskaListaAttr =
-        Attribute(izbornaListaConcept, 'manjinskaLista')
-          ..type = domain.getType('bool')
-          ..init = 'false';
+    var nazivListeAttr = Attribute(izbornaListaConcept, 'naziv')
+      ..type = domain.getType('String')
+      ..required = true;
+    var redniBrojAttr = Attribute(izbornaListaConcept, 'redniBroj')
+      ..type = domain.getType('int')
+      ..required = true;
+    var brojGlasovaAttr = Attribute(izbornaListaConcept, 'brojGlasova')
+      ..type = domain.getType('int')
+      ..init = '0';
+    var brojMandataAttr = Attribute(izbornaListaConcept, 'brojMandata')
+      ..type = domain.getType('int')
+      ..init = '0';
+    var manjinskaListaAttr = Attribute(izbornaListaConcept, 'manjinskaLista')
+      ..type = domain.getType('bool')
+      ..init = 'false';
 
     concepts.add(izbornaListaConcept);
 
@@ -128,38 +109,30 @@ class SerbianElectionModel extends Model {
     var kandidatConcept = Concept(this, 'Kandidat')..entry = true;
     kandidatConcept.code = 'Kandidat';
 
-    var imeKandidataAttr =
-        Attribute(kandidatConcept, 'ime')
-          ..type = domain.getType('String')
-          ..required = true;
-    var prezimeAttr =
-        Attribute(kandidatConcept, 'prezime')
-          ..type = domain.getType('String')
-          ..required = true;
-    var datumRodjenjaKandidataAttr =
-        Attribute(kandidatConcept, 'datumRodjenja')
-          ..type = domain.getType('DateTime')
-          ..required = true;
-    var jmbgKandidataAttr =
-        Attribute(kandidatConcept, 'jmbg')
-          ..type = domain.getType('String')
-          ..required = true;
-    var zanimanjeAttr =
-        Attribute(kandidatConcept, 'zanimanje')
-          ..type = domain.getType('String')
-          ..required = true;
-    var prebivalisteAttr =
-        Attribute(kandidatConcept, 'prebivaliste')
-          ..type = domain.getType('String')
-          ..required = true;
-    var pozicijaNaListiAttr =
-        Attribute(kandidatConcept, 'pozicijaNaListi')
-          ..type = domain.getType('int')
-          ..required = true;
-    var nosilacListeAttr =
-        Attribute(kandidatConcept, 'nosilacListe')
-          ..type = domain.getType('bool')
-          ..init = 'false';
+    var imeKandidataAttr = Attribute(kandidatConcept, 'ime')
+      ..type = domain.getType('String')
+      ..required = true;
+    var prezimeAttr = Attribute(kandidatConcept, 'prezime')
+      ..type = domain.getType('String')
+      ..required = true;
+    var datumRodjenjaKandidataAttr = Attribute(kandidatConcept, 'datumRodjenja')
+      ..type = domain.getType('DateTime')
+      ..required = true;
+    var jmbgKandidataAttr = Attribute(kandidatConcept, 'jmbg')
+      ..type = domain.getType('String')
+      ..required = true;
+    var zanimanjeAttr = Attribute(kandidatConcept, 'zanimanje')
+      ..type = domain.getType('String')
+      ..required = true;
+    var prebivalisteAttr = Attribute(kandidatConcept, 'prebivaliste')
+      ..type = domain.getType('String')
+      ..required = true;
+    var pozicijaNaListiAttr = Attribute(kandidatConcept, 'pozicijaNaListi')
+      ..type = domain.getType('int')
+      ..required = true;
+    var nosilacListeAttr = Attribute(kandidatConcept, 'nosilacListe')
+      ..type = domain.getType('bool')
+      ..init = 'false';
     var biografijaAttr = Attribute(kandidatConcept, 'biografija')
       ..type = domain.getType('String');
 
@@ -169,30 +142,25 @@ class SerbianElectionModel extends Model {
     var izbornaJedinicaConcept = Concept(this, 'IzbornaJedinica')..entry = true;
     izbornaJedinicaConcept.code = 'IzbornaJedinica';
 
-    var nazivJediniceAttr =
-        Attribute(izbornaJedinicaConcept, 'naziv')
-          ..type = domain.getType('String')
-          ..required = true;
-    var sifraAttr =
-        Attribute(izbornaJedinicaConcept, 'sifra')
-          ..type = domain.getType('String')
-          ..required = true;
-    var nivoAttr =
-        Attribute(izbornaJedinicaConcept, 'nivo')
-          ..type = domain.getType('String')
-          ..required = true;
-    var brojStanovnikaAttr =
-        Attribute(izbornaJedinicaConcept, 'brojStanovnika')
-          ..type = domain.getType('int')
-          ..required = true;
+    var nazivJediniceAttr = Attribute(izbornaJedinicaConcept, 'naziv')
+      ..type = domain.getType('String')
+      ..required = true;
+    var sifraAttr = Attribute(izbornaJedinicaConcept, 'sifra')
+      ..type = domain.getType('String')
+      ..required = true;
+    var nivoAttr = Attribute(izbornaJedinicaConcept, 'nivo')
+      ..type = domain.getType('String')
+      ..required = true;
+    var brojStanovnikaAttr = Attribute(izbornaJedinicaConcept, 'brojStanovnika')
+      ..type = domain.getType('int')
+      ..required = true;
     var brojUpisanihBiracaAttr =
         Attribute(izbornaJedinicaConcept, 'brojUpisanihBiraca')
           ..type = domain.getType('int')
           ..required = true;
-    var brojGlasalihAttr =
-        Attribute(izbornaJedinicaConcept, 'brojGlasalih')
-          ..type = domain.getType('int')
-          ..init = '0';
+    var brojGlasalihAttr = Attribute(izbornaJedinicaConcept, 'brojGlasalih')
+      ..type = domain.getType('int')
+      ..init = '0';
 
     concepts.add(izbornaJedinicaConcept);
 
@@ -200,10 +168,9 @@ class SerbianElectionModel extends Model {
     var glasConcept = Concept(this, 'Glas')..entry = true;
     glasConcept.code = 'Glas';
 
-    var datumGlasanjaAttr =
-        Attribute(glasConcept, 'datumGlasanja')
-          ..type = domain.getType('DateTime')
-          ..required = true;
+    var datumGlasanjaAttr = Attribute(glasConcept, 'datumGlasanja')
+      ..type = domain.getType('DateTime')
+      ..required = true;
     var vremeAttr = Attribute(glasConcept, 'vreme')
       ..type = domain.getType('String');
 
@@ -233,13 +200,14 @@ class SerbianElectionModel extends Model {
       ..add(Parent(kandidatConcept, izbornaListaConcept, 'izbornaLista'));
 
     // IzbornaJedinica -> IzbornaJedinica (nadredjenaJedinica)
-    izbornaJedinicaConcept.parents..add(
-      Parent(
-        izbornaJedinicaConcept,
-        izbornaJedinicaConcept,
-        'nadredjenaJedinica',
-      ),
-    );
+    izbornaJedinicaConcept.parents
+      ..add(
+        Parent(
+          izbornaJedinicaConcept,
+          izbornaJedinicaConcept,
+          'nadredjenaJedinica',
+        ),
+      );
 
     // Glas -> Glasac (glasac)
     // Glas -> IzbornaLista (izbornaLista)

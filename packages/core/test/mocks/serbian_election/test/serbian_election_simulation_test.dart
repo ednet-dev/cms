@@ -1,5 +1,6 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:test/test.dart';
-import 'package:ednet_core/ednet_core.dart';
 import '../lib/serbian_election.dart';
 
 void main() {
@@ -322,7 +323,7 @@ void main() {
     print('==================================================');
 
     // Ukupan broj glasova
-    final ukupnoGlasova = izborneListe.fold(
+    final ukupnoGlasova = izborneListe.fold<int>(
       0,
       (sum, lista) => sum + (lista.brojGlasova ?? 0),
     );
@@ -332,21 +333,22 @@ void main() {
     print('');
 
     // Sortiraj liste po broju mandata (pa po broju glasova ako je isti broj mandata)
-    final sortiraneList = List<IzbornaLista>.from(izborneListe)..sort((a, b) {
-      final poredjakMandata = (b.brojMandata ?? 0).compareTo(
-        a.brojMandata ?? 0,
-      );
-      if (poredjakMandata != 0) return poredjakMandata;
-      return (b.brojGlasova ?? 0).compareTo(a.brojGlasova ?? 0);
-    });
+    final sortiraneList = List<IzbornaLista>.from(izborneListe)
+      ..sort((a, b) {
+        final poredjakMandata = (b.brojMandata ?? 0).compareTo(
+          a.brojMandata ?? 0,
+        );
+        if (poredjakMandata != 0) return poredjakMandata;
+        return (b.brojGlasova ?? 0).compareTo(a.brojGlasova ?? 0);
+      });
 
     print('Rang | Lista                      | Glasovi    | %      | Mandati');
     print('-----|----------------------------|------------|--------|--------');
 
     for (int i = 0; i < sortiraneList.length; i++) {
       final lista = sortiraneList[i];
-      final procenat = ((lista.brojGlasova ?? 0) / ukupnoGlasova * 100)
-          .toStringAsFixed(2);
+      final procenat =
+          ((lista.brojGlasova ?? 0) / ukupnoGlasova * 100).toStringAsFixed(2);
 
       print(
         '${(i + 1).toString().padRight(5)}| '

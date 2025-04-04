@@ -1,7 +1,7 @@
 import 'package:ednet_core/ednet_core.dart';
-import '../model/serbian_election_model.dart';
-import '../domain/serbian_election_domain.dart';
-import '../entities/model_entries.dart';
+import '../core/model/serbian_election_model.dart';
+import '../../serbian_election/lib/src/domain/serbian_election_domain.dart';
+import '../../serbian_election/lib/src/entities/model_entries.dart';
 
 /// Serbian election repository
 class SerbianElectionRepo extends CoreRepository {

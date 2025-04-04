@@ -1,23 +1,30 @@
 part of 'serbian_election.dart';
 
-class SerbianElectionDomain {
-  final Domain domain;
-  late Random random;
+/// Serbian election domain model
+class SerbianElectionDomain extends DomainModels {
+  final ModelEntries _entries;
 
-  // Koncept referencs
-  late Concept glasacConcept;
-  late Concept politickaStrankaConcept;
-  late Concept koalicijaConcept;
-  late Concept izbornaListaConcept;
-  late Concept kandidatConcept;
-  late Concept izbornaJedinicaConcept;
-  late Concept glasConcept;
-
-  SerbianElectionDomain(this.domain) {
-    random = Random();
+  SerbianElectionDomain(Domain domain, ModelEntries entries)
+    : _entries = entries,
+      super(domain) {
+    add(_entries);
   }
 
   // Helper methods for creating entities
+
+  // Helper method to get entries
+  SerbianElectionEntries get entries => _entries as SerbianElectionEntries;
+
+  // Entity collections
+  Glasaci get glasaci => entries.glasaci;
+  PolitickeStranke get politickeStranke => entries.politickeStranke;
+  Koalicije get koalicije => entries.koalicije;
+  IzborneListe get izborneListe => entries.izborneListe;
+  Kandidati get kandidati => entries.kandidati;
+  IzborneJedinice get izborneJedinice => entries.izborneJedinice;
+  Glasovi get glasovi => entries.glasovi;
+
+  // Factory methods
   Glasac createGlasac({
     required String ime,
     required String jmbg,
@@ -28,7 +35,7 @@ class SerbianElectionDomain {
     IzbornaJedinica? birackoMesto,
   }) {
     final glasac =
-        Glasac(glasacConcept)
+        Glasac(glasaci.concept)
           ..ime = ime
           ..jmbg = jmbg
           ..datumRodjenja = datumRodjenja
@@ -40,6 +47,7 @@ class SerbianElectionDomain {
       glasac.birackoMesto = birackoMesto;
     }
 
+    glasaci.add(glasac);
     return glasac;
   }
 
@@ -52,27 +60,38 @@ class SerbianElectionDomain {
     required int brojClanova,
     bool manjinskaStranka = false,
   }) {
-    return PolitickaStranka(politickaStrankaConcept)
-      ..naziv = naziv
-      ..skraceniNaziv = skraceniNaziv
-      ..datumOsnivanja = datumOsnivanja
-      ..ideologija = ideologija
-      ..predsednik = predsednik
-      ..brojClanova = brojClanova
-      ..manjinskaStranka = manjinskaStranka;
+    final stranka =
+        PolitickaStranka(politickeStranke.concept)
+          ..naziv = naziv
+          ..skraceniNaziv = skraceniNaziv
+          ..datumOsnivanja = datumOsnivanja
+          ..ideologija = ideologija
+          ..predsednik = predsednik
+          ..brojClanova = brojClanova
+          ..manjinskaStranka = manjinskaStranka;
+
+    politickeStranke.add(stranka);
+    return stranka;
   }
 
   Koalicija createKoalicija({
     required String naziv,
     required DateTime datumFormiranja,
     required String nosiocKoalicije,
-    required List<PolitickaStranka> clanice,
+    List<PolitickaStranka> clanice = const [],
   }) {
-    return Koalicija(koalicijaConcept)
-      ..naziv = naziv
-      ..datumFormiranja = datumFormiranja
-      ..nosiocKoalicije = nosiocKoalicije
-      ..clanice = clanice;
+    final koalicija =
+        Koalicija(koalicije.concept)
+          ..naziv = naziv
+          ..datumFormiranja = datumFormiranja
+          ..nosiocKoalicije = nosiocKoalicije;
+
+    koalicije.add(koalicija);
+
+    // Dodavanje članica koalicije
+    koalicija.dodajStranke(clanice);
+
+    return koalicija;
   }
 
   IzbornaLista createIzbornaLista({
@@ -83,7 +102,7 @@ class SerbianElectionDomain {
     bool manjinskaLista = false,
   }) {
     final lista =
-        IzbornaLista(izbornaListaConcept)
+        IzbornaLista(izborneListe.concept)
           ..naziv = naziv
           ..redniBroj = redniBroj
           ..manjinskaLista = manjinskaLista;
@@ -91,10 +110,12 @@ class SerbianElectionDomain {
     if (stranka != null) {
       lista.stranka = stranka;
     }
+
     if (koalicija != null) {
       lista.koalicija = koalicija;
     }
 
+    izborneListe.add(lista);
     return lista;
   }
 
@@ -106,13 +127,13 @@ class SerbianElectionDomain {
     required String zanimanje,
     required String prebivaliste,
     required int pozicijaNaListi,
-    required bool nosilacListe,
-    String? biografija,
     required PolitickaStranka stranka,
     required IzbornaLista izbornaLista,
+    bool nosilacListe = false,
+    String? biografija,
   }) {
     final kandidat =
-        Kandidat(kandidatConcept)
+        Kandidat(kandidati.concept)
           ..ime = ime
           ..prezime = prezime
           ..datumRodjenja = datumRodjenja
@@ -128,6 +149,7 @@ class SerbianElectionDomain {
       kandidat.biografija = biografija;
     }
 
+    kandidati.add(kandidat);
     return kandidat;
   }
 
@@ -141,7 +163,7 @@ class SerbianElectionDomain {
     IzbornaJedinica? nadredjenaJedinica,
   }) {
     final jedinica =
-        IzbornaJedinica(izbornaJedinicaConcept)
+        IzbornaJedinica(izborneJedinice.concept)
           ..naziv = naziv
           ..sifra = sifra
           ..nivo = nivo
@@ -153,6 +175,7 @@ class SerbianElectionDomain {
       jedinica.nadredjenaJedinica = nadredjenaJedinica;
     }
 
+    izborneJedinice.add(jedinica);
     return jedinica;
   }
 
@@ -164,59 +187,97 @@ class SerbianElectionDomain {
     String? vreme,
   }) {
     final glas =
-        Glas(glasConcept)
+        Glas(glasovi.concept)
           ..glasac = glasac
           ..izbornaLista = izbornaLista
-          ..datumGlasanja = datumGlasanja
-          ..birackoMesto = birackoMesto;
+          ..birackoMesto = birackoMesto
+          ..datumGlasanja = datumGlasanja;
 
     if (vreme != null) {
       glas.vreme = vreme;
     }
 
+    glasovi.add(glas);
     return glas;
   }
 
+  /// Generator za JMBG (Jedinstveni matični broj građana)
   String generateJMBG({
     required DateTime birthDate,
     required String gender,
     required int region,
   }) {
-    // Format JMBG-a: DD MM GGG RR BBB K
-    // DD - dan rođenja
-    // MM - mesec rođenja
-    // GGG - zadnje 3 cifre godine
-    // RR - regionalni kod
-    // BBB - jedinstveni broj rođenja (000-499 za muškarce, 500-999 za žene)
-    // K - kontrolni broj
+    // Dan, mesec i godina rođenja
+    String day = birthDate.day.toString().padLeft(2, '0');
+    String month = birthDate.month.toString().padLeft(2, '0');
+    String year = birthDate.year.toString().substring(1, 3);
 
-    String dd = birthDate.day.toString().padLeft(2, '0');
-    String mm = birthDate.month.toString().padLeft(2, '0');
-    String ggg = birthDate.year.toString().substring(1);
-    String rr = region.toString().padLeft(2, '0');
+    // Pol (kod muškaraca se dodaje 0, kod žena 5 na redni broj dana)
+    int genderOffset = gender == 'Muški' ? 0 : 5;
+    int dayWithGender = birthDate.day + (genderOffset * 10);
+    String dayWithGenderStr = dayWithGender.toString().padLeft(3, '0');
 
-    // Generiši nasumični broj rođenja po polu
-    int bbb =
-        gender == 'Muški'
-            ? random.nextInt(500) // 000-499 za muškarce
-            : 500 + random.nextInt(500); // 500-999 za žene
-    String bbbStr = bbb.toString().padLeft(3, '0');
+    // Region rođenja
+    String regionCode = region.toString().padLeft(2, '0');
 
-    String jmbgBezKontrole = '$dd$mm$ggg$rr$bbbStr';
+    // Slučajan jedinstveni broj
+    String uniqueNum = (birthDate.millisecondsSinceEpoch % 1000)
+        .toString()
+        .padLeft(3, '0');
 
-    // Izračunaj kontrolni broj
-    int suma = 0;
-    for (int i = 0; i < 12; i++) {
-      int cifra = int.parse(jmbgBezKontrole[i]);
-      suma += (7 - i) * cifra;
+    // Osnova JMBG-a
+    String jmbgBase = '$day$month$year$regionCode$uniqueNum';
+
+    // Kontrolna cifra
+    int sum = 0;
+    for (int i = 0; i < jmbgBase.length; i++) {
+      sum += int.parse(jmbgBase[i]) * (7 - i % 7);
     }
-    int k = 11 - (suma % 11);
-    if (k == 11) k = 0;
-    if (k == 10) {
-      // Ako je k 10, broj je nevažeći, pokušajmo ponovo sa drugim brojem rođenja
-      return generateJMBG(birthDate: birthDate, gender: gender, region: region);
+    int checksum = 11 - (sum % 11);
+    if (checksum > 9) checksum = 0;
+
+    return '$day$month$year$regionCode$uniqueNum$checksum';
+  }
+
+  /// Raspodela mandata koristeći D'Hontov metod
+  List<IzbornaLista> raspodelaMandataDontovomMetodom(
+    List<IzbornaLista> liste,
+    int ukupnoMandata, {
+    double cenzus = 0.03,
+  }) {
+    // Kreiranje rezultata lista za D'Hont kalkulator
+    final rezultati = <RezultatListe>[];
+
+    // Izračunavanje ukupnog broja validnih glasova
+    int ukupnoGlasova = 0;
+    for (final lista in liste) {
+      ukupnoGlasova += lista.brojGlasova ?? 0;
     }
 
-    return '$jmbgBezKontrole$k';
+    // Kreiranje RezultatListe objekata za D'Hont kalkulator
+    for (final lista in liste) {
+      rezultati.add(
+        RezultatListe(
+          lista.naziv,
+          lista.brojGlasova ?? 0,
+          manjinskaLista: lista.manjinskaLista,
+        ),
+      );
+    }
+
+    // Izračunavanje mandata koristeći D'Hont metod
+    final kalkulator = DontKalkulator();
+    final rezultatiSaMandatima = kalkulator.izracunajMandate(
+      rezultati,
+      ukupnoMandata,
+      cenzus,
+    );
+
+    // Ažuriranje lista sa brojem mandata
+    for (var i = 0; i < liste.length; i++) {
+      liste[i].brojMandata = rezultati[i].brojMandata;
+    }
+
+    return liste;
   }
 }

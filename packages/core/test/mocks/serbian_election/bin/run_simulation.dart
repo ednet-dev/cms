@@ -1,6 +1,6 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'dart:math';
-import 'serbian_election.dart';
+import '../lib/serbian_election.dart';
 
 /// Simulacija srpskog izbornog sistema
 void main() {

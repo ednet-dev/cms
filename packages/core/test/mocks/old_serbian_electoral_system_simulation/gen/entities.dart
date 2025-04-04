@@ -1,7 +1,7 @@
 library serbian_election.entities;
 
 import 'package:ednet_core/ednet_core.dart';
-import '../serbian_election.dart';
+import '../../serbian_election/lib/serbian_election.dart';
 
 /// Glasač - birač sa pravom glasa
 abstract class GlasacGen extends Entity<Glasac> {
