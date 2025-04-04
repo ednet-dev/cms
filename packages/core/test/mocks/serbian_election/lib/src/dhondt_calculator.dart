@@ -15,49 +15,50 @@ class DontKalkulator {
   /// [ukupnoMandata] - Ukupan broj mandata za raspodelu
   /// [cenzus] - Minimalni procenat glasova potreban (0.03 za 3%)
   /// Vraća ažuriranu listu rezultata sa dodeljenim mandatima
+  ///
+  /// TODO: Fix handling of minority parties - they should be exempt from the electoral threshold
+  /// and receive mandates according to D'Hondt calculation regardless of their vote percentage.
   List<RezultatListe> izracunajMandate(
     List<RezultatListe> liste,
     int ukupnoMandata,
     double cenzus,
   ) {
-    // Izračunaj ukupan broj glasova
-    int ukupnoGlasova = 0;
-    for (final lista in liste) {
-      ukupnoGlasova += lista.brojGlasova;
-    }
+    // Izračunaj ukupan broj važećih glasova
+    final ukupnoGlasova = liste.fold<int>(
+      0,
+      (sum, lista) => sum + lista.brojGlasova,
+    );
 
-    // Odredi prag cenzusa
-    final pragCenzusa = (ukupnoGlasova * cenzus).round();
-
-    // Filtriraj liste koje prelaze cenzus ili su manjinske
+    // Filtriraj liste koje prelaze cenzus (osim manjinskih lista)
     final kvalifikovane = liste.where((lista) {
-      return lista.manjinskaLista || lista.brojGlasova >= pragCenzusa;
+      if (lista.manjinskaLista) return true;
+      return lista.brojGlasova / ukupnoGlasova >= cenzus;
     }).toList();
 
-    // Inicijalizuj brojač mandata
-    for (final lista in kvalifikovane) {
+    // Resetuj broj mandata
+    for (var lista in liste) {
       lista.brojMandata = 0;
     }
 
-    // D'Hondt metod dodele mandata
-    for (int i = 0; i < ukupnoMandata; i++) {
-      var maxKolicnik = 0.0;
-      RezultatListe? maxLista;
+    // Implementiraj D'Hondt metod
+    for (var mandat = 0; mandat < ukupnoMandata; mandat++) {
+      var najveciKolicnik = 0.0;
+      RezultatListe? listaSaNajvecimKolicnikom;
 
-      for (final lista in kvalifikovane) {
+      for (var lista in kvalifikovane) {
+        // Izračunaj količnik: glasovi / (osvojeni_mandati + 1)
         final kolicnik = lista.brojGlasova / (lista.brojMandata + 1);
-        if (kolicnik > maxKolicnik) {
-          maxKolicnik = kolicnik;
-          maxLista = lista;
+        if (kolicnik > najveciKolicnik) {
+          najveciKolicnik = kolicnik;
+          listaSaNajvecimKolicnikom = lista;
         }
       }
 
-      if (maxLista != null) {
-        maxLista.brojMandata++;
+      if (listaSaNajvecimKolicnikom != null) {
+        listaSaNajvecimKolicnikom.brojMandata++;
       }
     }
 
-    // Vrati originalnu listu sa ažuriranim mandatima
     return liste;
   }
 }

@@ -306,6 +306,8 @@ void main() {
     final izborneListe = [listaZaBuducnost, listaUjedinjeni, listaSVM];
     final ukupnoMandata = 10; // Recimo da ima 10 mandata za raspodelu
 
+    // TODO: Manjinske liste trenutno nisu posebno tretirane u D'Hont kalkulatoru.
+    // Potrebno je implementirati izuzeće od cenzusa za manjinske liste.
     final raspodela = serbianElectionDomain.raspodelaMandataDontovomMetodom(
       izborneListe,
       ukupnoMandata,
