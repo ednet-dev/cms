@@ -78,12 +78,16 @@ void main() {
         email: 'voter@democracy.org',
         idNumber: 'V123456',
       );
+      print('Citizen concept: ${citizen.concept != null ? 'set' : 'null'}');
 
       final referendum = domain.createReferendum(
         title: 'Test Referendum',
         description: 'A test referendum for entity relationships',
         startDate: DateTime.now(),
         endDate: DateTime.now().add(const Duration(days: 7)),
+      );
+      print(
+        'Referendum concept: ${referendum.concept != null ? 'set' : 'null'}',
       );
 
       // Create vote with parent relationships
@@ -92,30 +96,96 @@ void main() {
         referendum: referendum,
         choice: 'Yes',
       );
+      print('Vote concept: ${vote.concept != null ? 'set' : 'null'}');
+
+      // First, verify that entities and their concepts are properly set before proceeding
+      expect(
+        citizen.concept,
+        isNotNull,
+        reason: 'Citizen concept should not be null',
+      );
+      expect(
+        referendum.concept,
+        isNotNull,
+        reason: 'Referendum concept should not be null',
+      );
+      expect(
+        vote.concept,
+        isNotNull,
+        reason: 'Vote concept should not be null',
+      );
 
       // Verify parent relationships
-      expect(vote.getParent('citizen'), isNotNull);
-      expect(vote.getParent('citizen'), equals(citizen));
-      expect(vote.getParent('referendum'), isNotNull);
-      expect(vote.getParent('referendum'), equals(referendum));
+      final citizenParentFromVote = vote.getParent('citizen');
+      final referendumParentFromVote = vote.getParent('referendum');
 
-      // Verify parent links in concept model
+      expect(
+        citizenParentFromVote,
+        isNotNull,
+        reason: 'Citizen parent from vote should not be null',
+      );
+      expect(
+        referendumParentFromVote,
+        isNotNull,
+        reason: 'Referendum parent from vote should not be null',
+      );
+
+      if (citizenParentFromVote != null) {
+        expect(citizenParentFromVote, equals(citizen));
+      }
+
+      if (referendumParentFromVote != null) {
+        expect(referendumParentFromVote, equals(referendum));
+      }
+
+      // Verify parent links in concept model (no need to access Property objects directly)
       final voteParents = domain.voteConcept.parents;
+      print('Vote parents length: ${voteParents.length}');
+
       // Note: The actual number is 4 instead of the expected 2
+      // In the domain model setup, additional parent relationships are added
       expect(voteParents.length, equals(4));
 
-      // Find parent definitions by code
-      final citizenParent = voteParents.firstWhere(
-        (parent) => parent.code == 'citizen',
-        orElse: () => throw Exception('Citizen parent not found'),
-      );
-      expect(citizenParent.concept, equals(domain.citizenConcept));
+      // Instead of trying to extract specific parent Property objects,
+      // just verify that the expected parent concepts are associated with properties
+      // in the voteParents collection
+      bool foundCitizenParent = false;
+      bool foundReferendumParent = false;
 
-      final referendumParent = voteParents.firstWhere(
-        (parent) => parent.code == 'referendum',
-        orElse: () => throw Exception('Referendum parent not found'),
+      print('Checking all parent properties:');
+      for (var parent in voteParents) {
+        print(
+          'Parent code: ${parent.code}, has concept? ${parent.concept != null ? 'Yes' : 'No'}',
+        );
+
+        // Skip properties that don't have concepts set
+        if (parent.concept == null) {
+          print('Warning: Parent ${parent.code} has null concept');
+          continue;
+        }
+
+        print('  Parent concept code: ${parent.concept.code}');
+
+        if (parent.code == 'citizen' &&
+            parent.concept == domain.citizenConcept) {
+          foundCitizenParent = true;
+        }
+        if (parent.code == 'referendum' &&
+            parent.concept == domain.referendumConcept) {
+          foundReferendumParent = true;
+        }
+      }
+
+      expect(
+        foundCitizenParent,
+        isTrue,
+        reason: 'Should find citizen parent in vote concept',
       );
-      expect(referendumParent.concept, equals(domain.referendumConcept));
+      expect(
+        foundReferendumParent,
+        isTrue,
+        reason: 'Should find referendum parent in vote concept',
+      );
     });
 
     test('Entity inheritance relationship', () {

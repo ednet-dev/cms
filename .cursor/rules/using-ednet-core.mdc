@@ -1,0 +1,268 @@
+---
+description: whenever using ednet_core in client env or testing itself, it is used for example how ednet_core is used to express domain-driven design and event storming artefacts enabling meta modeling which in turn enables code generation and in-vivo domain model full cycle evolution
+globs: 
+alwaysApply: false
+---
+# EDNet Core Concept Modeling Rule
+
+When implementing complex domain models using the EDNet Core framework, follow these concept modeling principles and architectural patterns:
+
+## Domain Model Structure
+- Organize concepts in a hierarchical domain → model → concept pattern
+- Define clear bounded contexts with explicit dependencies
+- Use aggregate roots as entry points to entity clusters
+- Implement value objects for immutable property clusters
+- Create domain classes extending appropriate models
+- Define repositories that initialize domains
+- Implement model classes with proper initialization methods
+- Follow the Domain → Model → Concept → Entity hierarchy
+## Concept Definition
+- Use the Concept class for defining entity templates
+- Create concepts with meaningful business domain terminology
+- Define all attributes with proper types and constraints
+- Establish parent-child and bidirectional relationships
+- Support polymorphism through concept inheritance
+## Entity Implementation
+- Extend generated base classes for all entities (EntityGen)
+- Keep custom business logic in separate methods
+- Override system methods only when necessary
+- Use collection classes (extending EntitiesGen) for sets of entities
+## Command Pattern
+- Model state changes as commands extending BasicCommand or specialized command classes
+- Implement preCondition() for validation
+- Use SetAttributeCommand for property changes
+- Implement proper command reaction handling
+## Relationships
+- Define parent-child relationships explicitly 
+- Initialize relationships during model setup
+- Access children through parent.children collections
+- Access parents through child.parent references
+
+- Use repository to access domains and models
+- Create sessions for transactional operations
+- Execute commands through the session
+- Access entities through model entries
+
+## Sample Code Patterns
+
+### Domain Definition
+```dart
+class ElectionDomain extends ElectionModels {
+  ElectionDomain(super.domain);
+  // Custom domain logic
+}
+```
+
+### Repository Setup
+```dart
+class ElectionRepo extends CoreRepository {
+  ElectionRepo([super.code = repository]) {
+    final domain = Domain('Election');
+    domains.add(domain);
+    add(ElectionDomain(domain));
+  }
+  static const repository = 'ElectionRepo';
+}
+```
+
+### Entity Classes
+```dart
+class Voter extends VoterGen {
+  Voter(super.concept);
+  // Custom business methods
+}
+
+class Voters extends VotersGen {
+  Voters(super.concept);
+  // Custom query methods
+}
+```
+
+### Command Usage
+```dart
+// Command creation and execution
+final command = SetAttributeCommand(voter, 'hasVoted', true);
+session.execute(command);
+```
+
+### Model Relationships
+```dart
+// Set parent-child relationship
+voter.district = district;
+voters.add(voter);
+district.voters.add(voter);
+```
+
+### Policy Definitions
+```dart
+class VotingPolicy extends AttributePolicy {
+  VotingPolicy() : super('canVote');
+  
+  @override
+  bool evaluate(Entity entity, String attribute, dynamic value) {
+    return entity.getAttr('age') >= 18;
+  }
+}
+```
+
+Remember that EDNet prioritizes domain-driven design with clear separation between domain logic and infrastructure concerns.
+## Entity Modeling
+```dart
+abstract class VoterGen extends Entity<Voter> {
+  VoterGen(Concept concept) {
+    this.concept = concept;
+    // Define children collections
+    final voteHistoryConcept = concept.model.concepts.singleWhereCode('VoteHistory');
+    setChild('voteHistory', VoteHistory(voteHistoryConcept!));
+    
+    // Define validation rules
+    addAttributePolicy('age', (entity, attr, value) => value >= 18);
+  }
+  
+  // Reference to parent
+  ElectoralDistrict get district => getParent('district')! as ElectoralDistrict;
+  set district(ElectoralDistrict d) => setParent('district', d);
+  
+  // Attributes with getters/setters
+  String get fullName => getAttribute('fullName') as String;
+  set fullName(String name) => setAttribute('fullName', name);
+  
+  // Child collections
+  VoteHistory get voteHistory => getChild('voteHistory')! as VoteHistory;
+  
+  @override
+  Voter newEntity() => Voter(concept);
+}
+```
+
+## Relationship Modeling
+- Define parent-child relationships explicitly in concept design
+- Implement bidirectional navigation between related entities
+- Maintain relationship consistency using Set/AddParent and Set/AddChild commands
+- Support many-to-many relationships with link entities
+
+```dart
+// Parent-Child relationship
+class Ballot extends BallotGen {
+  // District owns (is parent of) many Ballots
+  ElectoralDistrict get district => getParent('district')! as ElectoralDistrict;
+  set district(ElectoralDistrict d) => setParent('district', d);
+  
+  // Ballot owns (is parent of) many BallotOptions
+  BallotOptions get options => getChild('options')! as BallotOptions;
+}
+```
+
+## Attribute Modeling
+- Define attributes with proper typing and validation
+- Use attribute policies for business rules
+- Support computed attributes with getter methods
+- Implement attribute change tracking
+
+```dart
+// Attribute with validation policy
+class VotingAgePolicy extends AttributePolicy {
+  VotingAgePolicy() : super('age');
+  
+  @override
+  bool evaluate(Entity entity, String attribute, dynamic value) {
+    if (value < 18) {
+      throw PolicyViolationException('Voter must be at least 18 years old');
+    }
+    return true;
+  }
+}
+```
+
+## Entry Points & Model Access
+```dart
+// Model entries for entity access
+class ElectionEntries extends ModelEntries {
+  @override
+  Map<String, Entities> newEntries() {
+    final entries = <String, Entities>{};
+    
+    final votersConcept = model.concepts.singleWhereCode('Voter');
+    entries['Voter'] = Voters(votersConcept!);
+    
+    final ballotsConcept = model.concepts.singleWhereCode('Ballot');
+    entries['Ballot'] = Ballots(ballotsConcept!);
+    
+    // More concepts...
+    
+    return entries;
+  }
+  
+  // Convenience getters
+  Voters get voters => getEntry('Voter') as Voters;
+  Ballots get ballots => getEntry('Ballot') as Ballots;
+}
+```
+
+## Command Processing
+- Model all state changes as explicit commands
+- Implement command validation in preCondition() methods
+- Use command handlers to process domain events
+- Support command transactions for atomic operations
+
+```dart
+class CastVoteCommand extends BasicCommand {
+  CastVoteCommand(Voter voter, Ballot ballot, BallotOption option) {
+    // Command setup
+  }
+  
+  @override
+  bool preCondition() {
+    // Validate voter is eligible
+    // Validate ballot is active
+    return true;
+  }
+  
+  @override
+  void execute() {
+    // Create vote record
+    // Update voter history
+    // Fire domain event
+  }
+}
+```
+
+## Entity Collections
+- Implement specialized query methods on entity collections
+- Support filtering, counting, and aggregation
+- Enable business-specific queries with domain terminology
+
+```dart
+class ElectoralDistricts extends ElectoralDistrictsGen {
+  ElectoralDistricts(super.concept);
+  
+  // Find districts with specific characteristics
+  Iterable<ElectoralDistrict> findByRegion(String region) {
+    return where((district) => district.region == region);
+  }
+  
+  // Aggregation methods
+  int countRegisteredVoters() {
+    return fold(0, (sum, district) => sum + district.voters.length);
+  }
+}
+```
+
+## Domain Events
+- Model significant state changes as domain events
+- Implement event handlers for cross-aggregate coordination
+- Use event sourcing for historical tracking
+- Support event-driven integrations
+
+```dart
+class VoteCast extends Event {
+  VoteCast(Voter voter, Ballot ballot, BallotOption option) {
+    setAttr('voterId', voter.id);
+    setAttr('ballotId', ballot.id);
+    setAttr('optionId', option.id);
+    setAttr('timestamp', DateTime.now());
+  }
+}
+```
+
+Remember that EDNet is designed to create rich domain models with complex business rules, ensuring that domain logic is properly encapsulated within the entity model rather than scattered throughout application services.
