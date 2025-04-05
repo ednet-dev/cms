@@ -219,29 +219,56 @@ class _DomainVisualizationScreenState extends State<DomainVisualizationScreen> {
       return const Text('Select a model first');
     }
 
-    final concepts = state.selectedModel!.concepts.toList();
+    // Handle potential null values
+    try {
+      final concepts = state.selectedModel!.concepts.toList();
 
-    return ListView.builder(
-      itemCount: concepts.length,
-      itemBuilder: (context, index) {
-        final concept = concepts[index];
-        final isSelected = state.selectedConcept == concept;
-
-        return ListTile(
-          title: Text(concept.code),
-          subtitle: Text(concept.entry ? 'Entry' : ''),
-          selected: isSelected,
-          leading:
-              concept.entry
-                  ? const Icon(Icons.star, color: Colors.amber)
-                  : const Icon(Icons.circle, size: 12),
-          tileColor: isSelected ? Theme.of(context).highlightColor : null,
-          onTap: () {
-            context.read<DomainBloc>().add(SelectConceptEvent(concept));
-          },
+      if (concepts.isEmpty) {
+        return const Center(
+          child: Text(
+            'This model has no concepts',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
         );
-      },
-    );
+      }
+
+      return ListView.builder(
+        itemCount: concepts.length,
+        itemBuilder: (context, index) {
+          try {
+            final concept = concepts[index];
+            final isSelected = state.selectedConcept == concept;
+
+            // Safely check concept.entry - handle potential errors
+            bool isEntry = false;
+            try {
+              isEntry = concept.entry;
+            } catch (e) {
+              print('Error checking if concept is entry: $e');
+            }
+
+            return ListTile(
+              title: Text(concept.code),
+              subtitle: Text(isEntry ? 'Entry' : ''),
+              selected: isSelected,
+              leading:
+                  isEntry
+                      ? const Icon(Icons.star, color: Colors.amber)
+                      : const Icon(Icons.circle, size: 12),
+              tileColor: isSelected ? Theme.of(context).highlightColor : null,
+              onTap: () {
+                context.read<DomainBloc>().add(SelectConceptEvent(concept));
+              },
+            );
+          } catch (e) {
+            // Skip this item if there was an error
+            return const SizedBox.shrink();
+          }
+        },
+      );
+    } catch (e) {
+      return Center(child: Text('Error loading concepts: $e'));
+    }
   }
 
   Widget _buildVisualizationArea(BuildContext context, DomainState state) {
@@ -264,6 +291,10 @@ class _DomainVisualizationScreenState extends State<DomainVisualizationScreen> {
                 domain: state.selectedDomain!,
                 model: state.selectedModel!,
                 useMasterDetailLayout: _useMasterDetailLayout,
+                onConceptSelected: (concept) {
+                  // When a concept is selected in the visualization, update the selected concept in the bloc
+                  context.read<DomainBloc>().add(SelectConceptEvent(concept));
+                },
               ),
             ),
 
@@ -277,69 +308,200 @@ class _DomainVisualizationScreenState extends State<DomainVisualizationScreen> {
   }
 
   Widget _buildDetailsPanel(BuildContext context, DomainState state) {
-    final concept = state.selectedConcept! as Concept;
+    try {
+      final concept = state.selectedConcept! as Concept;
 
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Concept: ${concept.code}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text('Is Entry: ${concept.entry}'),
-            const SizedBox(height: 16),
+      // Safely check if properties are accessible
+      bool isEntry = false;
+      try {
+        isEntry = concept.entry;
+      } catch (e) {
+        print('Error checking if concept is entry: $e');
+      }
 
-            const Text(
-              'Attributes:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            ...concept.attributes.map((attribute) {
-              return ListTile(
-                title: Text(attribute.code),
-                subtitle: Text('Type: ${attribute.type?.code ?? "Unknown"}'),
-                dense: true,
-              );
-            }),
+      // Safely get attributes
+      final attributes = <Attribute>[];
+      try {
+        for (var attr in concept.attributes) {
+          attributes.add(attr as Attribute);
+        }
+      } catch (e) {
+        print('Error getting concept attributes: $e');
+      }
 
-            const SizedBox(height: 16),
+      // Safely get parents and children
+      final parents = <Parent>[];
+      final children = <Child>[];
+      try {
+        for (var parent in concept.parents) {
+          parents.add(parent as Parent);
+        }
+      } catch (e) {
+        print('Error getting concept parents: $e');
+      }
 
-            if (concept.parents.isNotEmpty) ...[
-              const Text(
-                'Parent Relationships:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      try {
+        for (var child in concept.children) {
+          children.add(child as Child);
+        }
+      } catch (e) {
+        print('Error getting concept children: $e');
+      }
+
+      return Card(
+        margin: const EdgeInsets.all(8.0),
+        child: DefaultTabController(
+          length: 3,
+          child: Column(
+            children: [
+              TabBar(
+                tabs: const [
+                  Tab(text: 'Overview'),
+                  Tab(text: 'Parents'),
+                  Tab(text: 'Children'),
+                ],
               ),
-              ...concept.parents.map((parent) {
-                return ListTile(
-                  title: Text(parent.code),
-                  subtitle: Text(
-                    'Target: ${parent.concept?.code ?? "Unknown"}',
-                  ),
-                  dense: true,
-                );
-              }),
-            ],
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    // Overview tab
+                    SingleChildScrollView(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Concept: ${concept.code}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text('Is Entry: $isEntry'),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Attributes:',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (attributes.isEmpty)
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'No attributes defined',
+                                style: TextStyle(fontStyle: FontStyle.italic),
+                              ),
+                            )
+                          else
+                            ...attributes.map((attribute) {
+                              String typeName = 'Unknown';
+                              try {
+                                typeName = attribute.type?.code ?? 'Unknown';
+                              } catch (e) {
+                                print('Error getting attribute type: $e');
+                              }
 
-            if (concept.children.isNotEmpty) ...[
-              const Text(
-                'Child Relationships:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              bool isRequired = false;
+                              try {
+                                isRequired = attribute.required;
+                              } catch (e) {
+                                print(
+                                  'Error checking if attribute is required: $e',
+                                );
+                              }
+
+                              return ListTile(
+                                title: Text(attribute.code),
+                                subtitle: Text(
+                                  'Type: $typeName${isRequired ? " (Required)" : ""}',
+                                ),
+                                dense: true,
+                              );
+                            }),
+                        ],
+                      ),
+                    ),
+
+                    // Parents tab
+                    parents.isEmpty
+                        ? const Center(child: Text('No parent relationships'))
+                        : _buildRelationshipsList(
+                          context,
+                          parents
+                              .map((parent) => parent.concept)
+                              .whereType<Concept>()
+                              .toList(),
+                          icon: Icons.arrow_upward,
+                          emptyMessage: 'No parent relationships',
+                        ),
+
+                    // Children tab
+                    children.isEmpty
+                        ? const Center(child: Text('No child relationships'))
+                        : _buildRelationshipsList(
+                          context,
+                          children
+                              .map((child) => child.concept)
+                              .whereType<Concept>()
+                              .toList(),
+                          icon: Icons.arrow_downward,
+                          emptyMessage: 'No child relationships',
+                        ),
+                  ],
+                ),
               ),
-              ...concept.children.map((child) {
-                return ListTile(
-                  title: Text(child.code),
-                  subtitle: Text('Target: ${child.concept?.code ?? "Unknown"}'),
-                  dense: true,
-                );
-              }),
             ],
-          ],
+          ),
         ),
-      ),
+      );
+    } catch (e) {
+      return Center(child: Text('Error displaying concept details: $e'));
+    }
+  }
+
+  Widget _buildRelationshipsList(
+    BuildContext context,
+    List<Concept> concepts, {
+    IconData icon = Icons.link,
+    String emptyMessage = 'No relationships',
+  }) {
+    if (concepts.isEmpty) {
+      return Center(child: Text(emptyMessage));
+    }
+
+    return ListView.builder(
+      itemCount: concepts.length,
+      itemBuilder: (context, index) {
+        final concept = concepts[index];
+
+        // Check if entry
+        bool isEntry = false;
+        try {
+          isEntry = concept.entry;
+        } catch (e) {}
+
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          child: ListTile(
+            leading: Icon(icon, color: isEntry ? Colors.amber : Colors.blue),
+            title: Text(concept.code),
+            subtitle: Text(isEntry ? 'Entry Concept' : 'Regular Concept'),
+            trailing: ElevatedButton.icon(
+              icon: const Icon(Icons.visibility),
+              label: const Text('View'),
+              onPressed: () {
+                context.read<DomainBloc>().add(SelectConceptEvent(concept));
+              },
+            ),
+            onTap: () {
+              context.read<DomainBloc>().add(SelectConceptEvent(concept));
+            },
+          ),
+        );
+      },
     );
   }
 

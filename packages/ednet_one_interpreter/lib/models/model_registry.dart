@@ -289,7 +289,6 @@ class ModelRegistry {
     // Now create a model entries object for task
     final modelEntries = _SampleModelEntries(taskModel);
     domainModels.addModelEntries('Task', modelEntries);
-
     // Create sample task data
     final task1 = Entity();
     task1.concept = taskConcept;
@@ -301,7 +300,7 @@ class ModelRegistry {
     task1.setAttribute('completed', false);
     modelEntries.addEntry('Task1', task1);
 
-    final task2 = Entity();
+    final task2 = Entity<dynamic>();
     task2.concept = taskConcept;
     task2.setAttribute('name', 'Implement Core Features');
     task2.setAttribute(

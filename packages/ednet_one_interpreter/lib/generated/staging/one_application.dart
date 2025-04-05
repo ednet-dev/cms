@@ -21,8 +21,6 @@ class OneApplication implements IOneApplication {
     if (domainModelPairs.isEmpty) {
       // If no static models are found, create sample models for demonstration
       print('No static domain models found, creating sample models...');
-      final sampleModels = ModelRegistry.createSampleDomainModels();
-      _registerDomainModels(sampleModels);
     } else {
       // Register the static models
       _registerDomainModels(domainModelPairs);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'dart:math' as math;
 
 /// A layout algorithm for domain model visualization that arranges elements
 /// in a master-detail pattern.
@@ -37,34 +38,83 @@ class MasterDetailLayoutAlgorithm {
   ///
   /// Returns a map where keys are concepts and values are their calculated positions.
   Map<Concept, Offset> calculatePositions(Domain domain, Model? model) {
-    final positions = <Concept, Offset>{};
-    final processedConcepts = <Concept>{};
+    try {
+      final positions = <Concept, Offset>{};
+      final processedConcepts = <Concept>{};
 
-    final concepts = model?.concepts ?? domain.models.expand((m) => m.concepts);
-    final entryConcepts = concepts.where((c) => c.entry);
+      // Handle potentially null model
+      if (model == null) {
+        print('Warning: Model is null in calculatePositions');
+        return positions; // Return empty positions
+      }
 
-    // Calculate positions for entry concepts (master entries)
-    double currentX = startX;
-    double currentY = startY;
+      // Apply safeguards for error cases
+      if (domain.models.isEmpty) {
+        print('Warning: Domain has no models');
+        return positions;
+      }
 
-    for (final concept in entryConcepts) {
-      positions[concept] = Offset(currentX, currentY);
-      processedConcepts.add(concept);
-      currentX += horizontalSpacing;
+      final concepts = model.concepts;
+      if (concepts.isEmpty) {
+        print('Warning: Model has no concepts');
+        return positions;
+      }
+
+      // Find entry concepts
+      final entryConcepts = concepts.where((c) => c.entry).toList();
+      if (entryConcepts.isEmpty) {
+        print('No entry concepts found, using first concept as entry');
+        // If no entry concepts, use the first concept as an entry point
+        final firstConcept = concepts.first;
+        positions[firstConcept] = Offset(startX, startY);
+        processedConcepts.add(firstConcept);
+
+        // Layout children of the first concept
+        _layoutChildren(
+          firstConcept,
+          positions,
+          processedConcepts,
+          horizontalOffset: startX,
+          verticalOffset: startY + verticalSpacing,
+        );
+
+        return positions;
+      }
+
+      // Calculate positions for entry concepts (master entries)
+      double currentX = startX;
+      double currentY = startY;
+
+      // Position the entry concepts in a row
+      for (final concept in entryConcepts) {
+        positions[concept] = Offset(currentX, currentY);
+        processedConcepts.add(concept);
+        currentX += horizontalSpacing;
+      }
+
+      // Now process each entry concept's children (detail views)
+      for (final entryConcept in entryConcepts) {
+        // Skip if the entry concept is null (shouldn't happen, but just in case)
+        if (entryConcept == null) continue;
+
+        final entryPosition = positions[entryConcept];
+        // Skip if we don't have a position for the entry concept
+        if (entryPosition == null) continue;
+
+        _layoutChildren(
+          entryConcept,
+          positions,
+          processedConcepts,
+          horizontalOffset: entryPosition.dx,
+          verticalOffset: entryPosition.dy + verticalSpacing,
+        );
+      }
+
+      return positions;
+    } catch (e) {
+      print('Error in calculatePositions: $e');
+      return <Concept, Offset>{};
     }
-
-    // Now process each entry concept's children (detail views)
-    for (final entryConcept in entryConcepts) {
-      _layoutChildren(
-        entryConcept,
-        positions,
-        processedConcepts,
-        horizontalOffset: positions[entryConcept]!.dx,
-        verticalOffset: positions[entryConcept]!.dy + verticalSpacing,
-      );
-    }
-
-    return positions;
   }
 
   /// Recursively calculates positions for children of a concept.
@@ -81,31 +131,67 @@ class MasterDetailLayoutAlgorithm {
     required double horizontalOffset,
     required double verticalOffset,
   }) {
-    // Get child relationships
-    final children = concept.children.whereType<Child>().toList();
-    if (children.isEmpty) return;
-
-    double currentX = horizontalOffset;
-    final currentY = verticalOffset;
-
-    for (final child in children) {
-      final destinationConcept = child.destinationConcept;
-
-      if (!processedConcepts.contains(destinationConcept)) {
-        positions[destinationConcept] = Offset(currentX, currentY);
-        processedConcepts.add(destinationConcept);
-
-        // Recursively layout this concept's children
-        _layoutChildren(
-          destinationConcept,
-          positions,
-          processedConcepts,
-          horizontalOffset: currentX,
-          verticalOffset: currentY + verticalSpacing,
-        );
-
-        currentX += horizontalSpacing;
+    try {
+      // Skip if the concept is null (shouldn't happen, but just in case)
+      if (concept == null) {
+        print('Warning: Concept is null in _layoutChildren');
+        return;
       }
+
+      // Skip if concept.children is null (shouldn't happen, but just in case)
+      if (concept.children == null) {
+        print('Warning: Concept.children is null for ${concept.code}');
+        return;
+      }
+
+      // Get valid child relationships
+      final children =
+          concept.children
+              .whereType<Child>()
+              .where((child) => child.destinationConcept != null)
+              .toList();
+
+      if (children.isEmpty) return;
+
+      double currentX = horizontalOffset;
+      final currentY = verticalOffset;
+
+      for (final child in children) {
+        try {
+          final destinationConcept = child.destinationConcept;
+
+          // Double-check: Skip if destinationConcept is null
+          if (destinationConcept == null) {
+            print(
+              'Warning: destinationConcept is null for child ${child.code} in concept ${concept.code}',
+            );
+            continue;
+          }
+
+          if (!processedConcepts.contains(destinationConcept)) {
+            positions[destinationConcept] = Offset(currentX, currentY);
+            processedConcepts.add(destinationConcept);
+
+            // Recursively layout this concept's children
+            _layoutChildren(
+              destinationConcept,
+              positions,
+              processedConcepts,
+              horizontalOffset: currentX,
+              verticalOffset: currentY + verticalSpacing,
+            );
+
+            currentX += horizontalSpacing;
+          }
+        } catch (e) {
+          // Skip child if there was an error
+          print('Error processing child: $e');
+          continue;
+        }
+      }
+    } catch (e) {
+      // Handle any errors during layout
+      print('Error in _layoutChildren: $e');
     }
   }
 
@@ -121,36 +207,42 @@ class MasterDetailLayoutAlgorithm {
     Offset endPosition,
     Size conceptSize,
   ) {
-    final path = Path();
+    try {
+      final path = Path();
 
-    // Calculate actual start/end points from center of nodes
-    final startCenter =
-        startPosition + Offset(conceptSize.width / 2, conceptSize.height / 2);
-    final endCenter =
-        endPosition + Offset(conceptSize.width / 2, conceptSize.height / 2);
+      // Calculate actual start/end points from center of nodes
+      final startCenter =
+          startPosition + Offset(conceptSize.width / 2, conceptSize.height / 2);
+      final endCenter =
+          endPosition + Offset(conceptSize.width / 2, conceptSize.height / 2);
 
-    // Calculate control points for a smooth curve
-    final controlPoint1 = Offset(
-      startCenter.dx,
-      startCenter.dy + (endCenter.dy - startCenter.dy) / 2,
-    );
+      // Calculate control points for a smooth curve
+      final controlPoint1 = Offset(
+        startCenter.dx,
+        startCenter.dy + (endCenter.dy - startCenter.dy) / 2,
+      );
 
-    final controlPoint2 = Offset(
-      endCenter.dx,
-      startCenter.dy + (endCenter.dy - startCenter.dy) / 2,
-    );
+      final controlPoint2 = Offset(
+        endCenter.dx,
+        startCenter.dy + (endCenter.dy - startCenter.dy) / 2,
+      );
 
-    // Draw the curved path
-    path.moveTo(startCenter.dx, startCenter.dy);
-    path.cubicTo(
-      controlPoint1.dx,
-      controlPoint1.dy,
-      controlPoint2.dx,
-      controlPoint2.dy,
-      endCenter.dx,
-      endCenter.dy,
-    );
+      // Draw the curved path
+      path.moveTo(startCenter.dx, startCenter.dy);
+      path.cubicTo(
+        controlPoint1.dx,
+        controlPoint1.dy,
+        controlPoint2.dx,
+        controlPoint2.dy,
+        endCenter.dx,
+        endCenter.dy,
+      );
 
-    return path;
+      return path;
+    } catch (e) {
+      print('Error creating connection path: $e');
+      // Return empty path in case of error
+      return Path();
+    }
   }
 }
