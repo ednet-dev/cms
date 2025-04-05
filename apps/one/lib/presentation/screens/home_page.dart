@@ -15,7 +15,7 @@ import '../blocs/layout_event.dart';
 import '../blocs/layout_state.dart';
 import '../blocs/theme_block.dart';
 import '../blocs/theme_event.dart';
-import '../theme.dart';
+import '../theme/theme.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
 import '../widgets/layout/web/footer_widget.dart';
 import '../widgets/layout/web/left_sidebar_widget.dart';

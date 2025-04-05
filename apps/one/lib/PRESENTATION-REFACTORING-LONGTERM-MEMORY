@@ -1,0 +1,162 @@
+# EDNet One Presentation Layer Refactoring Plan
+
+## Refactoring Workflow
+
+### Principles
+1. **Healthy State First**: All refactoring must start from a healthy state where the application can run from main.dart and render correctly in browser.
+2. **Maintain Buildability**: After each logical refactoring step, ensure the application still builds successfully with Flutter.
+3. **Incremental Changes**: Make small, focused changes rather than large rewrites to maintain stability.
+4. **Test Frequently**: Run the application after each significant change to verify functionality.
+
+### Workflow Cycle
+1. **Verify Starting State**: Ensure the application is in a healthy state before beginning refactoring.
+2. **Select Refactoring Task**: Choose a specific task from the plan below, focusing on one logical change.
+3. **Implement Changes**: Make the necessary code changes to complete the selected task.
+4. **Build and Test**: Run `flutter build web` to verify the build succeeds.
+5. **Verify Functionality**: Run the application to ensure it works as expected.
+6. **Commit Changes**: Create a semantic commit scoped to "one" with a descriptive message of what was changed.
+7. **Update Progress**: Mark the completed task in this document and update the current focus.
+8. **Repeat**: Begin the next refactoring task from step 1.
+
+### Commit Message Format
+Format: `<type>(one): <description>`
+
+Types:
+- `refactor`: Code changes that neither fix a bug nor add a feature
+- `feat`: Addition of a new feature
+- `fix`: Bug fixes
+- `docs`: Documentation changes
+- `style`: Formatting, missing semicolons, etc; no code change
+- `test`: Adding or refactoring tests; no production code change
+
+Example: `refactor(one): Move theme files to dedicated theme directory`
+
+## Overview
+This document outlines a comprehensive refactoring plan for the presentation layer of the EDNet One application. The plan is organized into phases to allow incremental improvements without disrupting the existing functionality.
+
+## Phase 1: Project Structure Reorganization
+
+### Step 1.1: Create New Folder Structure
+- [x] Create the following folder structure:
+  ```
+  presentation/
+  ├── pages/          # Container components (smart)
+  ├── widgets/        # Reusable presentational components (dumb) 
+  ├── state/          # State management
+  │   ├── blocs/      # BLoC pattern implementations
+  │   ├── models/     # UI models/DTOs
+  │   └── providers/  # Service providers
+  ├── layouts/        # Layout components and strategies
+  ├── navigation/     # Navigation service and routes
+  └── theme/          # Theme configuration
+  ```
+
+### Step 1.2: Move and Rename Theme-Related Files
+- [x] Move theme.dart to presentation/theme/
+- [x] Create theme_constants.dart file for all theme constants
+- [x] Extract theme-related logic from blocs to a dedicated service
+
+### Step 1.3: Reorganize Widget Files
+- [  ] Move screens with business logic to presentation/pages/
+- [  ] Rename inconsistently named widget files (standardize naming convention)
+- [  ] Move purely presentational widgets to presentation/widgets/
+- [  ] Separate layout components to presentation/layouts/
+
+## Phase 2: State Management Refactoring
+
+### Step 2.1: Create UI Model Layer (Domain Abstraction)
+- [  ] Define UI model classes in presentation/state/models/
+- [  ] Create mappers between domain models and UI models
+- [  ] Update references to use UI models instead of domain models directly
+
+### Step 2.2: Refactor BLoC Implementation
+- [  ] Split DomainBloc into smaller, focused blocs:
+  - [  ] DomainSelectionBloc (domain selection logic)
+  - [  ] ModelSelectionBloc (model selection logic)
+  - [  ] ConceptSelectionBloc (concept selection logic)
+- [  ] Organize events, states, and blocs using a feature-based structure
+- [  ] Implement proper dependency injection for blocs
+
+### Step 2.3: Create Service Providers
+- [  ] Create a DomainService to handle domain-related operations
+- [  ] Create a NavigationService for consistent navigation handling
+- [x] Create a ThemeService for theme management
+
+## Phase 3: Component Decomposition and Cleanup
+
+### Step 3.1: Break Down Large Widgets
+- [  ] Refactor entity_widget.dart (859 lines) into smaller components:
+  - [  ] AttributeWidgetFactory for creating attribute widgets
+  - [  ] EntityAttributes component for rendering attributes
+  - [  ] EntityRelationships component for rendering relationships
+  - [  ] EntityHeader component for rendering the header
+- [  ] Refactor home_page.dart into smaller components
+- [  ] Refactor meta_domain_canvas.dart and meta_domain_painter.dart
+
+### Step 3.2: Standardize Component Interfaces
+- [  ] Create consistent naming conventions (Page for container components, Widget for presentational)
+- [  ] Standardize prop passing and callback patterns
+- [  ] Apply composition over inheritance where appropriate
+
+### Step 3.3: Code Cleanup
+- [  ] Remove commented-out code
+- [  ] Add proper error handling and null checking
+- [  ] Improve documentation and add widget documentation headers
+- [  ] Extract magic numbers and string constants to constants files
+
+## Phase 4: Graph and Layout Refactoring
+
+### Step 4.1: Reorganize Graph Implementation
+- [  ] Create a unified graph module in layouts/graph/
+- [  ] Standardize algorithm interfaces
+- [  ] Improve separation of concerns in graph code
+
+### Step 4.2: Optimize Layout Algorithms
+- [  ] Refactor layout algorithms for better performance
+- [  ] Add caching mechanisms for layout calculations
+- [  ] Implement lazy rendering for large graphs
+
+### Step 4.3: Create Abstraction for Decorators
+- [  ] Standardize decorator interfaces
+- [  ] Implement composable decorator pattern
+- [  ] Add documentation for creating custom decorators
+
+## Phase 5: Navigation and Routing
+
+### Step 5.1: Implement Consistent Navigation
+- [  ] Create a route definition system in navigation/routes.dart
+- [  ] Implement named routes for all pages
+- [  ] Add route parameter handling
+
+### Step 5.2: Add Deep Linking Support
+- [  ] Implement URL-based navigation
+- [  ] Add bookmark and sharing functionality
+- [  ] Support state restoration
+
+## Phase 6: Testing and Documentation
+
+### Step 6.1: Add Unit Tests
+- [  ] Create tests for UI model mappers
+- [  ] Create tests for BLoC logic
+- [  ] Create tests for service providers
+
+### Step 6.2: Add Widget Tests
+- [  ] Create tests for key presentational components
+- [  ] Create tests for page components
+- [  ] Create tests for navigation flows
+
+### Step 6.3: Complete Documentation
+- [  ] Document component usage guidelines
+- [  ] Document state management patterns
+- [  ] Create example usage for custom components
+
+## Progress Tracking
+- Phase 1: In Progress (2/3 steps completed)
+- Phase 2: In Progress (1/3 steps completed)
+- Phase 3: Not started
+- Phase 4: Not started
+- Phase 5: Not started
+- Phase 6: Not started
+
+## Current Focus
+- Phase 1, Step 1.3: Reorganize Widget Files by moving screens to the pages directory and other files to appropriate directories.
