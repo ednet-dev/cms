@@ -1,17 +1,18 @@
-
+/*  */
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_cms/ednet_cms.dart';
 
 import '../widgets/layout/web/header_widget.dart';
+import '../widgets/domain/entity_widget.dart';
 
-class ModelDetailScreen extends StatelessWidget {
+class ModelDetailScreenScaffold extends StatelessWidget {
   final Domain domain;
   final Model model;
   final List<String> path;
   final void Function(Entity entity) onEntitySelected;
 
-  ModelDetailScreen({
+  const ModelDetailScreenScaffold({
+    super.key,
     required this.domain,
     required this.model,
     required this.path,
@@ -45,9 +46,7 @@ class ModelDetailScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => EntityDetailScreen(
-                entity: entity,
-              ),
+              builder: (context) => EntityDetailScreen(entity: entity),
             ),
           );
         },

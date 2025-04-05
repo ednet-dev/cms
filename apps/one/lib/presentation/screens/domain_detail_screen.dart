@@ -1,16 +1,19 @@
 import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/presentation/widgets/domain/entity_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/layout/web/header_widget.dart';
-import 'model_detail_screen.dart';
 
 class DomainDetailScreen extends StatelessWidget {
   final Domain domain;
   final List<String> path;
   final void Function(Model model) onModelSelected;
 
-  DomainDetailScreen({required this.domain, required this.onModelSelected})
-      : path = ['Home', domain.code];
+  DomainDetailScreen({
+    super.key,
+    required this.domain,
+    required this.onModelSelected,
+  }) : path = ['Home', domain.code];
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +33,22 @@ class DomainDetailScreen extends StatelessWidget {
           onBookmark: () {},
         ),
       ),
-      body: cms.ModelsWidget(
+      body: ModelsWidget(
         models: domain.models,
         onModelSelected: (model) {
           onModelSelected(model);
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ModelDetailScreen(
-                domain: domain,
-                model: model,
-                path: path + [model.code],
-                onEntitySelected: (entity) {
-                  // Handle entity selection
-                },
-              ),
+              builder:
+                  (context) => ModelDetailScreen(
+                    domain: domain,
+                    model: model,
+                    // path: path + [model.code],
+                    // onEntitySelected: (entity) {
+                    //   // Handle entity selection
+                    // },
+                  ),
             ),
           );
         },
