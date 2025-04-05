@@ -1,0 +1,27 @@
+name: ednet_flow
+description: EDNetFlow - Domain visualization toolkit supporting EventStorming, model graphs, and workflow modeling
+version: 0.1.0
+homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_flow
+
+environment:
+  sdk: ">=3.7.0 <4.0.0"
+
+dependencies:
+  ednet_core: ^1.0.0
+  graphview: ^1.2.0
+  test: ^1.25.8
+
+dev_dependencies:
+  build_web_compilers: ^4.0.11
+  build_runner: ^2.4.13
+  flutter_test:
+    sdk: flutter
+
+# Optional dependencies that are only used when running in Flutter environments
+# These dependencies are not required for the core functionality
+flutter_dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.22.0
+  flame_svg: ^1.11.3
+  flutter_svg: ^2.0.10+1
