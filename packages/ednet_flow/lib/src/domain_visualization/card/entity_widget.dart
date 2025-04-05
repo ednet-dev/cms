@@ -1,4 +1,6 @@
-part of '../../../../cms/lib/ednet_cms.dart';
+// ignore_for_file: prefer_single_quotes
+
+part of ednet_flow;
 
 class StringAttributeWidget extends StatelessWidget {
   final String label;
@@ -76,7 +78,7 @@ class DoubleAttributeWidget extends StatelessWidget {
           labelText: label,
         ).applyDefaults(Theme.of(context).inputDecorationTheme),
         controller: TextEditingController(text: value.toString()),
-        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
         onChanged: (text) => onChanged(double.tryParse(text) ?? 0.0),
       ),
     );
@@ -136,7 +138,7 @@ class DateTimeAttributeWidget extends StatelessWidget {
           Text(label, style: Theme.of(context).textTheme.bodyLarge),
           TextButton(
             onPressed: () async {
-              DateTime? picked = await showDatePicker(
+              final picked = await showDatePicker(
                 context: context,
                 initialDate: value,
                 firstDate: DateTime(2000),
@@ -222,7 +224,7 @@ class EntityWidget extends StatelessWidget {
       // access concept
       entity.concept;
     } catch (e) {
-      return Center(
+      return const Center(
         child: Text(
           "*** concept is not set ***\nSee also: https://flutter.dev/docs/testing/errors",
           style: TextStyle(color: Colors.yellow, fontSize: 16),
@@ -231,13 +233,13 @@ class EntityWidget extends StatelessWidget {
     }
 
     return Card(
-      margin: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
             ...entity.concept.attributes.map((attribute) {
-              var value = entity.getAttribute(attribute.code);
+              final value = entity.getAttribute(attribute.code);
               return _buildAttributeWidget(
                 attribute as Attribute,
                 value,
@@ -245,7 +247,7 @@ class EntityWidget extends StatelessWidget {
               );
             }),
             ...entity.concept.parents.map((parent) {
-              var parentEntity = entity.getParent(parent.code) as Entity;
+              final parentEntity = entity.getParent(parent.code) as Entity;
               return ListTile(
                 title: Text(getTitle(parentEntity)),
                 onTap: () {
@@ -256,7 +258,7 @@ class EntityWidget extends StatelessWidget {
               );
             }),
             ...entity.concept.children.map((child) {
-              var childEntities = entity.getChild(child.code) as Entities?;
+              final childEntities = entity.getChild(child.code) as Entities?;
               return childEntities != null
                   ? ExpansionTile(
                     title: Text(
@@ -288,7 +290,7 @@ class EntityWidget extends StatelessWidget {
 
   Widget _buildAttributeWidget(
     Attribute attribute,
-    dynamic value,
+    value,
     BuildContext context,
   ) {
     switch (attribute.type?.code) {
@@ -379,7 +381,7 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
     setState(() {
       _filteredEntities =
           widget.entities.where((entity) {
-                for (var filter in _filters) {
+                for (final filter in _filters) {
                   if (!_matchesFilter(entity as Entity, filter)) {
                     return false;
                   }
@@ -508,9 +510,9 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Dashboard')),
+      appBar: AppBar(title: const Text('Dashboard')),
       body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
         ),
         itemCount: domains.length,
@@ -542,8 +544,8 @@ class DomainTile extends StatelessWidget {
         },
         child: Column(
           children: [
-            Icon(Icons.domain, size: 100),
-            Text(domain.code, style: TextStyle(fontSize: 24)),
+            const Icon(Icons.domain, size: 100),
+            Text(domain.code, style: const TextStyle(fontSize: 24)),
             Text(domain.description),
           ],
         ),
@@ -593,8 +595,8 @@ class ModelTile extends StatelessWidget {
         },
         child: Column(
           children: [
-            Icon(Icons.model_training, size: 100),
-            Text(model.code, style: TextStyle(fontSize: 24)),
+            const Icon(Icons.model_training, size: 100),
+            Text(model.code, style: const TextStyle(fontSize: 24)),
             Text(model.description ?? ''),
           ],
         ),
@@ -659,8 +661,8 @@ class AggregateTile extends StatelessWidget {
         },
         child: Column(
           children: [
-            Icon(Icons.adjust, size: 100),
-            Text(concept.code, style: TextStyle(fontSize: 24)),
+            const Icon(Icons.adjust, size: 100),
+            Text(concept.code, style: const TextStyle(fontSize: 24)),
             Text(concept.entry.toString()),
           ],
         ),
@@ -731,8 +733,8 @@ class AttributeTile extends StatelessWidget {
         },
         child: Column(
           children: [
-            Icon(Icons.adjust, size: 100),
-            Text(attribute.code, style: TextStyle(fontSize: 24)),
+            const Icon(Icons.adjust, size: 100),
+            Text(attribute.code, style: const TextStyle(fontSize: 24)),
             Text(attribute.getStringFromAttribute(attribute.code).toString()),
           ],
         ),
@@ -773,17 +775,15 @@ class AttributeDetailScreen extends StatelessWidget {
 
 class BookmarkManager {
   static const String _bookmarkKey = 'bookmarks';
-
   Future<List<Bookmark>> getBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(_bookmarkKey) == false
-        ? []
-        : []
-            .map(
-              (bookmark) =>
-                  Bookmark(url: bookmark['url'], title: bookmark['title']),
-            )
-            .toList();
+    final bookmarkStrings = prefs.getStringList(_bookmarkKey);
+    if (bookmarkStrings == null) return [];
+
+    return bookmarkStrings.map((bookmarkJson) {
+      final bookmark = Map<String, dynamic>.from(json.decode(bookmarkJson));
+      return Bookmark(url: bookmark['url'], title: bookmark['title']);
+    }).toList();
   }
 
   Future<void> addBookmark(Bookmark bookmark) async {
@@ -792,17 +792,27 @@ class BookmarkManager {
     bookmarks.add(bookmark);
     await prefs.setStringList(
       _bookmarkKey,
-      bookmarks.map((bookmark) => bookmark.toJson()).toList(),
+      bookmarks
+          .map(
+            (bookmark) =>
+                json.encode({'url': bookmark.url, 'title': bookmark.title}),
+          )
+          .toList(),
     );
   }
 
-  Future<void> removeBookmark(String bookmark) async {
+  Future<void> removeBookmark(String url) async {
     final prefs = await SharedPreferences.getInstance();
     final bookmarks = await getBookmarks();
-    bookmarks.remove(bookmark);
+    bookmarks.removeWhere((bookmark) => bookmark.url == url);
     await prefs.setStringList(
       _bookmarkKey,
-      bookmarks.map((bookmark) => bookmark.toJson()).toList(),
+      bookmarks
+          .map(
+            (bookmark) =>
+                json.encode({'url': bookmark.url, 'title': bookmark.title}),
+          )
+          .toList(),
     );
   }
 }

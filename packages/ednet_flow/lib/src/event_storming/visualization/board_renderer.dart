@@ -1,10 +1,7 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
-
-
-
+part of ednet_flow;
 
 /// Interface for rendering an Event Storming board.
 ///

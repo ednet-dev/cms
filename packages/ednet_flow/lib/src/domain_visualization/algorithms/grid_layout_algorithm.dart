@@ -1,12 +1,7 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
-
-
-
-
-
+part of ednet_flow;
 
 /// A layout algorithm that positions nodes in a grid pattern.
 ///

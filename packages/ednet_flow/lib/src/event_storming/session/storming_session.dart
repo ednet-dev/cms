@@ -1,15 +1,9 @@
 // This file is part of the EDNetFlow library.
 // File updated with proper imports by update_imports.dart script.
 
-import 'package:ednet_flow/ednet_flow.dart';
-import 'package:ednet_flow/src/event_storming/model/element.dart';
-
+part of ednet_flow;
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
-
-
-
-
 
 /// Represents an Event Storming session.
 ///

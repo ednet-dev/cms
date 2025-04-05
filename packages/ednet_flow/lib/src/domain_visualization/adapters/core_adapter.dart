@@ -1,11 +1,7 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
-import 'package:ednet_core/ednet_core.dart';
-
-
-
+part of ednet_flow;
 
 /// Adapter for converting between ednet_core domain models and visualization components.
 ///

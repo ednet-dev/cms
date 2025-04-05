@@ -1,14 +1,9 @@
 // This file is part of the EDNetFlow library.
 // File updated with proper imports by update_imports.dart script.
 
-import 'package:ednet_flow/ednet_flow.dart';
-
+part of ednet_flow;
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
-
-
-
-
 
 /// Defines the types of nodes that can exist in a domain model graph.
 ///

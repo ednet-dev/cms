@@ -7,8 +7,7 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  ednet_core:
-    path: ../core
+  ednet_core: ^1.0.0
   meta: ^1.8.0
   shelf: ^1.4.0
   shelf_router: ^1.1.3

@@ -1,10 +1,7 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
-
-
-
+part of ednet_flow;
 
 /// Base class for process flow modeling.
 ///
