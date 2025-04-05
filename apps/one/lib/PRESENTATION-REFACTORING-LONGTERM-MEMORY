@@ -57,10 +57,10 @@ This document outlines a comprehensive refactoring plan for the presentation lay
 - [x] Extract theme-related logic from blocs to a dedicated service
 
 ### Step 1.3: Reorganize Widget Files
-- [  ] Move screens with business logic to presentation/pages/
-- [  ] Rename inconsistently named widget files (standardize naming convention)
-- [  ] Move purely presentational widgets to presentation/widgets/
-- [  ] Separate layout components to presentation/layouts/
+- [x] Move screens with business logic to presentation/pages/
+- [x] Rename inconsistently named widget files (standardize naming convention)
+- [x] Move purely presentational widgets to presentation/widgets/
+- [x] Separate layout components to presentation/layouts/
 
 ## Phase 2: State Management Refactoring
 
@@ -70,6 +70,7 @@ This document outlines a comprehensive refactoring plan for the presentation lay
 - [  ] Update references to use UI models instead of domain models directly
 
 ### Step 2.2: Refactor BLoC Implementation
+- [x] Move bloc files to state/blocs directory
 - [  ] Split DomainBloc into smaller, focused blocs:
   - [  ] DomainSelectionBloc (domain selection logic)
   - [  ] ModelSelectionBloc (model selection logic)
@@ -151,12 +152,12 @@ This document outlines a comprehensive refactoring plan for the presentation lay
 - [  ] Create example usage for custom components
 
 ## Progress Tracking
-- Phase 1: In Progress (2/3 steps completed)
-- Phase 2: In Progress (1/3 steps completed)
+- Phase 1: Complete (3/3 steps completed)
+- Phase 2: In Progress (2/3 steps completed)
 - Phase 3: Not started
 - Phase 4: Not started
 - Phase 5: Not started
 - Phase 6: Not started
 
 ## Current Focus
-- Phase 1, Step 1.3: Reorganize Widget Files by moving screens to the pages directory and other files to appropriate directories.
+- Phase 2, Step 2.2: Refactor BLoC Implementation by splitting DomainBloc into smaller, focused blocs
