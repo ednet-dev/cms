@@ -6,6 +6,7 @@ import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selec
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
+import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
 
 import 'service_locator.dart';
 
@@ -29,6 +30,7 @@ class AppBlocProviders {
               sl<ConceptSelectionBloc>()
                 ..add(InitializeConceptSelectionEvent()),
     ),
+    BlocProvider<ThemeBloc>(create: (context) => sl<ThemeBloc>()),
   ];
 
   /// Wraps a widget with all the necessary BlocProviders

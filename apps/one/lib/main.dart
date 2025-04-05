@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'presentation/di/bloc_providers.dart';
 import 'presentation/di/service_locator.dart' as di;
 import 'presentation/navigation/navigation_service.dart';
 import 'presentation/pages/home_page.dart';
+import 'presentation/state/blocs/theme_bloc/theme_bloc.dart';
+import 'presentation/state/blocs/theme_bloc/theme_state.dart';
 import 'presentation/theme/theme_service.dart';
 
 void main() async {
@@ -34,17 +37,16 @@ class MyAppState extends State<MyApp> {
     // Get the navigation service
     final NavigationService navigationService = di.sl<NavigationService>();
 
-    // Get the theme service
-    final ThemeService themeService = di.sl<ThemeService>();
-
     return AppBlocProviders.wrapWithProviders(
-      MaterialApp(
-        title: 'EDNet One',
-        theme: themeService.lightTheme,
-        darkTheme: themeService.darkTheme,
-        themeMode: themeService.currentThemeMode,
-        navigatorKey: navigationService.navigatorKey,
-        home: HomePage(title: 'EDNet One'),
+      BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, themeState) {
+          return MaterialApp(
+            title: 'EDNet One',
+            theme: themeState.themeData,
+            navigatorKey: navigationService.navigatorKey,
+            home: HomePage(title: 'EDNet One'),
+          );
+        },
       ),
     );
   }

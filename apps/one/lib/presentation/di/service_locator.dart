@@ -1,11 +1,12 @@
 import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/generated/one_application.dart';
 import 'package:ednet_one/presentation/navigation/navigation_service.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
 import 'package:ednet_one/presentation/state/providers/domain_service.dart';
 import 'package:ednet_one/presentation/theme/theme_service.dart';
-import 'package:ednet_one/staging/one_application.dart';
 import 'package:get_it/get_it.dart';
 
 /// Global service locator instance
@@ -62,4 +63,7 @@ void _registerBlocs() {
   sl.registerFactory<ConceptSelectionBloc>(
     () => ConceptSelectionBloc(app: sl<IOneApplication>()),
   );
+
+  // Theme Bloc
+  sl.registerFactory<ThemeBloc>(() => ThemeBloc());
 }
