@@ -14,10 +14,10 @@ class OneApplication implements IOneApplication {
   }
 
   void _initializeDomains() {
-        // project core
+    // project core
     final projectCoreRepo = ptce.ProjectCoreRepo();
-    ptce.ProjectDomain projectCoreDomain = projectCoreRepo
-        .getDomainModels("Project") as ptce.ProjectDomain;
+    ptce.ProjectDomain projectCoreDomain =
+        projectCoreRepo.getDomainModels("Project") as ptce.ProjectDomain;
     ptce.CoreModel coreModel =
         projectCoreDomain.getModelEntries("Core") as ptce.CoreModel;
     coreModel.init();
@@ -25,17 +25,17 @@ class OneApplication implements IOneApplication {
     _domains.add(projectCoreDomain.domain);
     _domainModelsTable['project_core'] = projectCoreDomain;
 
-// INIT PLACEHOLDER
+    // INIT PLACEHOLDER
   }
-  
+
   @override
   DomainModels getDomainModels(String domain, String model) {
     final domainModel = _domainModelsTable['${domain}_$model'];
-  
+
     if (domainModel == null) {
       throw Exception('Domain model not found: $domain, $model');
     }
-  
+
     return domainModel;
   }
 
@@ -55,8 +55,9 @@ class OneApplication implements IOneApplication {
       if (!targetDomain.models.any((m) => m.code == model.code)) {
         targetDomain.models.add(model);
       } else {
-        var targetModel =
-            targetDomain.models.singleWhere((m) => m.code == model.code);
+        var targetModel = targetDomain.models.singleWhere(
+          (m) => m.code == model.code,
+        );
         _mergeModelEntries(targetModel, model);
       }
     }

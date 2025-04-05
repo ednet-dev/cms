@@ -31,19 +31,23 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
       if (selectedDomain.models.isNotEmpty) {
         selectedModel = selectedDomain.models.first;
         selectedEntries = selectedModel.concepts;
-        domainModelGraph =
-            DomainModelGraph(domain: selectedDomain, model: selectedModel);
+        domainModelGraph = DomainModelGraph(
+          domain: selectedDomain,
+          model: selectedModel,
+        );
       }
     }
 
-    emit(state.copyWith(
-      selectedDomain: selectedDomain,
-      selectedModel: selectedModel,
-      selectedEntries: selectedEntries,
-      selectedEntities: selectedEntities,
-      selectedConcept: selectedConcept,
-      domainModelGraph: domainModelGraph,
-    ));
+    emit(
+      state.copyWith(
+        selectedDomain: selectedDomain,
+        selectedModel: selectedModel,
+        selectedEntries: selectedEntries,
+        selectedEntities: selectedEntities,
+        selectedConcept: selectedConcept,
+        domainModelGraph: domainModelGraph,
+      ),
+    );
   }
 
   void _onSelectDomain(SelectDomainEvent event, Emitter<DomainState> emit) {
@@ -59,19 +63,23 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
       selectedEntries =
           selectedModel.concepts.isNotEmpty ? selectedModel.concepts : null;
       if (selectedModel != null) {
-        domainModelGraph =
-            DomainModelGraph(domain: domain, model: selectedModel);
+        domainModelGraph = DomainModelGraph(
+          domain: domain,
+          model: selectedModel,
+        );
       }
     }
 
-    emit(state.copyWith(
-      selectedDomain: domain,
-      selectedModel: selectedModel,
-      selectedEntries: selectedEntries,
-      selectedEntities: selectedEntities,
-      selectedConcept: selectedConcept,
-      domainModelGraph: domainModelGraph,
-    ));
+    emit(
+      state.copyWith(
+        selectedDomain: domain,
+        selectedModel: selectedModel,
+        selectedEntries: selectedEntries,
+        selectedEntities: selectedEntities,
+        selectedConcept: selectedConcept,
+        domainModelGraph: domainModelGraph,
+      ),
+    );
   }
 
   void _onSelectModel(SelectModelEvent event, Emitter<DomainState> emit) {
@@ -81,16 +89,20 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     Model model = event.model;
     Entities? selectedEntries =
         model.concepts.isNotEmpty ? model.getOrderedEntryConcepts() : null;
-    DomainModelGraph? domainModelGraph =
-        DomainModelGraph(domain: domain, model: model);
+    DomainModelGraph? domainModelGraph = DomainModelGraph(
+      domain: domain,
+      model: model,
+    );
 
-    emit(state.copyWith(
-      selectedModel: model,
-      selectedEntries: selectedEntries,
-      selectedEntities: null,
-      selectedConcept: null,
-      domainModelGraph: domainModelGraph,
-    ));
+    emit(
+      state.copyWith(
+        selectedModel: model,
+        selectedEntries: selectedEntries,
+        selectedEntities: null,
+        selectedConcept: null,
+        domainModelGraph: domainModelGraph,
+      ),
+    );
   }
 
   void _onSelectConcept(SelectConceptEvent event, Emitter<DomainState> emit) {
@@ -99,15 +111,14 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     final selectedModel = state.selectedModel;
 
     if (selectedDomain == null || selectedModel == null) return;
-    var domainModel = app.getDomainModels(selectedDomain.codeFirstLetterLower,
-        selectedModel.codeFirstLetterLower);
+    var domainModel = app.getDomainModels(
+      selectedDomain.codeFirstLetterLower,
+      selectedModel.codeFirstLetterLower,
+    );
     var modelEntries = domainModel.getModelEntries(concept.model.code);
     var entry = modelEntries?.getEntry(concept.code);
 
-    emit(state.copyWith(
-      selectedConcept: concept,
-      selectedEntities: entry,
-    ));
+    emit(state.copyWith(selectedConcept: concept, selectedEntities: entry));
   }
 
   void _onExportDSL(ExportDSLEvent event, Emitter<DomainState> emit) {
@@ -116,7 +127,9 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
   }
 
   void _onGenerateCode(
-      GenerateCodeEvent event, Emitter<DomainState> emit) async {
+    GenerateCodeEvent event,
+    Emitter<DomainState> emit,
+  ) async {
     // Implement code generation and update state if needed
     // This might call external code generation logic and upon completion may show a message
   }

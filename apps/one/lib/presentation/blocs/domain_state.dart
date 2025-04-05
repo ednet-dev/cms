@@ -19,13 +19,13 @@ class DomainState {
   });
 
   factory DomainState.initial() => DomainState(
-        selectedDomain: null,
-        selectedModel: null,
-        selectedEntries: null,
-        selectedEntities: null,
-        selectedConcept: null,
-        domainModelGraph: null,
-      );
+    selectedDomain: null,
+    selectedModel: null,
+    selectedEntries: null,
+    selectedEntities: null,
+    selectedConcept: null,
+    domainModelGraph: null,
+  );
 
   DomainState copyWith({
     Domain? selectedDomain,
