@@ -6,198 +6,118 @@ psychology, and digital product limitations to create an intuitive content manag
 
 ### Development Strategy
 
-We will follow iterative refinement and enhancement of features, ensuring a robust and adaptive CMS.
+We follow iterative refinement and enhancement of features, ensuring a robust and adaptive CMS.
 
-## Milestones
+## In-Progress & Future Milestones
 
-### 0.1.0 Demonstration of Idea - IN PROGRESS
+### 0.1.0 Domain Model Foundation - IN PROGRESS
 
-- **Goal**: Establish a basic CMS framework for EDNet CMS.
+- **Goal**: Establish the foundational domain model framework for EDNet CMS.
   - [x] Define Roadmap and first Spiral MVP.
   - [x] Create a basic CMS for the EDNet CMS.
-    - [x] Implement a use case for displaying simple accessible text.
-      - [x] Text management.
-      - [ ] Accessibility features.
-    - [ ] Implement a simple registration and login system.
-    - [ ] Welcome returning or authenticated users.
-    - [x] Enable user evolve content model organically.
-      - [x] Domain model
-        - [x] Shared across devices and platforms.
-        - [ ] Collaborative Real-time editing.
-        - [ ] Versioning and rollback.
-        - [x] User-defined content concepts.
-          - [x] User-defined concept attributes.
-          - [x] User-defined concept commands.
-          - [x] User-defined concept queries.
-          - [x] User-defined concept events.
-          - [x] User-defined concept policies.
-          - [x] User-defined concept workflows.
-          - [x] User-defined concept relationships.
-        - [x] User-defined concept relationships.
-    - [ ] In vivo domain model editing via canvas graph editor.
-      - [x] Domain model editing.
-        - [x] Concept selection
-        - [x] Domain model CRUD operations.
-      - [x] Domain model validation.
-      - [ ] Domain model visualization.
-        - [ ] force-directed graph layout.
-        - [ ] hierarchical graph layout.
-        - [ ] radial graph layout.
-        - [ ] grid graph layout.
-        - [ ] organic graph layout.
-        - [ ] circular graph layout.
-        - [ ] tree graph layout.
-        - [ ] dijkstra graph layout.
-        - [ ] network flow graph layout.
-        - [ ] ranked embedding graph layout.
-      - [x] Domain model export.
-      - [x] Domain model import.
-      - [ ] Domain model sharing.
-      - [ ] Domain model collaboration.
-      - [ ] Domain model versioning.
-      - [ ] Domain model rollback.
-      - [ ] Domain model evolution.
+  - [x] Enable user to evolve content model organically.
+  - [ ] Implement accessibility features.
+  - [ ] Implement a simple registration and login system.
+  - [ ] Welcome returning or authenticated users.
+  - [ ] Setup CI/CD pipeline for Flutter Web.
+  - [ ] Implement in vivo domain model editing via canvas graph editor with multiple visualization layouts.
+  - [ ] Support domain model sharing, collaboration, versioning, and evolution.
 
-  - [ ] Setup CI/CD:
-    - [ ] Basic CI/CD pipeline.
-    - [ ] CI/CD pipeline for Flutter Web.
+### 0.2.0 Content Types - IN PROGRESS
 
-- **Goal**: Ensure data integrity and recovery.
+- **Goal**: Support various content types in an accessible way.
+  - [ ] Implement image handling and display.
+  - [ ] Implement video playback and management.
+  - [ ] Implement audio playback and management.
+  - [ ] Support documents and complex text formatting.
   - [ ] Implement backup, restore, import, and export functionalities.
-
-- **Goal**: Improve content discoverability.
-  - [ ] Implement links, tags, and categories.
+  - [ ] Implement links, tags, and categories for better discoverability.
   - [ ] Develop a robust search functionality.
 
-### 0.2.0 Support accessible Images
-
-- **Goal**: Integrate image support into the CMS.
-  - [ ] Implement image handling and display.
-
-### 0.3.0 Support accessible Videos
-
-- **Goal**: Expand CMS capabilities to include video content.
-  - [ ] Implement video playback and management.
-
-### 0.4.0 Support accessible Audio
-
-- **Goal**: Add audio support for a richer media experience.
-  - [ ] Implement audio playback and management.
-
-### 0.5.0 Support accessible Complex Text and Binary Content
-
-- **Goal**: Enhance text and binary content handling.
-  - [ ] Support documents and complex text formatting.
-
-### 0.6.0 Authorization and Principals
+### 0.3.0 Security & Permissions - IN PROGRESS
 
 - **Goal**: Establish a secure user management system.
   - [ ] Define users, roles, and permissions.
+  - [ ] Implement security measures and protocols.
+  - [ ] Strengthen security for unsecure environments.
 
-### 0.7.0 Content Management - accessible UI/UX Design and Patterns - IN PROGRESS
+### 0.4.0 User Experience - IN PROGRESS
 
 - **Goal**: Enhance user interface and experience.
   - [ ] Implement menus, widgets, themes, and notifications.
+  - [ ] Basic gamification framework.
+  - [ ] Achievement systems and user progression tracking.
+  - [ ] Reward mechanisms.
 
-### 0.8.0 Artificial Intelligence - IN PROGRESS
-
-- **Goal**: Integrate AI for advanced accessible content management features.
-  - [ ] Basic AI integration
-  - [ ] Advanced AI content analysis
-  - [ ] AI-powered content recommendations
-  - [ ] AI-assisted content creation
-
-### 0.9.0 Gamification - IN PROGRESS
-
-- **Goal**: Enhance user engagement through accessible gamification.
-  - [ ] Basic gamification framework
-  - [ ] Achievement systems
-  - [ ] User progression tracking
-  - [ ] Reward mechanisms
-
-### 0.10.0 Extendability - COMPLETED
-
-- **Goal**: Enable extensibility through plugins.
-  - [ ] Develop plugin architecture and settings management.
-
-### 0.11.0 Visibility and Transparency - COMPLETED
-
-- **Goal**: Incorporate accessible analytics for content insights.
-  - [x] Implement comprehensive analytics tools.
-
-### 0.12.0 Security in Unsecure Environments - IN PROGRESS
-
-- **Goal**: Strengthen security features.
-  - [ ] Implement security measures and protocols.
-
-### 0.13.0 Scalability
+### 0.5.0 Platform Integration - IN PROGRESS
 
 - **Goal**: Prepare the system for large-scale deployment.
   - [ ] Implement logs, API, CLI, Docker, Kubernetes, and CI/CD improvements.
+  - [ ] Develop plugin architecture and settings management.
+  - [ ] Implement comprehensive analytics tools.
 
-### 0.14.0 Blockchain - IN PROGRESS
+### 0.6.0 Advanced Features - IN PROGRESS
 
-- **Goal**: Investigate blockchain for content management and security.
-  - [ ] Initial blockchain integration research
-  - [ ] Implement blockchain-based content verification
-  - [ ] Decentralized content storage solutions
-  - [ ] Smart contract integration for content rights management
+- **Goal**: Integrate advanced technologies for enhanced functionality.
+  - [ ] Basic AI integration.
+  - [ ] Advanced AI content analysis and recommendations.
+  - [ ] Initial blockchain integration research.
+  - [ ] Blockchain-based content verification.
+  - [ ] Implement P2P capabilities for distributed content management.
+  - [ ] Enhance domain modeling with Event Storming capabilities.
 
-### 0.15.0 Community and Communication - IN PROGRESS
-
-- **Goal**: Build a vibrant community around EDNet CMS.
-  - [x] Develop documentation, tutorials, examples, and community engagement strategies.
-
-### 1.0.0 Release - IN PROGRESS
+### 1.0.0 Official Release - PLANNED
 
 - **Goal**: Officially launch EDNet CMS.
-  - [ ] Provide support, marketing, finance, and legal structures.
+  - [ ] Finalize core functionality and fix remaining issues.
+  - [ ] Complete comprehensive documentation.
+  - [ ] Establish support, marketing, finance, and legal structures.
+  - [ ] Create official website and community resources.
 
 ## Long-term Vision
 
-### 1.1.0 Enhanced Query Capabilities - IN PROGRESS
-
-- **Goal**: Implement powerful expression-based query system.
-  - [ ] Composable expressions for complex queries
-  - [ ] Type-safety in query building
-  - [ ] Relationship traversal in queries
-  - [ ] Advanced filtering capabilities
-  - [ ] Integration with Drift database
-
-### 1.2.0 P2P Integration - IN PROGRESS
-
-- **Goal**: Implement peer-to-peer capabilities for distributed content management.
-  - [x] Basic P2P architecture setup
-  - [ ] Secure P2P content sharing
-  - [ ] Distributed content verification
-  - [ ] Offline-first capabilities
-
-### 1.3.0 Event Storming Integration - IN PROGRESS
-
-- **Goal**: Enhance domain modeling with Event Storming capabilities.
-  - [ ] Event Storming visualization
-  - [ ] Collaborative Event Storming sessions
-  - [ ] Integration with domain model generation
-
-### 2.0.0 Augmented Reality/Virtual Reality - PLANNED
+### 2.0.0 Extended Reality - PLANNED
 
 - **Goal**: Explore AR/VR applications in content management.
-  - [ ] AR content visualization
-  - [ ] VR content creation and manipulation
-  - [ ] Immersive content consumption experiences
+  - [ ] AR content visualization.
+  - [ ] VR content creation and manipulation.
+  - [ ] Immersive content consumption experiences.
 
 ### 3.0.0 Internet of Things - PLANNED
 
 - **Goal**: Expand CMS functionality to IoT devices.
-  - [ ] IoT device content management
-  - [ ] Sensor data integration
-  - [ ] Real-time IoT content updates
-
-## Beyond the Horizon
+  - [ ] IoT device content management.
+  - [ ] Sensor data integration.
+  - [ ] Real-time IoT content updates.
 
 ### 4.0.0 Quantum Computing - PLANNED
 
 - **Goal**: Explore quantum computing implications in semantic CMS operating on all data.
-  - [ ] Quantum-resistant security measures
-  - [ ] Quantum algorithms for content analysis
-  - [ ] Quantum-powered search capabilities
+  - [ ] Quantum-resistant security measures.
+  - [ ] Quantum algorithms for content analysis.
+  - [ ] Quantum-powered search capabilities.
+
+## Completed Features
+
+### Core Domain Model - DONE
+
+- [x] User-defined content concepts with attributes.
+- [x] User-defined concept relationships.
+- [x] Domain model editing with concept selection.
+- [x] Domain model CRUD operations.
+- [x] Domain model validation.
+- [x] Domain model export and import.
+
+### Query System - DONE
+
+- [x] Implemented expression-based query system in ednet_core v1.0.0.
+- [x] Type-safe query building with composable expressions.
+- [x] Support for advanced filtering and relationship traversal.
+- [x] Integration with Drift database.
+
+### Documentation & Community - DONE
+
+- [x] Developed initial documentation, tutorials, and examples.
+- [x] Created comprehensive articles on domain-specific languages.
+- [x] Added articles on Event Sourcing and Meta-Modeling.
+- [x] Implemented rules for software development best practices.
