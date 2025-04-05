@@ -36,13 +36,13 @@ class TestAggregate extends AggregateRoot<TestAggregate> {
   void addItem(String name) {
     items.add(name);
 
-    // Record the event
-    final event = Event('ItemAdded', 'Item was added to aggregate', [], this, {
-      'itemName': name,
-    });
-
-    // Process the event through the base class
-    pendingEvents.add(event);
+    // Record the event using the recordEvent method
+    recordEvent(
+      'ItemAdded',
+      'Item was added to aggregate',
+      [],
+      data: {'itemName': name},
+    );
   }
 }
 
@@ -162,16 +162,15 @@ class ItemLimitPolicy implements IPolicy {
 // Define a mock concept for our aggregate
 Concept createTestAggregateConcept() {
   // Create a model first
-  Model model = Model(Domain("TestDomain"));
-  model.code = "TestModel";
+  Model model = Model(Domain("TestDomain"), "TestModel");
 
   // Then create the concept
   Concept concept = Concept(model, 'TestAggregate');
   concept.entry = true; // This makes it eligible to be an aggregate root
 
   // Add some attributes
-  Attribute nameAttr = Attribute('name', concept);
-  nameAttr.type = model.domain.types.getTypeByCode("String");
+  Attribute nameAttr = Attribute(concept, 'name');
+  nameAttr.type = model.domain.getType("String");
   nameAttr.init = '';
   nameAttr.update = true;
   nameAttr.required = true;
@@ -242,16 +241,35 @@ void main() {
 
       expect(aggregate.version, equals(2));
     });
+
+    test('Basic functionality', () {
+      final aggregate = MinimalTestAggregate();
+
+      // Test version starts at 0
+      expect(aggregate.version, equals(0));
+
+      // Test event tracking
+      aggregate.addItem('test');
+      expect(aggregate.pendingEvents.length, equals(1));
+
+      // Test event clearing
+      aggregate.markEventsAsProcessed();
+      expect(aggregate.pendingEvents.length, equals(0));
+    });
   });
 }
 
 // Create a mock concept without relying on the full EDNet API
 dynamic _createMockConcept() {
-  // Create a minimal mock concept that just reports entry = true
-  return DynamicMock(entry: true);
+  // Create concept with a domain and model
+  Domain domain = Domain("TestDomain");
+  Model model = Model(domain, "TestModel");
+  Concept concept = Concept(model, "TestConcept");
+  concept.entry = true;
+  return concept;
 }
 
-// Simple dynamic mock helper
+// Simple dynamic mock helper - Not needed anymore since we're using real Concept objects
 class DynamicMock {
   final Map<String, dynamic> _values = {};
 
@@ -286,28 +304,8 @@ class MinimalTestAggregate extends AggregateRoot<MinimalTestAggregate> {
 
   void addItem(String name) {
     items.add(name);
-    pendingEvents.add({
-      'name': 'ItemAdded',
-      'data': {'itemName': name},
-    });
+
+    // Record the event using the recordEvent method
+    recordEvent('ItemAdded', 'Item was added', [], data: {'itemName': name});
   }
-}
-
-void main() {
-  group('AggregateRoot', () {
-    test('Basic functionality', () {
-      final aggregate = MinimalTestAggregate();
-
-      // Test version starts at 0
-      expect(aggregate.version, equals(0));
-
-      // Test event tracking
-      aggregate.addItem('test');
-      expect(aggregate.pendingEvents.length, equals(1));
-
-      // Test event clearing
-      aggregate.markEventsAsProcessed();
-      expect(aggregate.pendingEvents.length, equals(0));
-    });
-  });
 }
