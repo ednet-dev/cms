@@ -7,8 +7,7 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  ednet_core:
-    path: ../../../../core
+  ednet_core: ^1.0.0
 
 dev_dependencies:
   lints: ^2.0.0
