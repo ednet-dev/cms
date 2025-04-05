@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
-import '../theme/theme.dart';
-import '../theme/theme_service.dart';
+import '../../theme/theme.dart';
+import '../../theme/theme_service.dart';
 import 'theme_event.dart';
 
 /// State for the theme bloc containing theme data and mode information
@@ -17,7 +17,8 @@ class ThemeState {
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   final ThemeService _themeService = ThemeService();
 
-  ThemeBloc() : super(ThemeState(themeData: cliDarkTheme, isDarkMode: true)) {
+  ThemeBloc()
+    : super(ThemeState(themeData: AppTheme.darkTheme, isDarkMode: true)) {
     on<ToggleThemeEvent>(_onToggleTheme);
     on<ChangeThemeEvent>(_onChangeTheme);
   }

@@ -98,4 +98,11 @@ class ThemeService {
 
     return getThemeByName(_currentThemeStyle, isDarkMode);
   }
+
+  /// Toggles between light and dark version of a theme
+  ThemeData toggleBrightness(ThemeData currentTheme, bool isDarkMode) {
+    return isDarkMode
+        ? AppTheme.getLightTheme(style: _currentThemeStyle)
+        : AppTheme.getDarkTheme(style: _currentThemeStyle);
+  }
 }
