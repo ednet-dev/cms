@@ -1,4 +1,5 @@
 import 'package:ednet_core/ednet_core.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:ednet_one/generated/project/core/lib/project_core.dart' as ptce;
 // IMPORTS PLACEHOLDER
@@ -9,21 +10,38 @@ class OneApplication implements IOneApplication {
   final Map<String, DomainModels> _domainModelsTable = {};
 
   OneApplication() {
+    debugPrint('🔍 OneApplication constructor called');
     _initializeDomains();
     _groupDomains();
   }
 
   void _initializeDomains() {
-    // project core
-    final projectCoreRepo = ptce.ProjectCoreRepo();
-    ptce.ProjectDomain projectCoreDomain =
-        projectCoreRepo.getDomainModels("Project") as ptce.ProjectDomain;
-    ptce.CoreModel coreModel =
-        projectCoreDomain.getModelEntries("Core") as ptce.CoreModel;
-    coreModel.init();
+    debugPrint('🔍 _initializeDomains started');
+    try {
+      // project core
+      debugPrint('🔍 Creating ProjectCoreRepo');
+      final projectCoreRepo = ptce.ProjectCoreRepo();
 
-    _domains.add(projectCoreDomain.domain);
-    _domainModelsTable['project_core'] = projectCoreDomain;
+      debugPrint('🔍 Getting ProjectDomain');
+      ptce.ProjectDomain projectCoreDomain =
+          projectCoreRepo.getDomainModels("Project") as ptce.ProjectDomain;
+
+      debugPrint('🔍 Getting CoreModel');
+      ptce.CoreModel coreModel =
+          projectCoreDomain.getModelEntries("Core") as ptce.CoreModel;
+
+      debugPrint('🔍 Initializing CoreModel');
+      coreModel.init();
+
+      debugPrint('🔍 Adding domain to _domains');
+      _domains.add(projectCoreDomain.domain);
+      _domainModelsTable['project_core'] = projectCoreDomain;
+
+      debugPrint('🔍 _initializeDomains completed successfully');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error in _initializeDomains: $e');
+      debugPrint('❌ StackTrace: $stackTrace');
+    }
 
     // INIT PLACEHOLDER
   }
@@ -40,13 +58,21 @@ class OneApplication implements IOneApplication {
   }
 
   void _groupDomains() {
-    for (var domain in _domains) {
-      var existingDomain = _groupedDomains.singleWhereCode(domain.code);
-      if (existingDomain == null) {
-        _groupedDomains.add(domain);
-      } else {
-        _mergeDomainModels(existingDomain, domain);
+    debugPrint('🔍 _groupDomains started');
+    try {
+      for (var domain in _domains) {
+        var existingDomain = _groupedDomains.singleWhereCode(domain.code);
+        if (existingDomain == null) {
+          _groupedDomains.add(domain);
+        } else {
+          _mergeDomainModels(existingDomain, domain);
+        }
       }
+      debugPrint(
+        '🔍 _groupDomains completed, domains count: ${_groupedDomains.length}',
+      );
+    } catch (e) {
+      debugPrint('❌ Error in _groupDomains: $e');
     }
   }
 
