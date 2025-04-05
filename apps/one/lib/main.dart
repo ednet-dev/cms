@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'presentation/di/bloc_providers.dart';
 import 'presentation/di/service_locator.dart' as di;
 import 'presentation/navigation/navigation_service.dart';
-import 'presentation/pages/home_page.dart';
+import 'presentation/pages/home/home_page.dart';
 import 'presentation/state/blocs/theme_bloc/theme_bloc.dart';
 import 'presentation/state/blocs/theme_bloc/theme_state.dart';
 import 'presentation/theme/theme_service.dart';
