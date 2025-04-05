@@ -1,0 +1,39 @@
+name: ednet_one
+description: "Integration app, EDNet Core domain model multi-platform interpreter featuring a Master-Detail layout navigation and management if instance and a Graph visualization of domain model"
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+version: 1.0.0
+
+environment:
+  sdk: ">=3.7.0 <4.0.0"
+  flutter: ">=3.29.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  bloc: ^8.1.4
+  flutter_bloc: ^8.1.6
+  app_links: ^6.3.2
+  graphview: ^1.2.0
+  flame: ^1.22.0
+  flutter_svg:
+  flame_svg: ^1.11.3
+  expressions: ^0.2.5+2
+  path_provider: ^2.1.5
+  ednet_core: ^1.0.0
+  ednet_cms: ^1.0.0
+  ednet_one_interpreter:
+    path: ../../packages/ednet_one_interpreter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.13
+  build_config: ^1.1.1
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/sprites/
+dependency_overrides:
+  test_api: ^0.7.4

@@ -1,0 +1,489 @@
+context:
+  name: Government
+  description: |
+    Government represents the governing body of a country or state. 
+    It is responsible for making and enforcing laws, managing public resources,
+    and providing public services. The government is typically divided into three branches:
+    the executive, the legislative, and the judicial. 
+    Each branch has its own responsibilities and powers, 
+    and they work together to ensure the smooth functioning 
+    of the government and the country as a whole.
+
+domain:
+  name: Executive
+  description: |
+    The executive branch of government is responsible for implementing and enforcing the laws 
+    passed by the legislative branch. It is headed by the president or prime minister, 
+    who is the head of state and government. The executive branch also includes 
+    the cabinet and various government agencies that are responsible for specific areas 
+    such as defense, finance, and health. The executive branch is responsible for 
+    managing the day-to-day operations of the government and ensuring that the laws 
+    passed by the legislative branch are carried out.
+
+model:
+  name: Electoral
+  description: |
+    The electoral model represents the process of electing representatives to government positions. 
+    It includes concepts such as citizens, voters, candidates, elections, and election types. 
+    The electoral model defines the rules and procedures for conducting elections, 
+    registering voters, and counting votes. It also includes policies and commands 
+    related to verifying the identity of voters and candidates, creating new elections, 
+    and handling election results.
+    Additionally, the model is designed to be flexible enough to handle various scales 
+    and types of democratic decision-making processes, from national elections to 
+    local councils, NGO projects, and even household decision-making.
+
+concepts:
+  - name: Citizen
+    entry: true
+    attributes:
+      - name: citizenId
+        category: identifier
+      - name: firstName
+      - name: lastName
+      - name: email
+        category: required
+      - name: phoneNumber
+        category: required
+    policies:
+      - name: VerifyIdentity
+        description: Verify the identity of a citizen.
+        expression: "citizenId != null && firstName != null && lastName != null && email != null"
+        dependencies:
+          - citizenId
+          - firstName
+          - lastName
+          - email
+    commands:
+      - name: RegisterCitizen
+        category: citizen
+        description: Register a new citizen.
+        successEvent: CitizenRegistered
+        failureEvent: RegistrationFailed
+    events:
+      - name: CitizenRegistered
+        description: A citizen has been registered.
+        handlers:
+          - WelcomeNewCitizen
+      - name: RegistrationFailed
+        description: Registration of a citizen failed.
+
+  - name: Voter
+    is: Citizen
+    entry: true
+    attributes:
+      - name: voterId
+        category: identifier
+      - name: dateOfBirth
+        category: required
+      - name: address
+    policies:
+      - name: EligibilityCheck
+        description: Ensure the voter meets eligibility criteria.
+        expression: "dateOfBirth <= '2006-01-01' && address != null"
+        dependencies:
+          - dateOfBirth
+          - address
+    commands:
+      - name: RegisterVoter
+        category: voter
+        description: Register a citizen as a voter.
+        successEvent: VoterRegistered
+        failureEvent: VoterRegistrationFailed
+    events:
+      - name: VoterRegistered
+        description: A voter has been registered.
+        handlers:
+          - NotifyVoter
+      - name: VoterRegistrationFailed
+        description: Registration of a voter failed.
+
+  - name: Candidate
+    is: Citizen
+    entry: true
+    attributes:
+      - name: candidateId
+        category: identifier
+      - name: dateOfBirth
+        category: required
+      - name: party
+        category: required
+      - name: platform
+        type: Text
+    policies:
+      - name: EligibilityCheck
+        description: Ensure the candidate meets eligibility criteria.
+        expression: "dateOfBirth <= '1990-01-01' && party != null"
+        dependencies:
+          - dateOfBirth
+          - party
+    commands:
+      - name: RegisterCandidate
+        category: candidate
+        description: Register a citizen as a candidate.
+        successEvent: CandidateRegistered
+        failureEvent: CandidateRegistrationFailed
+    events:
+      - name: CandidateRegistered
+        description: A candidate has been registered.
+        handlers:
+          - NotifyCandidate
+      - name: CandidateRegistrationFailed
+        description: Registration of a candidate failed.
+
+  - name: Election
+    entry: true
+    attributes:
+      - name: electionId
+        category: identifier
+      - name: name
+      - name: date
+        type: DateTime
+      - name: type
+        type: ElectionType
+      - name: status
+        type: ElectionStatus
+      - name: location
+      - name: description
+    policies:
+      - name: VerifyElection
+        description: Verify the details of an election.
+        expression: "electionId != null && name != null && date != null && type != null && status != null"
+        dependencies:
+          - electionId
+          - name
+          - date
+          - type
+          - status
+    commands:
+      - name: CreateElection
+        category: election
+        description: Create a new election.
+        successEvent: ElectionCreated
+        failureEvent: CreationFailed
+      - name: UpdateElection
+        category: election
+        description: Update details of an existing election.
+        successEvent: ElectionUpdated
+        failureEvent: UpdateFailed
+      - name: DeleteElection
+        category: election
+        description: Delete an existing election.
+        successEvent: ElectionDeleted
+        failureEvent: DeletionFailed
+    events:
+      - name: ElectionCreated
+        description: An election has been created.
+        handlers:
+          - NotifyElectionCreated
+      - name: ElectionUpdated
+        description: An election has been updated.
+        handlers:
+          - NotifyElectionUpdated
+      - name: ElectionDeleted
+        description: An election has been deleted.
+        handlers:
+          - NotifyElectionDeleted
+      - name: CreationFailed
+        description: Creation of an election failed.
+      - name: UpdateFailed
+        description: Update of an election failed.
+      - name: DeletionFailed
+        description: Deletion of an election failed.
+
+  - name: ElectionType
+    attributes:
+      - name: name
+        category: required
+      - name: description
+    commands:
+      - name: CreateElectionType
+        description: Create a new election type.
+        successEvent: ElectionTypeCreated
+        failureEvent: ElectionTypeCreationFailed
+    events:
+      - name: ElectionTypeCreated
+        description: A new election type has been created.
+      - name: ElectionTypeCreationFailed
+        description: Creation of an election type failed.
+
+  - name: ElectionStatus
+    attributes:
+      - name: name
+        category: required
+      - name: description
+    commands:
+      - name: CreateElectionStatus
+        description: Create a new election status.
+        successEvent: ElectionStatusCreated
+        failureEvent: ElectionStatusCreationFailed
+    events:
+      - name: ElectionStatusCreated
+        description: A new election status has been created.
+      - name: ElectionStatusCreationFailed
+        description: Creation of an election status failed.
+
+  - name: Vote
+    attributes:
+      - name: voteId
+        category: identifier
+      - name: electionId
+        category: required
+      - name: voterId
+        category: required
+      - name: candidateId
+      - name: timestamp
+        type: DateTime
+    policies:
+      - name: SingleVote
+        description: Ensure a voter can vote only once per election.
+        expression: "SELECT COUNT(*) FROM Vote WHERE electionId = this.electionId AND voterId = this.voterId <= 1"
+        dependencies:
+          - electionId
+          - voterId
+    commands:
+      - name: CastVote
+        category: vote
+        description: Cast a vote in an election.
+        successEvent: VoteCast
+        failureEvent: VoteCastFailed
+    events:
+      - name: VoteCast
+        description: A vote has been successfully cast.
+        handlers:
+          - UpdateVoteCount
+      - name: VoteCastFailed
+        description: Casting a vote failed.
+
+  - name: Report
+    attributes:
+      - name: reportId
+        category: identifier
+      - name: electionId
+        category: required
+      - name: title
+        category: required
+      - name: content
+        category: required
+      - name: author
+      - name: timestamp
+        type: DateTime
+    commands:
+      - name: CreateReport
+        description: Create a new report related to an election.
+        successEvent: ReportCreated
+        failureEvent: ReportCreationFailed
+    events:
+      - name: ReportCreated
+        description: A report has been created.
+        handlers:
+          - NotifyStakeholders
+      - name: ReportCreationFailed
+        description: Creation of a report failed.
+
+  - name: Official
+    attributes:
+      - name: officialId
+        category: identifier
+      - name: firstName
+      - name: lastName
+      - name: position
+        category: required
+      - name: department
+    policies:
+      - name: AssignOfficial
+        description: Assign an official to manage an election.
+        expression: "position != null && department != null"
+        dependencies:
+          - position
+          - department
+    commands:
+      - name: AssignOfficialToElection
+        description: Assign an official to a specific election.
+        successEvent: OfficialAssigned
+        failureEvent: OfficialAssignmentFailed
+    events:
+      - name: OfficialAssigned
+        description: An official has been assigned to an election.
+      - name: OfficialAssignmentFailed
+        description: Assignment of an official failed.
+
+  - name: Poll
+    is: Election
+    attributes:
+      - name: pollId
+        category: identifier
+      - name: question
+        category: required
+      - name: options
+        type: Array
+    policies:
+      - name: ValidateOptions
+        description: Ensure poll has at least two options.
+        expression: "options.length >= 2"
+        dependencies:
+          - options
+    commands:
+      - name: CreatePoll
+        category: poll
+        description: Create a new poll.
+        successEvent: PollCreated
+        failureEvent: PollCreationFailed
+      - name: VoteInPoll
+        category: poll
+        description: Cast a vote in a poll.
+        successEvent: PollVoteCast
+        failureEvent: PollVoteCastFailed
+    events:
+      - name: PollCreated
+        description: A new poll has been created.
+      - name: PollCreationFailed
+        description: Creation of a poll failed.
+      - name: PollVoteCast
+        description: A vote has been cast in a poll.
+      - name: PollVoteCastFailed
+        description: Casting a vote in a poll failed.
+
+relations:
+  - from: Poll
+    to: Voter
+    fromToName: "participates in"
+    fromToMin: "0"
+    fromToMax: "many"
+    fromToId: false
+    toFromName: "has polls"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: Poll
+    to: Official
+    fromToName: "managed by"
+    fromToMin: "0"
+    fromToMax: "many"
+    fromToId: false
+    toFromName: "manages polls"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: Voter
+    to: Election
+    fromToName: "participates in"
+    fromToMin: "0"
+    fromToMax: "many"
+    fromToId: false
+    toFromName: "has participants"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: Candidate
+    to: Election
+    fromToName: "runs in"
+    fromToMin: "0"
+    fromToMax: "many"
+    fromToId: false
+    toFromName: "has candidates"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: ElectionType
+    to: Election
+    fromToName: "defines type for"
+    fromToMin: "1"
+    fromToMax: "many"
+    fromToId: false
+    toFromName: "is defined by"
+    toFromMin: "1"
+    toFromMax: "1"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: ElectionStatus
+    to: Election
+    fromToName: "defines status for"
+    fromToMin: "1"
+    fromToMax: "many"
+    fromToId: false
+    toFromName: "has status defined by"
+    toFromMin: "1"
+    toFromMax: "1"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: Vote
+    to: Election
+    fromToName: "belongs to"
+    fromToMin: "1"
+    fromToMax: "1"
+    fromToId: false
+    toFromName: "has votes"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: Vote
+    to: Voter
+    fromToName: "cast by"
+    fromToMin: "1"
+    fromToMax: "1"
+    fromToId: false
+    toFromName: "has votes cast"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: Vote
+    to: Candidate
+    fromToName: "for"
+    fromToMin: "0"
+    fromToMax: "1"
+    fromToId: false
+    toFromName: "receives votes from"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: Report
+    to: Election
+    fromToName: "related to"
+    fromToMin: "1"
+    fromToMax: "many"
+    fromToId: false
+    toFromName: "has reports"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
+
+  - from: Official
+    to: Election
+    fromToName: "manages"
+    fromToMin: "0"
+    fromToMax: "many"
+    fromToId: false
+    toFromName: "is managed by"
+    toFromMin: "0"
+    toFromMax: "many"
+    toFromId: false
+    internal: false
+    category: "rel"
