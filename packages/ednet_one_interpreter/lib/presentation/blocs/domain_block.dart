@@ -1,11 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one_interpreter/presentation/widgets/layout/graph/domain/domain_model_graph.dart';
 
 import 'domain_event.dart';
 import 'domain_state.dart';
 
-class DomainBloc extends Bloc<DomainEvent, DomainState> {
+class DomainBloc extends Bloc<DomainBlocEvent, DomainState> {
   final IOneApplication app;
 
   DomainBloc({required this.app}) : super(DomainState.initial()) {
@@ -22,7 +21,6 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     Domain? selectedDomain;
     Model? selectedModel;
     Entities? selectedEntries;
-    DomainModelGraph? domainModelGraph;
     Entities? selectedEntities;
     Concept? selectedConcept;
 
@@ -31,26 +29,24 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
       if (selectedDomain.models.isNotEmpty) {
         selectedModel = selectedDomain.models.first;
         selectedEntries = selectedModel.concepts;
-        domainModelGraph =
-            DomainModelGraph(domain: selectedDomain, model: selectedModel);
       }
     }
 
-    emit(state.copyWith(
-      selectedDomain: selectedDomain,
-      selectedModel: selectedModel,
-      selectedEntries: selectedEntries,
-      selectedEntities: selectedEntities,
-      selectedConcept: selectedConcept,
-      domainModelGraph: domainModelGraph,
-    ));
+    emit(
+      state.copyWith(
+        selectedDomain: selectedDomain,
+        selectedModel: selectedModel,
+        selectedEntries: selectedEntries,
+        selectedEntities: selectedEntities,
+        selectedConcept: selectedConcept,
+      ),
+    );
   }
 
   void _onSelectDomain(SelectDomainEvent event, Emitter<DomainState> emit) {
     Domain domain = event.domain;
     Model? selectedModel;
     Entities? selectedEntries;
-    DomainModelGraph? domainModelGraph;
     Entities? selectedEntities;
     Concept? selectedConcept;
 
@@ -58,20 +54,17 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
       selectedModel = domain.models.first;
       selectedEntries =
           selectedModel.concepts.isNotEmpty ? selectedModel.concepts : null;
-      if (selectedModel != null) {
-        domainModelGraph =
-            DomainModelGraph(domain: domain, model: selectedModel);
-      }
     }
 
-    emit(state.copyWith(
-      selectedDomain: domain,
-      selectedModel: selectedModel,
-      selectedEntries: selectedEntries,
-      selectedEntities: selectedEntities,
-      selectedConcept: selectedConcept,
-      domainModelGraph: domainModelGraph,
-    ));
+    emit(
+      state.copyWith(
+        selectedDomain: domain,
+        selectedModel: selectedModel,
+        selectedEntries: selectedEntries,
+        selectedEntities: selectedEntities,
+        selectedConcept: selectedConcept,
+      ),
+    );
   }
 
   void _onSelectModel(SelectModelEvent event, Emitter<DomainState> emit) {
@@ -81,16 +74,15 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     Model model = event.model;
     Entities? selectedEntries =
         model.concepts.isNotEmpty ? model.getOrderedEntryConcepts() : null;
-    DomainModelGraph? domainModelGraph =
-        DomainModelGraph(domain: domain, model: model);
 
-    emit(state.copyWith(
-      selectedModel: model,
-      selectedEntries: selectedEntries,
-      selectedEntities: null,
-      selectedConcept: null,
-      domainModelGraph: domainModelGraph,
-    ));
+    emit(
+      state.copyWith(
+        selectedModel: model,
+        selectedEntries: selectedEntries,
+        selectedEntities: null,
+        selectedConcept: null,
+      ),
+    );
   }
 
   void _onSelectConcept(SelectConceptEvent event, Emitter<DomainState> emit) {
@@ -99,33 +91,36 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     final selectedModel = state.selectedModel;
 
     if (selectedDomain == null || selectedModel == null) return;
-    var domainModel = app.getDomainModels(selectedDomain.codeFirstLetterLower,
-        selectedModel.codeFirstLetterLower);
+    var domainModel = app.getDomainModels(
+      selectedDomain.codeFirstLetterLower,
+      selectedModel.codeFirstLetterLower,
+    );
     var modelEntries = domainModel.getModelEntries(concept.model.code);
     var entry = modelEntries?.getEntry(concept.code);
 
-    emit(state.copyWith(
-      selectedConcept: concept,
-      selectedEntities: entry,
-    ));
+    emit(state.copyWith(selectedConcept: concept, selectedEntities: entry));
   }
 
   void _onExportDSL(ExportDSLEvent event, Emitter<DomainState> emit) {
-    // Just triggers DSL export via method call, no state change needed.
-    // Could store DSL in state if desired. For now, DSL retrieval done externally.
+    // This could be implemented to export the DSL representation of the model
   }
 
   void _onGenerateCode(
-      GenerateCodeEvent event, Emitter<DomainState> emit) async {
-    // Implement code generation and update state if needed
-    // This might call external code generation logic and upon completion may show a message
+    GenerateCodeEvent event,
+    Emitter<DomainState> emit,
+  ) async {
+    // This could be implemented to trigger code generation
   }
 
   String getDSL() {
-    if (state.domainModelGraph != null) {
-      return state.domainModelGraph!.toYamlDSL();
+    final domain = state.selectedDomain;
+    final model = state.selectedModel;
+
+    if (domain != null && model != null) {
+      // Return a basic DSL representation
+      return 'domain: ${domain.code}\nmodel: ${model.code}';
     } else {
-      return 'No graph available. Select a domain and model first.';
+      return 'No domain and model selected.';
     }
   }
 }

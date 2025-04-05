@@ -14,6 +14,7 @@ dependencies:
   app_links: ^6.3.2
   shared_preferences: ^2.2.2
   cupertino_icons: ^1.0.5
+  graphview: ^1.2.0
 
   # EDNet packages
   ednet_core:
@@ -29,6 +30,7 @@ dependencies:
   path_provider: ^2.0.15
   yaml: ^3.1.2
   file_picker: ^5.3.2
+  bloc: ^8.1.4
 
 dev_dependencies:
   flutter_test:

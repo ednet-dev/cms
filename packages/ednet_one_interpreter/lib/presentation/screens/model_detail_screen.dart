@@ -1,9 +1,20 @@
-
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_cms/ednet_cms.dart';
 
-import '../widgets/layout/web/header_widget.dart';
+// Simple implementation of required components
+class EntityDetailScreen extends StatelessWidget {
+  final Entity entity;
+
+  const EntityDetailScreen({Key? key, required this.entity}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Entity: ${entity.code}')),
+      body: Center(child: Text('Entity details for ${entity.code}')),
+    );
+  }
+}
 
 class ModelDetailScreen extends StatelessWidget {
   final Domain domain;
@@ -12,48 +23,53 @@ class ModelDetailScreen extends StatelessWidget {
   final void Function(Entity entity) onEntitySelected;
 
   ModelDetailScreen({
+    Key? key,
     required this.domain,
     required this.model,
     required this.path,
     required this.onEntitySelected,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: HeaderWidget(
-          path: path,
-          onPathSegmentTapped: (index) {
-            if (index == 0) {
-              Navigator.popUntil(context, ModalRoute.withName('/'));
-            } else if (index == 1) {
-              Navigator.popUntil(context, ModalRoute.withName('/domain'));
-            } else if (index == 2) {
-              Navigator.pop(context);
-            }
-          },
-          filters: [],
-          onAddFilter: (FilterCriteria filter) {},
-          onBookmark: () {},
+        title: Text('Model: ${model.code}'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: EntitiesWidget(
+      body: EntitiesListWidget(
         entities: model.concepts,
-        onEntitySelected: (entity) {
-          onEntitySelected(entity);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EntityDetailScreen(
-                entity: entity,
-              ),
-            ),
-          );
-        },
-        bookmarkManager: BookmarkManager(),
-        onBookmarkCreated: (Bookmark bookmark) {},
+        onEntitySelected: onEntitySelected,
       ),
+    );
+  }
+}
+
+class EntitiesListWidget extends StatelessWidget {
+  final Entities entities;
+  final Function(Entity) onEntitySelected;
+
+  const EntitiesListWidget({
+    Key? key,
+    required this.entities,
+    required this.onEntitySelected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: entities.length,
+      itemBuilder: (context, index) {
+        final dynamic entity = entities.toList()[index];
+        return ListTile(
+          title: Text(entity.code),
+          subtitle: Text('Type: ${entity.runtimeType}'),
+          onTap: () => onEntitySelected(entity),
+        );
+      },
     );
   }
 }

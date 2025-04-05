@@ -2,7 +2,7 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphview/GraphView.dart';
 
-import '../../src/staging/one_application.dart';
+import '../../shell_app.dart';
 
 void main() {
   // runApp(GraphApp());
@@ -24,8 +24,8 @@ class GraphWidget extends StatelessWidget {
   final Graph graph = Graph();
 
   GraphWidget() {
-    OneApplication app = OneApplication();
-    _buildGraph(app.groupedDomains);
+    ShellApp app = ShellApp();
+    _buildGraph(app.domains);
   }
 
   void _buildGraph(Domains domains) {

@@ -1,24 +1,24 @@
 import 'package:ednet_core/ednet_core.dart';
 
-abstract class DomainEvent {}
+abstract class DomainBlocEvent {}
 
-class InitializeDomainEvent extends DomainEvent {}
+class InitializeDomainEvent extends DomainBlocEvent {}
 
-class SelectDomainEvent extends DomainEvent {
+class SelectDomainEvent extends DomainBlocEvent {
   final Domain domain;
   SelectDomainEvent(this.domain);
 }
 
-class SelectModelEvent extends DomainEvent {
+class SelectModelEvent extends DomainBlocEvent {
   final Model model;
   SelectModelEvent(this.model);
 }
 
-class SelectConceptEvent extends DomainEvent {
+class SelectConceptEvent extends DomainBlocEvent {
   final Concept concept;
   SelectConceptEvent(this.concept);
 }
 
-class ExportDSLEvent extends DomainEvent {}
+class ExportDSLEvent extends DomainBlocEvent {}
 
-class GenerateCodeEvent extends DomainEvent {}
+class GenerateCodeEvent extends DomainBlocEvent {}
