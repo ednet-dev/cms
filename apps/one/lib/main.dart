@@ -1,30 +1,21 @@
-import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'generated/one_application.dart';
-import 'presentation/blocs/domain_block.dart';
-import 'presentation/blocs/domain_event.dart';
-import 'presentation/blocs/layout_block.dart';
-import 'presentation/blocs/theme_block.dart';
-import 'presentation/screens/home_page.dart';
+import 'presentation/di/bloc_providers.dart';
+import 'presentation/di/service_locator.dart' as di;
+import 'presentation/navigation/navigation_service.dart';
+import 'presentation/pages/home_page.dart';
+import 'presentation/theme/theme_service.dart';
 
-void main() {
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => ThemeBloc()),
-        BlocProvider(create: (_) => LayoutBloc()),
-        BlocProvider(
-          create:
-              (_) =>
-                  DomainBloc(app: OneApplication())
-                    ..add(InitializeDomainEvent()),
-        ),
-      ],
-      child: MyApp(),
-    ),
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize dependency injection
+  await di.initServiceLocator();
+
+  // Initialize theme service
+  await di.sl<ThemeService>().init();
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -33,21 +24,28 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  late AppLinks appLinks;
-
   @override
   void initState() {
     super.initState();
-    appLinks = AppLinks();
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeState = context.watch<ThemeBloc>().state;
-    return MaterialApp(
-      title: 'EDNet One',
-      theme: themeState.themeData,
-      home: HomePage(title: 'One Home', appLinks: appLinks),
+    // Get the navigation service
+    final NavigationService navigationService = di.sl<NavigationService>();
+
+    // Get the theme service
+    final ThemeService themeService = di.sl<ThemeService>();
+
+    return AppBlocProviders.wrapWithProviders(
+      MaterialApp(
+        title: 'EDNet One',
+        theme: themeService.lightTheme,
+        darkTheme: themeService.darkTheme,
+        themeMode: themeService.currentThemeMode,
+        navigatorKey: navigationService.navigatorKey,
+        home: HomePage(title: 'EDNet One'),
+      ),
     );
   }
 }
