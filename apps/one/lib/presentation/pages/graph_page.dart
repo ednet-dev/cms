@@ -2,7 +2,7 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphview/GraphView.dart';
 
-import '../../staging/one_application.dart';
+import '../../generated/one_application.dart';
 
 /// Graph visualization page for domain models
 ///

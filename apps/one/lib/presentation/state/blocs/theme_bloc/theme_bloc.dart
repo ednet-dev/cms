@@ -15,7 +15,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ThemeBloc()
     : super(
         ThemeState(
-          themeData: cliDarkTheme,
+          themeData: AppTheme.darkTheme,
           isDarkMode: true,
           themeName: ThemeNames.cli,
         ),

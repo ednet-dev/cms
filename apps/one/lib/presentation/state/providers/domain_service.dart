@@ -1,5 +1,5 @@
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/staging/one_application.dart';
+import 'package:ednet_one/generated/one_application.dart';
 
 /// Service for domain-related operations
 class DomainService {

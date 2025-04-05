@@ -2,20 +2,20 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphview/GraphView.dart';
 
-import '../../staging/one_application.dart';
+import '../../generated/one_application.dart';
 
 void main() {
   // runApp(GraphApp());
 }
 
 class GraphApp extends StatelessWidget {
+  const GraphApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Graph Visualization'),
-        ),
+        appBar: AppBar(title: Text('Graph Visualization')),
         body: GraphWidget(),
       ),
     );
@@ -25,7 +25,7 @@ class GraphApp extends StatelessWidget {
 class GraphWidget extends StatelessWidget {
   final Graph graph = Graph();
 
-  GraphWidget() {
+  GraphWidget({super.key}) {
     OneApplication app = OneApplication();
     _buildGraph(app.groupedDomains);
   }
@@ -51,11 +51,12 @@ class GraphWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BuchheimWalkerConfiguration builder = BuchheimWalkerConfiguration()
-      ..siblingSeparation = (100)
-      ..levelSeparation = (150)
-      ..subtreeSeparation = (150)
-      ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
+    final BuchheimWalkerConfiguration builder =
+        BuchheimWalkerConfiguration()
+          ..siblingSeparation = (100)
+          ..levelSeparation = (150)
+          ..subtreeSeparation = (150)
+          ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
 
     return InteractiveViewer(
       constrained: false,

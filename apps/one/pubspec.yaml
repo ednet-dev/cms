@@ -23,6 +23,7 @@ dependencies:
   ednet_core: ^1.0.0
   ednet_cms: ^1.0.0
   shared_preferences: ^2.2.2
+  get_it: ^7.6.7
 
 dev_dependencies:
   flutter_test:
