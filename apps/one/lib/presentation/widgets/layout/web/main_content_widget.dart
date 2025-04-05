@@ -1,5 +1,5 @@
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/domain/entity_widget.dart';
+import 'package:ednet_one/presentation/widgets/entity/entity_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'layout_template.dart';
@@ -39,7 +39,7 @@ class _MainContentWidgetState extends State<MainContentWidget> {
         children:
             widget.entities.toList().map((entity) {
               return ListTile(
-                title: Text(getTitle(entity as Entity)),
+                title: Text(EntityTitleUtils.getTitle(entity as Entity)),
                 onTap: () => _handleEntitySelected(entity),
               );
             }).toList(),

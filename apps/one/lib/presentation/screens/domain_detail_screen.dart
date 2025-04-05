@@ -1,8 +1,9 @@
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/domain/entity_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/domain/models_widget.dart';
 import '../widgets/layout/web/header_widget.dart';
+import '../pages/model_detail_page.dart';
 
 class DomainDetailScreen extends StatelessWidget {
   final Domain domain;
@@ -41,7 +42,7 @@ class DomainDetailScreen extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder:
-                  (context) => ModelDetailScreen(
+                  (context) => ModelDetailPage(
                     domain: domain,
                     model: model,
                     // path: path + [model.code],

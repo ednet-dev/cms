@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
 
 import '../widgets/layout/web/header_widget.dart';
-import '../widgets/domain/entity_widget.dart';
+import '../widgets/entity/entity_widget.dart';
+import '../widgets/entity/entities_widget.dart';
+import '../widgets/entity/bookmark_manager.dart';
 
 /// Model detail page displaying concepts from a specific model
 ///

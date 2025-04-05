@@ -1,6 +1,6 @@
 // alternative_layout.dart
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/domain/entity_widget.dart';
+import 'package:ednet_one/presentation/widgets/entity/entity_widget.dart';
 import 'package:flutter/material.dart';
 
 class AlternativeLayout extends StatefulWidget {
