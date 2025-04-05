@@ -1,0 +1,80 @@
+# SERBIAN ELECTION SIMULATION STATE
+
+## Current Progress
+- ✅ Created main structure following ednet_core patterns:
+  - Main library file (serbian_election.dart)
+  - Model definition (serbian_election_model.dart)
+  - Entity classes (gen/entities.dart)
+  - Domain class (domain.dart)
+  - Repository (repository.dart)
+  - D'Hondt calculator (core/dhondt_calculator.dart)
+  
+- ✅ Applied Serbian terminology throughout the codebase:
+  - Used "Glasac" instead of "Voter"
+  - Used "IzbornaLista" instead of "ElectoralList"
+  - Used "IzbornaJedinica" instead of "ElectoralUnit"
+  - Other domain-specific terms in Serbian
+
+- ✅ Improved model with proper entity relationships:
+  - Glasac -> IzbornaJedinica (birackoMesto)
+  - Koalicija -> PolitickaStranka (clanice)
+  - IzbornaLista -> PolitickaStranka/Koalicija
+
+## Issues To Fix
+1. Fix constructor errors in Parent/Child relationships in serbian_election_model.dart
+   - Update with proper ednet_core constructor signatures
+   - Correct Parent/Child definitions to use proper type code, name params
+
+2. Fix collection methods in entities.dart:
+   - `getChildren`/`setChildren` methods in KoalicijaGen need to be fixed
+   - Use proper ednet_core Entity methods for parent/child relationships
+
+3. Fix imports and part directives to ensure all components are properly connected
+
+## Simulation Implementation TODO
+1. Create run_simulation.dart or update existing file with:
+   - Instantiation of SerbianElectionRepo
+   - Creation of political parties (stranke)
+   - Creation of coalitions (koalicije)
+   - Creation of electoral units at different levels (izborne jedinice)
+   - Creation of voters (glasači)
+   - Conducting elections with votes (glasovi)
+   - Computing results using the D'Hondt method (Dontova metoda)
+   - Outputting results in Serbian language
+
+## Technical Implementation Details
+- Entity/Entities architecture in ednet_core:
+  - Abstract base classes (Gen) that handle data access
+  - Concrete implementations that can add business logic
+  - Parent/Child relationships with proper signatures
+  - Use Entity<T> for type-safety
+
+- Domain/Repository pattern:
+  - DomainModels to access ModelEntries
+  - Repository to manage Domain instances
+  - Proper entity factories in Domain class
+
+- Relevant ednet_core API methods to use:
+  - getAttribute/setAttribute for properties
+  - getParent/setParent for single references
+  - getChildren/setChildren for collections
+  - newEntity/newEntities for factory methods
+
+## Serbian Terminology Reference
+- Glasač - Voter
+- Politička Stranka - Political Party
+- Koalicija - Coalition
+- Izborna Lista - Electoral List
+- Izborna Jedinica - Electoral Unit
+- Glas - Vote
+- Kandidat - Candidate
+- JMBG - Serbian national ID number
+- Dontova metoda - D'Hondt method for seat allocation
+- Cenzus - Election threshold (typically 3%)
+- Manjinska stranka - Minority party (exempt from threshold)
+
+## Next Steps
+1. Fix the relationship constructors in the model
+2. Fix entity implementations to use proper ednet_core collection methods
+3. Create and run the simulation
+4. Output election results in Serbian language 

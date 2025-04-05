@@ -3,9 +3,9 @@
 ## Context Summary
 - This is a Test-Driven Development (TDD) implementation for the `ednet_core` library
 - Located in `/Users/slavisam/projects/cms/packages/core`
-- Current focus: Command validation and execution
-- Recent progress: Added tests for Add, Remove, and Set Attribute commands using direct democracy domain examples
-- Next focus: Transaction validation and execution, Past command handling
+- Current focus: Creating a comprehensive simulation of Serbian electoral processes
+- Recent progress: Implemented basic tests for Entity components, OID, and Entities filtering
+- Next focus: EDNetOne simulation framework for Serbian elections
 
 ## AI Assistant Role
 - Implement TDD approach for the `ednet_core` library
@@ -22,27 +22,188 @@
   - Model relationships that reflect democratic processes and structures
   - Ensure examples demonstrate real-world democratic scenarios
 
-## Semantic Commit Instructions
-1. When completing a significant task or feature, update TDD Memory with progress
-2. Generate a semantic commit message at the bottom of the TDD Memory file using the format:
-   ```
-   <type>(<scope>): <description>
-   
-   - <bullet points describing changes>
-   ```
-3. Where:
-   - `<type>` is one of: feat, fix, docs, style, refactor, test, chore
-   - `<scope>` should be "core" for ednet_core library
-   - `<description>` is a concise summary of the changes
-4. Execute the commit with the following commands:
-   ```
-   cd /Users/slavisam/projects/cms
-   git add packages/core/
-   git commit -m "<commit message from TDD Memory>"
-   ```
-5. Clear the commit message from TDD Memory after successful commit
+## EDNetOne Serbian Election Simulation
 
-# Ednet Core TDD Test Plan
+### Overview
+We are creating a realistic simulation of the Serbian electoral process using the EDNetOne domain model. This will serve as a comprehensive test suite demonstrating the capabilities of the ednet_core library while simulating a real-world election system with realistic data.
+
+### Serbian Electoral System Context
+- Multi-level elections (national, provincial, local)
+- Proportional representation system with 3% threshold (except for minority parties)
+- 250 members in National Assembly elected from party lists
+- Provincial Assembly of Vojvodina with 120 seats
+- Local municipal/city assemblies with varying seat numbers
+- Several types of elections: parliamentary, presidential, provincial, local
+- Voter turnout statistics from recent elections (approx. 50-60%)
+- Demographic distribution based on 2022 census data
+
+### Simulation Requirements
+
+#### Domain Model Components
+1. **Electoral Entities**
+   - Voters (Serbian citizens with voting rights, approx. 6.5 million)
+   - Candidates (Individual politicians)
+   - Political Parties (Including coalitions)
+   - Electoral Lists (Party lists for proportional representation)
+   - Electoral Units (Polling stations, municipalities, districts)
+   - Electoral Commissions (National, provincial, local)
+   - Observers (Domestic and international)
+
+2. **Electoral Processes**
+   - Voter Registration
+   - Candidate Registration
+   - Campaign Period
+   - Voting Process
+   - Vote Counting
+   - Mandate Allocation (D'Hondt method for proportional representation)
+   - Result Verification
+   - Election Disputes Resolution
+
+3. **Data Requirements**
+   - Serbian demographic distribution (age, gender, region)
+   - Geographic data (districts, municipalities, polling stations)
+   - Political landscape (parties, coalitions, candidates)
+   - Historical voting patterns
+   - Electoral thresholds and rules
+
+### Implementation Plan
+
+#### Phase 1: Core Domain Model Setup (Next Immediate Actions)
+1. Create `test/ednet_one/serbian_election_simulation_test.dart`
+2. Implement the Serbian election domain model extending the basic EDNetOne model:
+   - Define `SerbianCitizen` entity with demographic attributes
+   - Define `PoliticalParty` and `Coalition` entities
+   - Define `ElectoralList` entity
+   - Define `ElectoralUnit` hierarchy (polling station, municipality, district)
+   - Define `Ballot` and `Vote` entities specific to Serbian elections
+
+3. Create realistic data generation functions:
+   - `generateSerbianPopulation()` - Create realistic voter demographics
+   - `generateSerbianPoliticalLandscape()` - Create parties and coalitions
+   - `generateElectoralUnits()` - Create geographic electoral structure
+
+#### Phase 2: Parliamentary Election Simulation
+1. Implement registration process for voters and candidates
+2. Implement voting simulation with realistic participation rates
+3. Implement D'Hondt method for seat allocation
+4. Implement result analysis and visualization
+
+#### Phase 3: Multi-level Election Simulation
+1. Extend the simulation to include presidential elections
+2. Add provincial elections (Vojvodina)
+3. Add local elections for selected municipalities
+
+#### Phase 4: Advanced Scenario Simulation
+1. Implement "what-if" scenarios for different voter turnout
+2. Simulate electoral reform scenarios
+3. Implement historical comparison with past elections
+
+### Detailed Specifications for Serbian Election Domain Model
+
+#### SerbianCitizen Entity
+- Attributes:
+  - `name` (String, required): Full name
+  - `jmbg` (String, required): Unique citizen ID number (13 digits)
+  - `birthDate` (DateTime, required): Date of birth
+  - `gender` (String, required): Gender
+  - `municipality` (String, required): Municipality of residence
+  - `pollingStation` (Reference): Assigned polling station
+  - `hasVoted` (Boolean): Voting status in current election
+  - `politicalPreference` (Reference, optional): Preferred party/coalition
+
+#### PoliticalParty Entity
+- Attributes:
+  - `name` (String, required): Official party name
+  - `abbreviation` (String, required): Party abbreviation/acronym
+  - `foundingDate` (DateTime): Date of establishment
+  - `ideology` (String): Political orientation
+  - `isMinorityParty` (Boolean): Whether party represents a national minority
+  - `leaderName` (String): Name of party leader
+  - `memberCount` (Integer): Approximate number of members
+
+#### ElectoralList Entity
+- Attributes:
+  - `name` (String, required): Official list name
+  - `number` (Integer, required): Ballot number
+  - `parties` (References): Component parties/coalitions
+  - `candidates` (References): Candidates on the list (ordered)
+  - `isMinorityList` (Boolean): Whether list represents national minority
+  - `votes` (Integer): Total votes received
+  - `seatCount` (Integer): Total seats won
+
+#### ElectoralUnit Entity
+- Attributes:
+  - `name` (String, required): Unit name
+  - `code` (String, required): Unique identifier
+  - `level` (String, required): National/Provincial/Local
+  - `parentUnit` (Reference, optional): Higher-level electoral unit
+  - `population` (Integer): Population count
+  - `registeredVoters` (Integer): Number of registered voters
+  - `actualVoters` (Integer): Number of actual voters (turnout)
+
+#### Vote Entity
+- Attributes:
+  - `electoralList` (Reference, required): Chosen electoral list
+  - `electoralUnit` (Reference, required): Electoral unit where vote was cast
+  - `timestamp` (DateTime, required): Time of voting
+  - `isValid` (Boolean, required): Whether vote is valid
+  - `isProcessed` (Boolean, required): Whether vote has been counted
+
+### Next Immediate Actions (Serbian Election Simulation)
+
+#### Priority 1: D'Hondt Method Implementation
+1. **Implement D'Hondt Calculator**
+   - Create `DhondtCalculator` class for seat allocation
+   - Implement core algorithm with proper rounding
+   - Handle special cases for minority lists
+   - Add validation against real Serbian election results
+   - Test cases:
+     - Basic seat allocation
+     - Minority party special cases
+     - Tie-breaking scenarios
+     - Edge cases (single party, all equal votes)
+
+#### Priority 2: Electoral Threshold Implementation
+1. **Implement Threshold Rules**
+   - Add 3% threshold validation for regular parties
+   - Implement special handling for minority parties
+   - Create coalition vote aggregation logic
+   - Test cases:
+     - Regular party above/below threshold
+     - Minority party exemption
+     - Coalition threshold calculation
+     - Vote redistribution after threshold application
+
+#### Priority 3: Polling Station Operations
+1. **Implement Polling Station Workflow**
+   - Create polling station state machine
+   - Add time-based operations (opening/closing)
+   - Implement voter verification process
+   - Add invalid ballot handling
+   - Test cases:
+     - Station opening/closing procedures
+     - Voter processing workflow
+     - Invalid ballot scenarios
+     - Real-time turnout tracking
+
+#### Priority 4: Voter Turnout Simulation
+1. **Implement Turnout Generator**
+   - Create demographic-based turnout patterns
+   - Add time-of-day voting distribution
+   - Implement regional variation handling
+   - Test cases:
+     - Demographic group turnout rates
+     - Time-based voting patterns
+     - Regional participation differences
+     - Early voting simulation
+
+### Current Implementation Focus
+Working on Priority 1: D'Hondt Method Implementation
+- Creating test cases for seat allocation
+- Implementing core algorithm
+- Validating against historical election data
+
+## Ednet Core TDD Test Plan
 
 ## Core Components
 - [ ] Core Repository
@@ -147,11 +308,29 @@
   - [ ] Validation
   - [ ] Operations
 
+## Serbian Election Simulation
+- [ ] Domain Model
+  - [ ] SerbianCitizen entity
+  - [ ] PoliticalParty entity
+  - [ ] ElectoralList entity
+  - [ ] ElectoralUnit entity
+  - [ ] Vote entity
+- [ ] Data Generation
+  - [ ] Demographics generation
+  - [ ] Political landscape generation
+  - [ ] Electoral units generation
+- [ ] Election Processes
+  - [ ] Registration simulation
+  - [ ] Voting simulation
+  - [ ] Vote counting
+  - [ ] Mandate allocation
+  - [ ] Result analysis
+
 ## Current Status
-- Next test to implement: Repository Operations and Policy Components
-- Current phase: Refactoring and Enhancing Domain Model
-- Last completed test: Past Command Tests
-- Recent refactoring: Extended common EDNetOne direct democracy domain model with rich business interactions
+- Next test to implement: Serbian Election Simulation domain model and initial data generators
+- Current phase: Setting up realistic simulation environment
+- Last completed test: Entities filtering and sorting tests
+- Recent addition: Comprehensive plan for Serbian Election Simulation
 
 ## Completed Tests
 1. Model Testing - Basic Initialization (✓)
@@ -236,41 +415,23 @@
     - Operation chaining for complex queries
 
 ## Next Steps
-1. Continue enhancing test suite with more comprehensive cases
-2. Implement repository operation tests using enhanced domain model 
-3. Implement policy component tests using enhanced domain model
-4. Add tests for serialization/deserialization
-
-## Recent Refactoring
-- Refactored all command test files to use the shared EDNetOne domain model
-- Enhanced the domain model with additional helper methods for creating more complex domain objects:
-  - Added delegate and expert creation methods
-  - Added methods to create complete voting scenarios with citizens, referendums, and votes
-  - Added methods to create initiative scenarios with creators and supporters
-  - Added methods to create liquid democracy scenarios with delegates and voters
-- Unified test approach across all command tests
-- Fixed validation-related issues in refactored tests
-- Added stronger typing and error handling to domain model
+1. Create the Serbian Election Simulation test directory and initial files
+2. Implement the domain model for the Serbian election system
+3. Develop realistic data generators for demographics and political landscape
+4. Implement tests for the electoral process components
+5. Create comprehensive simulation scenarios
 
 ## Technical Debt and Improvements
-- The entity and entities tests are still empty stubs - need implementation
+- The entity and entities tests still have some failing tests that need fixing
 - Consider creating a separate test util package for test helpers
 - Consider extracting domain specific validation into policy components
 - Create visualization helpers to aid in understanding test scenarios
 - Enhance domain model with more business rules and constraints
 
-test(core): add tests for Add, Remove, and SetAttribute commands
+test(core): add comprehensive Serbian election simulation plan
 
-- Implement comprehensive tests for AddCommand using Citizen entities
-- Implement comprehensive tests for RemoveCommand using Citizen entities
-- Implement comprehensive tests for SetAttributeCommand using Citizen entities
-- Verify command execution, undo/redo, transaction grouping, and edge cases
-- Use direct democracy domain examples consistently
-
-test(core): implement OID and Entities filtering tests
-
-- Add comprehensive OID tests for generation, comparison, and entity lookup
-- Add comprehensive Entities filtering tests using the selectWhere method
-- Add comprehensive Entities sorting tests using the order method
-- Complete test coverage for entity and collection operations
-- Use consistent direct democracy domain examples throughout tests 
+- Add detailed specifications for Serbian electoral system simulation
+- Define domain model for Serbian election entities and processes
+- Create implementation plan with phased approach
+- Detail realistic data requirements for demographic and political modeling
+- Specify next immediate actions for Serbian election simulation implementation 

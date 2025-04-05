@@ -19,7 +19,7 @@ void main() {
         RezultatListe('Lista B', 40000),
       ];
 
-      final rezultati = kalkulator.izracunajMandate(liste, 10, 0.03);
+      final rezultati = kalkulator.izracunajMandate(liste, 10, cenzus: 0.03);
 
       expect(rezultati.length, equals(2));
       expect(
@@ -39,7 +39,7 @@ void main() {
         RezultatListe('Mala Lista', 500), // Ispod 3% cenzusa
       ];
 
-      final rezultati = kalkulator.izracunajMandate(liste, 10, 0.03);
+      final rezultati = kalkulator.izracunajMandate(liste, 10, cenzus: 0.03);
 
       // Očekujemo da samo Velika Lista dobije mandate
       expect(
@@ -59,7 +59,7 @@ void main() {
     test('Granični slučaj: Jedna lista dobija sve mandate', () {
       final liste = [RezultatListe('Jedina Lista', 100000)];
 
-      final rezultati = kalkulator.izracunajMandate(liste, 10, 0.03);
+      final rezultati = kalkulator.izracunajMandate(liste, 10, cenzus: 0.03);
 
       expect(rezultati.length, equals(1));
       expect(
@@ -74,7 +74,7 @@ void main() {
         RezultatListe('Lista B', 50000),
       ];
 
-      final rezultati = kalkulator.izracunajMandate(liste, 10, 0.03);
+      final rezultati = kalkulator.izracunajMandate(liste, 10, cenzus: 0.03);
 
       expect(rezultati.length, equals(2));
       // Trebalo bi da podele mandate ravnomerno
@@ -95,7 +95,7 @@ void main() {
         RezultatListe('Velika Lista C', 200000),
       ];
 
-      final rezultati = kalkulator.izracunajMandate(liste, 100, 0.03);
+      final rezultati = kalkulator.izracunajMandate(liste, 100, cenzus: 0.03);
 
       // Provera da ukupan broj mandata iznosi 100
       final ukupnoMandata = rezultati.fold<int>(

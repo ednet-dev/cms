@@ -141,15 +141,6 @@ part 'domain/model/error/i_validation_exception.dart';
 part 'domain/model/error/validation_exception.dart';
 part 'domain/model/error/validation_exceptions.dart';
 
-// Infrastructure components
-// part 'domain/infrastructure/graph/domain_model_graph.dart';
-// part 'domain/infrastructure/graph/edge.dart';
-// part 'domain/infrastructure/graph/edge_direction.dart';
-// part 'domain/infrastructure/graph/edge_type.dart';
-// part 'domain/infrastructure/graph/node.dart';
-// part 'domain/infrastructure/graph/node_type.dart';
-// part 'domain/infrastructure/repository/interfaces/i_repository.dart';
-
 // Configuration
 // part 'configuration/bootstrap.dart';
 part 'utilities/dsl/bootstrap_domain_model_from_yaml.dart';
