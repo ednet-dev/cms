@@ -121,3 +121,8 @@ We follow iterative refinement and enhancement of features, ensuring a robust an
 - [x] Created comprehensive articles on domain-specific languages.
 - [x] Added articles on Event Sourcing and Meta-Modeling.
 - [x] Implemented rules for software development best practices.
+
+### Current WIP
+
+- [ ] Can I use <https://github.com/nutlope/llamacoder> clone it and adapt it to run with my local llama or llmstudio like deepseek coder etc.?
+- [ ] ?

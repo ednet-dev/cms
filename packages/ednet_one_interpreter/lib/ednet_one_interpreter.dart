@@ -5,5 +5,15 @@
 /// and ednet_cms, allowing for the interpretation and visualization of domain models.
 library ednet_one_interpreter;
 
-export 'src/shell_app.dart';
-export 'src/widgets/widgets.dart'; 
+// Export original files
+export 'shell_app.dart';
+export 'presentation/widgets/widgets.dart';
+
+// Export merged files from EDNet One
+export 'presentation/blocs/domain_block.dart';
+export 'presentation/blocs/domain_event.dart';
+export 'presentation/blocs/domain_state.dart';
+export 'presentation/blocs/layout_block.dart';
+export 'presentation/blocs/theme_block.dart';
+export 'presentation/screens/home_page.dart';
+export 'main.dart';
