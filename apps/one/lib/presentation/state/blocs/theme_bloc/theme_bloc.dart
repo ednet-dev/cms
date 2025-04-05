@@ -1,16 +1,18 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
-import '../../../di/service_locator.dart';
 import '../../../theme/theme.dart';
 import '../../../theme/theme_constants.dart';
 import '../../../theme/theme_service.dart';
 import 'theme_event.dart';
 import 'theme_state.dart';
 
+// Import ThemeService from main.dart
+import 'package:ednet_one/main.dart' show themeService;
+
 /// Bloc for managing theme-related state and logic
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
-  final ThemeService _themeService = sl<ThemeService>();
+  final ThemeService _themeService = themeService;
 
   ThemeBloc()
     : super(

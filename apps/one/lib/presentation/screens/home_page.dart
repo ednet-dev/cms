@@ -2,19 +2,21 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/presentation/state/blocs/domain_block.dart';
+import 'package:ednet_one/presentation/state/blocs/domain_event.dart'
+    as domain_events;
+import 'package:ednet_one/presentation/state/blocs/domain_state.dart';
+import 'package:ednet_one/presentation/state/blocs/layout_block.dart';
+import 'package:ednet_one/presentation/state/blocs/layout_event.dart';
+import 'package:ednet_one/presentation/state/blocs/layout_state.dart';
+import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_event.dart';
+import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_state.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/algorithms/master_detail_layout_algorithm.dart';
 import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../blocs/domain_block.dart';
-import '../blocs/domain_event.dart';
-import '../blocs/domain_state.dart';
-import '../blocs/layout_block.dart';
-import '../blocs/layout_event.dart';
-import '../blocs/layout_state.dart';
-import '../blocs/theme_block.dart';
-import '../blocs/theme_event.dart';
 import '../theme/theme.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
 import '../widgets/layout/web/footer_widget.dart';
@@ -73,7 +75,7 @@ class HomePageState extends State<HomePage> {
 
   Future<void> _generateAndDownloadCode(BuildContext context) async {
     // Trigger code generation event
-    context.read<DomainBloc>().add(GenerateCodeEvent());
+    context.read<DomainBloc>().add(domain_events.GenerateCodeEvent());
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Code generation & download triggered.')),
     );
@@ -103,7 +105,7 @@ class HomePageState extends State<HomePage> {
                             child: GestureDetector(
                               onTap: () {
                                 context.read<DomainBloc>().add(
-                                  SelectDomainEvent(domain),
+                                  domain_events.SelectDomainEvent(domain),
                                 );
                               },
                               child: Text(domain.code),
@@ -199,7 +201,9 @@ class HomePageState extends State<HomePage> {
                                                     as Concepts,
                                             onConceptSelected: (concept) {
                                               context.read<DomainBloc>().add(
-                                                SelectConceptEvent(concept),
+                                                domain_events.SelectConceptEvent(
+                                                  concept,
+                                                ),
                                               );
                                             },
                                           ),
@@ -226,7 +230,9 @@ class HomePageState extends State<HomePage> {
                                                     .models,
                                             onModelSelected: (model) {
                                               context.read<DomainBloc>().add(
-                                                SelectModelEvent(model),
+                                                domain_events.SelectModelEvent(
+                                                  model,
+                                                ),
                                               );
                                             },
                                           )
@@ -276,8 +282,7 @@ class _ThemeDropdown extends StatelessWidget {
           }).toList(),
       onChanged: (themeName) {
         if (themeName != null) {
-          final themeData = themes[brightness]![themeName]!;
-          context.read<ThemeBloc>().add(ChangeThemeEvent(themeData));
+          context.read<ThemeBloc>().add(ChangeThemeEvent(themeName));
         }
       },
     );

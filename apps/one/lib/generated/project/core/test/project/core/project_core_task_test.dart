@@ -1,14 +1,14 @@
  
 // test/project/core/project_core_task_test.dart 
  
-import 'package:test/test.dart'; 
-import 'package:ednet_core/ednet_core.dart'; 
-import '../../../lib/project_core.dart'; 
+import "package:test/test.dart"; 
+import "package:ednet_core/ednet_core.dart"; 
+import "package:project_core/project_core.dart"; 
  
 void testProjectCoreTasks( 
     ProjectDomain projectDomain, CoreModel coreModel, Tasks tasks) { 
   DomainSession session; 
-  group('Testing Project.Core.Task', () { 
+  group("Testing Project.Core.Task", () { 
     session = projectDomain.newSession();  
     setUp(() { 
       coreModel.init(); 
@@ -17,20 +17,20 @@ void testProjectCoreTasks(
       coreModel.clear(); 
     }); 
  
-    test('Not empty model', () { 
+    test("Not empty model", () { 
       expect(coreModel.isEmpty, isFalse); 
       expect(tasks.isEmpty, isFalse); 
     }); 
  
-    test('Empty model', () { 
+    test("Empty model", () { 
       coreModel.clear(); 
       expect(coreModel.isEmpty, isTrue); 
       expect(tasks.isEmpty, isTrue); 
       expect(tasks.exceptions.isEmpty, isTrue); 
     }); 
  
-    test('From model to JSON', () { 
-      final json = coreModel.toJson(); 
+    test("From model to JSON", () { 
+      var json = coreModel.toJson(); 
       expect(json, isNotNull); 
  
       print(json); 
@@ -38,8 +38,8 @@ void testProjectCoreTasks(
       //coreModel.display(); 
     }); 
  
-    test('From JSON to model', () { 
-      final json = coreModel.toJson(); 
+    test("From JSON to model", () { 
+      var json = coreModel.toJson(); 
       coreModel.clear(); 
       expect(coreModel.isEmpty, isTrue); 
       coreModel.fromJson(json); 
@@ -48,188 +48,194 @@ void testProjectCoreTasks(
       coreModel.display(); 
     }); 
  
-    test('From model entry to JSON', () { 
-      final json = coreModel.fromEntryToJson('Task'); 
+    test("From model entry to JSON", () { 
+      var json = coreModel.fromEntryToJson("Task"); 
       expect(json, isNotNull); 
  
       print(json); 
-      //coreModel.displayEntryJson('Task'); 
+      //coreModel.displayEntryJson("Task"); 
       //coreModel.displayJson(); 
       //coreModel.display(); 
     }); 
  
-    test('From JSON to model entry', () { 
-      final json = coreModel.fromEntryToJson('Task'); 
+    test("From JSON to model entry", () { 
+      var json = coreModel.fromEntryToJson("Task"); 
       tasks.clear(); 
       expect(tasks.isEmpty, isTrue); 
       coreModel.fromJsonToEntry(json); 
       expect(tasks.isEmpty, isFalse); 
  
-      tasks.display(title: 'From JSON to model entry'); 
+      tasks.display(title: "From JSON to model entry"); 
     }); 
  
-    test('Add task required error', () { 
+    test("Add task required error", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Add task unique error', () { 
+    test("Add task unique error", () { 
       // no id attribute 
     }); 
  
-    test('Not found task by oid', () { 
-      final ednetOid = Oid.ts(1345648254063); 
-      final task = tasks.singleWhereOid(ednetOid); 
+    test("Not found task by oid", () { 
+      var ednetOid = Oid.ts(1345648254063); 
+      var task = tasks.singleWhereOid(ednetOid); 
       expect(task, isNull); 
     }); 
  
-    test('Find task by oid', () { 
-      final randomTask = coreModel.tasks.random(); 
-      final task = tasks.singleWhereOid(randomTask.oid); 
+    test("Find task by oid", () { 
+      var randomTask = coreModel.tasks.random(); 
+      var task = tasks.singleWhereOid(randomTask.oid); 
       expect(task, isNotNull); 
       expect(task, equals(randomTask)); 
     }); 
  
-    test('Find task by attribute id', () { 
+    test("Find task by attribute id", () { 
       // no id attribute 
     }); 
  
-    test('Find task by required attribute', () { 
+    test("Find task by required attribute", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Find task by attribute', () { 
-      final randomTask = coreModel.tasks.random(); 
-      final task = 
-          tasks.firstWhereAttribute('title', randomTask.title); 
+    test("Find task by attribute", () { 
+      var randomTask = coreModel.tasks.random(); 
+      var task = 
+          tasks.firstWhereAttribute("title", randomTask.title); 
       expect(task, isNotNull); 
       expect(task.title, equals(randomTask.title)); 
     }); 
  
-    test('Select tasks by attribute', () { 
-      final randomTask = coreModel.tasks.random(); 
-      final selectedTasks = 
-          tasks.selectWhereAttribute('title', randomTask.title); 
+    test("Select tasks by attribute", () { 
+      var randomTask = coreModel.tasks.random(); 
+      var selectedTasks = 
+          tasks.selectWhereAttribute("title", randomTask.title); 
       expect(selectedTasks.isEmpty, isFalse); 
-      for (final se in selectedTasks) {        expect(se.title, equals(randomTask.title));      } 
-      //selectedTasks.display(title: 'Select tasks by title'); 
+      selectedTasks.forEach((se) => 
+          expect(se.title, equals(randomTask.title))); 
+ 
+      //selectedTasks.display(title: "Select tasks by title"); 
     }); 
  
-    test('Select tasks by required attribute', () { 
+    test("Select tasks by required attribute", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Select tasks by attribute, then add', () { 
-      final randomTask = coreModel.tasks.random(); 
-      final selectedTasks = 
-          tasks.selectWhereAttribute('title', randomTask.title); 
+    test("Select tasks by attribute, then add", () { 
+      var randomTask = coreModel.tasks.random(); 
+      var selectedTasks = 
+          tasks.selectWhereAttribute("title", randomTask.title); 
       expect(selectedTasks.isEmpty, isFalse); 
       expect(selectedTasks.source?.isEmpty, isFalse); 
       var tasksCount = tasks.length; 
  
-      final task = Task(tasks.concept) 
-
-      ..title = 'table'
-      ..dueDate = new DateTime.now()
-      ..status = 'debt'
-      ..priority = 'call';      final added = selectedTasks.add(task); 
+      var task = Task(tasks.concept); 
+      task.title = 'edition'; 
+      task.dueDate = new DateTime.now(); 
+      task.status = 'election'; 
+      task.priority = 'meter'; 
+      var added = selectedTasks.add(task); 
       expect(added, isTrue); 
       expect(tasks.length, equals(++tasksCount)); 
  
       //selectedTasks.display(title: 
-      //  'Select tasks by attribute, then add'); 
-      //tasks.display(title: 'All tasks'); 
+      //  "Select tasks by attribute, then add"); 
+      //tasks.display(title: "All tasks"); 
     }); 
  
-    test('Select tasks by attribute, then remove', () { 
-      final randomTask = coreModel.tasks.random(); 
-      final selectedTasks = 
-          tasks.selectWhereAttribute('title', randomTask.title); 
+    test("Select tasks by attribute, then remove", () { 
+      var randomTask = coreModel.tasks.random(); 
+      var selectedTasks = 
+          tasks.selectWhereAttribute("title", randomTask.title); 
       expect(selectedTasks.isEmpty, isFalse); 
       expect(selectedTasks.source?.isEmpty, isFalse); 
       var tasksCount = tasks.length; 
  
-      final removed = selectedTasks.remove(randomTask); 
+      var removed = selectedTasks.remove(randomTask); 
       expect(removed, isTrue); 
       expect(tasks.length, equals(--tasksCount)); 
  
-      randomTask.display(prefix: 'removed'); 
+      randomTask.display(prefix: "removed"); 
       //selectedTasks.display(title: 
-      //  'Select tasks by attribute, then remove'); 
-      //tasks.display(title: 'All tasks'); 
+      //  "Select tasks by attribute, then remove"); 
+      //tasks.display(title: "All tasks"); 
     }); 
  
-    test('Sort tasks', () { 
+    test("Sort tasks", () { 
       // no id attribute 
       // add compareTo method in the specific Task class 
       /* 
       tasks.sort(); 
  
-      //tasks.display(title: 'Sort tasks'); 
+      //tasks.display(title: "Sort tasks"); 
       */ 
     }); 
  
-    test('Order tasks', () { 
+    test("Order tasks", () { 
       // no id attribute 
       // add compareTo method in the specific Task class 
       /* 
-      final orderedTasks = tasks.order(); 
+      var orderedTasks = tasks.order(); 
       expect(orderedTasks.isEmpty, isFalse); 
       expect(orderedTasks.length, equals(tasks.length)); 
       expect(orderedTasks.source?.isEmpty, isFalse); 
       expect(orderedTasks.source?.length, equals(tasks.length)); 
       expect(orderedTasks, isNot(same(tasks))); 
  
-      //orderedTasks.display(title: 'Order tasks'); 
+      //orderedTasks.display(title: "Order tasks"); 
       */ 
     }); 
  
-    test('Copy tasks', () { 
-      final copiedTasks = tasks.copy(); 
+    test("Copy tasks", () { 
+      var copiedTasks = tasks.copy(); 
       expect(copiedTasks.isEmpty, isFalse); 
       expect(copiedTasks.length, equals(tasks.length)); 
       expect(copiedTasks, isNot(same(tasks))); 
-      for (final e in copiedTasks) {        expect(e, equals(tasks.singleWhereOid(e.oid)));      } 
+      copiedTasks.forEach((e) => 
+        expect(e, equals(tasks.singleWhereOid(e.oid)))); 
  
       //copiedTasks.display(title: "Copy tasks"); 
     }); 
  
-    test('True for every task', () { 
+    test("True for every task", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Random task', () { 
-      final task1 = coreModel.tasks.random(); 
+    test("Random task", () { 
+      var task1 = coreModel.tasks.random(); 
       expect(task1, isNotNull); 
-      final task2 = coreModel.tasks.random(); 
+      var task2 = coreModel.tasks.random(); 
       expect(task2, isNotNull); 
  
-      //task1.display(prefix: 'random1'); 
-      //task2.display(prefix: 'random2'); 
+      //task1.display(prefix: "random1"); 
+      //task2.display(prefix: "random2"); 
     }); 
  
-    test('Update task id with try', () { 
+    test("Update task id with try", () { 
       // no id attribute 
     }); 
  
-    test('Update task id without try', () { 
+    test("Update task id without try", () { 
       // no id attribute 
     }); 
  
-    test('Update task id with success', () { 
+    test("Update task id with success", () { 
       // no id attribute 
     }); 
  
-    test('Update task non id attribute with failure', () { 
-      final randomTask = coreModel.tasks.random(); 
-      final afterUpdateEntity = randomTask.copy()..title = 'discount'; 
-      expect(afterUpdateEntity.title, equals('discount')); 
+    test("Update task non id attribute with failure", () { 
+      var randomTask = coreModel.tasks.random(); 
+      var afterUpdateEntity = randomTask.copy(); 
+      afterUpdateEntity.title = 'wheat'; 
+      expect(afterUpdateEntity.title, equals('wheat')); 
       // tasks.update can only be used if oid, code or id is set. 
       expect(() => tasks.update(randomTask, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
  
-    test('Copy Equality', () { 
-      final randomTask = coreModel.tasks.random()..display(prefix:'before copy: '); 
-      final randomTaskCopy = randomTask.copy()..display(prefix:'after copy: '); 
+    test("Copy Equality", () { 
+      var randomTask = coreModel.tasks.random(); 
+      randomTask.display(prefix:"before copy: "); 
+      var randomTaskCopy = randomTask.copy(); 
+      randomTaskCopy.display(prefix:"after copy: "); 
       expect(randomTask, equals(randomTaskCopy)); 
       expect(randomTask.oid, equals(randomTaskCopy.oid)); 
       expect(randomTask.code, equals(randomTaskCopy.code)); 
@@ -240,14 +246,14 @@ void testProjectCoreTasks(
  
     }); 
  
-    test('task action undo and redo', () { 
+    test("task action undo and redo", () { 
       var taskCount = tasks.length; 
-      final task = Task(tasks.concept) 
-  
-      ..title = 'entertainment'
-      ..dueDate = new DateTime.now()
-      ..status = 'hot'
-      ..priority = 'energy';    final taskProject = coreModel.projects.random(); 
+      var task = Task(tasks.concept); 
+        task.title = 'enquiry'; 
+      task.dueDate = new DateTime.now(); 
+      task.status = 'unit'; 
+      task.priority = 'test'; 
+    var taskProject = coreModel.projects.random(); 
     task.project = taskProject; 
       tasks.add(task); 
     taskProject.tasks.add(task); 
@@ -255,7 +261,8 @@ void testProjectCoreTasks(
       tasks.remove(task); 
       expect(tasks.length, equals(--taskCount)); 
  
-      final action = AddCommand(session, tasks, task)..doIt(); 
+      var action = AddCommand(session, tasks, task); 
+      action.doIt(); 
       expect(tasks.length, equals(++taskCount)); 
  
       action.undo(); 
@@ -265,14 +272,14 @@ void testProjectCoreTasks(
       expect(tasks.length, equals(++taskCount)); 
     }); 
  
-    test('task session undo and redo', () { 
+    test("task session undo and redo", () { 
       var taskCount = tasks.length; 
-      final task = Task(tasks.concept) 
-  
-      ..title = 'team'
-      ..dueDate = new DateTime.now()
-      ..status = 'city'
-      ..priority = 'plaho';    final taskProject = coreModel.projects.random(); 
+      var task = Task(tasks.concept); 
+        task.title = 'accomodation'; 
+      task.dueDate = new DateTime.now(); 
+      task.status = 'drink'; 
+      task.priority = 'interest'; 
+    var taskProject = coreModel.projects.random(); 
     task.project = taskProject; 
       tasks.add(task); 
     taskProject.tasks.add(task); 
@@ -280,7 +287,8 @@ void testProjectCoreTasks(
       tasks.remove(task); 
       expect(tasks.length, equals(--taskCount)); 
  
-      AddCommand(session, tasks, task).doIt();; 
+      var action = AddCommand(session, tasks, task); 
+      action.doIt(); 
       expect(tasks.length, equals(++taskCount)); 
  
       session.past.undo(); 
@@ -290,9 +298,10 @@ void testProjectCoreTasks(
       expect(tasks.length, equals(++taskCount)); 
     }); 
  
-    test('Task update undo and redo', () { 
-      final task = coreModel.tasks.random(); 
-      final action = SetAttributeCommand(session, task, 'title', 'notch')..doIt(); 
+    test("Task update undo and redo", () { 
+      var task = coreModel.tasks.random(); 
+      var action = SetAttributeCommand(session, task, "title", 'beginning'); 
+      action.doIt(); 
  
       session.past.undo(); 
       expect(task.title, equals(action.before)); 
@@ -301,16 +310,18 @@ void testProjectCoreTasks(
       expect(task.title, equals(action.after)); 
     }); 
  
-    test('Task action with multiple undos and redos', () { 
+    test("Task action with multiple undos and redos", () { 
       var taskCount = tasks.length; 
-      final task1 = coreModel.tasks.random(); 
+      var task1 = coreModel.tasks.random(); 
  
-      RemoveCommand(session, tasks, task1).doIt(); 
+      var action1 = RemoveCommand(session, tasks, task1); 
+      action1.doIt(); 
       expect(tasks.length, equals(--taskCount)); 
  
-      final task2 = coreModel.tasks.random(); 
+      var task2 = coreModel.tasks.random(); 
  
-      RemoveCommand(session, tasks, task2).doIt(); 
+      var action2 = RemoveCommand(session, tasks, task2); 
+      action2.doIt(); 
       expect(tasks.length, equals(--taskCount)); 
  
       //session.past.display(); 
@@ -332,71 +343,69 @@ void testProjectCoreTasks(
       //session.past.display(); 
     }); 
  
-    test('Transaction undo and redo', () { 
+    test("Transaction undo and redo", () { 
       var taskCount = tasks.length; 
-      final task1 = coreModel.tasks.random(); 
+      var task1 = coreModel.tasks.random(); 
       var task2 = coreModel.tasks.random(); 
       while (task1 == task2) { 
         task2 = coreModel.tasks.random();  
       } 
-      final action1 = RemoveCommand(session, tasks, task1); 
-      final action2 = RemoveCommand(session, tasks, task2); 
+      var action1 = RemoveCommand(session, tasks, task1); 
+      var action2 = RemoveCommand(session, tasks, task2); 
  
-      Transaction('two removes on tasks', session) 
-        ..add(action1) 
-        ..add(action2) 
-        ..doIt(); 
+      var transaction = new Transaction("two removes on tasks", session); 
+      transaction.add(action1); 
+      transaction.add(action2); 
+      transaction.doIt(); 
       taskCount = taskCount - 2; 
       expect(tasks.length, equals(taskCount)); 
  
-      tasks.display(title:'Transaction Done'); 
+      tasks.display(title:"Transaction Done"); 
  
       session.past.undo(); 
       taskCount = taskCount + 2; 
       expect(tasks.length, equals(taskCount)); 
  
-      tasks.display(title:'Transaction Undone'); 
+      tasks.display(title:"Transaction Undone"); 
  
       session.past.redo(); 
       taskCount = taskCount - 2; 
       expect(tasks.length, equals(taskCount)); 
  
-      tasks.display(title:'Transaction Redone'); 
+      tasks.display(title:"Transaction Redone"); 
     }); 
  
-    test('Transaction with one action error', () { 
-      final taskCount = tasks.length; 
-      final task1 = coreModel.tasks.random(); 
-      final task2 = task1; 
-      final action1 = RemoveCommand(session, tasks, task1); 
-      final action2 = RemoveCommand(session, tasks, task2); 
+    test("Transaction with one action error", () { 
+      var taskCount = tasks.length; 
+      var task1 = coreModel.tasks.random(); 
+      var task2 = task1; 
+      var action1 = RemoveCommand(session, tasks, task1); 
+      var action2 = RemoveCommand(session, tasks, task2); 
  
-      final transaction = Transaction( 
-        'two removes on tasks, with an error on the second',
-        session, 
-        )
-        ..add(action1) 
-        ..add(action2); 
-      final done = transaction.doIt(); 
+      var transaction = Transaction( 
+        "two removes on tasks, with an error on the second", session); 
+      transaction.add(action1); 
+      transaction.add(action2); 
+      var done = transaction.doIt(); 
       expect(done, isFalse); 
       expect(tasks.length, equals(taskCount)); 
  
-      //tasks.display(title:'Transaction with an error'); 
+      //tasks.display(title:"Transaction with an error"); 
     }); 
  
-    test('Reactions to task actions', () { 
+    test("Reactions to task actions", () { 
       var taskCount = tasks.length; 
  
-      final reaction = TaskReaction(); 
+      var reaction = TaskReaction(); 
       expect(reaction, isNotNull); 
  
       projectDomain.startCommandReaction(reaction); 
-      final task = Task(tasks.concept) 
-  
-      ..title = 'health'
-      ..dueDate = new DateTime.now()
-      ..status = 'beach'
-      ..priority = 'done';    final taskProject = coreModel.projects.random(); 
+      var task = Task(tasks.concept); 
+        task.title = 'accident'; 
+      task.dueDate = new DateTime.now(); 
+      task.status = 'web'; 
+      task.priority = 'lake'; 
+    var taskProject = coreModel.projects.random(); 
     task.project = taskProject; 
       tasks.add(task); 
     taskProject.tasks.add(task); 
@@ -404,17 +413,15 @@ void testProjectCoreTasks(
       tasks.remove(task); 
       expect(tasks.length, equals(--taskCount)); 
  
-      final session = projectDomain.newSession(); 
-      AddCommand(session, tasks, task).doIt(); 
+      var session = projectDomain.newSession(); 
+      var addCommand = AddCommand(session, tasks, task); 
+      addCommand.doIt(); 
       expect(tasks.length, equals(++taskCount)); 
       expect(reaction.reactedOnAdd, isTrue); 
  
-      SetAttributeCommand( 
-        session,
-        task,
-        'title',
-        'cardboard',
-      ).doIt();
+      var setAttributeCommand = SetAttributeCommand( 
+        session, task, "title", 'parfem'); 
+      setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 
     }); 
@@ -426,7 +433,7 @@ class TaskReaction implements ICommandReaction {
   bool reactedOnAdd    = false; 
   bool reactedOnUpdate = false; 
  
-  @override  void react(ICommand action) { 
+  void react(ICommand action) { 
     if (action is IEntitiesCommand) { 
       reactedOnAdd = true; 
     } else if (action is IEntityCommand) { 
@@ -436,12 +443,12 @@ class TaskReaction implements ICommandReaction {
 } 
  
 void main() { 
-  final repository = ProjectCoreRepo(); 
-  final projectDomain = repository.getDomainModels('Project') as ProjectDomain?;
-  assert(projectDomain != null, 'ProjectDomain is not defined'); 
-  final coreModel = projectDomain!.getModelEntries('Core') as CoreModel?;
-  assert(coreModel != null, 'CoreModel is not defined'); 
-  final tasks = coreModel!.tasks; 
+  var repository = ProjectCoreRepo(); 
+  ProjectDomain projectDomain = repository.getDomainModels("Project") as ProjectDomain;   
+  assert(projectDomain != null); 
+  CoreModel coreModel = projectDomain.getModelEntries("Core") as CoreModel;  
+  assert(coreModel != null); 
+  var tasks = coreModel.tasks; 
   testProjectCoreTasks(projectDomain, coreModel, tasks); 
 } 
  

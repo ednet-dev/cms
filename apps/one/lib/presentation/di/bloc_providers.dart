@@ -7,8 +7,15 @@ import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selec
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
+import 'package:ednet_one/generated/one_application.dart';
 
-import 'service_locator.dart';
+// Import the global instances from main.dart
+import 'package:ednet_one/main.dart'
+    show
+        createDomainSelectionBloc,
+        createModelSelectionBloc,
+        createConceptSelectionBloc,
+        createThemeBloc;
 
 /// Utility class to provide all BLoCs at once
 class AppBlocProviders {
@@ -17,20 +24,21 @@ class AppBlocProviders {
     BlocProvider<DomainSelectionBloc>(
       create:
           (context) =>
-              sl<DomainSelectionBloc>()..add(InitializeDomainSelectionEvent()),
+              createDomainSelectionBloc()
+                ..add(InitializeDomainSelectionEvent()),
     ),
     BlocProvider<ModelSelectionBloc>(
       create:
           (context) =>
-              sl<ModelSelectionBloc>()..add(InitializeModelSelectionEvent()),
+              createModelSelectionBloc()..add(InitializeModelSelectionEvent()),
     ),
     BlocProvider<ConceptSelectionBloc>(
       create:
           (context) =>
-              sl<ConceptSelectionBloc>()
+              createConceptSelectionBloc()
                 ..add(InitializeConceptSelectionEvent()),
     ),
-    BlocProvider<ThemeBloc>(create: (context) => sl<ThemeBloc>()),
+    BlocProvider<ThemeBloc>(create: (context) => createThemeBloc()),
   ];
 
   /// Wraps a widget with all the necessary BlocProviders

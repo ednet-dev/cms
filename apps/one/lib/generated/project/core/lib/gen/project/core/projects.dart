@@ -1,94 +1,71 @@
-part of '../../../project_core.dart';
-
-// lib/gen/project/core/projects.dart
-
-abstract class ProjectGen extends Entity<Project> {
-  ProjectGen(Concept concept) {
-    this.concept = concept;
-        final taskConcept = 
-        concept.model.concepts.singleWhereCode('Task');
-    assert(taskConcept != null, 'Task concept is not defined');
-    setChild('tasks', Tasks(taskConcept!));
-    final milestoneConcept = 
-        concept.model.concepts.singleWhereCode('Milestone');
-    assert(milestoneConcept != null, 'Milestone concept is not defined');
-    setChild('milestones', Milestones(milestoneConcept!));
-    final teamConcept = 
-        concept.model.concepts.singleWhereCode('Team');
-    assert(teamConcept != null, 'Team concept is not defined');
-    setChild('teams', Teams(teamConcept!));
-    final budgetConcept = 
-        concept.model.concepts.singleWhereCode('Budget');
-    assert(budgetConcept != null, 'Budget concept is not defined');
-    setChild('budgets', Budgets(budgetConcept!));
-    final initiativeConcept = 
-        concept.model.concepts.singleWhereCode('Initiative');
-    assert(initiativeConcept != null, 'Initiative concept is not defined');
-    setChild('initiatives', Initiatives(initiativeConcept!));
-    final timeConcept = 
-        concept.model.concepts.singleWhereCode('Time');
-    assert(timeConcept != null, 'Time concept is not defined');
-    setChild('times', Times(timeConcept!));
-
-  }
+part of project_core; 
+ 
+// lib/gen/project/core/projects.dart 
+ 
+abstract class ProjectGen extends Entity<Project> { 
+ 
+  ProjectGen(Concept concept) { 
+    this.concept = concept; 
+    Concept taskConcept = concept.model.concepts.singleWhereCode("Task") as Concept; 
+    assert(taskConcept != null); 
+    setChild("tasks", Tasks(taskConcept)); 
+    Concept milestoneConcept = concept.model.concepts.singleWhereCode("Milestone") as Concept; 
+    assert(milestoneConcept != null); 
+    setChild("milestones", Milestones(milestoneConcept)); 
+    Concept teamConcept = concept.model.concepts.singleWhereCode("Team") as Concept; 
+    assert(teamConcept != null); 
+    setChild("teams", Teams(teamConcept)); 
+    Concept budgetConcept = concept.model.concepts.singleWhereCode("Budget") as Concept; 
+    assert(budgetConcept != null); 
+    setChild("budgets", Budgets(budgetConcept)); 
+    Concept initiativeConcept = concept.model.concepts.singleWhereCode("Initiative") as Concept; 
+    assert(initiativeConcept != null); 
+    setChild("initiatives", Initiatives(initiativeConcept)); 
+    Concept timeConcept = concept.model.concepts.singleWhereCode("Time") as Concept; 
+    assert(timeConcept != null); 
+    setChild("times", Times(timeConcept)); 
+  } 
+ 
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
   
-
+  String get description => getAttribute("description"); 
+  void set description(String a) { setAttribute("description", a); } 
   
-
-    String get name => getAttribute('name') as String;
+  DateTime get startDate => getAttribute("startDate"); 
+  void set startDate(DateTime a) { setAttribute("startDate", a); } 
   
-  set name(String a) => setAttribute('name', a);
-
-  String get description => getAttribute('description') as String;
+  DateTime get endDate => getAttribute("endDate"); 
+  void set endDate(DateTime a) { setAttribute("endDate", a); } 
   
-  set description(String a) => setAttribute('description', a);
-
-  DateTime get startDate => getAttribute('startDate') as DateTime;
+  double get budget => getAttribute("budget"); 
+  void set budget(double a) { setAttribute("budget", a); } 
   
-  set startDate(DateTime a) => setAttribute('startDate', a);
-
-  DateTime get endDate => getAttribute('endDate') as DateTime;
+  Tasks get tasks => getChild("tasks") as Tasks; 
   
-  set endDate(DateTime a) => setAttribute('endDate', a);
-
-  double get budget => getAttribute('budget') as double;
+  Milestones get milestones => getChild("milestones") as Milestones; 
   
-  set budget(double a) => setAttribute('budget', a);
-
-
-    Tasks get tasks => getChild('tasks')! as Tasks;
-
-  Milestones get milestones => getChild('milestones')! as Milestones;
-
-  Teams get teams => getChild('teams')! as Teams;
-
-  Budgets get budgets => getChild('budgets')! as Budgets;
-
-  Initiatives get initiatives => getChild('initiatives')! as Initiatives;
-
-  Times get times => getChild('times')! as Times;
-
-  @override
-  Project newEntity() => Project(concept);
-
-  @override
-  Projects newEntities() => Projects(concept);
-
+  Teams get teams => getChild("teams") as Teams; 
   
-}
-
-abstract class ProjectsGen extends Entities<Project> {
-  ProjectsGen(Concept concept) {
-    this.concept = concept;
-  }
-
-  @override
-  Projects newEntities() => Projects(concept);
-
-  @override
-  Project newEntity() => Project(concept);
-}
-
-// Commands for Project will be generated here
-// Events for Project will be generated here
-// Policies for Project will be generated here
+  Budgets get budgets => getChild("budgets") as Budgets; 
+  
+  Initiatives get initiatives => getChild("initiatives") as Initiatives; 
+  
+  Times get times => getChild("times") as Times; 
+  
+  Project newEntity() => Project(concept); 
+  Projects newEntities() => Projects(concept); 
+  
+} 
+ 
+abstract class ProjectsGen extends Entities<Project> { 
+ 
+  ProjectsGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Projects newEntities() => Projects(concept); 
+  Project newEntity() => Project(concept); 
+  
+} 
+ 

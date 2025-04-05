@@ -1,55 +1,38 @@
-part of '../../../project_core.dart';
-
-// lib/gen/project/core/skills.dart
-
-abstract class SkillGen extends Entity<Skill> {
-  SkillGen(Concept concept) {
-    this.concept = concept;
-    // concept.children.isEmpty
-  }
+part of project_core; 
+ 
+// lib/gen/project/core/skills.dart 
+ 
+abstract class SkillGen extends Entity<Skill> { 
+ 
+  SkillGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Reference get resourceReference => getReference("resource") as Reference; 
+  void set resourceReference(Reference reference) { setReference("resource", reference); } 
   
-
-    Reference get resourceReference => getReference('resource')!;
+  Resource get resource => getParent("resource") as Resource; 
+  void set resource(Resource p) { setParent("resource", p); } 
   
-  set resourceReference(Reference reference) => 
-      setReference('resource', reference);
-  Resource get resource =>
-      getParent('resource')! as Resource;
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
   
-  set resource(Resource p) => setParent('resource', p);
-
-
-    String get name => getAttribute('name') as String;
+  String get level => getAttribute("level"); 
+  void set level(String a) { setAttribute("level", a); } 
   
-  set name(String a) => setAttribute('name', a);
-
-  String get level => getAttribute('level') as String;
+  Skill newEntity() => Skill(concept); 
+  Skills newEntities() => Skills(concept); 
   
-  set level(String a) => setAttribute('level', a);
-
-
+} 
+ 
+abstract class SkillsGen extends Entities<Skill> { 
+ 
+  SkillsGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Skills newEntities() => Skills(concept); 
+  Skill newEntity() => Skill(concept); 
   
-  @override
-  Skill newEntity() => Skill(concept);
-
-  @override
-  Skills newEntities() => Skills(concept);
-
-  
-}
-
-abstract class SkillsGen extends Entities<Skill> {
-  SkillsGen(Concept concept) {
-    this.concept = concept;
-  }
-
-  @override
-  Skills newEntities() => Skills(concept);
-
-  @override
-  Skill newEntity() => Skill(concept);
-}
-
-// Commands for Skill will be generated here
-// Events for Skill will be generated here
-// Policies for Skill will be generated here
+} 
+ 

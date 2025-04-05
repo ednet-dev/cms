@@ -1,14 +1,14 @@
  
 // test/project/core/project_core_time_test.dart 
  
-import 'package:test/test.dart'; 
-import 'package:ednet_core/ednet_core.dart'; 
-import '../../../lib/project_core.dart'; 
+import "package:test/test.dart"; 
+import "package:ednet_core/ednet_core.dart"; 
+import "package:project_core/project_core.dart"; 
  
 void testProjectCoreTimes( 
     ProjectDomain projectDomain, CoreModel coreModel, Times times) { 
   DomainSession session; 
-  group('Testing Project.Core.Time', () { 
+  group("Testing Project.Core.Time", () { 
     session = projectDomain.newSession();  
     setUp(() { 
       coreModel.init(); 
@@ -17,20 +17,20 @@ void testProjectCoreTimes(
       coreModel.clear(); 
     }); 
  
-    test('Not empty model', () { 
+    test("Not empty model", () { 
       expect(coreModel.isEmpty, isFalse); 
       expect(times.isEmpty, isFalse); 
     }); 
  
-    test('Empty model', () { 
+    test("Empty model", () { 
       coreModel.clear(); 
       expect(coreModel.isEmpty, isTrue); 
       expect(times.isEmpty, isTrue); 
       expect(times.exceptions.isEmpty, isTrue); 
     }); 
  
-    test('From model to JSON', () { 
-      final json = coreModel.toJson(); 
+    test("From model to JSON", () { 
+      var json = coreModel.toJson(); 
       expect(json, isNotNull); 
  
       print(json); 
@@ -38,8 +38,8 @@ void testProjectCoreTimes(
       //coreModel.display(); 
     }); 
  
-    test('From JSON to model', () { 
-      final json = coreModel.toJson(); 
+    test("From JSON to model", () { 
+      var json = coreModel.toJson(); 
       coreModel.clear(); 
       expect(coreModel.isEmpty, isTrue); 
       coreModel.fromJson(json); 
@@ -48,185 +48,191 @@ void testProjectCoreTimes(
       coreModel.display(); 
     }); 
  
-    test('From model entry to JSON', () { 
-      final json = coreModel.fromEntryToJson('Time'); 
+    test("From model entry to JSON", () { 
+      var json = coreModel.fromEntryToJson("Time"); 
       expect(json, isNotNull); 
  
       print(json); 
-      //coreModel.displayEntryJson('Time'); 
+      //coreModel.displayEntryJson("Time"); 
       //coreModel.displayJson(); 
       //coreModel.display(); 
     }); 
  
-    test('From JSON to model entry', () { 
-      final json = coreModel.fromEntryToJson('Time'); 
+    test("From JSON to model entry", () { 
+      var json = coreModel.fromEntryToJson("Time"); 
       times.clear(); 
       expect(times.isEmpty, isTrue); 
       coreModel.fromJsonToEntry(json); 
       expect(times.isEmpty, isFalse); 
  
-      times.display(title: 'From JSON to model entry'); 
+      times.display(title: "From JSON to model entry"); 
     }); 
  
-    test('Add time required error', () { 
+    test("Add time required error", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Add time unique error', () { 
+    test("Add time unique error", () { 
       // no id attribute 
     }); 
  
-    test('Not found time by oid', () { 
-      final ednetOid = Oid.ts(1345648254063); 
-      final time = times.singleWhereOid(ednetOid); 
+    test("Not found time by oid", () { 
+      var ednetOid = Oid.ts(1345648254063); 
+      var time = times.singleWhereOid(ednetOid); 
       expect(time, isNull); 
     }); 
  
-    test('Find time by oid', () { 
-      final randomTime = coreModel.times.random(); 
-      final time = times.singleWhereOid(randomTime.oid); 
+    test("Find time by oid", () { 
+      var randomTime = coreModel.times.random(); 
+      var time = times.singleWhereOid(randomTime.oid); 
       expect(time, isNotNull); 
       expect(time, equals(randomTime)); 
     }); 
  
-    test('Find time by attribute id', () { 
+    test("Find time by attribute id", () { 
       // no id attribute 
     }); 
  
-    test('Find time by required attribute', () { 
+    test("Find time by required attribute", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Find time by attribute', () { 
-      final randomTime = coreModel.times.random(); 
-      final time = 
-          times.firstWhereAttribute('hours', randomTime.hours); 
+    test("Find time by attribute", () { 
+      var randomTime = coreModel.times.random(); 
+      var time = 
+          times.firstWhereAttribute("hours", randomTime.hours); 
       expect(time, isNotNull); 
       expect(time.hours, equals(randomTime.hours)); 
     }); 
  
-    test('Select times by attribute', () { 
-      final randomTime = coreModel.times.random(); 
-      final selectedTimes = 
-          times.selectWhereAttribute('hours', randomTime.hours); 
+    test("Select times by attribute", () { 
+      var randomTime = coreModel.times.random(); 
+      var selectedTimes = 
+          times.selectWhereAttribute("hours", randomTime.hours); 
       expect(selectedTimes.isEmpty, isFalse); 
-      for (final se in selectedTimes) {        expect(se.hours, equals(randomTime.hours));      } 
-      //selectedTimes.display(title: 'Select times by hours'); 
+      selectedTimes.forEach((se) => 
+          expect(se.hours, equals(randomTime.hours))); 
+ 
+      //selectedTimes.display(title: "Select times by hours"); 
     }); 
  
-    test('Select times by required attribute', () { 
+    test("Select times by required attribute", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Select times by attribute, then add', () { 
-      final randomTime = coreModel.times.random(); 
-      final selectedTimes = 
-          times.selectWhereAttribute('hours', randomTime.hours); 
+    test("Select times by attribute, then add", () { 
+      var randomTime = coreModel.times.random(); 
+      var selectedTimes = 
+          times.selectWhereAttribute("hours", randomTime.hours); 
       expect(selectedTimes.isEmpty, isFalse); 
       expect(selectedTimes.source?.isEmpty, isFalse); 
       var timesCount = times.length; 
  
-      final time = Time(times.concept) 
-
-      ..hours = 8773;      final added = selectedTimes.add(time); 
+      var time = Time(times.concept); 
+      time.hours = 1675; 
+      var added = selectedTimes.add(time); 
       expect(added, isTrue); 
       expect(times.length, equals(++timesCount)); 
  
       //selectedTimes.display(title: 
-      //  'Select times by attribute, then add'); 
-      //times.display(title: 'All times'); 
+      //  "Select times by attribute, then add"); 
+      //times.display(title: "All times"); 
     }); 
  
-    test('Select times by attribute, then remove', () { 
-      final randomTime = coreModel.times.random(); 
-      final selectedTimes = 
-          times.selectWhereAttribute('hours', randomTime.hours); 
+    test("Select times by attribute, then remove", () { 
+      var randomTime = coreModel.times.random(); 
+      var selectedTimes = 
+          times.selectWhereAttribute("hours", randomTime.hours); 
       expect(selectedTimes.isEmpty, isFalse); 
       expect(selectedTimes.source?.isEmpty, isFalse); 
       var timesCount = times.length; 
  
-      final removed = selectedTimes.remove(randomTime); 
+      var removed = selectedTimes.remove(randomTime); 
       expect(removed, isTrue); 
       expect(times.length, equals(--timesCount)); 
  
-      randomTime.display(prefix: 'removed'); 
+      randomTime.display(prefix: "removed"); 
       //selectedTimes.display(title: 
-      //  'Select times by attribute, then remove'); 
-      //times.display(title: 'All times'); 
+      //  "Select times by attribute, then remove"); 
+      //times.display(title: "All times"); 
     }); 
  
-    test('Sort times', () { 
+    test("Sort times", () { 
       // no id attribute 
       // add compareTo method in the specific Time class 
       /* 
       times.sort(); 
  
-      //times.display(title: 'Sort times'); 
+      //times.display(title: "Sort times"); 
       */ 
     }); 
  
-    test('Order times', () { 
+    test("Order times", () { 
       // no id attribute 
       // add compareTo method in the specific Time class 
       /* 
-      final orderedTimes = times.order(); 
+      var orderedTimes = times.order(); 
       expect(orderedTimes.isEmpty, isFalse); 
       expect(orderedTimes.length, equals(times.length)); 
       expect(orderedTimes.source?.isEmpty, isFalse); 
       expect(orderedTimes.source?.length, equals(times.length)); 
       expect(orderedTimes, isNot(same(times))); 
  
-      //orderedTimes.display(title: 'Order times'); 
+      //orderedTimes.display(title: "Order times"); 
       */ 
     }); 
  
-    test('Copy times', () { 
-      final copiedTimes = times.copy(); 
+    test("Copy times", () { 
+      var copiedTimes = times.copy(); 
       expect(copiedTimes.isEmpty, isFalse); 
       expect(copiedTimes.length, equals(times.length)); 
       expect(copiedTimes, isNot(same(times))); 
-      for (final e in copiedTimes) {        expect(e, equals(times.singleWhereOid(e.oid)));      } 
+      copiedTimes.forEach((e) => 
+        expect(e, equals(times.singleWhereOid(e.oid)))); 
  
       //copiedTimes.display(title: "Copy times"); 
     }); 
  
-    test('True for every time', () { 
+    test("True for every time", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Random time', () { 
-      final time1 = coreModel.times.random(); 
+    test("Random time", () { 
+      var time1 = coreModel.times.random(); 
       expect(time1, isNotNull); 
-      final time2 = coreModel.times.random(); 
+      var time2 = coreModel.times.random(); 
       expect(time2, isNotNull); 
  
-      //time1.display(prefix: 'random1'); 
-      //time2.display(prefix: 'random2'); 
+      //time1.display(prefix: "random1"); 
+      //time2.display(prefix: "random2"); 
     }); 
  
-    test('Update time id with try', () { 
+    test("Update time id with try", () { 
       // no id attribute 
     }); 
  
-    test('Update time id without try', () { 
+    test("Update time id without try", () { 
       // no id attribute 
     }); 
  
-    test('Update time id with success', () { 
+    test("Update time id with success", () { 
       // no id attribute 
     }); 
  
-    test('Update time non id attribute with failure', () { 
-      final randomTime = coreModel.times.random(); 
-      final afterUpdateEntity = randomTime.copy()..hours = 3446; 
-      expect(afterUpdateEntity.hours, equals(3446)); 
+    test("Update time non id attribute with failure", () { 
+      var randomTime = coreModel.times.random(); 
+      var afterUpdateEntity = randomTime.copy(); 
+      afterUpdateEntity.hours = 4724; 
+      expect(afterUpdateEntity.hours, equals(4724)); 
       // times.update can only be used if oid, code or id is set. 
       expect(() => times.update(randomTime, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
  
-    test('Copy Equality', () { 
-      final randomTime = coreModel.times.random()..display(prefix:'before copy: '); 
-      final randomTimeCopy = randomTime.copy()..display(prefix:'after copy: '); 
+    test("Copy Equality", () { 
+      var randomTime = coreModel.times.random(); 
+      randomTime.display(prefix:"before copy: "); 
+      var randomTimeCopy = randomTime.copy(); 
+      randomTimeCopy.display(prefix:"after copy: "); 
       expect(randomTime, equals(randomTimeCopy)); 
       expect(randomTime.oid, equals(randomTimeCopy.oid)); 
       expect(randomTime.code, equals(randomTimeCopy.code)); 
@@ -234,11 +240,11 @@ void testProjectCoreTimes(
  
     }); 
  
-    test('time action undo and redo', () { 
+    test("time action undo and redo", () { 
       var timeCount = times.length; 
-      final time = Time(times.concept) 
-  
-      ..hours = 2812;    final timeProject = coreModel.projects.random(); 
+      var time = Time(times.concept); 
+        time.hours = 7439; 
+    var timeProject = coreModel.projects.random(); 
     time.project = timeProject; 
       times.add(time); 
     timeProject.times.add(time); 
@@ -246,7 +252,8 @@ void testProjectCoreTimes(
       times.remove(time); 
       expect(times.length, equals(--timeCount)); 
  
-      final action = AddCommand(session, times, time)..doIt(); 
+      var action = AddCommand(session, times, time); 
+      action.doIt(); 
       expect(times.length, equals(++timeCount)); 
  
       action.undo(); 
@@ -256,11 +263,11 @@ void testProjectCoreTimes(
       expect(times.length, equals(++timeCount)); 
     }); 
  
-    test('time session undo and redo', () { 
+    test("time session undo and redo", () { 
       var timeCount = times.length; 
-      final time = Time(times.concept) 
-  
-      ..hours = 5827;    final timeProject = coreModel.projects.random(); 
+      var time = Time(times.concept); 
+        time.hours = 7799; 
+    var timeProject = coreModel.projects.random(); 
     time.project = timeProject; 
       times.add(time); 
     timeProject.times.add(time); 
@@ -268,7 +275,8 @@ void testProjectCoreTimes(
       times.remove(time); 
       expect(times.length, equals(--timeCount)); 
  
-      AddCommand(session, times, time).doIt();; 
+      var action = AddCommand(session, times, time); 
+      action.doIt(); 
       expect(times.length, equals(++timeCount)); 
  
       session.past.undo(); 
@@ -278,9 +286,10 @@ void testProjectCoreTimes(
       expect(times.length, equals(++timeCount)); 
     }); 
  
-    test('Time update undo and redo', () { 
-      final time = coreModel.times.random(); 
-      final action = SetAttributeCommand(session, time, 'hours', 4801)..doIt(); 
+    test("Time update undo and redo", () { 
+      var time = coreModel.times.random(); 
+      var action = SetAttributeCommand(session, time, "hours", 2750); 
+      action.doIt(); 
  
       session.past.undo(); 
       expect(time.hours, equals(action.before)); 
@@ -289,16 +298,18 @@ void testProjectCoreTimes(
       expect(time.hours, equals(action.after)); 
     }); 
  
-    test('Time action with multiple undos and redos', () { 
+    test("Time action with multiple undos and redos", () { 
       var timeCount = times.length; 
-      final time1 = coreModel.times.random(); 
+      var time1 = coreModel.times.random(); 
  
-      RemoveCommand(session, times, time1).doIt(); 
+      var action1 = RemoveCommand(session, times, time1); 
+      action1.doIt(); 
       expect(times.length, equals(--timeCount)); 
  
-      final time2 = coreModel.times.random(); 
+      var time2 = coreModel.times.random(); 
  
-      RemoveCommand(session, times, time2).doIt(); 
+      var action2 = RemoveCommand(session, times, time2); 
+      action2.doIt(); 
       expect(times.length, equals(--timeCount)); 
  
       //session.past.display(); 
@@ -320,68 +331,66 @@ void testProjectCoreTimes(
       //session.past.display(); 
     }); 
  
-    test('Transaction undo and redo', () { 
+    test("Transaction undo and redo", () { 
       var timeCount = times.length; 
-      final time1 = coreModel.times.random(); 
+      var time1 = coreModel.times.random(); 
       var time2 = coreModel.times.random(); 
       while (time1 == time2) { 
         time2 = coreModel.times.random();  
       } 
-      final action1 = RemoveCommand(session, times, time1); 
-      final action2 = RemoveCommand(session, times, time2); 
+      var action1 = RemoveCommand(session, times, time1); 
+      var action2 = RemoveCommand(session, times, time2); 
  
-      Transaction('two removes on times', session) 
-        ..add(action1) 
-        ..add(action2) 
-        ..doIt(); 
+      var transaction = new Transaction("two removes on times", session); 
+      transaction.add(action1); 
+      transaction.add(action2); 
+      transaction.doIt(); 
       timeCount = timeCount - 2; 
       expect(times.length, equals(timeCount)); 
  
-      times.display(title:'Transaction Done'); 
+      times.display(title:"Transaction Done"); 
  
       session.past.undo(); 
       timeCount = timeCount + 2; 
       expect(times.length, equals(timeCount)); 
  
-      times.display(title:'Transaction Undone'); 
+      times.display(title:"Transaction Undone"); 
  
       session.past.redo(); 
       timeCount = timeCount - 2; 
       expect(times.length, equals(timeCount)); 
  
-      times.display(title:'Transaction Redone'); 
+      times.display(title:"Transaction Redone"); 
     }); 
  
-    test('Transaction with one action error', () { 
-      final timeCount = times.length; 
-      final time1 = coreModel.times.random(); 
-      final time2 = time1; 
-      final action1 = RemoveCommand(session, times, time1); 
-      final action2 = RemoveCommand(session, times, time2); 
+    test("Transaction with one action error", () { 
+      var timeCount = times.length; 
+      var time1 = coreModel.times.random(); 
+      var time2 = time1; 
+      var action1 = RemoveCommand(session, times, time1); 
+      var action2 = RemoveCommand(session, times, time2); 
  
-      final transaction = Transaction( 
-        'two removes on times, with an error on the second',
-        session, 
-        )
-        ..add(action1) 
-        ..add(action2); 
-      final done = transaction.doIt(); 
+      var transaction = Transaction( 
+        "two removes on times, with an error on the second", session); 
+      transaction.add(action1); 
+      transaction.add(action2); 
+      var done = transaction.doIt(); 
       expect(done, isFalse); 
       expect(times.length, equals(timeCount)); 
  
-      //times.display(title:'Transaction with an error'); 
+      //times.display(title:"Transaction with an error"); 
     }); 
  
-    test('Reactions to time actions', () { 
+    test("Reactions to time actions", () { 
       var timeCount = times.length; 
  
-      final reaction = TimeReaction(); 
+      var reaction = TimeReaction(); 
       expect(reaction, isNotNull); 
  
       projectDomain.startCommandReaction(reaction); 
-      final time = Time(times.concept) 
-  
-      ..hours = 5044;    final timeProject = coreModel.projects.random(); 
+      var time = Time(times.concept); 
+        time.hours = 4787; 
+    var timeProject = coreModel.projects.random(); 
     time.project = timeProject; 
       times.add(time); 
     timeProject.times.add(time); 
@@ -389,17 +398,15 @@ void testProjectCoreTimes(
       times.remove(time); 
       expect(times.length, equals(--timeCount)); 
  
-      final session = projectDomain.newSession(); 
-      AddCommand(session, times, time).doIt(); 
+      var session = projectDomain.newSession(); 
+      var addCommand = AddCommand(session, times, time); 
+      addCommand.doIt(); 
       expect(times.length, equals(++timeCount)); 
       expect(reaction.reactedOnAdd, isTrue); 
  
-      SetAttributeCommand( 
-        session,
-        time,
-        'hours',
-        7992,
-      ).doIt();
+      var setAttributeCommand = SetAttributeCommand( 
+        session, time, "hours", 1969); 
+      setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 
     }); 
@@ -411,7 +418,7 @@ class TimeReaction implements ICommandReaction {
   bool reactedOnAdd    = false; 
   bool reactedOnUpdate = false; 
  
-  @override  void react(ICommand action) { 
+  void react(ICommand action) { 
     if (action is IEntitiesCommand) { 
       reactedOnAdd = true; 
     } else if (action is IEntityCommand) { 
@@ -421,12 +428,12 @@ class TimeReaction implements ICommandReaction {
 } 
  
 void main() { 
-  final repository = ProjectCoreRepo(); 
-  final projectDomain = repository.getDomainModels('Project') as ProjectDomain?;
-  assert(projectDomain != null, 'ProjectDomain is not defined'); 
-  final coreModel = projectDomain!.getModelEntries('Core') as CoreModel?;
-  assert(coreModel != null, 'CoreModel is not defined'); 
-  final times = coreModel!.times; 
+  var repository = ProjectCoreRepo(); 
+  ProjectDomain projectDomain = repository.getDomainModels("Project") as ProjectDomain;   
+  assert(projectDomain != null); 
+  CoreModel coreModel = projectDomain.getModelEntries("Core") as CoreModel;  
+  assert(coreModel != null); 
+  var times = coreModel.times; 
   testProjectCoreTimes(projectDomain, coreModel, times); 
 } 
  
