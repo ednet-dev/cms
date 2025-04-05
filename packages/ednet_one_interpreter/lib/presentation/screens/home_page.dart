@@ -21,6 +21,7 @@ import '../widgets/layout/web/footer_widget.dart';
 import '../widgets/layout/web/left_sidebar_widget.dart';
 import '../widgets/layout/web/main_content_widget.dart';
 import '../widgets/layout/web/right_sidebar_widget.dart';
+import '../widgets/drafts_panel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title, required this.appLinks});
@@ -224,16 +225,32 @@ class HomePageState extends State<HomePage> {
                                   flex: 2,
                                   child:
                                       domainState.selectedDomain != null
-                                          ? RightSidebarWidget(
-                                            models:
-                                                domainState
-                                                    .selectedDomain!
-                                                    .models,
-                                            onModelSelected: (model) {
-                                              context.read<DomainBloc>().add(
-                                                SelectModelEvent(model),
-                                              );
-                                            },
+                                          ? Column(
+                                            children: [
+                                              Expanded(
+                                                child: RightSidebarWidget(
+                                                  models:
+                                                      domainState
+                                                          .selectedDomain!
+                                                          .models,
+                                                  onModelSelected: (model) {
+                                                    context
+                                                        .read<DomainBloc>()
+                                                        .add(
+                                                          SelectModelEvent(
+                                                            model,
+                                                          ),
+                                                        );
+                                                  },
+                                                ),
+                                              ),
+                                              if (domainState.selectedModel !=
+                                                  null)
+                                                const Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: DraftsPanel(),
+                                                ),
+                                            ],
                                           )
                                           : const Text('No Domain selected'),
                                 ),

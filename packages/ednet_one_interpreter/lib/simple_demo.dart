@@ -1,3 +1,4 @@
+import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
 /// A simplified header widget that shows breadcrumbs for navigation.
@@ -93,8 +94,8 @@ class SimpleFooterWidget extends StatelessWidget {
 
 /// A simplified left sidebar that displays entries.
 class SimpleLeftSidebarWidget extends StatelessWidget {
-  final List<MockConcept> concepts;
-  final Function(MockConcept) onConceptSelected;
+  final List<Concept> concepts;
+  final Function(Concept) onConceptSelected;
 
   const SimpleLeftSidebarWidget({
     Key? key,
@@ -136,8 +137,8 @@ class SimpleLeftSidebarWidget extends StatelessWidget {
 
 /// A simplified right sidebar widget displaying models.
 class SimpleRightSidebarWidget extends StatelessWidget {
-  final List<MockModel> models;
-  final Function(MockModel) onModelSelected;
+  final List<Model> models;
+  final Function(Model) onModelSelected;
 
   const SimpleRightSidebarWidget({
     Key? key,
@@ -168,7 +169,7 @@ class SimpleRightSidebarWidget extends StatelessWidget {
 
 /// A simplified main content widget to display entities.
 class SimpleMainContentWidget extends StatelessWidget {
-  final MockEntities entities;
+  final Entities entities;
 
   const SimpleMainContentWidget({Key? key, required this.entities})
     : super(key: key);
@@ -197,9 +198,9 @@ class SimpleMainContentWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 final entity = entities.toList()[index];
                 return ExpansionTile(
-                  title: Text(entity.name),
+                  title: Text(entity.code ?? 'No code'),
                   children:
-                      entity.properties.entries.map((entry) {
+                      entity.concept.attributes.map((attribute) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16.0,
@@ -232,57 +233,3 @@ class SimpleMainContentWidget extends StatelessWidget {
 }
 
 // Mock classes to simulate the domain model
-class MockConcept {
-  final String code;
-  final List<String> attributes;
-  final List<String> children;
-  final List<String> parents;
-  final bool entry;
-
-  const MockConcept({
-    required this.code,
-    required this.attributes,
-    required this.children,
-    required this.parents,
-    required this.entry,
-  });
-
-  @override
-  String toString() => code;
-}
-
-class MockModel {
-  final String code;
-  final List<MockConcept> concepts;
-
-  const MockModel({required this.code, required this.concepts});
-
-  @override
-  String toString() => code;
-}
-
-class MockEntity {
-  final String name;
-  final Map<String, String> properties;
-
-  const MockEntity(this.name, this.properties);
-
-  @override
-  String toString() => name;
-}
-
-class MockEntities {
-  final List<MockEntity> _entities = [];
-
-  void add(MockEntity entity) {
-    _entities.add(entity);
-  }
-
-  Iterable<MockEntity> get entities => _entities;
-
-  bool get isEmpty => _entities.isEmpty;
-
-  int get length => _entities.length;
-
-  List<MockEntity> toList() => _entities;
-}

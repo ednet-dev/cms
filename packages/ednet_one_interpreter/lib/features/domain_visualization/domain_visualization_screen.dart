@@ -6,10 +6,19 @@ import '../../presentation/blocs/domain_block.dart';
 import '../../presentation/blocs/domain_state.dart';
 import '../../presentation/blocs/domain_event.dart';
 import '../../domain_model_visualization/domain_model_visualization.dart';
+import '../../presentation/widgets/drafts_panel.dart';
 
 /// A screen that visualizes a domain model with interactive elements
-class DomainVisualizationScreen extends StatelessWidget {
+class DomainVisualizationScreen extends StatefulWidget {
   const DomainVisualizationScreen({Key? key}) : super(key: key);
+
+  @override
+  State<DomainVisualizationScreen> createState() =>
+      _DomainVisualizationScreenState();
+}
+
+class _DomainVisualizationScreenState extends State<DomainVisualizationScreen> {
+  bool _useMasterDetailLayout = true;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +35,24 @@ class DomainVisualizationScreen extends StatelessWidget {
                   context.read<DomainBloc>().add(ExportDSLEvent());
                   _showDSLDialog(context);
                 },
+              ),
+              IconButton(
+                icon: const Icon(Icons.save),
+                tooltip: 'Save Draft',
+                onPressed:
+                    state.selectedDomain != null && state.selectedModel != null
+                        ? () {
+                          context.read<DomainBloc>().add(
+                            SaveDraftEvent(
+                              domain: state.selectedDomain!,
+                              model: state.selectedModel!,
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Draft saved')),
+                          );
+                        }
+                        : null,
               ),
               IconButton(
                 icon: const Icon(Icons.build),
@@ -58,7 +85,15 @@ class DomainVisualizationScreen extends StatelessWidget {
         SizedBox(width: 250, child: _buildSelectionPanel(context, state)),
         const VerticalDivider(),
         // Visualization Area
-        Expanded(child: _buildVisualizationArea(context, state)),
+        Expanded(
+          child: Column(
+            children: [
+              Expanded(flex: 3, child: _buildVisualizationArea(context, state)),
+              if (state.selectedModel != null)
+                SizedBox(height: 250, child: const DraftsPanel()),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -71,6 +106,23 @@ class DomainVisualizationScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Layout Control
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Master-Detail:'),
+                Switch(
+                  value: _useMasterDetailLayout,
+                  onChanged: (value) {
+                    setState(() {
+                      _useMasterDetailLayout = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const Divider(),
+
             // Domain Selection
             const Text(
               'Domains',
@@ -141,6 +193,15 @@ class DomainVisualizationScreen extends StatelessWidget {
       onChanged: (Model? newValue) {
         if (newValue != null) {
           context.read<DomainBloc>().add(SelectModelEvent(newValue));
+
+          // Also load drafts when selecting a model
+          context.read<DomainBloc>().add(ListDraftsEvent());
+          context.read<DomainBloc>().add(
+            ListVersionsEvent(
+              domainCode: state.selectedDomain!.codeFirstLetterLower,
+              modelCode: newValue.codeFirstLetterLower,
+            ),
+          );
         }
       },
       items:
@@ -158,18 +219,22 @@ class DomainVisualizationScreen extends StatelessWidget {
       return const Text('Select a model first');
     }
 
-    final concepts = state.selectedEntries?.toList() ?? [];
+    final concepts = state.selectedModel!.concepts.toList();
 
     return ListView.builder(
       itemCount: concepts.length,
       itemBuilder: (context, index) {
-        // Explicit cast to Concept since we know these are concept entities
-        final concept = concepts[index] as Concept;
+        final concept = concepts[index];
         final isSelected = state.selectedConcept == concept;
 
         return ListTile(
           title: Text(concept.code),
+          subtitle: Text(concept.entry ? 'Entry' : ''),
           selected: isSelected,
+          leading:
+              concept.entry
+                  ? const Icon(Icons.star, color: Colors.amber)
+                  : const Icon(Icons.circle, size: 12),
           tileColor: isSelected ? Theme.of(context).highlightColor : null,
           onTap: () {
             context.read<DomainBloc>().add(SelectConceptEvent(concept));
@@ -198,6 +263,7 @@ class DomainVisualizationScreen extends StatelessWidget {
               child: DomainModelVisualization(
                 domain: state.selectedDomain!,
                 model: state.selectedModel!,
+                useMasterDetailLayout: _useMasterDetailLayout,
               ),
             ),
 
@@ -211,7 +277,6 @@ class DomainVisualizationScreen extends StatelessWidget {
   }
 
   Widget _buildDetailsPanel(BuildContext context, DomainState state) {
-    // Explicit cast to Concept since we know this is a concept entity
     final concept = state.selectedConcept! as Concept;
 
     return Card(
