@@ -8,7 +8,7 @@ packages:
   - "packages/content"
   - "packages/types"
   - "packages/ednet_one_interpreter"
-  - "packages/ednet_event_storming"
+  - "packages/ednet_flow"
 
 # Recommended option for projects with Dart 2.17.0 or greater.
 #
@@ -124,13 +124,24 @@ scripts:
       git push origin main --tags && \
       melos publish --scope="ednet_core_types" --no-dry-run
 
-  # Publish ednet_one
-  publish:one:
-    description: "Publish ednet_one package (create tag, push, and publish)"
+  # Publish ednet_one_interpreter (replaces ednet_one)
+  publish:one_interpreter:
+    description: "Publish ednet_one_interpreter package (create tag, push, and publish)"
     run: |
-      melos version --manual-version="ednet_one:$VERSION" && \
+      melos version --manual-version="ednet_one_interpreter:$VERSION" && \
       git add . && \
-      git commit -m "chore(release): 🚀 ednet_one release v$VERSION" && \
-      git tag ednet_one-v$VERSION && \
+      git commit -m "chore(release): 🚀 ednet_one_interpreter release v$VERSION" && \
+      git tag ednet_one_interpreter-v$VERSION && \
       git push origin main --tags && \
-      melos publish --scope="ednet_one" --no-dry-run
+      melos publish --scope="ednet_one_interpreter" --no-dry-run
+
+  # Publish ednet_flow
+  publish:flow:
+    description: "Publish ednet_flow package (create tag, push, and publish)"
+    run: |
+      melos version --manual-version="ednet_flow:$VERSION" && \
+      git add . && \
+      git commit -m "chore(release): 🚀 ednet_flow release v$VERSION" && \
+      git tag ednet_flow-v$VERSION && \
+      git push origin main --tags && \
+      melos publish --scope="ednet_flow" --no-dry-run
