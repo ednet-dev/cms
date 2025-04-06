@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/generated/one_application.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_block.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_event.dart'
@@ -37,60 +36,64 @@ DomainBloc createDomainBloc() => DomainBloc(app: oneApplication);
 ThemeBloc createThemeBloc() => ThemeBloc();
 
 void main() async {
-  print('===== Starting application initialization =====');
+  debugPrint('===== Starting application initialization =====');
   WidgetsFlutterBinding.ensureInitialized();
-  print('Flutter binding initialized');
+  debugPrint('Flutter binding initialized');
 
   try {
-    print('Initializing theme service...');
+    debugPrint('Initializing theme service...');
     await themeService.init();
-    print('Theme service initialized successfully');
+    debugPrint('Theme service initialized successfully');
   } catch (e) {
-    print('❌ Theme service initialization failed: $e');
+    debugPrint('❌ Theme service initialization failed: $e');
   }
 
   // Initialize OneApplication
   try {
-    print('Initializing OneApplication...');
+    debugPrint('Initializing OneApplication...');
     final stopwatch = Stopwatch()..start();
     await oneApplication.initializeApplication();
-    print('OneApplication initialized in ${stopwatch.elapsedMilliseconds}ms');
-    print('Available domains: ${oneApplication.domains.length}');
-    print('Grouped domains: ${oneApplication.groupedDomains.length}');
+    debugPrint(
+      'OneApplication initialized in ${stopwatch.elapsedMilliseconds}ms',
+    );
+    debugPrint('Available domains: ${oneApplication.domains.length}');
+    debugPrint('Grouped domains: ${oneApplication.groupedDomains.length}');
 
     // Force domain selection
-    print('Manually triggering domain selection chain');
+    debugPrint('Manually triggering domain selection chain');
     _forceDomainSelection();
   } catch (e, stack) {
-    print('❌ OneApplication initialization failed:');
-    print('Error: $e');
-    print('Stack trace: $stack');
+    debugPrint('❌ OneApplication initialization failed:');
+    debugPrint('Error: $e');
+    debugPrint('Stack trace: $stack');
   }
 
   // Debug domain initialization
   try {
-    print('Checking domain initialization...');
+    debugPrint('Checking domain initialization...');
     debugPrintDomainInfo();
   } catch (e) {
-    print('❌ Domain check failed: $e');
+    debugPrint('❌ Domain check failed: $e');
   }
 
-  print('Launching app...');
+  debugPrint('Launching app...');
   runApp(MyApp());
-  print('App launched');
+  debugPrint('App launched');
 }
 
 /// Force domain selection to make sure UI elements show data
 void _forceDomainSelection() {
   try {
-    print('🔍 Manually triggering domain selection chain');
+    debugPrint('🔍 Manually triggering domain selection chain');
 
     // Log the domains available for debugging
-    print('📊 Available domains: ${oneApplication.domains.length}');
-    print('📊 Grouped domains: ${oneApplication.groupedDomains.length}');
+    debugPrint('📊 Available domains: ${oneApplication.domains.length}');
+    debugPrint('📊 Grouped domains: ${oneApplication.groupedDomains.length}');
 
     if (oneApplication.groupedDomains.isEmpty) {
-      print('❌ No domains available to select - check domain initialization');
+      debugPrint(
+        '❌ No domains available to select - check domain initialization',
+      );
       return;
     }
 
@@ -106,7 +109,7 @@ void _forceDomainSelection() {
     // Manually trigger model selection if domain is available
     if (oneApplication.groupedDomains.isNotEmpty) {
       final domain = oneApplication.groupedDomains.first;
-      print(
+      debugPrint(
         '📊 Using domain: ${domain.code} with ${domain.models.length} models',
       );
 
@@ -119,7 +122,7 @@ void _forceDomainSelection() {
       // If domain has models, select first one and update concepts
       if (domain.models.isNotEmpty) {
         final model = domain.models.first;
-        print(
+        debugPrint(
           '📊 Using model: ${model.code} with ${model.concepts.length} concepts',
         );
 
@@ -132,16 +135,16 @@ void _forceDomainSelection() {
         // If model has concepts, select first one
         if (model.concepts.isNotEmpty) {
           final concept = model.concepts.first;
-          print('📊 Using concept: ${concept.code}');
+          debugPrint('📊 Using concept: ${concept.code}');
           conceptSelectionBloc.add(SelectConceptEvent(concept));
         } else {
-          print('❌ No concepts available in the model ${model.code}');
+          debugPrint('❌ No concepts available in the model ${model.code}');
         }
       } else {
-        print('❌ No models available in the domain ${domain.code}');
+        debugPrint('❌ No models available in the domain ${domain.code}');
       }
     } else {
-      print('❌ No domains available after initialization');
+      debugPrint('❌ No domains available after initialization');
     }
 
     // Also trigger on the main domain bloc to ensure UI updates
@@ -161,8 +164,8 @@ void _forceDomainSelection() {
     conceptSelectionBloc.close();
     domainBloc.close();
   } catch (e, stack) {
-    print('❌ Error in _forceDomainSelection: $e');
-    print('Stack trace: $stack');
+    debugPrint('❌ Error in _forceDomainSelection: $e');
+    debugPrint('Stack trace: $stack');
   }
 }
 
@@ -170,11 +173,11 @@ void debugPrintDomainInfo() {
   // Try to access application and domains
   try {
     // Safely access and display domains info
-    print('✓ OneApplication available');
+    debugPrint('✓ OneApplication available');
 
     try {
       final groupedDomains = oneApplication.groupedDomains;
-      print(
+      debugPrint(
         '✓ Grouped domains available: ${groupedDomains.length} domains found',
       );
 
@@ -184,18 +187,18 @@ void debugPrintDomainInfo() {
           try {
             final String code = domain.code.toString();
             final modelsLength = domain.models.length;
-            print('  Domain ${++index}: $code ($modelsLength models)');
+            debugPrint('  Domain ${++index}: $code ($modelsLength models)');
           } catch (e) {
-            print(
+            debugPrint(
               '  Domain ${++index}: Error accessing domain properties - $e',
             );
           }
         }
       } else {
-        print('  No grouped domains loaded yet');
+        debugPrint('  No grouped domains loaded yet');
       }
     } catch (e) {
-      print('  Error accessing grouped domains: $e');
+      debugPrint('  Error accessing grouped domains: $e');
     }
 
     // Check initialization status - safely access property
@@ -208,17 +211,19 @@ void debugPrintDomainInfo() {
         // Alternative check if property doesn't exist
         initialized = oneApplication.groupedDomains.isNotEmpty;
       }
-      print('  App initialized: ${initialized ?? 'unknown'}');
+      debugPrint('  App initialized: ${initialized ?? 'unknown'}');
     } catch (e) {
-      print('  Cannot access initialization status: $e');
+      debugPrint('  Cannot access initialization status: $e');
     }
   } catch (e, stack) {
-    print('Error while checking domains: $e');
-    print('Stack trace: $stack');
+    debugPrint('Error while checking domains: $e');
+    debugPrint('Stack trace: $stack');
   }
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   MyAppState createState() => MyAppState();
 }
@@ -231,23 +236,23 @@ class MyAppState extends State<MyApp> {
   }
 
   void _checkAppState() {
-    print('MyApp initialized - checking application state');
+    debugPrint('MyApp initialized - checking application state');
     try {
       // Verify if any domains are loaded at this point
       debugPrintDomainInfo();
     } catch (e) {
-      print('Error in _checkAppState: $e');
+      debugPrint('Error in _checkAppState: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print('Building MaterialApp');
+    debugPrint('Building MaterialApp');
 
     return AppBlocProviders.wrapWithProviders(
       BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
-          print('ThemeBloc state updated: ${themeState.runtimeType}');
+          debugPrint('ThemeBloc state updated: ${themeState.runtimeType}');
           return MaterialApp(
             title: 'EDNet One',
             theme: themeState.themeData,
