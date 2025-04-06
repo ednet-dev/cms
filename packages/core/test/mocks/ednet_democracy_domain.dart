@@ -81,30 +81,36 @@ class EDNetDemocracyDomain {
     citizenConcept = Concept(model, 'Citizen');
     citizenConcept.entry = true;
     _addCitizenAttributes();
+    model.concepts.add(citizenConcept);
 
     // Delegate concept
     delegateConcept = Concept(model, 'Delegate');
     delegateConcept.entry = true;
     _addDelegateAttributes();
+    model.concepts.add(delegateConcept);
 
     // Expert concept
     expertConcept = Concept(model, 'Expert');
     expertConcept.entry = true;
     _addExpertAttributes();
+    model.concepts.add(expertConcept);
 
     // Referendum concept
     referendumConcept = Concept(model, 'Referendum');
     referendumConcept.entry = true;
     _addReferendumAttributes();
+    model.concepts.add(referendumConcept);
 
     // Vote concept
     voteConcept = Concept(model, 'Vote');
     _addVoteAttributes();
+    model.concepts.add(voteConcept);
 
     // Initiative concept
     initiativeConcept = Concept(model, 'Initiative');
     initiativeConcept.entry = true;
     _addInitiativeAttributes();
+    model.concepts.add(initiativeConcept);
   }
 
   void _addCitizenAttributes() {
@@ -261,12 +267,11 @@ class EDNetDemocracyDomain {
   }
 
   void _initRelationships() {
-    // Vote requires a Citizen parent
+    // Vote relationships
     final citizenParent = Parent(voteConcept, citizenConcept, 'citizen');
     citizenParent.required = true;
     voteConcept.parents.add(citizenParent);
 
-    // Vote requires a Referendum parent
     final referendumParent = Parent(
       voteConcept,
       referendumConcept,
@@ -275,32 +280,38 @@ class EDNetDemocracyDomain {
     referendumParent.required = true;
     voteConcept.parents.add(referendumParent);
 
-    // Delegate extends Citizen
-    final citizenParentForDelegate = Parent(
+    // Citizen-Vote relationship
+    final citizenVotes = Child(citizenConcept, voteConcept, 'votes');
+    citizenConcept.children.add(citizenVotes);
+
+    // Referendum-Vote relationship
+    final referendumVotes = Child(referendumConcept, voteConcept, 'votes');
+    referendumConcept.children.add(referendumVotes);
+
+    // Initiative-Citizen relationship (proposer)
+    final proposerParent = Parent(
+      initiativeConcept,
+      citizenConcept,
+      'proposer',
+    );
+    proposerParent.required = true;
+    initiativeConcept.parents.add(proposerParent);
+
+    // Delegate-Citizen inheritance
+    final delegateCitizenParent = Parent(
       delegateConcept,
       citizenConcept,
       'citizen',
     );
-    citizenParentForDelegate.required = true;
-    delegateConcept.parents.add(citizenParentForDelegate);
+    delegateConcept.parents.add(delegateCitizenParent);
 
-    // Expert extends Citizen
-    final citizenParentForExpert = Parent(
+    // Expert-Citizen inheritance
+    final expertCitizenParent = Parent(
       expertConcept,
       citizenConcept,
       'citizen',
     );
-    citizenParentForExpert.required = true;
-    expertConcept.parents.add(citizenParentForExpert);
-
-    // Initiative requires a Citizen parent (creator)
-    final citizenParentForInitiative = Parent(
-      initiativeConcept,
-      citizenConcept,
-      'creator',
-    );
-    citizenParentForInitiative.required = true;
-    initiativeConcept.parents.add(citizenParentForInitiative);
+    expertConcept.parents.add(expertCitizenParent);
   }
 
   void _initDomainModels() {
@@ -318,11 +329,13 @@ class EDNetDemocracyDomain {
   }) {
     final citizen = Citizen();
     citizen.concept = citizenConcept;
+
     citizen.setAttribute('name', name);
     citizen.setAttribute('email', email);
     citizen.setAttribute('idNumber', idNumber);
     citizen.setAttribute('verified', verified);
     citizen.setAttribute('registerDate', registerDate ?? DateTime.now());
+
     return citizen;
   }
 
@@ -332,15 +345,15 @@ class EDNetDemocracyDomain {
     required String description,
     required DateTime startDate,
     required DateTime endDate,
-    int quorum = 0,
   }) {
     final referendum = Referendum();
     referendum.concept = referendumConcept;
+
     referendum.setAttribute('title', title);
     referendum.setAttribute('description', description);
     referendum.setAttribute('startDate', startDate);
     referendum.setAttribute('endDate', endDate);
-    referendum.setAttribute('quorum', quorum);
+
     return referendum;
   }
 
@@ -349,36 +362,33 @@ class EDNetDemocracyDomain {
     required Citizen citizen,
     required Referendum referendum,
     required String choice,
-    int weight = 1,
-    DateTime? timestamp,
   }) {
     final vote = Vote();
     vote.concept = voteConcept;
+
     vote.setAttribute('choice', choice);
-    vote.setAttribute('weight', weight);
-    vote.setAttribute('timestamp', timestamp ?? DateTime.now());
+    vote.setAttribute('timestamp', DateTime.now());
+
+    // Set up parent relationships
     vote.setParent('citizen', citizen);
     vote.setParent('referendum', referendum);
+
     return vote;
   }
 
   /// Creates an initiative with predefined attributes for testing
   Initiative createInitiative({
-    required Citizen creator,
     required String title,
     required String description,
-    required int requiredSignatures,
-    int currentSignatures = 0,
-    String status = 'Collecting',
+    required Citizen proposer,
   }) {
     final initiative = Initiative();
     initiative.concept = initiativeConcept;
+
     initiative.setAttribute('title', title);
     initiative.setAttribute('description', description);
-    initiative.setAttribute('requiredSignatures', requiredSignatures);
-    initiative.setAttribute('currentSignatures', currentSignatures);
-    initiative.setAttribute('status', status);
-    initiative.setParent('creator', creator);
+    initiative.setParent('proposer', proposer);
+
     return initiative;
   }
 
@@ -388,11 +398,11 @@ class EDNetDemocracyDomain {
     required String email,
     required String idNumber,
     String? specialty,
-    int delegatorCount = 0,
-    bool verified = true,
+    bool verified = false,
     DateTime? registerDate,
+    int delegatorCount = 0,
   }) {
-    // First create the underlying citizen
+    // First create a citizen for the parent relationship
     final citizen = createCitizen(
       name: name,
       email: email,
@@ -401,14 +411,18 @@ class EDNetDemocracyDomain {
       registerDate: registerDate,
     );
 
-    // Create delegate that extends the citizen
+    // Create the delegate entity
     final delegate = Delegate();
     delegate.concept = delegateConcept;
+
+    // Set up parent relationship with citizen
+    delegate.setParent('citizen', citizen);
+
+    // Set delegate-specific attributes
     delegate.setAttribute('delegatorCount', delegatorCount);
     if (specialty != null) {
       delegate.setAttribute('specialty', specialty);
     }
-    delegate.setParent('citizen', citizen);
 
     return delegate;
   }
@@ -420,10 +434,10 @@ class EDNetDemocracyDomain {
     required String idNumber,
     required String areaOfExpertise,
     String? credentials,
-    bool verified = true,
+    bool verified = false,
     DateTime? registerDate,
   }) {
-    // First create the underlying citizen
+    // First create a citizen for the parent relationship
     final citizen = createCitizen(
       name: name,
       email: email,
@@ -432,14 +446,18 @@ class EDNetDemocracyDomain {
       registerDate: registerDate,
     );
 
-    // Create expert that extends the citizen
+    // Create the expert entity
     final expert = Expert();
     expert.concept = expertConcept;
+
+    // Set up parent relationship with citizen
+    expert.setParent('citizen', citizen);
+
+    // Set expert-specific attributes
     expert.setAttribute('areaOfExpertise', areaOfExpertise);
     if (credentials != null) {
       expert.setAttribute('credentials', credentials);
     }
-    expert.setParent('citizen', citizen);
 
     return expert;
   }
@@ -466,7 +484,6 @@ class EDNetDemocracyDomain {
       description: referendumDescription,
       startDate: start,
       endDate: end,
-      quorum: citizenCount ~/ 2, // Set quorum to half the citizens
     );
 
     // Create citizens and their votes
@@ -475,7 +492,6 @@ class EDNetDemocracyDomain {
         name: 'Voter $i',
         email: 'voter$i@democracy.org',
         idNumber: 'C10000$i',
-        verified: true,
       );
       citizens.add(citizen);
 
@@ -508,16 +524,13 @@ class EDNetDemocracyDomain {
       name: creatorName,
       email: 'creator@democracy.org',
       idNumber: 'C999999',
-      verified: true,
     );
 
     // Create initiative
     final initiative = createInitiative(
-      creator: creator,
       title: title,
       description: description,
-      requiredSignatures: requiredSignatures,
-      currentSignatures: supporterCount, // Initial supporters
+      proposer: creator,
     );
 
     // Create supporters
@@ -527,7 +540,6 @@ class EDNetDemocracyDomain {
         name: 'Supporter $i',
         email: 'supporter$i@democracy.org',
         idNumber: 'S10000$i',
-        verified: true,
       );
       supporters.add(supporter);
     }
@@ -557,7 +569,6 @@ class EDNetDemocracyDomain {
         email: '${specialty.toLowerCase()}@democracy.org',
         idNumber: 'D10000$i',
         specialty: specialty,
-        delegatorCount: 0, // Will be updated as voters delegate
       );
       delegates.add(delegate);
     }
@@ -568,7 +579,6 @@ class EDNetDemocracyDomain {
         name: 'Delegating Voter $i',
         email: 'voter$i@democracy.org',
         idNumber: 'V10000$i',
-        verified: true,
       );
       voters.add(voter);
 

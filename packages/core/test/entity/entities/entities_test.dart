@@ -132,10 +132,14 @@ void main() {
     });
 
     test('Entities collection lookup operations', () {
-      // Add citizens with different names but same idNumber
+      // Set up citizens collection
+      final citizens = domain.citizens;
+      citizens.clear();
+
+      // Add citizen
       final citizen1 = domain.createCitizen(
-        name: 'Original Name',
-        email: 'citizen@democracy.org',
+        name: 'Alice Lookup',
+        email: 'alice.lookup@democracy.org',
         idNumber: 'C123456',
       );
       citizens.add(citizen1);
@@ -145,9 +149,11 @@ void main() {
       expect(found, isNotNull);
       expect(found, equals(citizen1));
 
-      // Try to find non-existent entity
-      final notFound = citizens.firstWhereAttribute('idNumber', 'nonexistent');
-      expect(notFound, isNull);
+      // Try to find non-existent entity - should throw an exception
+      expect(
+        () => citizens.firstWhereAttribute('idNumber', 'nonexistent'),
+        throwsA(isA<EDNetException>()),
+      );
     });
 
     test('Entities collection with different entity types', () {

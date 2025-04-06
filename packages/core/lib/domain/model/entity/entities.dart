@@ -143,11 +143,16 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   /// Compares entities by their OID.
   @override
   bool contains(Object? entity) {
-    E element = _oidEntityMap[(entity as E).oid.timeStamp]!;
-    if (entity == element) {
-      return true;
+    if (entity == null || !(entity is E) || _oidEntityMap.isEmpty) {
+      return false;
     }
-    return false;
+
+    E? element = _oidEntityMap[(entity as E).oid.timeStamp];
+    if (element == null) {
+      return false;
+    }
+
+    return entity == element;
   }
 
   /// Returns the entity at the given [index].
