@@ -90,6 +90,14 @@ class _AppShellState extends State<AppShell> {
               widget.navigationService.navigateToDomainModelEditor();
             },
           ),
+          // Model Instance Manager button
+          IconButton(
+            icon: const Icon(Icons.play_circle_outline),
+            tooltip: 'Model Instance Manager',
+            onPressed: () {
+              widget.navigationService.navigateToModelInstance();
+            },
+          ),
           // Additional actions from the current module
           if (_currentModule != null)
             ..._currentModule!.buildAppBarActions(context),
