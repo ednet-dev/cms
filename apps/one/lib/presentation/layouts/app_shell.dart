@@ -82,7 +82,15 @@ class _AppShellState extends State<AppShell> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          // Module specific actions can be injected here
+          // Domain Model Editor button
+          IconButton(
+            icon: const Icon(Icons.edit_note),
+            tooltip: 'Domain Model Editor',
+            onPressed: () {
+              widget.navigationService.navigateToDomainModelEditor();
+            },
+          ),
+          // Additional actions from the current module
           if (_currentModule != null)
             ..._currentModule!.buildAppBarActions(context),
 

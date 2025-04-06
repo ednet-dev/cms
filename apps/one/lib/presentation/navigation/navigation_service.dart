@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 
 // Add imports for the Graph page
 import '../pages/graph_page.dart';
+import '../pages/domain_modeler/domain_model_editor.dart';
 
 /// Routes available in the application
 class AppRoutes {
@@ -13,6 +14,7 @@ class AppRoutes {
   static const concept = '/domain/:domainId/model/:modelId/concept/:conceptId';
   static const graph = '/graph';
   static const settings = '/settings';
+  static const domainModelEditor = '/domain-model-editor';
 
   /// Convert a route pattern to a concrete path
   static String mapToPath(String route, Map<String, String> params) {
@@ -133,6 +135,23 @@ class NavigationService {
       // Fallback to creating a new route if the named route fails
       return navigatorKey.currentState!.push(
         MaterialPageRoute(builder: (context) => const GraphPage()),
+      );
+    }
+  }
+
+  /// Navigate to the domain model editor
+  Future<dynamic> navigateToDomainModelEditor() {
+    developer.log('Navigating to Domain Model Editor', name: 'Navigation');
+    try {
+      return navigatorKey.currentState!.pushNamed(DomainModelEditor.routeName);
+    } catch (e, stack) {
+      developer.log(
+        'Error navigating to domain model editor: $e\n$stack',
+        name: 'Navigation',
+      );
+      // Fallback to creating a new route if the named route fails
+      return navigatorKey.currentState!.push(
+        MaterialPageRoute(builder: (context) => const DomainModelEditor()),
       );
     }
   }
