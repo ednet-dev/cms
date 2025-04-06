@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:ednet_core_patterns/ednet_core_patterns.dart' as patterns;
+import 'package:ednet_core_patterns/ednet_core_patterns.dart';
 
 /// A simplified version of ChannelAdapter for testing
 class TestChannelAdapter {
   /// The channel this adapter connects to
-  final patterns.Channel channel;
+  final Channel channel;
 
   /// Configuration data
   final Map<String, dynamic> properties = {};
@@ -63,7 +63,7 @@ class TestChannelAdapter {
   }
 
   /// Handles a message from the channel
-  void _handleChannelMessage(patterns.Message message) {
+  void _handleChannelMessage(Message message) {
     // Override in subclasses
   }
 }
@@ -74,21 +74,21 @@ class TestHttpChannelAdapter extends TestChannelAdapter {
   final String baseUrl;
 
   /// Completers for pending requests
-  final Map<String, Completer<patterns.HttpResponse>> _pendingRequests = {};
+  final Map<String, Completer<HttpResponse>> _pendingRequests = {};
 
   /// Creates a new HTTP adapter
   TestHttpChannelAdapter({
-    required patterns.Channel channel,
+    required super.channel,
     required this.baseUrl,
-    String name = 'test-http-adapter',
-  }) : super(channel: channel, name: name, type: 'HTTP') {
+    super.name = 'test-http-adapter',
+  }) : super(type: 'HTTP') {
     // Store configuration as JSON
     final config = {'baseUrl': baseUrl};
     setProperty('configuration', json.encode(config));
   }
 
   /// Handles an HTTP request
-  Future<void> handleRequest(patterns.HttpRequest request) async {
+  Future<void> handleRequest(HttpRequest request) async {
     try {
       // Parse request body based on content type
       final payload =
@@ -101,7 +101,7 @@ class TestHttpChannelAdapter extends TestChannelAdapter {
           'req-${DateTime.now().millisecondsSinceEpoch}-${_randomString(6)}';
 
       // Create a message with HTTP metadata
-      final message = patterns.Message(
+      final message = Message(
         payload: payload,
         metadata: {
           'httpMethod': request.method,
@@ -124,9 +124,7 @@ class TestHttpChannelAdapter extends TestChannelAdapter {
   }
 
   /// Handles a message to create an HTTP response
-  Future<patterns.HttpResponse> handleOutgoingMessage(
-    patterns.Message message,
-  ) async {
+  Future<HttpResponse> handleOutgoingMessage(Message message) async {
     // Extract status code from metadata (default to 200)
     final statusCode = message.metadata['httpStatusCode'] as int? ?? 200;
 
@@ -155,15 +153,11 @@ class TestHttpChannelAdapter extends TestChannelAdapter {
     }
 
     // Create and return the response
-    return patterns.HttpResponse(
-      statusCode: statusCode,
-      headers: headers,
-      body: body,
-    );
+    return HttpResponse(statusCode: statusCode, headers: headers, body: body);
   }
 
   @override
-  void _handleChannelMessage(patterns.Message message) {
+  void _handleChannelMessage(Message message) {
     // Check if this is a response to a pending request
     if (message.metadata.containsKey('requestId') &&
         _pendingRequests.containsKey(message.metadata['requestId'])) {
@@ -219,11 +213,11 @@ class TestWebSocketChannelAdapter extends TestChannelAdapter {
 
   /// Creates a new WebSocket adapter
   TestWebSocketChannelAdapter({
-    required patterns.Channel channel,
+    required super.channel,
     required this.path,
     this.protocol,
-    String name = 'test-websocket-adapter',
-  }) : super(channel: channel, name: name, type: 'WebSocket') {
+    super.name = 'test-websocket-adapter',
+  }) : super(type: 'WebSocket') {
     // Store configuration as JSON
     final config = {'path': path, if (protocol != null) 'protocol': protocol};
     setProperty('configuration', json.encode(config));
@@ -236,7 +230,7 @@ class TestWebSocketChannelAdapter extends TestChannelAdapter {
       final payload = json.decode(data);
 
       // Create a message with WebSocket metadata
-      final message = patterns.Message(
+      final message = Message(
         payload: payload,
         metadata: {
           'source': 'websocket',
@@ -255,14 +249,14 @@ class TestWebSocketChannelAdapter extends TestChannelAdapter {
   }
 
   /// Handles a message, creating WebSocket output
-  Future<String> handleOutgoingMessage(patterns.Message message) async {
+  Future<String> handleOutgoingMessage(Message message) async {
     // In a real implementation, this might use different serialization
     // based on message type or other factors
     return json.encode(message.payload);
   }
 
   @override
-  void _handleChannelMessage(patterns.Message message) {
+  void _handleChannelMessage(Message message) {
     // Convert message to WebSocket format and send to clients
     handleOutgoingMessage(message).then((data) {
       // In a real implementation, this would send to connected clients

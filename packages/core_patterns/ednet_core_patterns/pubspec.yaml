@@ -1,5 +1,5 @@
 name: ednet_core_patterns
-description: Implementation of Enterprise Integration Patterns for EDNet Core.
+description: Implementation of core software patterns for EDNet Core.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
 

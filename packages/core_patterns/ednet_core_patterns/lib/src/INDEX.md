@@ -76,7 +76,7 @@ How can multiple consumers on a single channel coordinate their message processi
 How does an application connect to a messaging channel to send and receive messages?
  31. Message Expiration
 How can a sender indicate when a message should be considered stale and thus shouldn't be processed?
- 32. Message Filter
+ 32. Message Filter ✅
 How can a component avoid receiving uninteresting messages?
  33. Message History
 How can we effectively analyze and debug the flow of messages in a loosely coupled system?
@@ -329,3 +329,115 @@ test('ClaimStore saves and retrieves large payload correctly', () async {
 ```
 
 ---
+
+## 🧩 32. Message Filter ✅
+
+**🧠 Explanation**: Selectively process messages based on specific criteria, allowing components to receive only relevant messages while discarding others.
+
+**🛠️ Dart Interface and Implementation**:
+```dart
+abstract class MessageFilter {
+  Channel sourceChannel;
+  Channel targetChannel;
+  
+  Future<void> start();
+  Future<void> stop();
+  String get status;
+}
+
+// Implemented variants:
+// - PredicateMessageFilter: filters based on a boolean function
+// - SelectorMessageFilter: extracts and compares specific values
+// - CompositeMessageFilter: combines multiple filters with AND/OR/NOT logic
+
+// EDNet Core Integration:
+class FilterEntity extends Entity<FilterEntity> {
+  String? get filterName => getAttribute('name');
+  String? get filterType => getAttribute('type');
+  String? get status => getAttribute('status');
+}
+
+class EDNetCoreMessageFilter {
+  final FilterEntity entity;
+  final Channel sourceChannel;
+  final Channel targetChannel;
+  
+  Future<void> start();
+  Future<void> stop();
+}
+
+class MessageFilterRepository {
+  final Entities<FilterEntity> entities;
+  
+  Future<EDNetCoreMessageFilter> createPredicateFilter(...);
+  Future<EDNetCoreMessageFilter> createSelectorFilter<T>(...);
+  Future<EDNetCoreMessageFilter> createCompositeFilter(...);
+}
+```
+
+**📦 Integration Point**: `lib/src/patterns/filter/message_filter.dart` and `lib/src/patterns/filter/ednet_core_message_filter.dart`  
+**🔗 Related Concepts**: content-based routing, message selection, data relevance, domain entities
+
+**🧪 Tests**:
+- Topic-based filtering for citizen discussions
+- Regional/jurisdictional message routing
+- Multilingual democratic participation filtering
+- Civil discourse content moderation
+- Filter lifecycle management
+- Domain entity integration and validation
+
+**🌟 EDNet Integration**:
+The Message Filter pattern is essential in EDNet for:
+- Creating topic-specific discussion threads for focused deliberation
+- Directing citizens to relevant governance forums based on jurisdiction
+- Personalizing democratic participation based on interests and preferences
+- Supporting inclusive multilingual participation
+- Maintaining civil discourse through content moderation
+- Providing persistent, domain-driven filter management
+- Enforcing domain policies on message filtering
+
+---
+
+## 🧩 34. Message Router
+
+**🧠 Explanation**: Route messages to different destinations based on message content or metadata.
+
+**🛠️ Dart Interface Proposal**:
+```dart
+abstract class MessageRouter {
+  List<Channel> targetChannels;
+  Future<void> routeMessage(Message message);
+}
+```
+
+**📦 Integration Point**: `lib/src/patterns/router/message_router.dart`  
+**🔗 Related Concepts**: content-based routing, dynamic routing, message distribution
+
+**🧪 Suggested Test**:
+```dart
+test('MessageRouter directs citizen inputs to appropriate deliberation channels', () async {
+  final router = ContentBasedRouter();
+  // Test routing of citizen input to the right democratic forums
+});
+```
+
+---
+
+## Implementation Notes
+
+**Consistent Mock Domain Model Evolution**: 
+All pattern implementations now use a consistent mock domain approach that evolves with each new pattern. Each mock domain:
+
+1. Models real democratic use cases (voting, deliberation, citizen engagement)
+2. Uses consistent naming and structure for entities
+3. Includes full documentation of democratic semantics
+4. Demonstrates TDD/BDD practices with concrete examples
+
+**Memory Files**:
+Each pattern includes a memory.md file documenting:
+- Pattern overview with democracy context
+- Implementation structure
+- Testing approach
+- Democratic use cases
+- Integration with EDNet Core
+- Guidelines for future implementations
