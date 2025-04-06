@@ -6,6 +6,7 @@ import 'package:ednet_one/presentation/state/blocs/model_selection/model_selecti
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
+import 'package:ednet_one/presentation/state/navigation_helper.dart';
 
 /// A component for selecting models in the application
 class ModelSelector extends StatelessWidget {
@@ -63,31 +64,8 @@ class ModelSelector extends StatelessWidget {
                     model: model,
                     isSelected: isSelected,
                     onTap: () {
-                      // Update model selection
-                      context.read<ModelSelectionBloc>().add(
-                        SelectModelEvent(model),
-                      );
-
-                      // Update concepts for the selected model
-                      try {
-                        debugPrint(
-                          'Updating concepts for model: ${model.code}',
-                        );
-                        context.read<ConceptSelectionBloc>().add(
-                          UpdateConceptsForModelEvent(model),
-                        );
-                      } catch (e) {
-                        debugPrint('Error updating concepts: $e');
-                        // Show error message
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Failed to load concepts for ${model.code}',
-                            ),
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
-                      }
+                      // Use the centralized navigation helper
+                      NavigationHelper.navigateToModel(context, model);
 
                       // Call optional callback
                       if (onModelSelected != null) {

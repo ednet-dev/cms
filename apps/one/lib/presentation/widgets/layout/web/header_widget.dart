@@ -1,18 +1,41 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_state.dart';
+import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
+import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_state.dart';
+import 'package:ednet_one/presentation/widgets/entity/bookmark_manager.dart';
+import 'package:ednet_one/presentation/widgets/navigation/breadcrumb/breadcrumb_widget.dart';
 
+/// Widget for the application header area
 class HeaderWidget extends StatelessWidget {
+  /// Active filters
   final List<FilterCriteria> filters;
+
+  /// Callback when a filter is added
   final void Function(FilterCriteria filter) onAddFilter;
+
+  /// Callback when bookmark is requested
   final VoidCallback onBookmark;
 
-  HeaderWidget({
-    required this.filters,
+  /// Optional bookmark manager
+  final BookmarkManager? bookmarkManager;
+
+  /// Optional callback when a bookmark is created
+  final Function(Bookmark bookmark)? onBookmarkCreated;
+
+  /// Constructor for HeaderWidget
+  const HeaderWidget({
+    Key? key,
+    this.filters = const [],
     required this.onAddFilter,
     required this.onBookmark,
-    required List<String> path,
-    required void Function(dynamic index) onPathSegmentTapped,
-  });
+    this.bookmarkManager,
+    this.onBookmarkCreated,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,92 +43,84 @@ class HeaderWidget extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Row(
-        //   children: [
-        //     DropdownButton<String>(
-        //       hint: Text('Attribute',
-        //           style: TextStyle(color: colorScheme.onSurface)),
-        //       dropdownColor: colorScheme.surface, // Dropdown background color
-        //       items: ['name', 'age', 'type']
-        //           .map((attribute) => DropdownMenuItem<String>(
-        //                 value: attribute,
-        //                 child: Text(attribute,
-        //                     style: TextStyle(
-        //                         color: colorScheme.onSurface)), // Text color
-        //               ))
-        //           .toList(),
-        //       onChanged: (value) {
-        //         // Handle attribute selection
-        //       },
-        //     ),
-        //     DropdownButton<String>(
-        //       hint: Text('Operator',
-        //           style: TextStyle(color: colorScheme.onSurface)),
-        //       dropdownColor: colorScheme.surface, // Dropdown background color
-        //       items: ['=', '!=', '>', '<']
-        //           .map((operator) => DropdownMenuItem<String>(
-        //                 value: operator,
-        //                 child: Text(operator,
-        //                     style: TextStyle(
-        //                         color: colorScheme.onSurface)), // Text color
-        //               ))
-        //           .toList(),
-        //       onChanged: (value) {
-        //         // Handle operator selection
-        //       },
-        //     ),
-        //     Expanded(
-        //       child: TextField(
-        //         style: TextStyle(color: colorScheme.onSurface),
-        //         // Input text color
-        //         decoration: InputDecoration(
-        //           hintText: 'Value',
-        //           hintStyle:
-        //               TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
-        //           // Hint text color
-        //           enabledBorder: UnderlineInputBorder(
-        //             borderSide: BorderSide(
-        //                 color: colorScheme.secondary), // Border color
-        //           ),
-        //           focusedBorder: UnderlineInputBorder(
-        //             borderSide: BorderSide(
-        //                 color: colorScheme.secondary), // Focused border color
-        //           ),
-        //         ),
-        //         onSubmitted: (value) {
-        //           // Handle value input
-        //         },
-        //       ),
-        //     ),
-        //     IconButton(
-        //       icon: Icon(Icons.add, color: colorScheme.onSurface),
-        //       onPressed: () {
-        //         onAddFilter(FilterCriteria(
-        //           attribute: 'name',
-        //           operator: '=',
-        //           value: 'Example',
-        //         ));
-        //       },
-        //     ),
-        //     IconButton(
-        //       icon: Icon(Icons.bookmark, color: colorScheme.onSurface),
-        //       onPressed: onBookmark,
-        //     ),
-        //   ],
-        // ),
-        Wrap(
-          children: filters
-              .map((filter) => Chip(
-                    label: Text(
-                        '${filter.attribute} ${filter.operator} ${filter.value}'),
-                    onDeleted: () {
-                      // Handle filter removal
-                    },
-                  ))
-              .toList(),
-        ),
+        // Breadcrumb navigation that uses the current state
+        _buildBreadcrumb(context),
+
+        // Active filters display
+        if (filters.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children:
+                  filters
+                      .map(
+                        (filter) => Chip(
+                          label: Text(
+                            '${filter.attribute} ${filter.operator} ${filter.value}',
+                            style: TextStyle(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          backgroundColor: colorScheme.surfaceVariant,
+                          onDeleted: () {
+                            // Handle filter removal
+                          },
+                        ),
+                      )
+                      .toList(),
+            ),
+          ),
       ],
     );
   }
+
+  /// Build the breadcrumb component using the current state
+  Widget _buildBreadcrumb(BuildContext context) {
+    return BlocBuilder<DomainSelectionBloc, DomainSelectionState>(
+      builder: (context, domainState) {
+        return BlocBuilder<ModelSelectionBloc, ModelSelectionState>(
+          builder: (context, modelState) {
+            return BlocBuilder<ConceptSelectionBloc, ConceptSelectionState>(
+              builder: (context, conceptState) {
+                return BreadcrumbWidget(
+                  domain: domainState.selectedDomain,
+                  model: modelState.selectedModel,
+                  concept: conceptState.selectedConcept,
+                  entity:
+                      conceptState.selectedEntities?.isNotEmpty == true
+                          ? conceptState.selectedEntities!.first
+                          : null,
+                  bookmarkManager: bookmarkManager,
+                  onBookmarkCreated: onBookmarkCreated,
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+/// Filter criteria for entity filtering
+class FilterCriteria {
+  /// Attribute name to filter on
+  final String attribute;
+
+  /// Operator for comparison
+  final String operator;
+
+  /// Value to compare against
+  final String value;
+
+  /// Constructor for FilterCriteria
+  const FilterCriteria({
+    required this.attribute,
+    required this.operator,
+    required this.value,
+  });
 }

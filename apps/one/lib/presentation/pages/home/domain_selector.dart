@@ -6,6 +6,7 @@ import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selec
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_state.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
+import 'package:ednet_one/presentation/state/navigation_helper.dart';
 
 /// A component for selecting domains in the application
 class DomainSelector extends StatelessWidget {
@@ -28,15 +29,8 @@ class DomainSelector extends StatelessWidget {
                   domain: domain,
                   isSelected: domain == domainState.selectedDomain,
                   onTap: () {
-                    // Update domain selection
-                    context.read<DomainSelectionBloc>().add(
-                      SelectDomainEvent(domain),
-                    );
-
-                    // Update models for the selected domain
-                    context.read<ModelSelectionBloc>().add(
-                      UpdateModelsForDomainEvent(domain),
-                    );
+                    // Use the centralized navigation helper
+                    NavigationHelper.navigateToDomain(context, domain);
 
                     // Call optional callback
                     if (onDomainSelected != null) {

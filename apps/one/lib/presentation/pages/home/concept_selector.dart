@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_state.dart';
+import 'package:ednet_one/presentation/state/navigation_helper.dart';
 
 /// A component for selecting concepts in the application
 class ConceptSelector extends StatelessWidget {
@@ -95,10 +96,8 @@ class ConceptSelector extends StatelessWidget {
                     concept: concept,
                     isSelected: isSelected,
                     onTap: () {
-                      // Update concept selection
-                      context.read<ConceptSelectionBloc>().add(
-                        SelectConceptEvent(concept),
-                      );
+                      // Use the centralized navigation helper
+                      NavigationHelper.navigateToConcept(context, concept);
 
                       // Call optional callback
                       if (onConceptSelected != null) {

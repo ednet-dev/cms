@@ -14,6 +14,7 @@ import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selec
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
+import 'package:ednet_one/presentation/state/navigation_helper.dart';
 
 // Main application reference
 import 'package:ednet_one/main.dart' show oneApplication;
@@ -279,32 +280,30 @@ class HomePageState extends State<HomePage> {
       debugPrint(
         '📱 Auto-selecting first domain: ${domainState.allDomains.first.code}',
       );
-      context.read<DomainSelectionBloc>().add(
-        SelectDomainEvent(domainState.allDomains.first),
-      );
+      NavigationHelper.navigateToDomain(context, domainState.allDomains.first);
     }
-
     // If domain is selected but no model is selected, select the first model
-    if (domainState.selectedDomain != null &&
+    else if (domainState.selectedDomain != null &&
         modelState.selectedModel == null &&
         modelState.availableModels.isNotEmpty) {
       debugPrint(
         '📱 Auto-selecting first model: ${modelState.availableModels.first.code}',
       );
-      context.read<ModelSelectionBloc>().add(
-        SelectModelEvent(modelState.availableModels.first),
+      NavigationHelper.navigateToModel(
+        context,
+        modelState.availableModels.first,
       );
     }
-
     // If model is selected but no concept is selected, select the first concept
-    if (modelState.selectedModel != null &&
+    else if (modelState.selectedModel != null &&
         conceptState.selectedConcept == null &&
         conceptState.availableConcepts.isNotEmpty) {
       debugPrint(
         '📱 Auto-selecting first concept: ${conceptState.availableConcepts.first.code}',
       );
-      context.read<ConceptSelectionBloc>().add(
-        SelectConceptEvent(conceptState.availableConcepts.first),
+      NavigationHelper.navigateToConcept(
+        context,
+        conceptState.availableConcepts.first,
       );
     }
   }
@@ -515,18 +514,15 @@ class HomePageState extends State<HomePage> {
           onBookmark: () {
             debugPrint('Bookmark action triggered');
           },
-          onPathSegmentTapped: (segment) {
-            debugPrint('Path segment tapped: $segment');
+          onBookmarkCreated: (bookmark) {
+            debugPrint('Bookmark created: ${bookmark.title}');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Bookmark created: ${bookmark.title}'),
+                duration: const Duration(seconds: 2),
+              ),
+            );
           },
-          path: [
-            'Home',
-            if (domainState.selectedDomain != null)
-              domainState.selectedDomain!.code,
-            if (modelState.selectedModel != null)
-              modelState.selectedModel!.code,
-            if (conceptState.selectedConcept != null)
-              conceptState.selectedConcept!.code,
-          ],
         ),
       ),
       body:
