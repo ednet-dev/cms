@@ -111,6 +111,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
               child: Scrollbar(
                 thumbVisibility: true,
                 child: ListView(
+                  controller: ScrollController(),
                   padding: EdgeInsets.zero,
                   children: [
                     // Domains section

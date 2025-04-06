@@ -53,6 +53,7 @@ class ModelSelector extends StatelessWidget {
             // Models list
             Expanded(
               child: ListView.builder(
+                controller: ScrollController(),
                 itemCount: availableModels.length,
                 itemBuilder: (context, index) {
                   final model = availableModels.elementAt(index);
@@ -68,9 +69,25 @@ class ModelSelector extends StatelessWidget {
                       );
 
                       // Update concepts for the selected model
-                      context.read<ConceptSelectionBloc>().add(
-                        UpdateConceptsForModelEvent(model),
-                      );
+                      try {
+                        debugPrint(
+                          'Updating concepts for model: ${model.code}',
+                        );
+                        context.read<ConceptSelectionBloc>().add(
+                          UpdateConceptsForModelEvent(model),
+                        );
+                      } catch (e) {
+                        debugPrint('Error updating concepts: $e');
+                        // Show error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Failed to load concepts for ${model.code}',
+                            ),
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
+                      }
 
                       // Call optional callback
                       if (onModelSelected != null) {

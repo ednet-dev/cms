@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // State management blocs
-import 'package:ednet_one/generated/one_application.dart'; // Import OneApplication
+// Import OneApplication
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_state.dart';
@@ -127,21 +127,53 @@ class HomePageState extends State<HomePage> {
               modelSelectionBloc.updateModelsDirectly(selectedDomain.models);
             }
 
-            // 4. Select first model if none selected
+            // 4. Select first model if none selected (specifically avoid Application model if possible)
             if (modelState.selectedModel == null &&
                 modelState.availableModels.isNotEmpty) {
-              final firstModel = modelState.availableModels.first;
-              debugPrint('📱 Force selecting first model: ${firstModel.code}');
+              // Try to find a model other than "Application" to select by default
+              Model? firstModel;
+
+              // First try to find a model that's not "Application"
+              for (var model in modelState.availableModels) {
+                if (model.code.toLowerCase() != "application") {
+                  firstModel = model;
+                  break;
+                }
+              }
+
+              // If no other model is found, use the first one (even if it's Application)
+              firstModel ??= modelState.availableModels.first;
+
+              debugPrint('📱 Force selecting model: ${firstModel.code}');
               modelSelectionBloc.add(SelectModelEvent(firstModel));
             } else if (modelState.selectedModel != null) {
               final selectedModel = modelState.selectedModel!;
               debugPrint('📱 Model selected: ${selectedModel.code}');
 
-              // 5. Handle concept selection
+              // 5. Handle concept selection, but be careful with Application model
               final conceptSelectionBloc = context.read<ConceptSelectionBloc>();
-              conceptSelectionBloc.add(
-                UpdateConceptsForModelEvent(selectedModel),
-              );
+
+              // Check if this is the Application model, which might need special handling
+              if (selectedModel.code.toLowerCase() == "application") {
+                debugPrint(
+                  '📱 Application model detected - using special handling',
+                );
+                try {
+                  conceptSelectionBloc.add(
+                    UpdateConceptsForModelEvent(selectedModel),
+                  );
+                } catch (e) {
+                  debugPrint(
+                    '📱 Error updating concepts for Application model: $e',
+                  );
+                  // For Application model, we might need to handle failure gracefully
+                }
+              } else {
+                // Regular model handling
+                conceptSelectionBloc.add(
+                  UpdateConceptsForModelEvent(selectedModel),
+                );
+              }
 
               // Wait briefly for concepts to update
               Future.delayed(const Duration(milliseconds: 100), () {

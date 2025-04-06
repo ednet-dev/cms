@@ -113,13 +113,14 @@ class EntityWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     try {
       // Access concept to verify it exists
-      entity.concept;
+      final concept = entity.concept;
+      if (concept == null) {
+        return _buildErrorDisplay(context, "Entity has no concept defined");
+      }
     } catch (e) {
-      return const Center(
-        child: Text(
-          "*** concept is not set ***\nSee also: https://flutter.dev/docs/testing/errors",
-          style: TextStyle(color: Colors.yellow, fontSize: 16),
-        ),
+      return _buildErrorDisplay(
+        context,
+        "Error accessing entity concept: ${e.toString().split("\n").first}",
       );
     }
 
@@ -127,97 +128,147 @@ class EntityWidget extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Card(
-      margin: const EdgeInsets.all(16.0),
-      elevation: 0,
+      clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.all(8.0),
+      elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: colorScheme.outlineVariant.withOpacity(0.2),
+          color: colorScheme.outlineVariant.withOpacity(0.5),
           width: 1,
         ),
       ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          // Add a colored header bar with the entity type
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              vertical: 8.0,
-              horizontal: 16.0,
-            ),
-            color: colorScheme.primaryContainer.withOpacity(0.7),
-            child: Row(
-              children: [
-                Icon(
-                  _getIconForEntityType(entity.concept.code),
-                  color: colorScheme.onPrimaryContainer,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  entity.concept.code,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+          // Background decoration
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
           ),
 
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16.0),
-              children: [
-                // Header with entity title and metadata
-                EntityHeader(entity: entity),
-
-                // Actions (save, delete, etc.)
-                EntityActions(
-                  entity: entity,
-                  onDelete: onDelete,
-                  onSave: onSave,
-                  onExport: onExport,
-                  onBookmark: onBookmark,
+          // Content
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top bar with entity type
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
                 ),
-
-                // Attributes section with improved styling
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 16.0),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: colorScheme.outlineVariant.withOpacity(0.2),
+                color: colorScheme.surfaceContainerHighest,
+                child: Row(
+                  children: [
+                    Icon(Icons.category, size: 16, color: colorScheme.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      _getConceptCodeSafely(entity),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  child: EntityAttributes(
-                    entity: entity,
-                    sectionTitle: 'Attributes',
-                  ),
+                  ],
                 ),
+              ),
 
-                // Relationships section with improved styling
-                Container(
-                  margin: const EdgeInsets.only(bottom: 16.0),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: colorScheme.outlineVariant.withOpacity(0.2),
+              // Main content
+              Expanded(
+                child: ListView(
+                  controller: ScrollController(),
+                  padding: const EdgeInsets.all(16.0),
+                  children: [
+                    // Header with entity title and metadata
+                    EntityHeader(entity: entity),
+
+                    // Actions (save, delete, etc.)
+                    EntityActions(
+                      entity: entity,
+                      onDelete: onDelete,
+                      onSave: onSave,
+                      onExport: onExport,
+                      onBookmark: onBookmark,
                     ),
-                  ),
-                  child: EntityRelationships(
-                    entity: entity,
-                    onEntitySelected: onEntitySelected,
-                  ),
+
+                    // Attributes section with improved styling
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 16.0),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: colorScheme.outlineVariant.withOpacity(0.2),
+                        ),
+                      ),
+                      child: EntityAttributes(
+                        entity: entity,
+                        sectionTitle: 'Attributes',
+                      ),
+                    ),
+
+                    // Relationships section with improved styling
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16.0),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: colorScheme.outlineVariant.withOpacity(0.2),
+                        ),
+                      ),
+                      child: EntityRelationships(
+                        entity: entity,
+                        onEntitySelected: onEntitySelected,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  /// Helper method to build an error display
+  Widget _buildErrorDisplay(BuildContext context, String message) {
+    return Card(
+      margin: const EdgeInsets.all(16),
+      color: Colors.red.shade50,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red, size: 48),
+            SizedBox(height: 16),
+            Text(
+              "Entity Error",
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              message,
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16),
+            Text(
+              "This may be caused by data model changes or initialization issues.",
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -254,6 +305,15 @@ class EntityWidget extends StatelessWidget {
         return Icons.business;
       default:
         return Icons.data_object;
+    }
+  }
+
+  /// Helper method to safely get the concept code
+  String _getConceptCodeSafely(Entity entity) {
+    try {
+      return entity.concept.code;
+    } catch (e) {
+      return "Unknown Type";
     }
   }
 }

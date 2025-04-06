@@ -56,8 +56,28 @@ class ConceptSelector extends StatelessWidget {
               ),
               child: _SearchBox(
                 onSearch: (query) {
-                  // This is a placeholder - in a real implementation, you would
-                  // filter concepts based on the query or dispatch a search event
+                  // Actually implement the search functionality
+                  if (query.trim().isEmpty) {
+                    // If query is empty, reset to show all concepts
+                    context.read<ConceptSelectionBloc>().add(
+                      UpdateConceptsForModelEvent(conceptState.model!),
+                    );
+                  } else {
+                    // Filter concepts based on the query
+                    final filteredConcepts = Concepts();
+                    for (var concept in conceptState.availableConcepts) {
+                      if (concept.code.toLowerCase().contains(
+                        query.toLowerCase(),
+                      )) {
+                        filteredConcepts.add(concept);
+                      }
+                    }
+
+                    // Update the state with filtered concepts
+                    context.read<ConceptSelectionBloc>().updateConceptsDirectly(
+                      filteredConcepts,
+                    );
+                  }
                 },
               ),
             ),
@@ -65,6 +85,7 @@ class ConceptSelector extends StatelessWidget {
             // Concepts list
             Expanded(
               child: ListView.builder(
+                controller: ScrollController(),
                 itemCount: availableConcepts.length,
                 itemBuilder: (context, index) {
                   final concept = availableConcepts.elementAt(index);
