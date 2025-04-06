@@ -1,18 +1,18 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 
 /// State for the model selection bloc
 ///
 /// Contains the currently selected model and a list of all available models
 /// for the current domain.
-class ModelSelectionState extends ValueObject {
+class ModelSelectionState extends ednet.ValueObject {
   /// Currently selected model
-  final Model? selectedModel;
+  final ednet.Model? selectedModel;
 
   /// List of available models from the current domain
-  final Models availableModels;
+  final ednet.Models availableModels;
 
   /// Currently selected domain (for context)
-  final Domain? domain;
+  final ednet.Domain? domain;
 
   /// Creates a new model selection state
   ModelSelectionState({
@@ -24,23 +24,24 @@ class ModelSelectionState extends ValueObject {
   /// Initial state with no selected model
   factory ModelSelectionState.initial() => ModelSelectionState(
     selectedModel: null,
-    availableModels: Models(),
+    availableModels: ednet.Models(),
     domain: null,
   );
 
   /// Create a model selection state for a specific domain
-  factory ModelSelectionState.forDomain(Domain domain) => ModelSelectionState(
-    selectedModel: domain.models.isNotEmpty ? domain.models.first : null,
-    availableModels: domain.models,
-    domain: domain,
-  );
+  factory ModelSelectionState.forDomain(ednet.Domain domain) =>
+      ModelSelectionState(
+        selectedModel: domain.models.isNotEmpty ? domain.models.first : null,
+        availableModels: domain.models,
+        domain: domain,
+      );
 
   /// Creates a copy of this state with the given fields replaced
   @override
   ModelSelectionState copyWith({
-    Model? selectedModel,
-    Models? availableModels,
-    Domain? domain,
+    ednet.Model? selectedModel,
+    ednet.Models? availableModels,
+    ednet.Domain? domain,
   }) {
     return ModelSelectionState(
       selectedModel: selectedModel ?? this.selectedModel,
@@ -51,7 +52,11 @@ class ModelSelectionState extends ValueObject {
 
   /// Properties used for equality comparison and hash code generation
   @override
-  List<Object?> get props => [selectedModel, availableModels, domain];
+  List<Object> get props => [
+    selectedModel ?? ednet.Model(domain ?? ednet.Domain('default'), 'default'),
+    availableModels,
+    domain ?? ednet.Domain('default'),
+  ];
 
   /// Convert the state to a JSON map
   @override

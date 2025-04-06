@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'bookmark_model.dart';
+import '../filters/filter_criteria.dart';
 
 /// Manager for handling bookmark operations with enhanced functionality
 class BookmarkManager extends ChangeNotifier {
@@ -105,7 +107,7 @@ class BookmarkManager extends ChangeNotifier {
         .toList();
   }
 
-  /// Get bookmarks containing search term in title or description
+  /// Search bookmarks using a string query
   Future<List<Bookmark>> searchBookmarks(String searchTerm) async {
     if (searchTerm.isEmpty) return await getBookmarks();
 
@@ -116,6 +118,75 @@ class BookmarkManager extends ChangeNotifier {
       return bookmark.title.toLowerCase().contains(lowerSearch) ||
           (bookmark.description?.toLowerCase().contains(lowerSearch) ?? false);
     }).toList();
+  }
+
+  /// Search bookmarks using ednet_core FilterCriteria
+  Future<List<Bookmark>> filterBookmarks(List<FilterCriteria> criteria) async {
+    if (criteria.isEmpty) return await getBookmarks();
+
+    final allBookmarks = await getBookmarks();
+
+    return allBookmarks.where((bookmark) {
+      // Apply all criteria (AND logic)
+      return criteria.every((filterCriteria) {
+        final attribute = filterCriteria.field.toLowerCase();
+        final value = filterCriteria.value.toString().toLowerCase();
+
+        switch (attribute) {
+          case 'title':
+            return _applyOperator(
+              bookmark.title,
+              filterCriteria.operator.name,
+              value,
+            );
+
+          case 'url':
+            return _applyOperator(
+              bookmark.url,
+              filterCriteria.operator.name,
+              value,
+            );
+
+          case 'description':
+            if (bookmark.description == null) return false;
+            return _applyOperator(
+              bookmark.description!,
+              filterCriteria.operator.name,
+              value,
+            );
+
+          case 'category':
+            return _applyOperator(
+              bookmark.category.name,
+              filterCriteria.operator.name,
+              value,
+            );
+
+          default:
+            return false;
+        }
+      });
+    }).toList();
+  }
+
+  /// Apply a filter operator to a string value
+  bool _applyOperator(String fieldValue, String operator, String filterValue) {
+    final lowerFieldValue = fieldValue.toLowerCase();
+
+    switch (operator) {
+      case '==':
+        return lowerFieldValue == filterValue;
+      case '!=':
+        return lowerFieldValue != filterValue;
+      case 'contains':
+        return lowerFieldValue.contains(filterValue);
+      case 'startsWith':
+        return lowerFieldValue.startsWith(filterValue);
+      case 'endsWith':
+        return lowerFieldValue.endsWith(filterValue);
+      default:
+        return false;
+    }
   }
 
   /// Clear all bookmarks

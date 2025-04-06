@@ -1,21 +1,21 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 
 abstract class DomainEvent {}
 
 class InitializeDomainEvent extends DomainEvent {}
 
 class SelectDomainEvent extends DomainEvent {
-  final Domain domain;
+  final ednet.Domain domain;
   SelectDomainEvent(this.domain);
 }
 
 class SelectModelEvent extends DomainEvent {
-  final Model model;
+  final ednet.Model model;
   SelectModelEvent(this.model);
 }
 
 class SelectConceptEvent extends DomainEvent {
-  final Concept concept;
+  final ednet.Concept concept;
   SelectConceptEvent(this.concept);
 }
 

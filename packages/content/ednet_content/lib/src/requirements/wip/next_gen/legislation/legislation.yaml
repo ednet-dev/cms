@@ -1,0 +1,53 @@
+concepts:
+  - name: Legislation
+    description: The domain model for legislative bodies and the documents they produce.
+    children:
+      - name: LegislativeBody
+        description: A governing body responsible for creating and enacting laws.
+        children:
+          - name: LegislativeSession
+            description: A period of time during which the legislative body is in session.
+          - name: Legislator
+            description: A member of the legislative body who proposes and votes on bills.
+          - name: Committee
+            description: A group of legislators responsible for studying and evaluating bills.
+          - name: Vote
+            description: A decision made by a legislative body on a bill or other matter.
+      - name: Bill
+        description: A proposed law under consideration by a legislative body.
+        children:
+          - name: Sponsor
+            description: The legislator who proposes the bill.
+          - name: CoSponsor
+            description: A legislator who supports the bill and adds their name as a sponsor.
+          - name: Amendment
+            description: A proposed change to a bill.
+          - name: FiscalNote
+            description: An analysis of the financial impact of the bill.
+          - name: PublicHearing
+            description: A meeting at which the public can provide feedback on the bill.
+      - name: Act
+        description: A law that has been passed by a legislative body and signed into law by an executive.
+        children:
+          - name: EnactmentDate
+            description: The date on which the law goes into effect.
+          - name: Implementation
+            description: The process of implementing the law and enforcing its provisions.
+          - name: Regulation
+            description: A rule or policy created by an administrative agency to implement a law.
+      - name: Regulation
+        description: A rule or policy created by an administrative agency to implement a law.
+        children:
+          - name: Agency
+            description: The administrative agency responsible for creating and enforcing the regulation.
+          - name: CommentPeriod
+            description: A period of time during which the public can provide feedback on the proposed regulation.
+          - name: FinalRule
+            description: The final version of the regulation, after it has been approved and published.
+      - name: TreatyBody
+        description: A body established by a treaty to oversee its implementation and enforcement.
+        children:
+          - name: Committee
+            description: A group of experts appointed by a treaty body to monitor implementation of the treaty by state parties.
+          - name: Secretariat
+            description: The administrative staff of a treaty body responsible for supporting its work.

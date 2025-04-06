@@ -18,34 +18,34 @@ class NavigationHelper {
   static void navigateToDomain(BuildContext context, Domain domain) {
     debugPrint('🧭 NavigationHelper: Navigating to domain ${domain.code}');
 
-    // 1. Update domain selection
-    context.read<DomainSelectionBloc>().add(SelectDomainEvent(domain));
+    if (context.mounted) {
+      final modelBloc = context.read<ModelSelectionBloc>();
+      final conceptBloc = context.read<ConceptSelectionBloc>();
+      ScaffoldMessenger.of(context);
 
-    // 2. Update models for the selected domain
-    final modelBloc = context.read<ModelSelectionBloc>();
-    modelBloc.add(UpdateModelsForDomainEvent(domain));
+      context.read<DomainSelectionBloc>().add(SelectDomainEvent(domain));
 
-    // 3. After a brief delay, select a model and update concepts
-    Future.delayed(const Duration(milliseconds: 100), () {
-      final modelState = modelBloc.state;
-      if (modelState.availableModels.isNotEmpty) {
-        // Try to find a non-Application model first
-        Model? modelToSelect;
-        for (var model in modelState.availableModels) {
-          if (model.code.toLowerCase() != 'application') {
-            modelToSelect = model;
-            break;
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (!context.mounted) return;
+        modelBloc.add(InitializeModelSelectionEvent());
+        conceptBloc.add(InitializeConceptSelectionEvent());
+        modelBloc.add(UpdateModelsForDomainEvent(domain));
+
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (!context.mounted) return;
+          final modelState = modelBloc.state;
+          if (modelState.availableModels.isNotEmpty) {
+            Model? modelToSelect = findPreferredModel(
+              modelState.availableModels,
+            );
+            debugPrint(
+              '🧭 NavigationHelper: Auto-selecting model ${modelToSelect.code}',
+            );
+            navigateToModel(context, modelToSelect);
           }
-        }
-        // If no alternative found, use the first model
-        modelToSelect ??= modelState.availableModels.first;
-
-        debugPrint(
-          '🧭 NavigationHelper: Auto-selecting model ${modelToSelect.code}',
-        );
-        navigateToModel(context, modelToSelect);
-      }
-    });
+        });
+      });
+    }
   }
 
   /// Navigate to a specific model and automatically select an appropriate concept
@@ -54,36 +54,42 @@ class NavigationHelper {
   static void navigateToModel(BuildContext context, Model model) {
     debugPrint('🧭 NavigationHelper: Navigating to model ${model.code}');
 
-    // 1. Update model selection
-    context.read<ModelSelectionBloc>().add(SelectModelEvent(model));
-
-    // 2. Update concepts with error handling
-    try {
+    if (context.mounted) {
+      final modelBloc = context.read<ModelSelectionBloc>();
       final conceptBloc = context.read<ConceptSelectionBloc>();
-      conceptBloc.add(UpdateConceptsForModelEvent(model));
+      final messenger = ScaffoldMessenger.of(context);
 
-      // 3. After a brief delay, select a concept if available
-      Future.delayed(const Duration(milliseconds: 100), () {
-        final conceptState = conceptBloc.state;
-        if (conceptState.availableConcepts.isNotEmpty) {
-          final firstConcept = conceptState.availableConcepts.first;
+      modelBloc.add(SelectModelEvent(model));
+
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (!context.mounted) return;
+        conceptBloc.add(InitializeConceptSelectionEvent());
+        try {
+          conceptBloc.add(UpdateConceptsForModelEvent(model));
+
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (!context.mounted) return;
+            final conceptState = conceptBloc.state;
+            if (conceptState.availableConcepts.isNotEmpty) {
+              final firstConcept = conceptState.availableConcepts.first;
+              debugPrint(
+                '🧭 NavigationHelper: Auto-selecting concept ${firstConcept.code}',
+              );
+              navigateToConcept(context, firstConcept);
+            }
+          });
+        } catch (e) {
           debugPrint(
-            '🧭 NavigationHelper: Auto-selecting concept ${firstConcept.code}',
+            '🧭 NavigationHelper: Error updating concepts for model ${model.code}: $e',
           );
-          navigateToConcept(context, firstConcept);
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text('Failed to load concepts for ${model.code}'),
+              duration: const Duration(seconds: 3),
+            ),
+          );
         }
       });
-    } catch (e) {
-      debugPrint(
-        '🧭 NavigationHelper: Error updating concepts for model ${model.code}: $e',
-      );
-      // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to load concepts for ${model.code}'),
-          duration: const Duration(seconds: 3),
-        ),
-      );
     }
   }
 
@@ -93,28 +99,34 @@ class NavigationHelper {
   static void navigateToConcept(BuildContext context, Concept concept) {
     debugPrint('🧭 NavigationHelper: Navigating to concept ${concept.code}');
 
-    // Update concept selection
-    final conceptBloc = context.read<ConceptSelectionBloc>();
-    conceptBloc.add(SelectConceptEvent(concept));
+    if (context.mounted) {
+      final conceptBloc = context.read<ConceptSelectionBloc>();
+      final messenger = ScaffoldMessenger.of(context);
 
-    // After a brief delay, check if we need to refresh entities
-    Future.delayed(const Duration(milliseconds: 100), () {
-      final conceptState = conceptBloc.state;
+      conceptBloc.add(SelectConceptEvent(concept));
 
-      // If no entities but concept has entry flag, try to refresh
-      if ((conceptState.selectedEntities == null ||
-              conceptState.selectedEntities!.isEmpty) &&
-          concept.entry) {
-        try {
-          debugPrint(
-            '🧭 NavigationHelper: Refreshing entities for entry concept',
-          );
-          conceptBloc.add(RefreshConceptEvent(concept));
-        } catch (e) {
-          debugPrint('🧭 NavigationHelper: Error refreshing entities: $e');
+      Future.delayed(const Duration(milliseconds: 300), () {
+        final conceptState = conceptBloc.state;
+        if (concept.entry &&
+            (conceptState.selectedEntities == null ||
+                conceptState.selectedEntities!.isEmpty)) {
+          try {
+            debugPrint(
+              '🧭 NavigationHelper: Refreshing entities for entry concept',
+            );
+            conceptBloc.add(RefreshConceptEvent(concept));
+          } catch (e) {
+            debugPrint('🧭 NavigationHelper: Error refreshing entities: $e');
+            messenger.showSnackBar(
+              SnackBar(
+                content: Text('Failed to load entities for ${concept.code}'),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   /// Find a non-Application model in a list of models

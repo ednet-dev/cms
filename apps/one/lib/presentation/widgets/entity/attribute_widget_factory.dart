@@ -1,11 +1,11 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 
 /// Factory class for creating attribute widgets based on attribute type
 class AttributeWidgetFactory {
   /// Creates an appropriate widget for the given attribute and value
   static Widget createAttributeWidget({
-    required Attribute attribute,
+    required ednet.Attribute attribute,
     required dynamic value,
     required Function(dynamic) onValueChanged,
     required BuildContext context,

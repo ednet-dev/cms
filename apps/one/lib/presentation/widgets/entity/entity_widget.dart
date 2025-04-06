@@ -1,4 +1,4 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +11,7 @@ import 'relationship_navigator.dart';
 /// A utility class for extracting entity titles from an Entity
 class EntityTitleUtils {
   /// Get a display title for an entity
-  static String getTitle(Entity entity) {
+  static String getTitle(ednet.Entity entity) {
     if (entity.getAttribute('firstName') != null) {
       if (entity.getAttribute('lastName') != null) {
         return '${entity.getAttribute('firstName')} ${entity.getAttribute('lastName')}';
@@ -56,7 +56,7 @@ enum EntityStatus { newlyCreated, modified, deleted, stable }
 /// Widget for entity details screen
 class EntityDetailScreen extends StatelessWidget {
   /// The entity to display
-  final Entity entity;
+  final ednet.Entity entity;
 
   /// Constructor for EntityDetailScreen
   const EntityDetailScreen({super.key, required this.entity});
@@ -92,10 +92,10 @@ class EntityDetailScreen extends StatelessWidget {
 /// Main widget for displaying an entity with all its components
 class EntityWidget extends StatelessWidget {
   /// The entity to display
-  final Entity entity;
+  final ednet.Entity entity;
 
   /// Optional callback when an entity is selected
-  final void Function(Entity entity)? onEntitySelected;
+  final void Function(ednet.Entity entity)? onEntitySelected;
 
   /// Optional callback when the entity is deleted
   final VoidCallback? onDelete;
@@ -190,13 +190,14 @@ class EntityWidget extends StatelessWidget {
     final statusColor = _getStatusColor(context, status);
 
     // Group attributes by semantic meaning
-    final identifierAttributes = <Attribute>[];
-    final requiredAttributes = <Attribute>[];
-    final standardAttributes = <Attribute>[];
-    final calculatedAttributes = <Attribute>[];
+    final identifierAttributes = <ednet.Attribute>[];
+    final requiredAttributes = <ednet.Attribute>[];
+    final standardAttributes = <ednet.Attribute>[];
+    final calculatedAttributes = <ednet.Attribute>[];
 
     try {
-      for (var attribute in entity.concept.attributes.whereType<Attribute>()) {
+      for (var attribute
+          in entity.concept.attributes.whereType<ednet.Attribute>()) {
         if (attribute.identifier) {
           identifierAttributes.add(attribute);
         } else if (attribute.required) {
@@ -249,32 +250,29 @@ class EntityWidget extends StatelessWidget {
                         children: [
                           Text(
                             _getConceptCodeSafely(entity),
-                            style: theme.textTheme.titleSmall?.copyWith(
+                            style: theme.textTheme.titleMedium?.copyWith(
                               color: statusColor,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.15,
+                              fontWeight: FontWeight.w500,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(width: 8),
-                          if (entity.concept.entry)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: statusColor.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                'Entry',
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: statusColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: statusColor.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              _getStatusText(status),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: statusColor,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
+                          ),
                         ],
                       ),
                     ),
@@ -387,30 +385,30 @@ class EntityWidget extends StatelessWidget {
                       if (requiredAttributes.isNotEmpty)
                         _buildAttributeSection(
                           context,
-                          'Required Attributes',
+                          'Required Fields',
                           requiredAttributes,
                           Icons.star_outline,
-                          Colors.purple,
+                          colorScheme.secondary,
                         ),
 
                       // Standard attributes section
                       if (standardAttributes.isNotEmpty)
                         _buildAttributeSection(
                           context,
-                          'Attributes',
+                          'Properties',
                           standardAttributes,
                           Icons.list_alt,
-                          colorScheme.secondary,
+                          colorScheme.tertiary,
                         ),
 
                       // Calculated attributes section if available
                       if (calculatedAttributes.isNotEmpty)
                         _buildAttributeSection(
                           context,
-                          'Calculated Values',
+                          'Calculated Fields',
                           calculatedAttributes,
                           Icons.calculate_outlined,
-                          Colors.orange,
+                          colorScheme.error,
                         ),
 
                       // Relationship Navigator component - NEW
@@ -529,7 +527,7 @@ class EntityWidget extends StatelessWidget {
   Widget _buildAttributeSection(
     BuildContext context,
     String title,
-    List<Attribute> attributes,
+    List<ednet.Attribute> attributes,
     IconData icon,
     Color color,
   ) {
@@ -581,7 +579,7 @@ class EntityWidget extends StatelessWidget {
   // Build a card for a single attribute
   Widget _buildAttributeCard(
     BuildContext context,
-    Attribute attribute,
+    ednet.Attribute attribute,
     Color accentColor,
   ) {
     final theme = Theme.of(context);
@@ -666,7 +664,7 @@ class EntityWidget extends StatelessWidget {
   // Build specialized value displays based on attribute type
   Widget _buildAttributeValue(
     BuildContext context,
-    Attribute attribute,
+    ednet.Attribute attribute,
     dynamic value,
     String displayValue,
   ) {
@@ -851,11 +849,25 @@ class EntityWidget extends StatelessWidget {
   }
 
   /// Helper method to safely get the concept code
-  String _getConceptCodeSafely(Entity entity) {
+  String _getConceptCodeSafely(ednet.Entity entity) {
     try {
       return entity.concept.code;
     } catch (e) {
       return "Unknown Type";
+    }
+  }
+
+  // Helper method to get status text
+  String _getStatusText(EntityStatus status) {
+    switch (status) {
+      case EntityStatus.newlyCreated:
+        return 'New';
+      case EntityStatus.modified:
+        return 'Modified';
+      case EntityStatus.deleted:
+        return 'Deleted';
+      case EntityStatus.stable:
+        return 'Stable';
     }
   }
 }

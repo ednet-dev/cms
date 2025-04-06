@@ -1,30 +1,33 @@
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:bloc/bloc.dart';
-import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/domain/domain_model_graph.dart';
 
-import 'domain_event.dart';
+import 'domain_event.dart' as local;
 import 'domain_state.dart';
 
-class DomainBloc extends Bloc<DomainEvent, DomainState> {
-  final IOneApplication app;
+class DomainBloc extends Bloc<local.DomainEvent, DomainState> {
+  final ednet.IOneApplication app;
 
   DomainBloc({required this.app}) : super(DomainState.initial()) {
-    on<InitializeDomainEvent>(_onInitialize);
-    on<SelectDomainEvent>(_onSelectDomain);
-    on<SelectModelEvent>(_onSelectModel);
-    on<SelectConceptEvent>(_onSelectConcept);
-    on<ExportDSLEvent>(_onExportDSL);
-    on<GenerateCodeEvent>(_onGenerateCode);
+    on<local.InitializeDomainEvent>(_onInitialize);
+    on<local.SelectDomainEvent>(_onSelectDomain);
+    on<local.SelectModelEvent>(_onSelectModel);
+    on<local.SelectConceptEvent>(_onSelectConcept);
+    on<local.ExportDSLEvent>(_onExportDSL);
+    on<local.GenerateCodeEvent>(_onGenerateCode);
   }
 
-  void _onInitialize(InitializeDomainEvent event, Emitter<DomainState> emit) {
+  void _onInitialize(
+    local.InitializeDomainEvent event,
+    Emitter<DomainState> emit,
+  ) {
     // Initialize with first domain and model if available
-    Domain? selectedDomain;
-    Model? selectedModel;
-    Entities? selectedEntries;
+    ednet.Domain? selectedDomain;
+    ednet.Model? selectedModel;
+    ednet.Entities? selectedEntries;
     DomainModelGraph? domainModelGraph;
-    Entities? selectedEntities;
-    Concept? selectedConcept;
+    ednet.Entities? selectedEntities;
+    ednet.Concept? selectedConcept;
 
     if (app.groupedDomains.isNotEmpty) {
       selectedDomain = app.groupedDomains.first;
@@ -50,13 +53,16 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     );
   }
 
-  void _onSelectDomain(SelectDomainEvent event, Emitter<DomainState> emit) {
-    Domain domain = event.domain;
-    Model? selectedModel;
-    Entities? selectedEntries;
+  void _onSelectDomain(
+    local.SelectDomainEvent event,
+    Emitter<DomainState> emit,
+  ) {
+    ednet.Domain domain = event.domain;
+    ednet.Model? selectedModel;
+    ednet.Entities? selectedEntries;
     DomainModelGraph? domainModelGraph;
-    Entities? selectedEntities;
-    Concept? selectedConcept;
+    ednet.Entities? selectedEntities;
+    ednet.Concept? selectedConcept;
 
     if (domain.models.isNotEmpty) {
       selectedModel = domain.models.first;
@@ -82,12 +88,12 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     );
   }
 
-  void _onSelectModel(SelectModelEvent event, Emitter<DomainState> emit) {
+  void _onSelectModel(local.SelectModelEvent event, Emitter<DomainState> emit) {
     final domain = state.selectedDomain;
     if (domain == null) return; // No domain selected
 
-    Model model = event.model;
-    Entities? selectedEntries =
+    ednet.Model model = event.model;
+    ednet.Entities? selectedEntries =
         model.concepts.isNotEmpty ? model.getOrderedEntryConcepts() : null;
     DomainModelGraph? domainModelGraph = DomainModelGraph(
       domain: domain,
@@ -105,7 +111,10 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     );
   }
 
-  void _onSelectConcept(SelectConceptEvent event, Emitter<DomainState> emit) {
+  void _onSelectConcept(
+    local.SelectConceptEvent event,
+    Emitter<DomainState> emit,
+  ) {
     final concept = event.concept;
     final selectedDomain = state.selectedDomain;
     final selectedModel = state.selectedModel;
@@ -121,13 +130,13 @@ class DomainBloc extends Bloc<DomainEvent, DomainState> {
     emit(state.copyWith(selectedConcept: concept, selectedEntities: entry));
   }
 
-  void _onExportDSL(ExportDSLEvent event, Emitter<DomainState> emit) {
+  void _onExportDSL(local.ExportDSLEvent event, Emitter<DomainState> emit) {
     // Just triggers DSL export via method call, no state change needed.
     // Could store DSL in state if desired. For now, DSL retrieval done externally.
   }
 
   void _onGenerateCode(
-    GenerateCodeEvent event,
+    local.GenerateCodeEvent event,
     Emitter<DomainState> emit,
   ) async {
     // Implement code generation and update state if needed

@@ -1,4 +1,4 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 
 import 'attribute_widget_factory.dart';
@@ -6,7 +6,7 @@ import 'attribute_widget_factory.dart';
 /// Component for rendering the attributes section of an entity
 class EntityAttributes extends StatelessWidget {
   /// The entity whose attributes will be displayed
-  final Entity entity;
+  final ednet.Entity entity;
 
   /// Optional title for the attributes section
   final String? sectionTitle;
@@ -34,10 +34,10 @@ class EntityAttributes extends StatelessWidget {
     }
 
     // Group attributes for better organization
-    final idAttributes = <Property>[];
-    final nameAttributes = <Property>[];
-    final dateAttributes = <Property>[];
-    final otherAttributes = <Property>[];
+    final idAttributes = <ednet.Property>[];
+    final nameAttributes = <ednet.Property>[];
+    final dateAttributes = <ednet.Property>[];
+    final otherAttributes = <ednet.Property>[];
 
     for (final attribute in attributes) {
       if (attribute.code.toLowerCase().contains('id') ||
@@ -105,7 +105,7 @@ class EntityAttributes extends StatelessWidget {
   }
 
   /// Build an individual attribute card with improved styling
-  Widget _buildAttributeCard(BuildContext context, Property attribute) {
+  Widget _buildAttributeCard(BuildContext context, ednet.Property attribute) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final attributeValue = entity.getAttribute(attribute.code);

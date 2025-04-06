@@ -1,4 +1,4 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../state/providers/filter_manager.dart';
@@ -11,10 +11,10 @@ import 'entity_collection_view.dart';
 /// Widget for displaying a collection of entities
 class EntitiesWidget extends StatefulWidget {
   /// The entities to display
-  final Entities entities;
+  final ednet.Entities entities;
 
   /// Optional callback when an entity is selected
-  final void Function(Entity entity)? onEntitySelected;
+  final void Function(ednet.Entity entity)? onEntitySelected;
 
   /// Optional bookmark manager to create bookmarks from entities
   final BookmarkManager? bookmarkManager;
@@ -115,7 +115,7 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
 
   // Filter entities based on search query and active filter
   bool _filterEntity(dynamic entity) {
-    final entityObj = entity as Entity;
+    final entityObj = entity as ednet.Entity;
 
     // Apply text search filter
     if (_searchQuery != null && _searchQuery!.isNotEmpty) {
@@ -155,7 +155,7 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
   }
 
   // Apply filter criteria to an entity
-  bool _applyFilterCriteria(Entity entity) {
+  bool _applyFilterCriteria(ednet.Entity entity) {
     final filterManager = Provider.of<FilterManager>(context, listen: false);
     final activeFilter = filterManager.activeFilter;
 
@@ -190,7 +190,10 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
   }
 
   // Check if an entity matches a specific criterion
-  bool _matchesCriterion(Entity entity, filters.FilterCriteria criterion) {
+  bool _matchesCriterion(
+    ednet.Entity entity,
+    filters.FilterCriteria criterion,
+  ) {
     try {
       // Get attribute value
       final attrValue = entity.getAttribute(criterion.field);
@@ -287,14 +290,14 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
           return false;
       }
     } catch (e) {
-      // If any error occurs during filtering, consider it a non-match
+      debugPrint('Error applying filter criterion: $e');
       return false;
     }
   }
 
   // Group entities by concept
   String _groupByConceptCode(dynamic entity) {
-    final entityObj = entity as Entity;
+    final entityObj = entity as ednet.Entity;
     try {
       return entityObj.concept.code;
     } catch (e) {

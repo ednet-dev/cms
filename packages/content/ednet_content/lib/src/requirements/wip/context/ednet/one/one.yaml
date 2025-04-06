@@ -1,0 +1,38 @@
+width: 1490
+height: 1605
+concepts:
+  - name: OneApp
+    entry: true
+    description: 'Root domain integrating all others'
+    attributes:
+      - sequence: 1
+        name: tile
+        type: String
+      - sequence: 2
+        category: attribute
+        name: subtitle
+        type: String
+      - sequence: 3
+        category: attribute
+        name: body
+        type: String
+  - name: User
+    attributes:
+      - sequence: 1
+        name: email
+        type: String
+relations:
+  - name: users
+    description: 'Users of the OneApp'
+    from: One
+    to: User
+    fromToName: users
+    fromToMin: 0
+    fromToMax: N
+    toFromName: platform
+    toFromMin: 1
+    toFromMax: 1
+
+    
+    
+    

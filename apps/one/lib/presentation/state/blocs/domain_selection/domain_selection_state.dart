@@ -27,7 +27,8 @@ class DomainSelectionState extends ValueObject {
   }
 
   /// Properties used for equality comparison and hash code generation
-  List<Object?> get props => [selectedDomain, allDomains];
+  @override
+  List<Object> get props => [selectedDomain ?? Domain('default'), allDomains];
 
   /// Convert the state to a JSON map
   @override

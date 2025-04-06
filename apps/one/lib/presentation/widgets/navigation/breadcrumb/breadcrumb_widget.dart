@@ -38,7 +38,7 @@ class BreadcrumbWidget extends StatelessWidget {
 
   /// Constructor for BreadcrumbWidget
   const BreadcrumbWidget({
-    Key? key,
+    super.key,
     this.domain,
     this.model,
     this.concept,
@@ -48,42 +48,73 @@ class BreadcrumbWidget extends StatelessWidget {
     this.bookmarkManager,
     this.onSegmentTapped,
     this.onBookmarkCreated,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     // Use provided segments or create path from domain/model/concept/entity
-    final breadcrumbPath =
-        segments ??
-        BreadcrumbSegment.createPath(
-          domain: domain,
-          model: model,
-          concept: concept,
-          entity: entity,
-          entityLabel: entityLabel ?? _getEntityLabel(entity),
-        );
+    List<BreadcrumbSegment> breadcrumbPath;
+
+    try {
+      breadcrumbPath =
+          segments ??
+          BreadcrumbSegment.createPath(
+            domain: domain,
+            model: model,
+            concept: concept,
+            entity: entity,
+            entityLabel: entityLabel ?? _getEntityLabel(entity),
+          );
+
+      // Validate each segment to ensure it has proper references
+      breadcrumbPath =
+          breadcrumbPath.where((segment) {
+            switch (segment.type) {
+              case BreadcrumbSegmentType.model:
+                return segment.model?.domain != null;
+              case BreadcrumbSegmentType.concept:
+                return segment.concept?.model != null;
+              case BreadcrumbSegmentType.entity:
+                return segment.entity != null;
+              default:
+                return true;
+            }
+          }).toList();
+    } catch (e) {
+      debugPrint('Error creating breadcrumb path: $e');
+      breadcrumbPath = [];
+    }
 
     if (breadcrumbPath.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            for (int i = 0; i < breadcrumbPath.length; i++) ...[
-              if (i > 0) const BreadcrumbSeparator(),
-              _buildBreadcrumbItem(
-                context,
-                breadcrumbPath[i],
-                i == breadcrumbPath.length - 1,
-              ),
-            ],
-          ],
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          constraints: BoxConstraints(
+            maxWidth: constraints.maxWidth,
+            minHeight: 48.0,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (int i = 0; i < breadcrumbPath.length; i++) ...[
+                  if (i > 0) const BreadcrumbSeparator(),
+                  _buildBreadcrumbItem(
+                    context,
+                    breadcrumbPath[i],
+                    i == breadcrumbPath.length - 1,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -109,30 +140,40 @@ class BreadcrumbWidget extends StatelessWidget {
     );
   }
 
-  /// Navigate to the selected segment
+  /// Handle navigation with proper state management
   void _handleNavigation(BuildContext context, BreadcrumbSegment segment) {
-    switch (segment.type) {
-      case BreadcrumbSegmentType.domain:
-        if (segment.domain != null) {
-          NavigationHelper.navigateToDomain(context, segment.domain!);
-        }
-        break;
-      case BreadcrumbSegmentType.model:
-        if (segment.model != null) {
-          NavigationHelper.navigateToModel(context, segment.model!);
-        }
-        break;
-      case BreadcrumbSegmentType.concept:
-        if (segment.concept != null) {
-          NavigationHelper.navigateToConcept(context, segment.concept!);
-        }
-        break;
-      case BreadcrumbSegmentType.entity:
-        // Entity navigation is typically handled by the specific page
-        break;
-      case BreadcrumbSegmentType.custom:
-        // Custom navigation is handled by callbacks
-        break;
+    try {
+      switch (segment.type) {
+        case BreadcrumbSegmentType.domain:
+          if (segment.domain != null) {
+            NavigationHelper.navigateToDomain(context, segment.domain!);
+          }
+          break;
+        case BreadcrumbSegmentType.model:
+          if (segment.model != null && segment.model?.domain != null) {
+            NavigationHelper.navigateToModel(context, segment.model!);
+          }
+          break;
+        case BreadcrumbSegmentType.concept:
+          if (segment.concept != null && segment.concept?.model != null) {
+            NavigationHelper.navigateToConcept(context, segment.concept!);
+          }
+          break;
+        case BreadcrumbSegmentType.entity:
+          // Entity navigation is typically handled by the specific page
+          break;
+        case BreadcrumbSegmentType.custom:
+          // Custom navigation is handled by callbacks
+          break;
+      }
+    } catch (e) {
+      debugPrint('Error navigating to segment: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error navigating to ${segment.label}'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
   }
 

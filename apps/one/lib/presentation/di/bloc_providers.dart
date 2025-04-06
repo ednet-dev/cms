@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
+import 'package:ednet_one/presentation/state/blocs/domain_block.dart';
+import 'package:ednet_one/presentation/state/blocs/domain_event.dart'
+    as domain_events;
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
@@ -17,6 +20,7 @@ import 'package:ednet_one/main.dart'
         createDomainSelectionBloc,
         createModelSelectionBloc,
         createConceptSelectionBloc,
+        createDomainBloc,
         createThemeBloc;
 
 /// Utility class to provide all BLoCs at once
@@ -39,6 +43,11 @@ class AppBlocProviders {
           (context) =>
               createConceptSelectionBloc()
                 ..add(InitializeConceptSelectionEvent()),
+    ),
+    BlocProvider<DomainBloc>(
+      create:
+          (context) =>
+              createDomainBloc()..add(domain_events.InitializeDomainEvent()),
     ),
     BlocProvider<ThemeBloc>(create: (context) => createThemeBloc()),
   ];

@@ -1,10 +1,10 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 
 /// Component for rendering the header of an entity including title and metadata
 class EntityHeader extends StatelessWidget {
   /// The entity whose header will be displayed
-  final Entity entity;
+  final ednet.Entity entity;
 
   /// Constructor for EntityHeader
   const EntityHeader({super.key, required this.entity});
@@ -87,7 +87,7 @@ class EntityHeader extends StatelessWidget {
   }
 
   /// Helper function to get a display title for the entity
-  String _getEntityTitle(Entity entity) {
+  String _getEntityTitle(ednet.Entity entity) {
     if (entity.getAttribute('firstName') != null) {
       if (entity.getAttribute('lastName') != null) {
         return '${entity.getAttribute('firstName')} ${entity.getAttribute('lastName')}';

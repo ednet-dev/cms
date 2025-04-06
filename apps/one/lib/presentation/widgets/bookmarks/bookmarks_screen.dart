@@ -4,6 +4,7 @@ import 'bookmark_model.dart';
 import 'bookmark_manager.dart';
 import 'bookmark_category_section.dart';
 import 'bookmark_dialog.dart';
+import 'bookmark_filter.dart';
 
 /// A full screen for browsing and managing bookmarks
 class BookmarksScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _BookmarksScreenState extends State<BookmarksScreen>
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  List<Bookmark>? _filteredBookmarks;
 
   @override
   void initState() {
@@ -31,6 +33,8 @@ class _BookmarksScreenState extends State<BookmarksScreen>
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text;
+        _filteredBookmarks =
+            null; // Reset filtered bookmarks when search changes
       });
     });
   }
@@ -40,6 +44,22 @@ class _BookmarksScreenState extends State<BookmarksScreen>
     _tabController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Handle bookmark filter application
+  void _handleFiltersApplied(List<Bookmark> filteredBookmarks) {
+    setState(() {
+      _filteredBookmarks = filteredBookmarks;
+      _searchQuery = ''; // Clear search when filters are applied
+      _searchController.clear();
+    });
+  }
+
+  /// Clear all active filters
+  void _clearFilters() {
+    setState(() {
+      _filteredBookmarks = null;
+    });
   }
 
   @override
@@ -52,6 +72,7 @@ class _BookmarksScreenState extends State<BookmarksScreen>
       appBar: AppBar(
         title: const Text('Bookmarks'),
         actions: [
+          BookmarkFilterButton(onFiltersApplied: _handleFiltersApplied),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () => _createBookmark(context, bookmarkManager),
@@ -81,45 +102,99 @@ class _BookmarksScreenState extends State<BookmarksScreen>
       ),
       body: Column(
         children: [
-          // Search bar
+          // Search bar and filter indicator
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search bookmarks...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon:
-                    _searchQuery.isNotEmpty
-                        ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                          },
-                        )
-                        : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search bookmarks...',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon:
+                        _searchQuery.isNotEmpty
+                            ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                              },
+                            )
+                            : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
                 ),
-              ),
+
+                // Show indicator when filters are active
+                if (_filteredBookmarks != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.filter_list, size: 16),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Filters applied (${_filteredBookmarks!.length} results)',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: _clearFilters,
+                          child: const Text('Clear filters'),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
           ),
 
           // Tab content
-          Expanded(
-            child:
-                _searchQuery.isNotEmpty
-                    ? _buildSearchResults(bookmarkManager)
-                    : TabBarView(
-                      controller: _tabController,
-                      children:
-                          BookmarkCategory.values.map((category) {
-                            return _buildCategoryTab(category, bookmarkManager);
-                          }).toList(),
-                    ),
-          ),
+          Expanded(child: _buildContent(bookmarkManager)),
         ],
       ),
+    );
+  }
+
+  /// Build the main content based on search/filter state
+  Widget _buildContent(BookmarkManager bookmarkManager) {
+    // If we have filtered bookmarks, show them
+    if (_filteredBookmarks != null) {
+      return _buildBookmarkList(_filteredBookmarks!);
+    }
+
+    // If searching, show search results
+    if (_searchQuery.isNotEmpty) {
+      return _buildSearchResults(bookmarkManager);
+    }
+
+    // Otherwise show tabs
+    return TabBarView(
+      controller: _tabController,
+      children:
+          BookmarkCategory.values.map((category) {
+            return _buildCategoryTab(category, bookmarkManager);
+          }).toList(),
+    );
+  }
+
+  /// Build a direct list of bookmarks
+  Widget _buildBookmarkList(List<Bookmark> bookmarks) {
+    if (bookmarks.isEmpty) {
+      return const Center(
+        child: Text('No bookmarks match the current filters'),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: bookmarks.length,
+      itemBuilder: (context, index) {
+        final bookmark = bookmarks[index];
+        return _buildBookmarkItem(bookmark, context.read<BookmarkManager>());
+      },
     );
   }
 

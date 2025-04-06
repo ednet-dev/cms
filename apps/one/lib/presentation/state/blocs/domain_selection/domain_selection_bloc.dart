@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 
 import 'domain_selection_event.dart';
 import 'domain_selection_state.dart';
@@ -7,7 +7,7 @@ import 'domain_selection_state.dart';
 /// Bloc for handling domain selection actions and state
 class DomainSelectionBloc
     extends Bloc<DomainSelectionEvent, DomainSelectionState> {
-  final IOneApplication app;
+  final ednet.IOneApplication app;
 
   DomainSelectionBloc({required this.app})
     : super(DomainSelectionState.initial()) {
@@ -20,7 +20,7 @@ class DomainSelectionBloc
     InitializeDomainSelectionEvent event,
     Emitter<DomainSelectionState> emit,
   ) {
-    Domain? selectedDomain;
+    ednet.Domain? selectedDomain;
 
     // Initialize with the first domain if available
     if (app.groupedDomains.isNotEmpty) {
@@ -45,7 +45,7 @@ class DomainSelectionBloc
 
   /// A method to directly update domains in the state
   /// This is a workaround for initialization issues
-  void updateDomainsDirectly(Domains domains) {
+  void updateDomainsDirectly(ednet.Domains domains) {
     if (domains.isEmpty) return;
 
     emit(

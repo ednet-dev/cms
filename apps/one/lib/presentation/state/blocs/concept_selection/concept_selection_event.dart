@@ -1,4 +1,4 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 
 /// Base class for all concept selection events
 abstract class ConceptSelectionEvent {}
@@ -8,7 +8,7 @@ class InitializeConceptSelectionEvent extends ConceptSelectionEvent {}
 
 /// Event to update concepts when model changes
 class UpdateConceptsForModelEvent extends ConceptSelectionEvent {
-  final Model model;
+  final ednet.Model model;
   final dynamic domainModelGraph;
 
   UpdateConceptsForModelEvent(this.model, {this.domainModelGraph});
@@ -16,7 +16,7 @@ class UpdateConceptsForModelEvent extends ConceptSelectionEvent {
 
 /// Event to select a specific concept
 class SelectConceptEvent extends ConceptSelectionEvent {
-  final Concept concept;
+  final ednet.Concept concept;
 
   SelectConceptEvent(this.concept);
 }
@@ -29,7 +29,7 @@ class GenerateCodeEvent extends ConceptSelectionEvent {}
 
 /// Event to refresh a specific concept and reload its entities
 class RefreshConceptEvent extends ConceptSelectionEvent {
-  final Concept concept;
+  final ednet.Concept concept;
 
   RefreshConceptEvent(this.concept);
 }

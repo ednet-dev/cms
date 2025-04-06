@@ -1,0 +1,1 @@
+# Commited domain models compiled in src/compiled and published in ednet_content.dart library

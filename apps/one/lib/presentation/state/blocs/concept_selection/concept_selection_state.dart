@@ -1,21 +1,21 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 
 /// State for the concept selection bloc
 ///
 /// Contains the currently selected concept, available concepts, and the
 /// entities/entries associated with the selected concept.
-class ConceptSelectionState extends ValueObject {
+class ConceptSelectionState extends ednet.ValueObject {
   /// Currently selected concept
-  final Concept? selectedConcept;
+  final ednet.Concept? selectedConcept;
 
   /// List of available concepts
-  final Concepts availableConcepts;
+  final ednet.Concepts availableConcepts;
 
   /// Entities associated with the selected concept
-  final Entities? selectedEntities;
+  final ednet.Entities? selectedEntities;
 
   /// Currently selected model (for context)
-  final Model? model;
+  final ednet.Model? model;
 
   /// Graph representation of the domain model
   final dynamic domainModelGraph;
@@ -32,14 +32,14 @@ class ConceptSelectionState extends ValueObject {
   /// Initial state with no selected concept
   factory ConceptSelectionState.initial() => ConceptSelectionState(
     selectedConcept: null,
-    availableConcepts: Concepts(),
+    availableConcepts: ednet.Concepts(),
     selectedEntities: null,
     model: null,
     domainModelGraph: null,
   );
 
   /// Create a concept selection state for a specific model
-  factory ConceptSelectionState.forModel(Model model, {dynamic graph}) {
+  factory ConceptSelectionState.forModel(ednet.Model model, {dynamic graph}) {
     final concepts = model.getOrderedEntryConcepts();
     return ConceptSelectionState(
       selectedConcept: concepts.isNotEmpty ? concepts.first : null,
@@ -52,10 +52,10 @@ class ConceptSelectionState extends ValueObject {
 
   /// Creates a copy of this state with the given fields replaced
   ConceptSelectionState copyWith({
-    Concept? selectedConcept,
-    Concepts? availableConcepts,
-    Entities? selectedEntities,
-    Model? model,
+    ednet.Concept? selectedConcept,
+    ednet.Concepts? availableConcepts,
+    ednet.Entities? selectedEntities,
+    ednet.Model? model,
     dynamic domainModelGraph,
   }) {
     return ConceptSelectionState(
@@ -68,12 +68,17 @@ class ConceptSelectionState extends ValueObject {
   }
 
   /// Properties used for equality comparison and hash code generation
-  List<Object?> get props => [
-    selectedConcept,
+  @override
+  List<Object> get props => [
+    selectedConcept ??
+        ednet.Concept(
+          model ?? ednet.Model(ednet.Domain('default'), 'default'),
+          'default',
+        ),
     availableConcepts,
-    selectedEntities,
-    model,
-    domainModelGraph,
+    selectedEntities ?? ednet.Models(),
+    model ?? ednet.Model(ednet.Domain('default'), 'default'),
+    domainModelGraph ?? Object(),
   ];
 
   /// Convert the state to a JSON map

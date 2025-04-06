@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
+import 'package:flutter/foundation.dart';
 
 import 'model_selection_event.dart';
 import 'model_selection_state.dart';
@@ -7,7 +8,7 @@ import 'model_selection_state.dart';
 /// Bloc for handling model selection actions and state
 class ModelSelectionBloc
     extends Bloc<ModelSelectionEvent, ModelSelectionState> {
-  final IOneApplication app;
+  final ednet.IOneApplication app;
 
   ModelSelectionBloc({required this.app})
     : super(ModelSelectionState.initial()) {
@@ -30,20 +31,29 @@ class ModelSelectionBloc
     UpdateModelsForDomainEvent event,
     Emitter<ModelSelectionState> emit,
   ) {
-    Domain domain = event.domain;
-    Model? selectedModel;
+    try {
+      debugPrint('🔍 Updating models for domain: ${event.domain.code}');
 
-    if (domain.models.isNotEmpty) {
-      selectedModel = domain.models.first;
+      // First, clear the current state to prevent type mismatches
+      emit(ModelSelectionState.initial());
+
+      final domain = event.domain;
+      final models = domain.models;
+
+      debugPrint('🔍 Found ${models.length} models in domain ${domain.code}');
+
+      emit(
+        ModelSelectionState(
+          selectedModel: null, // Don't auto-select model
+          availableModels: models,
+          domain: domain,
+        ),
+      );
+    } catch (e, stack) {
+      debugPrint('❌ Error in _onUpdateModelsForDomain: $e');
+      debugPrint('❌ Stack trace: $stack');
+      emit(ModelSelectionState.initial());
     }
-
-    emit(
-      state.copyWith(
-        selectedModel: selectedModel,
-        availableModels: domain.models,
-        domain: domain,
-      ),
-    );
   }
 
   /// Handles the select model event
@@ -51,12 +61,25 @@ class ModelSelectionBloc
     SelectModelEvent event,
     Emitter<ModelSelectionState> emit,
   ) {
-    emit(state.copyWith(selectedModel: event.model));
+    try {
+      debugPrint('🔍 Selecting model: ${event.model.code}');
+
+      // First clear the current state to prevent type mismatches
+      emit(state.copyWith(selectedModel: null));
+
+      emit(
+        state.copyWith(selectedModel: event.model, domain: event.model.domain),
+      );
+    } catch (e, stack) {
+      debugPrint('❌ Error in _onSelectModel: $e');
+      debugPrint('❌ Stack trace: $stack');
+      emit(ModelSelectionState.initial());
+    }
   }
 
   /// A method to directly update models in the state
   /// This is a workaround for initialization issues
-  void updateModelsDirectly(Models models) {
+  void updateModelsDirectly(ednet.Models models) {
     if (models.isEmpty) return;
 
     emit(

@@ -1,10 +1,10 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 
 /// Component for displaying action buttons for an entity
 class EntityActions extends StatelessWidget {
   /// The entity for which actions are displayed
-  final Entity entity;
+  final ednet.Entity entity;
 
   /// Optional callback when the entity is deleted
   final VoidCallback? onDelete;
@@ -116,7 +116,7 @@ class EntityActions extends StatelessWidget {
   }
 
   /// Helper function to get a display title for the entity
-  String _getEntityTitle(Entity entity) {
+  String _getEntityTitle(ednet.Entity entity) {
     if (entity.getAttribute('firstName') != null) {
       if (entity.getAttribute('lastName') != null) {
         return '${entity.getAttribute('firstName')} ${entity.getAttribute('lastName')}';

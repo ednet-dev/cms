@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:ednet_one/generated/one_application.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_block.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_event.dart'
@@ -13,6 +14,7 @@ import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_sel
 
 import 'presentation/di/bloc_providers.dart';
 import 'presentation/navigation/navigation_service.dart';
+import 'presentation/pages/bookmarks_page.dart';
 import 'presentation/pages/home/home_page.dart';
 import 'presentation/state/blocs/theme_bloc/theme_bloc.dart';
 import 'presentation/state/blocs/theme_bloc/theme_state.dart';
@@ -77,7 +79,7 @@ void main() async {
   }
 
   debugPrint('Launching app...');
-  runApp(MyApp());
+  runApp(AppBlocProviders.wrapWithProviders(const MyApp()));
   debugPrint('App launched');
 }
 
@@ -158,11 +160,8 @@ void _forceDomainSelection() {
       );
     }
 
-    // Clean up the blocs to avoid memory leaks
-    domainSelectionBloc.close();
-    modelSelectionBloc.close();
-    conceptSelectionBloc.close();
-    domainBloc.close();
+    // NOTE: We don't close the blocs here as they will be used by the widget tree
+    // Let the BLoC providers handle their lifecycle
   } catch (e, stack) {
     debugPrint('❌ Error in _forceDomainSelection: $e');
     debugPrint('Stack trace: $stack');
@@ -249,18 +248,14 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     debugPrint('Building MaterialApp');
 
-    return AppBlocProviders.wrapWithProviders(
-      BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, themeState) {
-          debugPrint('ThemeBloc state updated: ${themeState.runtimeType}');
-          return MaterialApp(
-            title: 'EDNet One',
-            theme: themeState.themeData,
-            navigatorKey: navigationService.navigatorKey,
-            home: HomePage(title: 'EDNet One'),
-          );
-        },
+    return MaterialApp(
+      title: 'EDNet One',
+      theme: context.select<ThemeBloc, ThemeData>(
+        (themeBloc) => themeBloc.state.themeData,
       ),
+      navigatorKey: navigationService.navigatorKey,
+      home: HomePage(title: 'EDNet One'),
+      routes: {BookmarksPage.routeName: (context) => const BookmarksPage()},
     );
   }
 }

@@ -1,13 +1,13 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 
 /// Component for rendering the relationships section of an entity
 class EntityRelationships extends StatelessWidget {
   /// The entity whose relationships will be displayed
-  final Entity entity;
+  final ednet.Entity entity;
 
   /// Optional callback when an entity is selected
-  final void Function(Entity entity)? onEntitySelected;
+  final void Function(ednet.Entity entity)? onEntitySelected;
 
   /// Constructor for EntityRelationships
   const EntityRelationships({
@@ -31,7 +31,7 @@ class EntityRelationships extends StatelessWidget {
             ),
           ),
           ...entity.concept.parents.map((parent) {
-            final parentEntity = entity.getParent(parent.code) as Entity;
+            final parentEntity = entity.getParent(parent.code) as ednet.Entity;
             return ListTile(
               title: Text(_getEntityTitle(parentEntity)),
               subtitle: Text(parentEntity.concept.code),
@@ -54,7 +54,8 @@ class EntityRelationships extends StatelessWidget {
             ),
           ),
           ...entity.concept.children.map((child) {
-            final childEntities = entity.getChild(child.code) as Entities?;
+            final childEntities =
+                entity.getChild(child.code) as ednet.Entities?;
             if (childEntities == null || childEntities.isEmpty) {
               return const SizedBox.shrink();
             }
@@ -68,7 +69,7 @@ class EntityRelationships extends StatelessWidget {
                   childEntities.map((childEntity) {
                     return ListTile(
                       title: Text(
-                        _getEntityTitle(childEntity as Entity),
+                        _getEntityTitle(childEntity as ednet.Entity),
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                       onTap: () {
@@ -86,7 +87,7 @@ class EntityRelationships extends StatelessWidget {
   }
 
   /// Helper function to get a display title for an entity
-  String _getEntityTitle(Entity entity) {
+  String _getEntityTitle(ednet.Entity entity) {
     if (entity.getAttribute('firstName') != null) {
       if (entity.getAttribute('lastName') != null) {
         return '${entity.getAttribute('firstName')} ${entity.getAttribute('lastName')}';

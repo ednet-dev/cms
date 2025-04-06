@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ednet_one/presentation/pages/bookmarks_page.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_event.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_state.dart';
@@ -45,6 +46,15 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       automaticallyImplyLeading: showMenuButton,
       actions: [
+        // Bookmarks button
+        Tooltip(
+          message: 'Bookmarks',
+          child: IconButton(
+            icon: const Icon(Icons.bookmarks),
+            onPressed: () => _navigateToBookmarks(context),
+          ),
+        ),
+
         // Theme selector dropdown
         _ThemeDropdown(),
 
@@ -88,6 +98,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
       ],
     );
+  }
+
+  /// Navigate to the bookmarks page
+  void _navigateToBookmarks(BuildContext context) {
+    Navigator.of(context).pushNamed(BookmarksPage.routeName);
   }
 
   void _toggleTheme(BuildContext context) {

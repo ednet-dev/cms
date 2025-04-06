@@ -1,12 +1,12 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:ednet_one/presentation/widgets/layout/graph/domain/domain_model_graph.dart';
 
 class DomainState {
-  final Domain? selectedDomain;
-  final Model? selectedModel;
-  final Entities? selectedEntries;
-  final Entities? selectedEntities;
-  final Concept? selectedConcept;
+  final ednet.Domain? selectedDomain;
+  final ednet.Model? selectedModel;
+  final ednet.Entities? selectedEntries;
+  final ednet.Entities? selectedEntities;
+  final ednet.Concept? selectedConcept;
   final DomainModelGraph? domainModelGraph;
 
   DomainState({
@@ -28,11 +28,11 @@ class DomainState {
   );
 
   DomainState copyWith({
-    Domain? selectedDomain,
-    Model? selectedModel,
-    Entities? selectedEntries,
-    Entities? selectedEntities,
-    Concept? selectedConcept,
+    ednet.Domain? selectedDomain,
+    ednet.Model? selectedModel,
+    ednet.Entities? selectedEntries,
+    ednet.Entities? selectedEntities,
+    ednet.Concept? selectedConcept,
     DomainModelGraph? domainModelGraph,
   }) {
     return DomainState(

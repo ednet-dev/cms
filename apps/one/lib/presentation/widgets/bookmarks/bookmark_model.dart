@@ -1,4 +1,4 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 
 /// Enhanced Bookmark class with additional metadata
@@ -25,13 +25,13 @@ class Bookmark {
   final String? description;
 
   /// Optional domain information
-  final Domain? domain;
+  final ednet.Domain? domain;
 
   /// Optional model information
-  final Model? model;
+  final ednet.Model? model;
 
   /// Optional concept information
-  final Concept? concept;
+  final ednet.Concept? concept;
 
   /// Optional entity information
   final dynamic entity;
