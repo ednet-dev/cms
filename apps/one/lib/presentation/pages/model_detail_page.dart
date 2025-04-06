@@ -12,6 +12,7 @@ import '../widgets/bookmarks/bookmark_manager.dart';
 import '../widgets/semantic_concept_container.dart';
 import '../theme/providers/theme_provider.dart';
 import '../domain/domain_model_provider.dart';
+import '../theme/extensions/theme_spacing.dart';
 
 /// Model detail page displaying concepts from a specific model
 ///
@@ -92,46 +93,75 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
             onBookmark: () {},
           ),
         ),
-        body: SemanticConceptContainer(
-          conceptType: 'EntityList',
-          fillHeight: true,
-          scrollable: true,
-          scrollController: _entityListScrollController,
-          child: EntitiesWidget(
-            entities: widget.model.concepts,
-            onEntitySelected: (entity) {
-              widget.onEntitySelected(entity);
-
-              // Use the existing EntityDetailScreen for now
-              // We'll migrate this in a future iteration
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EntityDetailScreen(entity: entity),
+        body: SafeArea(
+          child: Scrollbar(
+            controller: _entityListScrollController,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              controller: _entityListScrollController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight:
+                      MediaQuery.of(context).size.height -
+                      kToolbarHeight -
+                      MediaQuery.of(context).padding.vertical,
                 ),
-              );
-            },
-            bookmarkManager: bookmarkManager,
-            onBookmarkCreated: (bookmark) async {
-              await bookmarkManager.addBookmark(bookmark);
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Bookmark added',
-                      style: context.conceptTextStyle(
-                        'Success',
-                        role: 'message',
-                      ),
-                    ),
-                    backgroundColor: context
-                        .conceptColor('Success')
-                        .withOpacity(0.2),
-                    duration: const Duration(seconds: 2),
+                child: SemanticConceptContainer(
+                  conceptType: 'EntityList',
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.spacingM,
+                    vertical: context.spacingS,
                   ),
-                );
-              }
-            },
+                  child: EntitiesWidget(
+                    entities: widget.model.concepts,
+                    scrollTogetherController: _entityListScrollController,
+                    onEntitySelected: (entity) {
+                      widget.onEntitySelected(entity);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => EntityDetailScreen(entity: entity),
+                        ),
+                      );
+                    },
+                    bookmarkManager: bookmarkManager,
+                    onBookmarkCreated: (bookmark) async {
+                      await bookmarkManager.addBookmark(bookmark);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            margin: EdgeInsets.all(context.spacingM),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                context.spacingXs,
+                              ),
+                            ),
+                            content: Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: context.spacingXs,
+                              ),
+                              child: Text(
+                                'Bookmark added',
+                                style: context.conceptTextStyle(
+                                  'Success',
+                                  role: 'message',
+                                ),
+                              ),
+                            ),
+                            backgroundColor: context
+                                .conceptColor('Success')
+                                .withOpacity(0.2),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

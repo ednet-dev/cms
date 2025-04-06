@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 import 'entity_actions.dart';
 import 'entity_header.dart';
 import 'relationship_navigator.dart';
+import '../semantic_concept_container.dart';
+import '../../theme/providers/theme_provider.dart';
+import '../../domain/domain_model_provider.dart';
 
 /// A utility class for extracting entity titles from an Entity
 class EntityTitleUtils {
@@ -61,24 +64,20 @@ class EntityDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
           entity.getStringFromAttribute('name') ?? 'Entity Detail',
-          style: theme.textTheme.titleLarge?.copyWith(
-            color: colorScheme.primary,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.15,
-          ),
+          style: context.conceptTextStyle('EntityDetail', role: 'title'),
         ),
-        backgroundColor: colorScheme.surface,
-        iconTheme: IconThemeData(color: colorScheme.primary, size: 24),
+        backgroundColor: context.conceptColor('Surface'),
+        iconTheme: IconThemeData(
+          color: context.conceptColor('Primary'),
+          size: 24,
+        ),
         elevation: 0,
         systemOverlayStyle:
-            theme.brightness == Brightness.dark
+            Theme.of(context).brightness == Brightness.dark
                 ? SystemUiOverlayStyle.light
                 : SystemUiOverlayStyle.dark,
       ),
@@ -131,17 +130,15 @@ class EntityWidget extends StatelessWidget {
 
   // Get status color based on entity state
   Color _getStatusColor(BuildContext context, EntityStatus status) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     switch (status) {
       case EntityStatus.newlyCreated:
-        return Colors.green;
+        return context.conceptColor('Success');
       case EntityStatus.modified:
-        return Colors.amber;
+        return context.conceptColor('Warning');
       case EntityStatus.deleted:
-        return Colors.red;
+        return context.conceptColor('Error');
       case EntityStatus.stable:
-        return colorScheme.primary;
+        return context.conceptColor('Primary');
     }
   }
 
@@ -177,8 +174,6 @@ class EntityWidget extends StatelessWidget {
       );
     }
 
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final mediaQuery = MediaQuery.of(context);
     final isSmallScreen = mediaQuery.size.width < 600;
     final status = _determineStatus();
@@ -207,266 +202,283 @@ class EntityWidget extends StatelessWidget {
       // Just continue if we can't access attributes
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Card(
-          clipBehavior: Clip.antiAlias,
-          margin: EdgeInsets.symmetric(
-            horizontal: isSmallScreen ? 8.0 : 16.0,
-            vertical: 8.0,
-          ),
-          elevation: 2, // Slightly more elevation for better depth perception
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(
-              color: statusColor.withValues(alpha: 255.0 * 0.6),
-              width: 1.5,
+    // Get the semantic concept type for the entity
+    final conceptType = context.conceptTypeForEntity(entity);
+
+    return SemanticConceptContainer(
+      conceptType: conceptType,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Card(
+            clipBehavior: Clip.antiAlias,
+            margin: EdgeInsets.symmetric(
+              horizontal: isSmallScreen ? 8.0 : 16.0,
+              vertical: 8.0,
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with concept type and status indicator
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 12.0, // Increased for better touch target
-                ),
-                color: statusColor.withValues(alpha: 255.0 * 0.1),
-                child: Row(
-                  children: [
-                    Icon(
-                      _getIconForEntityType(_getConceptCodeSafely(entity)),
-                      size: 20,
-                      color: statusColor,
-                      semanticLabel: "Entity type",
+            elevation: 2, // Slightly more elevation for better depth perception
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: statusColor.withOpacity(0.6), width: 1.5),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header with concept type and status indicator
+                SemanticConceptContainer(
+                  conceptType: 'EntityHeader',
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0, // Increased for better touch target
                     ),
-                    const SizedBox(width: 12), // Increased for better spacing
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Text(
-                            _getConceptCodeSafely(entity),
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: statusColor,
-                              fontWeight: FontWeight.w500,
-                            ),
+                    color: statusColor.withOpacity(0.1),
+                    child: Row(
+                      children: [
+                        Icon(
+                          context.conceptIcon(conceptType),
+                          size: 20,
+                          color: statusColor,
+                          semanticLabel: "Entity type",
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ), // Increased for better spacing
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                _getConceptCodeSafely(entity),
+                                style: context.conceptTextStyle(
+                                  conceptType,
+                                  role: 'title',
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: statusColor.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  _getStatusText(status),
+                                  style: context.conceptTextStyle(
+                                    conceptType,
+                                    role: 'label',
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusColor.withValues(alpha: 255.0 * 0.2),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              _getStatusText(status),
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: statusColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                        ),
+                        // Actions in the header for quick access
+                        if (onSave != null ||
+                            onExport != null ||
+                            onDelete != null)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (onSave != null)
+                                IconButton(
+                                  icon: const Icon(Icons.save, size: 20),
+                                  tooltip: 'Save',
+                                  onPressed: onSave,
+                                  color: statusColor,
+                                  constraints: const BoxConstraints(
+                                    minWidth: 40,
+                                    minHeight: 40,
+                                  ),
+                                ),
+                              if (onExport != null)
+                                IconButton(
+                                  icon: const Icon(Icons.share, size: 20),
+                                  tooltip: 'Export',
+                                  onPressed: onExport,
+                                  color: statusColor,
+                                  constraints: const BoxConstraints(
+                                    minWidth: 40,
+                                    minHeight: 40,
+                                  ),
+                                ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    // Actions in the header for quick access
-                    if (onSave != null || onExport != null || onDelete != null)
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (onSave != null)
-                            IconButton(
-                              icon: const Icon(Icons.save, size: 20),
-                              tooltip: 'Save',
-                              onPressed: onSave,
-                              color: statusColor,
-                              constraints: const BoxConstraints(
-                                minWidth: 40,
-                                minHeight: 40,
-                              ),
-                            ),
-                          if (onExport != null)
-                            IconButton(
-                              icon: const Icon(Icons.share, size: 20),
-                              tooltip: 'Export',
-                              onPressed: onExport,
-                              color: statusColor,
-                              constraints: const BoxConstraints(
-                                minWidth: 40,
-                                minHeight: 40,
-                              ),
-                            ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-
-              if (status == EntityStatus.deleted)
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  color: Colors.red.withValues(alpha: 255.0 * 0.1),
-                  child: Text(
-                    'This entity has been deleted ${_formatDate(entity.whenRemoved)}',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.red,
-                      fontStyle: FontStyle.italic,
+                      ],
                     ),
                   ),
                 ),
 
-              // Lifecycle indicators
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4.0,
-                ),
-                child: Wrap(
-                  spacing: 8,
-                  children: [
-                    if (entity.whenAdded != null)
-                      _buildLifecycleChip(
-                        context,
-                        'Created',
-                        _formatDate(entity.whenAdded),
-                        Icons.add_circle_outline,
-                        Colors.green,
+                if (status == EntityStatus.deleted)
+                  SemanticConceptContainer(
+                    conceptType: 'Warning',
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      color: context.conceptColor('Error').withOpacity(0.1),
+                      child: Text(
+                        'This entity has been deleted ${_formatDate(entity.whenRemoved)}',
+                        textAlign: TextAlign.center,
+                        style: context.conceptTextStyle(
+                          'Error',
+                          role: 'message',
+                        ),
                       ),
-                    if (entity.whenSet != null)
-                      _buildLifecycleChip(
-                        context,
-                        'Modified',
-                        _formatDate(entity.whenSet),
-                        Icons.edit_outlined,
-                        Colors.amber,
-                      ),
-                  ],
-                ),
-              ),
-
-              // Main content with responsive padding
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isSmallScreen ? 12.0 : 20.0,
-                    vertical: 16.0,
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                // Lifecycle indicators
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 4.0,
+                  ),
+                  child: Wrap(
+                    spacing: 8,
                     children: [
-                      // Entity Header with title and metadata
-                      Semantics(
-                        header: true,
-                        child: EntityHeader(entity: entity),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // Identifier attributes section if available
-                      if (identifierAttributes.isNotEmpty)
-                        _buildAttributeSection(
+                      if (entity.whenAdded != null)
+                        _buildLifecycleChip(
                           context,
-                          'Identifiers',
-                          identifierAttributes,
-                          Icons.fingerprint,
-                          colorScheme.primary,
+                          'Created',
+                          _formatDate(entity.whenAdded),
+                          Icons.add_circle_outline,
+                          context.conceptColor('Success'),
                         ),
-
-                      // Required attributes section if available
-                      if (requiredAttributes.isNotEmpty)
-                        _buildAttributeSection(
+                      if (entity.whenSet != null)
+                        _buildLifecycleChip(
                           context,
-                          'Required Fields',
-                          requiredAttributes,
-                          Icons.star_outline,
-                          colorScheme.secondary,
+                          'Modified',
+                          _formatDate(entity.whenSet),
+                          Icons.edit_outlined,
+                          context.conceptColor('Warning'),
                         ),
-
-                      // Standard attributes section
-                      if (standardAttributes.isNotEmpty)
-                        _buildAttributeSection(
-                          context,
-                          'Properties',
-                          standardAttributes,
-                          Icons.list_alt,
-                          colorScheme.tertiary,
-                        ),
-
-                      // Calculated attributes section if available
-                      if (calculatedAttributes.isNotEmpty)
-                        _buildAttributeSection(
-                          context,
-                          'Calculated Fields',
-                          calculatedAttributes,
-                          Icons.calculate_outlined,
-                          colorScheme.error,
-                        ),
-
-                      // Relationship Navigator component - NEW
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 16.0, top: 8.0),
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: colorScheme.secondary.withValues(
-                              alpha: 255.0 * 0.3,
-                            ),
-                            width: 1,
-                          ),
-                        ),
-                        child: RelationshipNavigator(
-                          currentEntity: entity,
-                          onEntitySelected: onEntitySelected ?? (entity) {},
-                        ),
-                      ),
                     ],
                   ),
                 ),
-              ),
 
-              // Bottom action bar with improved accessibility
-              if (onDelete != null ||
-                  onSave != null ||
-                  onExport != null ||
-                  onBookmark != null)
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest,
-                    border: Border(
-                      top: BorderSide(
-                        color: colorScheme.outlineVariant.withValues(
-                          alpha: 255.0 * 0.3,
-                        ),
-                        width: 1,
+                // Main content with scrolling
+                Expanded(
+                  child: SemanticConceptContainer(
+                    conceptType: 'EntityContent',
+                    fillHeight: true,
+                    scrollable: true,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isSmallScreen ? 12.0 : 20.0,
+                        vertical: 16.0,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Entity Header with title and metadata
+                          Semantics(
+                            header: true,
+                            child: EntityHeader(entity: entity),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Identifier attributes section if available
+                          if (identifierAttributes.isNotEmpty)
+                            _buildAttributeSection(
+                              context,
+                              'Identifiers',
+                              identifierAttributes,
+                              Icons.fingerprint,
+                              context.conceptColor('Identifier'),
+                            ),
+
+                          // Required attributes section if available
+                          if (requiredAttributes.isNotEmpty)
+                            _buildAttributeSection(
+                              context,
+                              'Required Fields',
+                              requiredAttributes,
+                              Icons.star_outline,
+                              context.conceptColor('Required'),
+                            ),
+
+                          // Standard attributes section
+                          if (standardAttributes.isNotEmpty)
+                            _buildAttributeSection(
+                              context,
+                              'Properties',
+                              standardAttributes,
+                              Icons.list_alt,
+                              context.conceptColor('Attribute'),
+                            ),
+
+                          // Calculated attributes section if available
+                          if (calculatedAttributes.isNotEmpty)
+                            _buildAttributeSection(
+                              context,
+                              'Calculated Fields',
+                              calculatedAttributes,
+                              Icons.calculate_outlined,
+                              context.conceptColor('Calculated'),
+                            ),
+
+                          // Relationship Navigator component
+                          SemanticConceptContainer(
+                            conceptType: 'Relationship',
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                bottom: 16.0,
+                                top: 8.0,
+                              ),
+                              child: RelationshipNavigator(
+                                currentEntity: entity,
+                                onEntitySelected:
+                                    onEntitySelected ?? (entity) {},
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: isSmallScreen ? 8.0 : 12.0,
-                  ),
-                  child: EntityActions(
-                    entity: entity,
-                    onDelete: onDelete,
-                    onSave: onSave,
-                    onExport: onExport,
-                    onBookmark: onBookmark,
-                  ),
                 ),
-            ],
-          ),
-        );
-      },
+
+                // Bottom action bar with improved accessibility
+                if (onDelete != null ||
+                    onSave != null ||
+                    onExport != null ||
+                    onBookmark != null)
+                  SemanticConceptContainer(
+                    conceptType: 'Actions',
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: context.conceptColor('Surface'),
+                        border: Border(
+                          top: BorderSide(
+                            color: context
+                                .conceptColor('Border')
+                                .withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: isSmallScreen ? 8.0 : 12.0,
+                      ),
+                      child: EntityActions(
+                        entity: entity,
+                        onDelete: onDelete,
+                        onSave: onSave,
+                        onExport: onExport,
+                        onBookmark: onBookmark,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -478,8 +490,8 @@ class EntityWidget extends StatelessWidget {
     Color color,
   ) {
     return Chip(
-      backgroundColor: color.withValues(alpha: 255.0 * 0.1),
-      side: BorderSide(color: color.withValues(alpha: 255.0 * 0.3), width: 1),
+      backgroundColor: color.withOpacity(0.1),
+      side: BorderSide(color: color.withOpacity(0.3), width: 1),
       labelPadding: const EdgeInsets.symmetric(horizontal: 4),
       avatar: Icon(icon, size: 16, color: color),
       label: RichText(
@@ -489,7 +501,7 @@ class EntityWidget extends StatelessWidget {
               text: '$label: ',
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: context.conceptColor('OnSurface'),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -497,9 +509,7 @@ class EntityWidget extends StatelessWidget {
               text: date,
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
+                color: context.conceptColor('OnSurface').withOpacity(0.7),
               ),
             ),
           ],
@@ -535,50 +545,47 @@ class EntityWidget extends StatelessWidget {
     IconData icon,
     Color color,
   ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 24.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: color.withValues(alpha: 255.0 * 0.3),
-          width: 1,
+    return SemanticConceptContainer(
+      conceptType: 'AttributeSection',
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 24.0),
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: context.conceptColor('Surface'),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color.withOpacity(0.3), width: 1),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: Row(
-              children: [
-                Icon(icon, size: 20, color: color),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: color,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: Row(
+                children: [
+                  Icon(icon, size: 20, color: color),
+                  const SizedBox(width: 8),
+                  Text(
+                    title,
+                    style: context.conceptTextStyle(
+                      'AttributeSection',
+                      role: 'title',
+                    ),
                   ),
-                ),
+                ],
+              ),
+            ),
+
+            // Attribute cards
+            SemanticFlowContainer(
+              spacing: 16.0,
+              runSpacing: 16.0,
+              children: [
+                for (var attribute in attributes)
+                  _buildAttributeCard(context, attribute, color),
               ],
             ),
-          ),
-
-          // Attribute cards
-          Wrap(
-            spacing: 16.0,
-            runSpacing: 16.0,
-            children: [
-              for (var attribute in attributes)
-                _buildAttributeCard(context, attribute, color),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -589,64 +596,66 @@ class EntityWidget extends StatelessWidget {
     ednet.Attribute attribute,
     Color accentColor,
   ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final value = entity.getAttribute(attribute.code);
     final displayValue = value != null ? value.toString() : 'Not set';
     final isSensitive = entity.concept.isAttributeSensitive(attribute.code);
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minWidth: 150, maxWidth: 300),
-      child: Card(
-        elevation: 0,
-        color: colorScheme.surfaceContainerLow,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            color: accentColor.withValues(alpha: 255.0 * 0.2),
-            width: 0.5,
+    return SemanticConceptContainer(
+      conceptType: 'Attribute',
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 150, maxWidth: 300),
+        child: Card(
+          elevation: 0,
+          color: context.conceptColor('SurfaceContainer'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(color: accentColor.withOpacity(0.2), width: 0.5),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Attribute name
-              Row(
-                children: [
-                  Icon(
-                    _getIconForAttributeType(attribute.type?.code),
-                    size: 16,
-                    color: accentColor,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      attribute.code,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurfaceVariant,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Attribute name
+                Row(
+                  children: [
+                    Icon(
+                      _getIconForAttributeType(attribute.type?.code),
+                      size: 16,
+                      color: accentColor,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        attribute.code,
+                        style: context.conceptTextStyle(
+                          'Attribute',
+                          role: 'name',
+                        ),
                       ),
                     ),
-                  ),
-                  if (attribute.required)
-                    Icon(Icons.star, size: 14, color: Colors.amber),
-                ],
-              ),
+                    if (attribute.required)
+                      Icon(
+                        Icons.star,
+                        size: 14,
+                        color: context.conceptColor('Required'),
+                      ),
+                  ],
+                ),
 
-              const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-              // Attribute value with better handling of different types
-              isSensitive
-                  ? _buildSensitiveValue(context)
-                  : _buildAttributeValue(
-                    context,
-                    attribute,
-                    value,
-                    displayValue,
-                  ),
-            ],
+                // Attribute value with better handling of different types
+                isSensitive
+                    ? _buildSensitiveValue(context)
+                    : _buildAttributeValue(
+                      context,
+                      attribute,
+                      value,
+                      displayValue,
+                    ),
+              ],
+            ),
           ),
         ),
       ),
@@ -664,9 +673,7 @@ class EntityWidget extends StatelessWidget {
           style: TextStyle(
             letterSpacing: 2,
             fontFamily: 'monospace',
-            color: Theme.of(
-              context,
-            ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
+            color: context.conceptColor('OnSurface').withOpacity(0.6),
           ),
         ),
       ],
@@ -680,16 +687,11 @@ class EntityWidget extends StatelessWidget {
     dynamic value,
     String displayValue,
   ) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     // Handle null values consistently
     if (value == null) {
       return Text(
         'Not set',
-        style: TextStyle(
-          fontStyle: FontStyle.italic,
-          color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.5),
-        ),
+        style: context.conceptTextStyle('Attribute', role: 'empty'),
       );
     }
 
@@ -701,15 +703,13 @@ class EntityWidget extends StatelessWidget {
           Icon(
             value == true ? Icons.check_box : Icons.check_box_outline_blank,
             size: 18,
-            color: value == true ? Colors.green : Colors.grey,
+            color:
+                value == true ? context.conceptColor('Success') : Colors.grey,
           ),
           const SizedBox(width: 8),
           Text(
             value.toString(),
-            style: TextStyle(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.w500,
-            ),
+            style: context.conceptTextStyle('Attribute', role: 'value'),
           ),
         ],
       );
@@ -718,7 +718,7 @@ class EntityWidget extends StatelessWidget {
       final dateTime = value as DateTime;
       return Text(
         '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}',
-        style: TextStyle(color: colorScheme.onSurface),
+        style: context.conceptTextStyle('Attribute', role: 'datetime'),
       );
     } else if (attribute.type?.code == 'int' ||
         attribute.type?.code == 'double' ||
@@ -726,22 +726,19 @@ class EntityWidget extends StatelessWidget {
       // Right-align numbers
       return Text(
         displayValue,
-        style: TextStyle(fontFamily: 'monospace', color: colorScheme.onSurface),
+        style: context.conceptTextStyle('Attribute', role: 'numeric'),
         textAlign: TextAlign.right,
       );
     } else if (attribute.type?.code == 'Uri') {
       // Clickable link for URI
       return Row(
         children: [
-          Icon(Icons.link, size: 14, color: Colors.blue),
+          Icon(Icons.link, size: 14, color: context.conceptColor('Link')),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               displayValue,
-              style: TextStyle(
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
-              ),
+              style: context.conceptTextStyle('Attribute', role: 'link'),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -751,69 +748,60 @@ class EntityWidget extends StatelessWidget {
       // Default selectable text for other types
       return SelectableText(
         displayValue,
-        style: TextStyle(color: colorScheme.onSurface),
+        style: context.conceptTextStyle('Attribute', role: 'value'),
       );
     }
   }
 
   /// Helper method to build an error display
   Widget _buildErrorDisplay(BuildContext context, String message) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Card(
-      margin: const EdgeInsets.all(16),
-      color: colorScheme.errorContainer,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: colorScheme.error,
-              size: 48,
-              semanticLabel: "Error",
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "Entity Error",
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: colorScheme.error,
-                fontWeight: FontWeight.bold,
+    return SemanticConceptContainer(
+      conceptType: 'Error',
+      child: Card(
+        margin: const EdgeInsets.all(16),
+        color: context.conceptColor('ErrorContainer'),
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: context.conceptColor('Error'),
+                size: 48,
+                semanticLabel: "Error",
               ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              message,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onErrorContainer,
+              const SizedBox(height: 16),
+              Text(
+                "Entity Error",
+                style: context.conceptTextStyle('Error', role: 'title'),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              "This may be caused by data model changes or initialization issues.",
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onErrorContainer.withValues(
-                  alpha: 255.0 * 0.8,
+              const SizedBox(height: 12),
+              Text(
+                message,
+                style: context.conceptTextStyle('Error', role: 'message'),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "This may be caused by data model changes or initialization issues.",
+                style: context.conceptTextStyle('Error', role: 'description'),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.conceptColor('Primary'),
+                  foregroundColor: context.conceptColor('OnPrimary'),
+                  minimumSize: const Size(120, 48),
                 ),
+                child: const Text("Go Back"),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                minimumSize: const Size(120, 48),
-              ),
-              child: const Text("Go Back"),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

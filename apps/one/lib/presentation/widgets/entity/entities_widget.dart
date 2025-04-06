@@ -7,6 +7,10 @@ import '../filters/filter_criteria.dart' as filters;
 import '../bookmarks/bookmark_manager.dart';
 import '../bookmarks/bookmark_model.dart';
 import 'entity_collection_view.dart';
+import '../semantic_concept_container.dart';
+import '../../theme/providers/theme_provider.dart';
+import '../../domain/domain_model_provider.dart';
+import '../../theme/extensions/theme_spacing.dart';
 
 /// Widget for displaying a collection of entities
 class EntitiesWidget extends StatefulWidget {
@@ -22,6 +26,9 @@ class EntitiesWidget extends StatefulWidget {
   /// Optional callback when a bookmark is created
   final void Function(Bookmark bookmark)? onBookmarkCreated;
 
+  /// Optional external ScrollController for coordinated scrolling
+  final ScrollController? scrollTogetherController;
+
   /// Constructor for EntitiesWidget
   const EntitiesWidget({
     super.key,
@@ -29,6 +36,7 @@ class EntitiesWidget extends StatefulWidget {
     this.onEntitySelected,
     this.bookmarkManager,
     this.onBookmarkCreated,
+    this.scrollTogetherController,
   });
 
   @override
@@ -44,11 +52,26 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
   // List of filterable attributes
   late List<String> _filterableAttributes;
 
+  // ScrollController for this widget - might be provided externally
+  late final ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
     _currentViewMode = ViewMode.cards;
     _initFilterAttributes();
+
+    // Use the provided controller or create our own
+    _scrollController = widget.scrollTogetherController ?? ScrollController();
+  }
+
+  @override
+  void dispose() {
+    // Only dispose the controller if we created it ourselves
+    if (widget.scrollTogetherController == null) {
+      _scrollController.dispose();
+    }
+    super.dispose();
   }
 
   /// Initialize filterable attributes based on the entities
@@ -306,101 +329,129 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // Get the concept type for the entities based on their first item if available
+    String conceptType = 'EntityCollection';
+    if (widget.entities.isNotEmpty) {
+      try {
+        // Try to get a more specific concept type from the first entity
+        final entity = widget.entities.first;
+        conceptType = entity.concept.code;
+      } catch (e) {
+        // If we can't get the concept type, use the default
+      }
+    }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
-          children: [
-            // Search and Filter bar
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  // Search field
-                  Expanded(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxHeight: 48),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Search entities...',
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: theme.colorScheme.outline,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: theme.colorScheme.surfaceContainerLowest,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            _searchQuery = value;
-                          });
-                        },
+    // Check if we're using an external controller
+    final bool usingExternalController =
+        widget.scrollTogetherController != null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Search and Filter bar (always fixed)
+        SemanticConceptContainer(
+          conceptType: 'SearchBar',
+          applySemanticPadding: true,
+          child: Row(
+            children: [
+              // Search field
+              Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search entities...',
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: context.conceptColor('Icon'),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(context.spacingS),
+                      borderSide: BorderSide(
+                        color: context.conceptColor('Border'),
                       ),
                     ),
-                  ),
-
-                  // Filter button
-                  const SizedBox(width: 8),
-                  FilterButton(
-                    availableFields: _filterableAttributes,
-                    fieldTypes: _attributeTypes,
-                    onFilterApplied: (filter) {
-                      // This will trigger a rebuild through the provider
-                      Provider.of<FilterManager>(
-                        context,
-                        listen: false,
-                      ).setActiveFilter(filter);
-                    },
-                  ),
-
-                  // View mode toggle
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: Icon(
-                      _currentViewMode == ViewMode.cards
-                          ? Icons.view_list
-                          : Icons.grid_view,
+                    filled: true,
+                    fillColor: context.conceptColor('SurfaceContainerLowest'),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: context.spacingM,
+                      vertical: context.spacingS + context.spacingXs,
                     ),
-                    tooltip: 'Toggle view mode',
-                    onPressed: () {
-                      setState(() {
-                        _currentViewMode =
-                            _currentViewMode == ViewMode.cards
-                                ? ViewMode.table
-                                : ViewMode.cards;
-                      });
-                    },
                   ),
-                ],
-              ),
-            ),
-
-            // Entity collection view with constrained height
-            Expanded(
-              child: SizedBox(
-                height:
-                    constraints.maxHeight -
-                    80, // Account for the search bar height
-                child: EntityCollectionView(
-                  entities: widget.entities,
-                  viewMode: _currentViewMode,
-                  onEntitySelected: widget.onEntitySelected,
-                  filter: _filterEntity,
-                  groupBy: _groupByConceptCode,
+                  style: context.conceptTextStyle('Input', role: 'text'),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
                 ),
               ),
-            ),
-          ],
-        );
-      },
+
+              // Filter button
+              SizedBox(width: context.spacingS),
+              FilterButton(
+                availableFields: _filterableAttributes,
+                fieldTypes: _attributeTypes,
+                onFilterApplied: (filter) {
+                  Provider.of<FilterManager>(
+                    context,
+                    listen: false,
+                  ).setActiveFilter(filter);
+                },
+              ),
+
+              // View mode toggle
+              SizedBox(width: context.spacingS),
+              IconButton(
+                icon: Icon(
+                  _currentViewMode == ViewMode.cards
+                      ? Icons.view_list
+                      : Icons.grid_view,
+                  color: context.conceptColor('Icon'),
+                ),
+                tooltip: 'Toggle view mode',
+                onPressed: () {
+                  setState(() {
+                    _currentViewMode =
+                        _currentViewMode == ViewMode.cards
+                            ? ViewMode.table
+                            : ViewMode.cards;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+
+        // Entity collection - conditionally scrollable
+        Expanded(
+          child: SemanticConceptContainer(
+            conceptType: conceptType,
+            child:
+                usingExternalController
+                    // When using external controller, don't create additional scrollable areas
+                    ? EntityCollectionView(
+                      entities: widget.entities,
+                      viewMode: _currentViewMode,
+                      onEntitySelected: widget.onEntitySelected,
+                      filter: _filterEntity,
+                      groupBy: _groupByConceptCode,
+                      // Pass the shared controller down
+                      scrollController: _scrollController,
+                      // Disable scrolling at this level when using external controller
+                      disableScrolling: true,
+                    )
+                    // When using own controller, allow scrolling at this level
+                    : EntityCollectionView(
+                      entities: widget.entities,
+                      viewMode: _currentViewMode,
+                      onEntitySelected: widget.onEntitySelected,
+                      filter: _filterEntity,
+                      groupBy: _groupByConceptCode,
+                      scrollController: _scrollController,
+                    ),
+          ),
+        ),
+      ],
     );
   }
 }
