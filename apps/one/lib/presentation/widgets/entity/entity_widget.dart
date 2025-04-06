@@ -58,9 +58,20 @@ class EntityDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(entity.getStringFromAttribute('name') ?? 'Entity Detail'),
+        title: Text(
+          entity.getStringFromAttribute('name') ?? 'Entity Detail',
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: colorScheme.primary,
+          ),
+        ),
+        backgroundColor: colorScheme.surface,
+        iconTheme: IconThemeData(color: colorScheme.primary),
+        elevation: 0,
       ),
       body: EntityWidget(entity: entity),
     );
@@ -112,35 +123,137 @@ class EntityWidget extends StatelessWidget {
       );
     }
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Card(
       margin: const EdgeInsets.all(16.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            // Header with entity title and metadata
-            EntityHeader(entity: entity),
-
-            // Actions (save, delete, etc.)
-            EntityActions(
-              entity: entity,
-              onDelete: onDelete,
-              onSave: onSave,
-              onExport: onExport,
-              onBookmark: onBookmark,
-            ),
-
-            // Attributes section
-            EntityAttributes(entity: entity, sectionTitle: 'Attributes'),
-
-            // Relationships section (parents and children)
-            EntityRelationships(
-              entity: entity,
-              onEntitySelected: onEntitySelected,
-            ),
-          ],
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withOpacity(0.2),
+          width: 1,
         ),
       ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Add a colored header bar with the entity type
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: 16.0,
+            ),
+            color: colorScheme.primaryContainer.withOpacity(0.7),
+            child: Row(
+              children: [
+                Icon(
+                  _getIconForEntityType(entity.concept.code),
+                  color: colorScheme.onPrimaryContainer,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  entity.concept.code,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(16.0),
+              children: [
+                // Header with entity title and metadata
+                EntityHeader(entity: entity),
+
+                // Actions (save, delete, etc.)
+                EntityActions(
+                  entity: entity,
+                  onDelete: onDelete,
+                  onSave: onSave,
+                  onExport: onExport,
+                  onBookmark: onBookmark,
+                ),
+
+                // Attributes section with improved styling
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 16.0),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: colorScheme.outlineVariant.withOpacity(0.2),
+                    ),
+                  ),
+                  child: EntityAttributes(
+                    entity: entity,
+                    sectionTitle: 'Attributes',
+                  ),
+                ),
+
+                // Relationships section with improved styling
+                Container(
+                  margin: const EdgeInsets.only(bottom: 16.0),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: colorScheme.outlineVariant.withOpacity(0.2),
+                    ),
+                  ),
+                  child: EntityRelationships(
+                    entity: entity,
+                    onEntitySelected: onEntitySelected,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  /// Helper method to get an appropriate icon based on entity type
+  IconData _getIconForEntityType(String type) {
+    // Map common entity types to appropriate icons
+    switch (type.toLowerCase()) {
+      case 'user':
+      case 'person':
+      case 'customer':
+      case 'employee':
+        return Icons.person;
+      case 'product':
+      case 'item':
+        return Icons.shopping_bag;
+      case 'project':
+      case 'task':
+        return Icons.assignment;
+      case 'document':
+      case 'file':
+        return Icons.description;
+      case 'message':
+      case 'comment':
+        return Icons.message;
+      case 'event':
+      case 'meeting':
+        return Icons.event;
+      case 'location':
+      case 'place':
+        return Icons.location_on;
+      case 'organization':
+      case 'company':
+        return Icons.business;
+      default:
+        return Icons.data_object;
+    }
   }
 }

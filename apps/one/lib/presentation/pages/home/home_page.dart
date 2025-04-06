@@ -1,6 +1,7 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // State management blocs
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
@@ -41,11 +42,29 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  static const String _drawerPinnedKey = 'drawer_pinned';
+
   bool _showMetaCanvas = false;
+  bool _isDrawerPinned = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    _loadDrawerState();
+  }
+
+  Future<void> _loadDrawerState() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isDrawerPinned = prefs.getBool(_drawerPinnedKey) ?? false;
+    });
+  }
+
+  void _handleDrawerPinStateChanged(bool isPinned) {
+    setState(() {
+      _isDrawerPinned = isPinned;
+    });
   }
 
   @override
@@ -89,39 +108,82 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Create a responsive layout that handles the pinned drawer
     return Scaffold(
+      key: _scaffoldKey,
       appBar: HomeAppBar(
         title: widget.title,
         isCanvasVisible: _showMetaCanvas,
         onShowDSL: () => _showDSLFromGraph(context),
         onToggleCanvas: _toggleCanvas,
         onGenerateCode: () => _generateAndDownloadCode(context),
+        // Only show menu button if drawer isn't pinned
+        showMenuButton: !_isDrawerPinned,
       ),
-      drawer: const HomeDrawer(),
-      body: BlocBuilder<DomainSelectionBloc, DomainSelectionState>(
-        builder: (context, domainState) {
-          return BlocBuilder<ModelSelectionBloc, ModelSelectionState>(
-            builder: (context, modelState) {
-              return BlocBuilder<ConceptSelectionBloc, ConceptSelectionState>(
-                builder: (context, conceptState) {
-                  // Show the meta domain canvas if enabled
-                  if (_showMetaCanvas) {
-                    return _buildMetaCanvas(domainState);
-                  }
+      // Use drawer or show permanently based on pin state
+      drawer: _isDrawerPinned ? null : _buildDrawer(),
+      // Adjust body layout based on drawer being pinned or not
+      body: Row(
+        children: [
+          // Show drawer permanently if pinned
+          if (_isDrawerPinned)
+            SizedBox(
+              width: 280, // Standard drawer width
+              child: _buildDrawer(),
+            ),
 
-                  // Otherwise show the standard layout with selectors and content
-                  return _buildStandardLayout(
-                    context,
-                    domainState,
-                    modelState,
-                    conceptState,
-                  );
-                },
-              );
-            },
-          );
-        },
+          // Main content area
+          Expanded(
+            child: BlocBuilder<DomainSelectionBloc, DomainSelectionState>(
+              builder: (context, domainState) {
+                return BlocBuilder<ModelSelectionBloc, ModelSelectionState>(
+                  builder: (context, modelState) {
+                    return BlocBuilder<
+                      ConceptSelectionBloc,
+                      ConceptSelectionState
+                    >(
+                      builder: (context, conceptState) {
+                        // Show the meta domain canvas if enabled
+                        if (_showMetaCanvas) {
+                          return _buildMetaCanvas(domainState);
+                        }
+
+                        // Otherwise show the standard layout with selectors and content
+                        return _buildStandardLayout(
+                          context,
+                          domainState,
+                          modelState,
+                          conceptState,
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  // Helper to build the drawer with consistent parameters
+  Widget _buildDrawer() {
+    return HomeDrawer(
+      isPinned: _isDrawerPinned,
+      onPinStateChanged: _handleDrawerPinStateChanged,
+      onSettings: () {
+        // Handle settings navigation
+      },
+      onDocs: () {
+        // Handle docs navigation
+      },
+      onHelp: () {
+        // Handle help navigation
+      },
+      onAbout: () {
+        // Handle about navigation
+      },
     );
   }
 
@@ -151,6 +213,8 @@ class HomePageState extends State<HomePage> {
   ) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading:
+            false, // Don't show back button in nested scaffold
         title: HeaderWidget(
           filters: const [],
           onAddFilter: (criteria) {

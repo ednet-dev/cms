@@ -7,7 +7,6 @@ import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selec
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
-import 'package:ednet_one/generated/one_application.dart';
 
 // Import the global instances from main.dart
 import 'package:ednet_one/main.dart'

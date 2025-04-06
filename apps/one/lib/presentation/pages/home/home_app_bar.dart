@@ -23,6 +23,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Current state of the canvas toggle
   final bool isCanvasVisible;
 
+  /// Whether to show the menu button
+  final bool showMenuButton;
+
   /// Constructor for HomeAppBar
   const HomeAppBar({
     super.key,
@@ -31,6 +34,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onToggleCanvas,
     this.onGenerateCode,
     this.isCanvasVisible = false,
+    this.showMenuButton = true,
   });
 
   @override
@@ -39,6 +43,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title),
       centerTitle: false,
       elevation: 0,
+      automaticallyImplyLeading: showMenuButton,
       actions: [
         // Theme selector dropdown
         _ThemeDropdown(),

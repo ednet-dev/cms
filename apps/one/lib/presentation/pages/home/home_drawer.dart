@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_state.dart';
+import 'package:ednet_one/presentation/theme/theme_components/custom_colors.dart';
 
 /// Component for the application's main navigation drawer
-class HomeDrawer extends StatelessWidget {
+class HomeDrawer extends StatefulWidget {
   /// Optional callback for when the settings option is pressed
   final VoidCallback? onSettings;
 
@@ -17,6 +19,12 @@ class HomeDrawer extends StatelessWidget {
   /// Optional callback for when the help option is pressed
   final VoidCallback? onHelp;
 
+  /// Optional callback for when the drawer pin state changes
+  final Function(bool isPinned)? onPinStateChanged;
+
+  /// Whether the drawer should be permanently shown (pinned)
+  final bool isPinned;
+
   /// Constructor for HomeDrawer
   const HomeDrawer({
     super.key,
@@ -24,15 +32,79 @@ class HomeDrawer extends StatelessWidget {
     this.onDocs,
     this.onAbout,
     this.onHelp,
+    this.onPinStateChanged,
+    this.isPinned = false,
   });
 
   @override
+  State<HomeDrawer> createState() => _HomeDrawerState();
+}
+
+class _HomeDrawerState extends State<HomeDrawer> {
+  static const _domainSectionExpandedKey = 'domain_section_expanded';
+  static const _drawerPinnedKey = 'drawer_pinned';
+
+  bool _isDomainSectionExpanded = true;
+  bool _isPinned = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isPinned = widget.isPinned;
+    _loadPreferences();
+  }
+
+  @override
+  void didUpdateWidget(HomeDrawer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isPinned != widget.isPinned) {
+      _isPinned = widget.isPinned;
+    }
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isDomainSectionExpanded =
+          prefs.getBool(_domainSectionExpandedKey) ?? true; // Default expanded
+      _isPinned =
+          prefs.getBool(_drawerPinnedKey) ??
+          false; // Use widget value as fallback
+    });
+  }
+
+  Future<void> _saveExpandedState(bool isExpanded) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_domainSectionExpandedKey, isExpanded);
+    setState(() {
+      _isDomainSectionExpanded = isExpanded;
+    });
+  }
+
+  Future<void> _togglePinState() async {
+    final newPinState = !_isPinned;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_drawerPinnedKey, newPinState);
+    setState(() {
+      _isPinned = newPinState;
+    });
+
+    if (widget.onPinStateChanged != null) {
+      widget.onPinStateChanged!(newPinState);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Drawer(
+      elevation: _isPinned ? 0 : 16, // Reduced elevation when pinned
       child: Column(
         children: [
-          // Header with logo and app info
-          _DrawerHeader(),
+          // Header with logo, app info, and pin option
+          _buildHeader(context),
 
           // Navigation options
           Expanded(
@@ -40,7 +112,10 @@ class HomeDrawer extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: [
                 // Domains section
-                _DomainSection(),
+                _DomainSection(
+                  isExpanded: _isDomainSectionExpanded,
+                  onExpansionChanged: _saveExpandedState,
+                ),
 
                 const Divider(),
 
@@ -49,48 +124,48 @@ class HomeDrawer extends StatelessWidget {
                   leading: const Icon(Icons.dashboard),
                   title: const Text('Dashboard'),
                   onTap: () {
-                    Navigator.pop(context);
+                    if (!_isPinned) Navigator.pop(context);
                     // Navigate to dashboard
                   },
                 ),
 
-                if (onSettings != null)
+                if (widget.onSettings != null)
                   ListTile(
                     leading: const Icon(Icons.settings),
                     title: const Text('Settings'),
                     onTap: () {
-                      Navigator.pop(context);
-                      onSettings!();
+                      if (!_isPinned) Navigator.pop(context);
+                      widget.onSettings!();
                     },
                   ),
 
-                if (onDocs != null)
+                if (widget.onDocs != null)
                   ListTile(
                     leading: const Icon(Icons.description),
                     title: const Text('Documentation'),
                     onTap: () {
-                      Navigator.pop(context);
-                      onDocs!();
+                      if (!_isPinned) Navigator.pop(context);
+                      widget.onDocs!();
                     },
                   ),
 
-                if (onHelp != null)
+                if (widget.onHelp != null)
                   ListTile(
                     leading: const Icon(Icons.help),
                     title: const Text('Help'),
                     onTap: () {
-                      Navigator.pop(context);
-                      onHelp!();
+                      if (!_isPinned) Navigator.pop(context);
+                      widget.onHelp!();
                     },
                   ),
 
-                if (onAbout != null)
+                if (widget.onAbout != null)
                   ListTile(
                     leading: const Icon(Icons.info),
                     title: const Text('About'),
                     onTap: () {
-                      Navigator.pop(context);
-                      onAbout!();
+                      if (!_isPinned) Navigator.pop(context);
+                      widget.onAbout!();
                     },
                   ),
               ],
@@ -98,54 +173,74 @@ class HomeDrawer extends StatelessWidget {
           ),
 
           // Footer with version info
-          const Padding(
-            padding: EdgeInsets.all(16.0),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Text(
               'EDNet One v1.0.0',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
+              style: TextStyle(
+                color: colorScheme.onSurface.withOpacity(0.5),
+                fontSize: 12,
+              ),
             ),
           ),
         ],
       ),
     );
   }
-}
 
-/// Header section for the drawer with the app logo and info
-class _DrawerHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildHeader(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return DrawerHeader(
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.zero,
+      decoration: BoxDecoration(color: colorScheme.primary),
+      child: Stack(
         children: [
-          CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onPrimary,
-            radius: 30,
-            child: Icon(
-              Icons.code,
-              color: Theme.of(context).colorScheme.primary,
-              size: 30,
+          // Main drawer header content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  backgroundColor: colorScheme.onPrimary,
+                  radius: 30,
+                  child: Icon(Icons.code, color: colorScheme.primary, size: 30),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'EDNet One',
+                  style: TextStyle(
+                    color: colorScheme.onPrimary,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Domain-Driven Design Platform',
+                  style: TextStyle(
+                    color: colorScheme.onPrimary.withOpacity(0.8),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            'EDNet One',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Domain-Driven Design Platform',
-            style: TextStyle(
-              color: Theme.of(
-                context,
-              ).colorScheme.onPrimary.withValues(alpha: 204),
-              fontSize: 12,
+
+          // Pin button in the top-right corner
+          Positioned(
+            top: 8,
+            right: 8,
+            child: IconButton(
+              icon: Icon(
+                _isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                color: colorScheme.onPrimary,
+              ),
+              tooltip: _isPinned ? 'Unpin drawer' : 'Pin drawer',
+              onPressed: _togglePinState,
             ),
           ),
         ],
@@ -156,14 +251,35 @@ class _DrawerHeader extends StatelessWidget {
 
 /// Section that displays the available domains as selectable options
 class _DomainSection extends StatelessWidget {
+  /// Whether this section is initially expanded
+  final bool isExpanded;
+
+  /// Callback when the expansion state changes
+  final Function(bool) onExpansionChanged;
+
+  const _DomainSection({
+    required this.isExpanded,
+    required this.onExpansionChanged,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return BlocBuilder<DomainSelectionBloc, DomainSelectionState>(
       builder: (context, state) {
         return ExpansionTile(
-          leading: const Icon(Icons.domain),
-          title: const Text('Domains'),
-          initiallyExpanded: true,
+          leading: Icon(Icons.domain, color: colorScheme.domainColor),
+          title: Text(
+            'Domains',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: colorScheme.domainColor,
+            ),
+          ),
+          initiallyExpanded: isExpanded,
+          onExpansionChanged: onExpansionChanged,
           children: [
             if (state.allDomains.isEmpty)
               const ListTile(title: Text('No domains available'), dense: true)
@@ -173,21 +289,20 @@ class _DomainSection extends StatelessWidget {
                   title: Text(domain.code),
                   dense: true,
                   selected: domain == state.selectedDomain,
-                  selectedTileColor: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer.withValues(alpha: 77),
+                  selectedTileColor: colorScheme.selectedBackground,
                   leading:
                       domain == state.selectedDomain
                           ? Icon(
                             Icons.check_circle,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: colorScheme.domainColor,
                             size: 18,
                           )
-                          : const Icon(Icons.circle_outlined, size: 18),
+                          : Icon(
+                            Icons.circle_outlined,
+                            size: 18,
+                            color: colorScheme.onSurface.withOpacity(0.6),
+                          ),
                   onTap: () {
-                    // Close drawer
-                    Navigator.pop(context);
-
                     // If not already selected, select the domain
                     if (domain != state.selectedDomain) {
                       // This would dispatch the domain selection event
