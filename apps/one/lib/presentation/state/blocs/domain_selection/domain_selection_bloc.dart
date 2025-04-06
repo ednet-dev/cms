@@ -42,4 +42,17 @@ class DomainSelectionBloc
   ) {
     emit(state.copyWith(selectedDomain: event.domain));
   }
+
+  /// A method to directly update domains in the state
+  /// This is a workaround for initialization issues
+  void updateDomainsDirectly(Domains domains) {
+    if (domains.isEmpty) return;
+
+    emit(
+      DomainSelectionState(
+        allDomains: domains,
+        selectedDomain: state.selectedDomain,
+      ),
+    );
+  }
 }

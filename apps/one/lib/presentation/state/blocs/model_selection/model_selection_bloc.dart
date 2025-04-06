@@ -53,4 +53,17 @@ class ModelSelectionBloc
   ) {
     emit(state.copyWith(selectedModel: event.model));
   }
+
+  /// A method to directly update models in the state
+  /// This is a workaround for initialization issues
+  void updateModelsDirectly(Models models) {
+    if (models.isEmpty) return;
+
+    emit(
+      ModelSelectionState(
+        availableModels: models,
+        selectedModel: state.selectedModel,
+      ),
+    );
+  }
 }

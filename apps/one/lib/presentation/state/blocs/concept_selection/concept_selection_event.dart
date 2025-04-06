@@ -26,3 +26,10 @@ class ExportDSLEvent extends ConceptSelectionEvent {}
 
 /// Event to trigger code generation
 class GenerateCodeEvent extends ConceptSelectionEvent {}
+
+/// Event to refresh a specific concept and reload its entities
+class RefreshConceptEvent extends ConceptSelectionEvent {
+  final Concept concept;
+
+  RefreshConceptEvent(this.concept);
+}

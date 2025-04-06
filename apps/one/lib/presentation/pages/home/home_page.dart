@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // State management blocs
+import 'package:ednet_one/generated/one_application.dart'; // Import OneApplication
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_state.dart';
@@ -13,6 +14,9 @@ import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selec
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
+
+// Main application reference
+import 'package:ednet_one/main.dart' show oneApplication;
 
 // Refactored components
 import 'concept_selector.dart';
@@ -54,10 +58,168 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadDrawerState();
-    // Trigger domain selection after a short delay to ensure UI is built
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _initializeSelections();
+
+    // Allow the UI to build first, then initialize selections
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Force a more comprehensive initialization
+      _forceInitialSelections();
     });
+  }
+
+  /// A more robust method to force initial selection of domain/model/concept
+  void _forceInitialSelections() {
+    debugPrint('📱 Force initializing selections from application data');
+
+    try {
+      // Get direct access to the application data
+      final domains = oneApplication.groupedDomains;
+      debugPrint('📱 Direct access - Domains available: ${domains.length}');
+
+      if (domains.isEmpty) {
+        debugPrint('❌ No domains available in OneApplication!');
+        return;
+      }
+
+      // 1. Force domain selection initialization first
+      final domainSelectionBloc = context.read<DomainSelectionBloc>();
+      domainSelectionBloc.add(InitializeDomainSelectionEvent());
+
+      // Wait briefly for the initialization to take effect
+      Future.delayed(const Duration(milliseconds: 100), () {
+        final domainState = domainSelectionBloc.state;
+
+        debugPrint(
+          '📱 After init - Domains available: ${domainState.allDomains.length}',
+        );
+        if (domainState.allDomains.isEmpty && domains.isNotEmpty) {
+          // If BLoC doesn't have domains but application does, force direct update
+          debugPrint('📱 Directly setting domains in BLoC');
+          domainSelectionBloc.updateDomainsDirectly(domains);
+        }
+
+        // 2. Select the first domain if none is selected
+        final selectedDomain =
+            domainState.selectedDomain ??
+            (domainState.allDomains.isNotEmpty
+                ? domainState.allDomains.first
+                : null);
+
+        if (selectedDomain == null && domains.isNotEmpty) {
+          debugPrint('📱 Force selecting first domain: ${domains.first.code}');
+          domainSelectionBloc.add(SelectDomainEvent(domains.first));
+        } else if (selectedDomain != null) {
+          debugPrint('📱 Domain selected: ${selectedDomain.code}');
+
+          // 3. Handle model selection
+          final modelSelectionBloc = context.read<ModelSelectionBloc>();
+          modelSelectionBloc.add(UpdateModelsForDomainEvent(selectedDomain));
+
+          // Wait briefly for models to update
+          Future.delayed(const Duration(milliseconds: 100), () {
+            final modelState = modelSelectionBloc.state;
+            debugPrint(
+              '📱 Models available: ${modelState.availableModels.length}',
+            );
+
+            if (modelState.availableModels.isEmpty &&
+                selectedDomain.models.isNotEmpty) {
+              debugPrint('📱 Directly updating models in BLoC');
+              modelSelectionBloc.updateModelsDirectly(selectedDomain.models);
+            }
+
+            // 4. Select first model if none selected
+            if (modelState.selectedModel == null &&
+                modelState.availableModels.isNotEmpty) {
+              final firstModel = modelState.availableModels.first;
+              debugPrint('📱 Force selecting first model: ${firstModel.code}');
+              modelSelectionBloc.add(SelectModelEvent(firstModel));
+            } else if (modelState.selectedModel != null) {
+              final selectedModel = modelState.selectedModel!;
+              debugPrint('📱 Model selected: ${selectedModel.code}');
+
+              // 5. Handle concept selection
+              final conceptSelectionBloc = context.read<ConceptSelectionBloc>();
+              conceptSelectionBloc.add(
+                UpdateConceptsForModelEvent(selectedModel),
+              );
+
+              // Wait briefly for concepts to update
+              Future.delayed(const Duration(milliseconds: 100), () {
+                final conceptState = conceptSelectionBloc.state;
+                debugPrint(
+                  '📱 Concepts available: ${conceptState.availableConcepts.length}',
+                );
+
+                if (conceptState.availableConcepts.isEmpty &&
+                    selectedModel.concepts.isNotEmpty) {
+                  debugPrint('📱 Directly updating concepts in BLoC');
+                  conceptSelectionBloc.updateConceptsDirectly(
+                    selectedModel.concepts,
+                  );
+                }
+
+                // 6. Select first concept if none selected
+                if (conceptState.selectedConcept == null &&
+                    conceptState.availableConcepts.isNotEmpty) {
+                  final firstConcept = conceptState.availableConcepts.first;
+                  debugPrint(
+                    '📱 Force selecting first concept: ${firstConcept.code}',
+                  );
+                  debugPrint(
+                    '📱 Concept details - entry: ${firstConcept.entry}, attributes: ${firstConcept.attributes.length}',
+                  );
+
+                  // Log any test entities that should be there
+                  try {
+                    // Try to get entities through a safer method
+                    // Concepts don't have direct getEntities, we need to check if it's entry
+                    if (firstConcept.entry) {
+                      debugPrint(
+                        '📱 This is an entry concept - should have entities',
+                      );
+                    } else {
+                      debugPrint(
+                        '📱 Not an entry concept - may not have entities',
+                      );
+                    }
+                  } catch (e) {
+                    debugPrint('📱 Error accessing concept details: $e');
+                  }
+
+                  conceptSelectionBloc.add(SelectConceptEvent(firstConcept));
+
+                  // Check entities after selection (should happen in next event cycle)
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    final updatedState = conceptSelectionBloc.state;
+                    debugPrint(
+                      '📱 After selection - Entities: ${updatedState.selectedEntities?.length ?? 0}',
+                    );
+
+                    // If still no entities but concept has entry flag, try forcing entity load
+                    if ((updatedState.selectedEntities == null ||
+                            updatedState.selectedEntities!.isEmpty) &&
+                        firstConcept.entry) {
+                      try {
+                        debugPrint('📱 Forcing entity load for entry concept');
+                        // Manually refresh entities for this concept
+                        conceptSelectionBloc.add(
+                          RefreshConceptEvent(firstConcept),
+                        );
+                      } catch (e) {
+                        debugPrint('📱 Error forcing entity load: $e');
+                      }
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    } catch (e, stack) {
+      debugPrint('❌ Error in _forceInitialSelections: $e');
+      debugPrint('❌ Stack trace: $stack');
+    }
   }
 
   /// Initialize domain, model, and concept selections if not already selected
@@ -276,6 +438,38 @@ class HomePageState extends State<HomePage> {
     // Get screen width to determine layout
     final screenWidth = MediaQuery.of(context).size.width;
     final useCompactLayout = screenWidth < 1100;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    // Show loading state if domains are still empty but OneApplication has domains
+    final appHasDomains = oneApplication.groupedDomains.isNotEmpty;
+    final uiHasDomains = domainState.allDomains.isNotEmpty;
+
+    if (appHasDomains && !uiHasDomains) {
+      // Application has data, but UI doesn't yet - still initializing
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(
+              'Initializing domain data...',
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Available domains: ${oneApplication.groupedDomains.length}',
+              style: theme.textTheme.bodyMedium,
+            ),
+            TextButton(
+              onPressed: _forceInitialSelections,
+              child: const Text('Force Initialization'),
+            ),
+          ],
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -340,8 +534,30 @@ class HomePageState extends State<HomePage> {
                               ? MainContentWidget(
                                 entities: conceptState.selectedEntities!,
                               )
-                              : const Center(
-                                child: Text('No Entities Selected'),
+                              : Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.inventory_2_outlined,
+                                      size: 48,
+                                      color: colorScheme.primary.withOpacity(
+                                        0.5,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'No Entities Selected',
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Select a domain, model, and concept to view entities',
+                                      style: theme.textTheme.bodyMedium,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               ),
                     ),
                   ),
@@ -369,8 +585,56 @@ class HomePageState extends State<HomePage> {
                               ? MainContentWidget(
                                 entities: conceptState.selectedEntities!,
                               )
-                              : const Center(
-                                child: Text('No Entities Selected'),
+                              : Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.inventory_2_outlined,
+                                      size: 48,
+                                      color: colorScheme.primary.withOpacity(
+                                        0.5,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'No Entities Selected',
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Select a domain, model, and concept to view entities',
+                                      style: theme.textTheme.bodyMedium,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    if (conceptState.selectedConcept !=
+                                        null) ...[
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        'Selected concept: ${conceptState.selectedConcept!.code}',
+                                        style: theme.textTheme.bodySmall,
+                                      ),
+                                      Text(
+                                        'Is entry concept: ${conceptState.selectedConcept!.entry}',
+                                        style: theme.textTheme.bodySmall,
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          final conceptBloc =
+                                              context
+                                                  .read<ConceptSelectionBloc>();
+                                          conceptBloc.add(
+                                            RefreshConceptEvent(
+                                              conceptState.selectedConcept!,
+                                            ),
+                                          );
+                                        },
+                                        child: const Text('Refresh Entities'),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ),
                     ),
                   ),

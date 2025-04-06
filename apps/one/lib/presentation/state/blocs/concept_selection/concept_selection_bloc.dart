@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/domain/domain_model_graph.dart';
+import 'package:flutter/foundation.dart';
 
 import 'concept_selection_event.dart';
 import 'concept_selection_state.dart';
@@ -17,6 +18,7 @@ class ConceptSelectionBloc
     on<SelectConceptEvent>(_onSelectConcept);
     on<ExportDSLEvent>(_onExportDSL);
     on<GenerateCodeEvent>(_onGenerateCode);
+    on<RefreshConceptEvent>(_onRefreshConcept);
   }
 
   /// Handles the initialize event
@@ -101,6 +103,40 @@ class ConceptSelectionBloc
     // Implement code generation logic if needed
   }
 
+  void _onRefreshConcept(
+    RefreshConceptEvent event,
+    Emitter<ConceptSelectionState> emit,
+  ) {
+    if (event.concept == null) return;
+
+    // This is a refresh event for an already selected concept
+    // We need to fetch its entities again
+    try {
+      debugPrint('Refreshing entities for concept: ${event.concept.code}');
+
+      // Try to get entities for this entry concept
+      if (event.concept.entry) {
+        // For entry concepts, we can try to directly access entities
+        debugPrint('This is an entry concept - should have entities');
+
+        // If your concept has a related model, you might need to find it
+        final model = event.concept.model;
+        if (model != null) {
+          debugPrint(
+            'Found model: ${model.code} for concept: ${event.concept.code}',
+          );
+
+          // Simply force a selection of the same concept again
+          // This should trigger the normal entity loading process
+          _onSelectConcept(SelectConceptEvent(event.concept), emit);
+        }
+      }
+    } catch (e, stack) {
+      debugPrint('Error refreshing entities: $e');
+      debugPrint('Stack trace: $stack');
+    }
+  }
+
   /// Returns the DSL for the current domain model graph
   String getDSL() {
     if (state.domainModelGraph != null) {
@@ -108,5 +144,19 @@ class ConceptSelectionBloc
     } else {
       return 'No graph available. Select a domain and model first.';
     }
+  }
+
+  /// A method to directly update concepts in the state
+  /// This is a workaround for initialization issues
+  void updateConceptsDirectly(Concepts concepts) {
+    if (concepts.isEmpty) return;
+
+    emit(
+      ConceptSelectionState(
+        availableConcepts: concepts,
+        selectedConcept: state.selectedConcept,
+        selectedEntities: state.selectedEntities,
+      ),
+    );
   }
 }
