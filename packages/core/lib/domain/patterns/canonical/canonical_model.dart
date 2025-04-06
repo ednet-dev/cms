@@ -11,7 +11,9 @@ part of ednet_core;
 /// * Data exchange between different jurisdictions and governance levels
 /// * Preservation of citizen data across system changes and upgrades
 /// * Technological sovereignty by avoiding vendor lock-in
-abstract class CanonicalModel<T> {
+///
+/// This is the base interface that defines the core operations for a canonical model.
+abstract class CanonicalModelBase<T> {
   /// Converts application-specific data to the canonical format
   ///
   /// This method takes any application-specific data type and converts it
@@ -47,7 +49,6 @@ abstract class CanonicalModel<T> {
 /// * Representing proposals and amendments in a system-agnostic way
 /// * Defining common formats for voting results and analytics
 /// * Integrating with various external identity providers and services
-@immutable
 class CanonicalModel<T> {
   /// The type identifier for this model (e.g., 'user', 'proposal', 'vote')
   final String type;
@@ -88,13 +89,13 @@ class CanonicalModel<T> {
   }
 
   /// Creates a canonical model from a JSON string.
-  static CanonicalModel<Map<String, dynamic>> fromJson(String json) {
-    final Map<String, dynamic> decoded = jsonDecode(json);
+  static CanonicalModel<Map<String, dynamic>> fromJson(String jsonStr) {
+    final Map<String, dynamic> decoded = jsonDecode(jsonStr);
 
     return CanonicalModel<Map<String, dynamic>>(
-      type: decoded['type'],
-      data: decoded['data'],
-      metadata: decoded['metadata'],
+      type: decoded['type'] as String,
+      data: decoded['data'] as Map<String, dynamic>,
+      metadata: decoded['metadata'] as Map<String, dynamic>?,
     );
   }
 
@@ -370,4 +371,55 @@ class ModelValidator {
 
   /// Validation errors from the last validation operation
   List<String> get errors => List.unmodifiable(_errors);
+}
+
+/// A concrete implementation of the CanonicalModelBase interface that
+/// can be used to adapt domain entities to a standard canonical format.
+class EntityCanonicalModel<E extends Entity<E>>
+    implements CanonicalModelBase<E> {
+  /// The concept defining the structure of entities for this model
+  final Concept concept;
+
+  /// Schema defining the canonical model structure
+  final Map<String, dynamic> schema;
+
+  /// Creates a new entity canonical model
+  EntityCanonicalModel({required this.concept, required this.schema});
+
+  @override
+  Map<String, dynamic> toCanonical(E entity) {
+    final result = <String, dynamic>{};
+
+    // Convert core entity attributes
+    result['id'] = entity.oid.toString();
+    result['type'] = concept.code;
+
+    // Add all attributes from the entity
+    for (final attribute in concept.attributes) {
+      final value = entity.getAttribute(attribute.code);
+      if (value != null) {
+        result[attribute.code] = value;
+      }
+    }
+
+    return result;
+  }
+
+  @override
+  E fromCanonical(Map<String, dynamic> canonicalData) {
+    throw UnimplementedError(
+      'Not implemented yet - would require entity creation logic',
+    );
+  }
+
+  @override
+  bool validate(Map<String, dynamic> canonicalData) {
+    // Implement schema validation here
+    return true;
+  }
+
+  @override
+  Map<String, dynamic> getSchema() {
+    return schema;
+  }
 }

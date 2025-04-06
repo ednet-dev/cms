@@ -189,9 +189,11 @@ part 'domain/model/model_entries.dart';
 part 'domain/model/i_model_entries.dart';
 
 // Enterprise Integration Patterns
+part 'domain/patterns/aggregator/aggregator.dart';
 part 'domain/patterns/common/base_message.dart';
 part 'domain/patterns/common/channel.dart';
 part 'domain/patterns/common/http_types.dart';
 part 'domain/patterns/filter/message_filter.dart';
 part 'domain/patterns/filter/ednet_core_message_filter.dart';
 part 'domain/patterns/channel/adapter/channel_adapter.dart';
+part 'domain/patterns/canonical/canonical_model.dart';

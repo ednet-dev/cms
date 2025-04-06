@@ -14,8 +14,7 @@ part of ednet_core;
 /// * Proposals being submitted or amended
 /// * Notifications about deliberation processes
 /// * Results of collective decision-making
-@immutable
-class Message {
+class Message extends ValueObject {
   /// The primary data/content carried by this message
   final dynamic payload;
 
@@ -30,9 +29,12 @@ class Message {
   /// If [id] is not provided, a new random ID will be generated.
   Message({required this.payload, Map<String, dynamic>? metadata, String? id})
     : metadata = metadata ?? {},
-      id = id ?? _generateId();
+      id = id ?? _generateId() {
+    validate();
+  }
 
   /// Creates a copy of this message with optionally modified properties
+  @override
   Message copyWith({
     dynamic payload,
     Map<String, dynamic>? metadata,
@@ -45,18 +47,8 @@ class Message {
     );
   }
 
-  /// Equality is based on id, payload and metadata
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is Message &&
-        other.id == id &&
-        other.payload == payload &&
-        _mapEquals(other.metadata, metadata);
-  }
-
-  @override
-  int get hashCode => Object.hash(id, payload, metadata);
+  List<Object> get props => [id, payload ?? Object(), metadata];
 
   /// Simple utility method to compare maps
   static bool _mapEquals(Map<String, dynamic> map1, Map<String, dynamic> map2) {

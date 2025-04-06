@@ -3,8 +3,7 @@ part of ednet_core;
 /// Represents an HTTP request in the patterns library
 ///
 /// Used by channel adapters to abstract HTTP communication.
-@immutable
-class HttpRequest {
+class HttpRequest extends ValueObject {
   /// HTTP method (GET, POST, PUT, DELETE, etc.)
   final String method;
 
@@ -21,15 +20,18 @@ class HttpRequest {
   final String? body;
 
   /// Creates a new HTTP request
-  const HttpRequest({
+  HttpRequest({
     required this.method,
     required this.path,
     this.headers = const {},
     this.queryParameters,
     this.body,
-  });
+  }) {
+    validate();
+  }
 
   /// Creates a copy with modified properties
+  @override
   HttpRequest copyWith({
     String? method,
     String? path,
@@ -47,6 +49,15 @@ class HttpRequest {
   }
 
   @override
+  List<Object> get props => [
+    method,
+    path,
+    headers,
+    queryParameters ?? {},
+    body ?? '',
+  ];
+
+  @override
   String toString() {
     return 'HttpRequest{method: $method, path: $path, headers: $headers, queryParameters: $queryParameters}';
   }
@@ -55,8 +66,7 @@ class HttpRequest {
 /// Represents an HTTP response in the patterns library
 ///
 /// Used by channel adapters to abstract HTTP communication.
-@immutable
-class HttpResponse {
+class HttpResponse extends ValueObject {
   /// HTTP status code
   final int statusCode;
 
@@ -67,13 +77,16 @@ class HttpResponse {
   final String body;
 
   /// Creates a new HTTP response
-  const HttpResponse({
+  HttpResponse({
     required this.statusCode,
     required this.headers,
     required this.body,
-  });
+  }) {
+    validate();
+  }
 
   /// Creates a copy with modified properties
+  @override
   HttpResponse copyWith({
     int? statusCode,
     Map<String, String>? headers,
@@ -85,6 +98,9 @@ class HttpResponse {
       body: body ?? this.body,
     );
   }
+
+  @override
+  List<Object> get props => [statusCode, headers, body];
 
   @override
   String toString() {
