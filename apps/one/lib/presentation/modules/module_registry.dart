@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
 import '../pages/domain_modeler/domain_model_editor.dart';
 import '../pages/model_instance/model_instance_page.dart';
+import '../pages/domain_modeler/live_preview_editor.dart';
 
 /// A singleton registry for all application modules
 class AppModuleRegistry {
@@ -36,6 +37,9 @@ class AppModuleRegistry {
 
     // Model Instance Manager module
     _registry.registerModule(ModelInstanceModule());
+
+    // Live Preview Editor module
+    _registry.registerModule(LivePreviewEditorModule());
 
     _initialized = true;
   }
@@ -104,6 +108,43 @@ class ModelInstanceModule extends AppModule {
         tooltip: 'Create New Instance',
         onPressed: () {
           // This would be handled by the ModelInstancePage
+        },
+      ),
+    ];
+  }
+}
+
+/// Module for the Live Preview Editor
+class LivePreviewEditorModule extends AppModule {
+  @override
+  String get id => 'live-preview-editor';
+
+  @override
+  String get name => 'Live Domain Editor';
+
+  @override
+  IconData get icon => Icons.splitscreen;
+
+  @override
+  Widget buildModuleContent(BuildContext context) {
+    return const LivePreviewEditor();
+  }
+
+  @override
+  List<Widget> buildAppBarActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.save),
+        tooltip: 'Save Domain Model',
+        onPressed: () {
+          // This would be handled by the LivePreviewEditor itself
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.refresh),
+        tooltip: 'Refresh Preview',
+        onPressed: () {
+          // This would be handled by the LivePreviewEditor itself
         },
       ),
     ];
