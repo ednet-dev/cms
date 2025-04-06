@@ -5,9 +5,14 @@ import 'package:ednet_one/presentation/state/blocs/model_selection/model_selecti
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
 import 'package:ednet_one/presentation/state/navigation_helper.dart';
 import 'package:ednet_one/presentation/widgets/layout/model_pin_manager_dialog.dart';
-import 'package:ednet_one/presentation/widgets/layout/semantic_layout_requirements.dart';
+import 'package:ednet_one/presentation/widgets/semantic_concept_container.dart';
+import 'package:ednet_one/presentation/theme/providers/theme_provider.dart';
+import 'package:ednet_one/presentation/theme/extensions/theme_spacing.dart';
 
 /// A component for selecting models in the application
+///
+/// Follows the Holy Trinity architecture by using semantic concept containers
+/// and applying theme styling based on model concepts.
 class ModelSelector extends StatefulWidget {
   /// Optional callback when a model is selected
   final Function(Model)? onModelSelected;
@@ -46,97 +51,158 @@ class _ModelSelectorState extends State<ModelSelector> {
         final availableModels = modelState.availableModels;
 
         if (availableModels.isEmpty) {
-          return Center(
+          return SemanticConceptContainer(
+            conceptType: 'ModelSelectorEmpty',
             child: Text(
               widget.emptyMessage,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: context.conceptTextStyle('Model', role: 'empty'),
             ),
           );
         }
 
-        return SemanticLayoutContainer(
-          conceptType: 'Model',
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with Pin Manager button
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.title,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    if (modelState.selectedModel != null)
-                      IconButton(
-                        icon: const Icon(Icons.push_pin_outlined),
-                        tooltip: 'Manage Pinned Items',
-                        onPressed: () {
-                          ModelPinManagerDialog.show(
-                            context,
-                            modelState.selectedModel!.code,
-                            title:
-                                'Pinned Items for ${modelState.selectedModel!.code}',
-                          );
-                        },
-                      ),
-                  ],
-                ),
+        // Use LayoutBuilder to make responsive decisions
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            // Determine if we should use a compact layout
+            final bool useCompactLayout = constraints.maxWidth < 600;
+
+            return SemanticConceptContainer(
+              conceptType: 'ModelSelector',
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header with Pin Manager button
+                  _buildHeader(context, modelState),
+
+                  // Choose between compact dropdown or full list view
+                  useCompactLayout
+                      ? _buildCompactSelector(context, modelState)
+                      : _buildModelList(context, modelState, constraints),
+                ],
               ),
-
-              // Models list with fixed height constraint
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  // Safely calculate list height, ensuring it's always positive
-                  final headerHeight = 64.0; // Height of the header
-                  final availableHeight = constraints.maxHeight;
-                  final listHeight =
-                      (availableHeight > headerHeight)
-                          ? availableHeight - headerHeight
-                          : 200.0; // Default safe height if calculation would be negative
-
-                  return SizedBox(
-                    height: listHeight.clamp(
-                      100.0,
-                      300.0,
-                    ), // Constrain between 100 and 300
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        itemCount: availableModels.length,
-                        itemBuilder: (context, index) {
-                          final model = availableModels.elementAt(index);
-                          final isSelected = model == modelState.selectedModel;
-
-                          return _ModelListItem(
-                            model: model,
-                            isSelected: isSelected,
-                            onTap: () {
-                              // Use the centralized navigation helper
-                              NavigationHelper.navigateToModel(context, model);
-
-                              // Call optional callback
-                              if (widget.onModelSelected != null) {
-                                widget.onModelSelected!(model);
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
+    );
+  }
+
+  /// Build the header section with title and pin button
+  Widget _buildHeader(BuildContext context, ModelSelectionState modelState) {
+    return Padding(
+      padding: EdgeInsets.all(context.spacingS),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            widget.title,
+            style: context.conceptTextStyle('ModelSelector', role: 'title'),
+          ),
+          if (modelState.selectedModel != null)
+            IconButton(
+              icon: Icon(
+                Icons.push_pin_outlined,
+                color: context.conceptColor('ModelSelector', role: 'icon'),
+              ),
+              tooltip: 'Manage Pinned Items',
+              onPressed: () {
+                ModelPinManagerDialog.show(
+                  context,
+                  modelState.selectedModel!.code,
+                  title: 'Pinned Items for ${modelState.selectedModel!.code}',
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Build a compact dropdown selector for narrow layouts
+  Widget _buildCompactSelector(
+    BuildContext context,
+    ModelSelectionState modelState,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(context.spacingXs),
+      margin: EdgeInsets.symmetric(horizontal: context.spacingM),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: context.conceptColor('Model', role: 'border'),
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: DropdownButton<Model>(
+        value: modelState.selectedModel ?? modelState.availableModels.first,
+        underline: const SizedBox.shrink(),
+        icon: Icon(Icons.arrow_drop_down, color: context.conceptColor('Model')),
+        isExpanded: true,
+        onChanged: (Model? newValue) {
+          if (newValue != null) {
+            NavigationHelper.navigateToModel(context, newValue);
+
+            if (widget.onModelSelected != null) {
+              widget.onModelSelected!(newValue);
+            }
+          }
+        },
+        items:
+            modelState.availableModels.map((Model model) {
+              return DropdownMenuItem<Model>(
+                value: model,
+                child: Text(
+                  model.code,
+                  style: context.conceptTextStyle('Model', role: 'title'),
+                ),
+              );
+            }).toList(),
+      ),
+    );
+  }
+
+  /// Build a scrollable list of models for wider layouts
+  Widget _buildModelList(
+    BuildContext context,
+    ModelSelectionState modelState,
+    BoxConstraints constraints,
+  ) {
+    // Calculate appropriate list height
+    final headerHeight = 48.0;
+    final availableHeight = constraints.maxHeight;
+    final listHeight =
+        availableHeight > headerHeight ? availableHeight - headerHeight : 200.0;
+
+    return Container(
+      height: listHeight.clamp(100.0, 300.0),
+      padding: EdgeInsets.symmetric(horizontal: context.spacingS),
+      child: SemanticConceptContainer(
+        conceptType: 'ModelList',
+        scrollable: true,
+        scrollController: _scrollController,
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: modelState.availableModels.length,
+          itemBuilder: (context, index) {
+            final model = modelState.availableModels.elementAt(index);
+            final isSelected = model == modelState.selectedModel;
+
+            return _ModelListItem(
+              model: model,
+              isSelected: isSelected,
+              onTap: () {
+                // Use the centralized navigation helper
+                NavigationHelper.navigateToModel(context, model);
+
+                // Call optional callback
+                if (widget.onModelSelected != null) {
+                  widget.onModelSelected!(model);
+                }
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -155,41 +221,46 @@ class _ModelListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        model.code,
-        style: TextStyle(
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+    return SemanticConceptContainer(
+      conceptType: 'Model',
+      child: ListTile(
+        title: Text(
+          model.code,
+          style: context.conceptTextStyle(
+            'Model',
+            role: isSelected ? 'selected' : 'default',
+          ),
         ),
-      ),
-      subtitle:
-          model.description != null
-              ? Text(
-                model.description!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              )
-              : null,
-      selected: isSelected,
-      selectedTileColor: Theme.of(
-        context,
-      ).colorScheme.primaryContainer.withValues(alpha: 51),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      onTap: onTap,
-      leading: Icon(
-        Icons.model_training,
-        color:
+        subtitle:
+            model.description != null
+                ? Text(
+                  model.description!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.conceptTextStyle('Model', role: 'description'),
+                )
+                : null,
+        selected: isSelected,
+        selectedTileColor: context
+            .conceptColor('Model', role: 'selectedBackground')
+            .withValues(alpha: 51),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        onTap: onTap,
+        leading: Icon(
+          Icons.model_training,
+          color:
+              isSelected
+                  ? context.conceptColor('Model', role: 'selected')
+                  : context.conceptColor('Model', role: 'icon'),
+        ),
+        trailing:
             isSelected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onSurfaceVariant,
+                ? Icon(
+                  Icons.check_circle,
+                  color: context.conceptColor('Model', role: 'selected'),
+                )
+                : null,
       ),
-      trailing:
-          isSelected
-              ? Icon(
-                Icons.check_circle,
-                color: Theme.of(context).colorScheme.primary,
-              )
-              : null,
     );
   }
 }

@@ -24,3 +24,9 @@ class SelectDomainEvent extends DomainSelectionEvent {
 
   SelectDomainEvent(this.domain);
 }
+
+/// Event to refresh the list of domains
+class RefreshDomainsEvent extends DomainSelectionEvent {}
+
+/// Event to clear the current domain selection
+class ClearDomainSelectionEvent extends DomainSelectionEvent {}

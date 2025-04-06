@@ -5,8 +5,14 @@ import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selec
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_state.dart';
 import 'package:ednet_one/presentation/theme/theme_components/custom_colors.dart';
 import 'package:ednet_one/presentation/state/navigation_helper.dart';
+import 'package:ednet_one/presentation/widgets/semantic_concept_container.dart';
+import 'package:ednet_one/presentation/theme/providers/theme_provider.dart';
+import 'package:ednet_one/presentation/theme/extensions/theme_spacing.dart';
 
 /// Component for the application's main navigation drawer
+///
+/// Follows the Holy Trinity architecture by using semantic concept containers
+/// and applying theme styling based on navigation semantics.
 class HomeDrawer extends StatefulWidget {
   /// Optional callback for when the settings option is pressed
   final VoidCallback? onSettings;
@@ -102,156 +108,214 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    return SemanticConceptContainer(
+      conceptType: 'Navigation',
+      child: Drawer(
+        elevation: _isPinned ? 0 : 16, // Reduced elevation when pinned
+        backgroundColor: context.conceptColor('Navigation', role: 'background'),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Header with logo, app info, and pin option
+              _buildHeader(context),
 
-    return Drawer(
-      elevation: _isPinned ? 0 : 16, // Reduced elevation when pinned
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Header with logo, app info, and pin option
-            _buildHeader(context),
+              // Navigation options in a scrollable container
+              Expanded(
+                child: SemanticConceptContainer(
+                  conceptType: 'NavigationMenu',
+                  scrollable: true,
+                  scrollController: _scrollController,
+                  child: ListView(
+                    controller: _scrollController,
+                    padding: EdgeInsets.zero,
+                    children: [
+                      // Domains section
+                      _DomainSection(
+                        isExpanded: _isDomainSectionExpanded,
+                        onExpansionChanged: _saveExpandedState,
+                      ),
 
-            // Navigation options in a scrollable container
-            Expanded(
-              child: Scrollbar(
-                thumbVisibility: true,
-                child: ListView(
-                  controller: _scrollController,
-                  padding: EdgeInsets.zero,
-                  children: [
-                    // Domains section
-                    _DomainSection(
-                      isExpanded: _isDomainSectionExpanded,
-                      onExpansionChanged: _saveExpandedState,
-                    ),
+                      Divider(
+                        color: context
+                            .conceptColor('Navigation', role: 'divider')
+                            .withValues(alpha: 255.0 * 0.3),
+                      ),
 
-                    const Divider(),
-
-                    // App options
-                    ListTile(
-                      leading: const Icon(Icons.dashboard),
-                      title: const Text('Dashboard'),
-                      onTap: () {
-                        if (!_isPinned) Navigator.pop(context);
-                        // Navigate to dashboard
-                      },
-                    ),
-
-                    if (widget.onSettings != null)
-                      ListTile(
-                        leading: const Icon(Icons.settings),
-                        title: const Text('Settings'),
+                      // App options
+                      _buildNavigationItem(
+                        context,
+                        icon: Icons.dashboard,
+                        title: 'Dashboard',
                         onTap: () {
                           if (!_isPinned) Navigator.pop(context);
-                          widget.onSettings!();
+                          // Navigate to dashboard
                         },
                       ),
 
-                    if (widget.onDocs != null)
-                      ListTile(
-                        leading: const Icon(Icons.description),
-                        title: const Text('Documentation'),
-                        onTap: () {
-                          if (!_isPinned) Navigator.pop(context);
-                          widget.onDocs!();
-                        },
-                      ),
+                      if (widget.onSettings != null)
+                        _buildNavigationItem(
+                          context,
+                          icon: Icons.settings,
+                          title: 'Settings',
+                          onTap: () {
+                            if (!_isPinned) Navigator.pop(context);
+                            widget.onSettings!();
+                          },
+                        ),
 
-                    if (widget.onHelp != null)
-                      ListTile(
-                        leading: const Icon(Icons.help),
-                        title: const Text('Help'),
-                        onTap: () {
-                          if (!_isPinned) Navigator.pop(context);
-                          widget.onHelp!();
-                        },
-                      ),
+                      if (widget.onDocs != null)
+                        _buildNavigationItem(
+                          context,
+                          icon: Icons.description,
+                          title: 'Documentation',
+                          onTap: () {
+                            if (!_isPinned) Navigator.pop(context);
+                            widget.onDocs!();
+                          },
+                        ),
 
-                    if (widget.onAbout != null)
-                      ListTile(
-                        leading: const Icon(Icons.info),
-                        title: const Text('About'),
-                        onTap: () {
-                          if (!_isPinned) Navigator.pop(context);
-                          widget.onAbout!();
-                        },
-                      ),
-                  ],
+                      if (widget.onHelp != null)
+                        _buildNavigationItem(
+                          context,
+                          icon: Icons.help,
+                          title: 'Help',
+                          onTap: () {
+                            if (!_isPinned) Navigator.pop(context);
+                            widget.onHelp!();
+                          },
+                        ),
+
+                      if (widget.onAbout != null)
+                        _buildNavigationItem(
+                          context,
+                          icon: Icons.info,
+                          title: 'About',
+                          onTap: () {
+                            if (!_isPinned) Navigator.pop(context);
+                            widget.onAbout!();
+                          },
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // Footer with version info
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'EDNet One v1.0.0',
-                style: TextStyle(
-                  color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.5),
-                  fontSize: 12,
+              // Footer with version info
+              SemanticConceptContainer(
+                conceptType: 'NavigationFooter',
+                child: Padding(
+                  padding: EdgeInsets.all(context.spacingS),
+                  child: Text(
+                    'EDNet One v1.0.0',
+                    style: context.conceptTextStyle(
+                      'Navigation',
+                      role: 'footer',
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+  /// Build a navigation menu item with consistent styling
+  Widget _buildNavigationItem(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    bool isSelected = false,
+  }) {
+    return SemanticConceptContainer(
+      conceptType: 'NavigationItem',
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color:
+              isSelected
+                  ? context.conceptColor('NavigationItem', role: 'selectedIcon')
+                  : context.conceptColor('NavigationItem', role: 'icon'),
+          size: 20,
+        ),
+        title: Text(
+          title,
+          style: context.conceptTextStyle(
+            'NavigationItem',
+            role: isSelected ? 'selectedTitle' : 'title',
+          ),
+        ),
+        selected: isSelected,
+        selectedTileColor: context
+            .conceptColor('NavigationItem', role: 'selectedBackground')
+            .withValues(alpha: 255.0 * 0.2),
+        onTap: onTap,
+      ),
+    );
+  }
 
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      color: colorScheme.primary,
-      child: Column(
-        mainAxisSize: MainAxisSize.min, // Use minimum size needed
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CircleAvatar(
-                backgroundColor: colorScheme.onPrimary,
-                radius: 25, // Smaller radius
-                child: Icon(
-                  Icons.code,
-                  color: colorScheme.primary,
-                  size: 25, // Smaller icon
+  Widget _buildHeader(BuildContext context) {
+    return SemanticConceptContainer(
+      conceptType: 'NavigationHeader',
+      child: Container(
+        padding: EdgeInsets.all(context.spacingM),
+        color: context.conceptColor('NavigationHeader', role: 'background'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  backgroundColor: context.conceptColor(
+                    'NavigationHeader',
+                    role: 'logoBackground',
+                  ),
+                  radius: 25,
+                  child: Icon(
+                    Icons.code,
+                    color: context.conceptColor(
+                      'NavigationHeader',
+                      role: 'logoForeground',
+                    ),
+                    size: 25,
+                  ),
                 ),
-              ),
-              // Pin button
-              IconButton(
-                icon: Icon(
-                  _isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-                  color: colorScheme.onPrimary,
+                // Pin button
+                IconButton(
+                  icon: Icon(
+                    _isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                    color: context.conceptColor(
+                      'NavigationHeader',
+                      role: 'icon',
+                    ),
+                  ),
+                  tooltip: _isPinned ? 'Unpin drawer' : 'Pin drawer',
+                  onPressed: _togglePinState,
                 ),
-                tooltip: _isPinned ? 'Unpin drawer' : 'Pin drawer',
-                onPressed: _togglePinState,
+              ],
+            ),
+            SizedBox(height: context.spacingS),
+            Text(
+              'EDNet One',
+              style: context.conceptTextStyle(
+                'NavigationHeader',
+                role: 'title',
               ),
-            ],
-          ),
-          const SizedBox(height: 10), // Reduced space
-          Text(
-            'EDNet One',
-            style: TextStyle(
-              color: colorScheme.onPrimary,
-              fontSize: 20, // Smaller font
-              fontWeight: FontWeight.bold,
             ),
-          ),
-          const SizedBox(height: 2), // Reduced space
-          Text(
-            'Domain Modeling Platform',
-            style: TextStyle(
-              color: colorScheme.onPrimary.withValues(alpha: 255.0 * 0.8),
-              fontSize: 12,
+            SizedBox(height: context.spacingXs / 2),
+            Text(
+              'Domain Modeling Platform',
+              style: context.conceptTextStyle(
+                'NavigationHeader',
+                role: 'subtitle',
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -272,57 +336,86 @@ class _DomainSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return BlocBuilder<DomainSelectionBloc, DomainSelectionState>(
-      builder: (context, state) {
-        return ExpansionTile(
-          leading: Icon(Icons.domain, color: colorScheme.domainColor),
-          title: Text(
-            'Domains',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.domainColor,
+    return SemanticConceptContainer(
+      conceptType: 'DomainSection',
+      child: BlocBuilder<DomainSelectionBloc, DomainSelectionState>(
+        builder: (context, state) {
+          return ExpansionTile(
+            leading: Icon(
+              Icons.domain,
+              color: context.conceptColor('Domain', role: 'icon'),
             ),
-          ),
-          initiallyExpanded: isExpanded,
-          onExpansionChanged: onExpansionChanged,
-          children: [
-            if (state.availableDomains.isEmpty)
-              const ListTile(title: Text('No domains available'), dense: true)
-            else
-              for (var domain in state.availableDomains)
+            title: Text(
+              'Domains',
+              style: context.conceptTextStyle('DomainSection', role: 'title'),
+            ),
+            initiallyExpanded: isExpanded,
+            onExpansionChanged: onExpansionChanged,
+            children: [
+              if (state.availableDomains.isEmpty)
                 ListTile(
-                  title: Text(domain.code),
+                  title: Text(
+                    'No domains available',
+                    style: context.conceptTextStyle('Domain', role: 'empty'),
+                  ),
                   dense: true,
-                  selected: domain == state.selectedDomain,
-                  selectedTileColor: colorScheme.selectedBackground,
-                  leading:
-                      domain == state.selectedDomain
-                          ? Icon(
-                            Icons.check_circle,
-                            color: colorScheme.domainColor,
-                            size: 18,
-                          )
-                          : Icon(
-                            Icons.circle_outlined,
-                            size: 18,
-                            color: colorScheme.onSurface.withValues(
-                              alpha: 255.0 * 0.6,
-                            ),
-                          ),
-                  onTap: () {
-                    // If not already selected, select the domain
-                    if (domain != state.selectedDomain) {
-                      // Use the centralized navigation helper
-                      NavigationHelper.navigateToDomain(context, domain);
-                    }
-                  },
+                )
+              else
+                ...state.availableDomains.map(
+                  (domain) => _buildDomainItem(context, domain, state),
                 ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  /// Build a domain list item with consistent styling
+  Widget _buildDomainItem(
+    BuildContext context,
+    dynamic domain,
+    DomainSelectionState state,
+  ) {
+    final isSelected = domain == state.selectedDomain;
+
+    return SemanticConceptContainer(
+      conceptType: 'Domain',
+      child: ListTile(
+        title: Text(
+          domain.code,
+          style: context.conceptTextStyle(
+            'Domain',
+            role: isSelected ? 'selected' : 'default',
+          ),
+        ),
+        dense: true,
+        selected: isSelected,
+        selectedTileColor: context
+            .conceptColor('Domain', role: 'selectedBackground')
+            .withValues(alpha: 255.0 * 0.2),
+        leading:
+            isSelected
+                ? Icon(
+                  Icons.check_circle,
+                  color: context.conceptColor('Domain', role: 'selected'),
+                  size: 18,
+                )
+                : Icon(
+                  Icons.circle_outlined,
+                  size: 18,
+                  color: context
+                      .conceptColor('Domain', role: 'icon')
+                      .withValues(alpha: 255.0 * 0.6),
+                ),
+        onTap: () {
+          // If not already selected, select the domain
+          if (domain != state.selectedDomain) {
+            // Use the centralized navigation helper
+            NavigationHelper.navigateToDomain(context, domain);
+          }
+        },
+      ),
     );
   }
 }

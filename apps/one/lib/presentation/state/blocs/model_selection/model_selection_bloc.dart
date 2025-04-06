@@ -16,6 +16,7 @@ class ModelSelectionBloc
     on<InitializeModelSelectionEvent>(_onInitialize);
     on<UpdateModelsForDomainEvent>(_onUpdateModelsForDomain);
     on<SelectModelEvent>(_onSelectModel);
+    on<ClearModelSelectionEvent>(_onClearModelSelection);
   }
 
   /// Handles the initialize event
@@ -76,6 +77,14 @@ class ModelSelectionBloc
       debugPrint('❌ Stack trace: $stack');
       emit(ModelSelectionState.initial());
     }
+  }
+
+  /// Handles the clear model selection event
+  void _onClearModelSelection(
+    ClearModelSelectionEvent event,
+    Emitter<ModelSelectionState> emit,
+  ) {
+    emit(ModelSelectionState.initial());
   }
 
   /// A method to directly update models in the state
