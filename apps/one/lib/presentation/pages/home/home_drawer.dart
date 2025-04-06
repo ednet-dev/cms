@@ -8,6 +8,7 @@ import 'package:ednet_one/presentation/state/navigation_helper.dart';
 import 'package:ednet_one/presentation/widgets/semantic_concept_container.dart';
 import 'package:ednet_one/presentation/theme/providers/theme_provider.dart';
 import 'package:ednet_one/presentation/theme/extensions/theme_spacing.dart';
+import 'package:ednet_one/presentation/pages/workspace/immersive_workspace_page.dart';
 
 /// Component for the application's main navigation drawer
 ///
@@ -149,6 +150,19 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         onTap: () {
                           if (!_isPinned) Navigator.pop(context);
                           // Navigate to dashboard
+                        },
+                      ),
+
+                      // Add workspace link
+                      _buildNavigationItem(
+                        context,
+                        icon: Icons.workspaces,
+                        title: 'Immersive Workspace',
+                        onTap: () {
+                          if (!_isPinned) Navigator.pop(context);
+                          Navigator.of(
+                            context,
+                          ).pushNamed(ImmersiveWorkspacePage.routeName);
                         },
                       ),
 

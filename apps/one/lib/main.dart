@@ -22,6 +22,7 @@ import 'presentation/theme/theme_service.dart';
 import 'presentation/state/providers/domain_service.dart';
 import 'presentation/layouts/providers/layout_provider.dart';
 import 'presentation/theme/providers/theme_provider.dart';
+import 'presentation/pages/workspace/immersive_workspace_page.dart';
 
 // Application singletons
 final oneApplication = OneApplication();
@@ -252,20 +253,43 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     debugPrint('Building MaterialApp');
 
-    return MaterialApp(
-      title: 'EDNet One',
-      theme: context.select<ThemeBloc, ThemeData>(
-        (themeBloc) => themeBloc.state.themeData,
-      ),
-      navigatorKey: navigationService.navigatorKey,
-      home: AppShell(
+    return MultiProvider(
+      providers: [
+        // Add the LayoutProvider
+        ChangeNotifierProvider<LayoutProvider>(create: (_) => LayoutProvider()),
+        // Add the ThemeProvider
+        ChangeNotifierProvider<ThemeProvider>(
+          create: (_) => ThemeProvider(themeService),
+        ),
+        // Add the domain model provider
+        Provider<OneApplication>.value(value: oneApplication),
+        // Add the navigation service
+        Provider<NavigationService>.value(value: navigationService),
+      ],
+      child: MaterialApp(
         title: 'EDNet One',
-        modules: moduleRegistry.modules,
-        navigationService: navigationService,
-        initialModuleId:
-            moduleRegistry.modules.isNotEmpty
-                ? moduleRegistry.modules.first.id
-                : null,
+        theme: context.select<ThemeBloc, ThemeData>(
+          (themeBloc) => themeBloc.state.themeData,
+        ),
+        darkTheme: context.select<ThemeBloc, ThemeData>(
+          (themeBloc) => themeBloc.state.themeData,
+        ),
+        themeMode: ThemeMode.system,
+        navigatorKey: navigationService.navigatorKey,
+        home: AppShell(
+          title: 'EDNet One',
+          modules: moduleRegistry.modules,
+          navigationService: navigationService,
+          initialModuleId:
+              moduleRegistry.modules.isNotEmpty
+                  ? moduleRegistry.modules.first.id
+                  : null,
+        ),
+        routes: {
+          // Add the immersive workspace page route
+          ImmersiveWorkspacePage.routeName:
+              (context) => ImmersiveWorkspacePage(title: 'Workspace'),
+        },
       ),
     );
   }
