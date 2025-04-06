@@ -25,8 +25,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenCategory = ResponsiveSemanticWrapper.getScreenCategory(context);
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     // Group attributes by semantic priority
     final attributesByPriority = _groupAttributesByPriority();
@@ -69,9 +67,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
     BuildContext context,
     Map<SemanticPriority, List<ednet.Attribute>> attributesByPriority,
   ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +80,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Key Identifiers',
               attributesByPriority[SemanticPriority.critical]!,
-              colorScheme.primary,
               Icons.key,
             ),
 
@@ -94,7 +88,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Required Information',
               attributesByPriority[SemanticPriority.important]!,
-              colorScheme.secondary,
               Icons.star,
             ),
 
@@ -105,9 +98,9 @@ class ResponsiveEntityContainer extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 'Additional details available on larger screens',
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontStyle: FontStyle.italic,
-                  color: colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -122,9 +115,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
     BuildContext context,
     Map<SemanticPriority, List<ednet.Attribute>> attributesByPriority,
   ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +128,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Identifiers',
               attributesByPriority[SemanticPriority.critical]!,
-              colorScheme.primary,
               Icons.key,
             ),
 
@@ -147,7 +136,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Required Fields',
               attributesByPriority[SemanticPriority.important]!,
-              colorScheme.secondary,
               Icons.star,
             ),
 
@@ -156,7 +144,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Standard Properties',
               attributesByPriority[SemanticPriority.standard]!,
-              colorScheme.tertiary,
               Icons.list_alt,
             ),
 
@@ -166,9 +153,9 @@ class ResponsiveEntityContainer extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 'Additional details available on larger screens',
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontStyle: FontStyle.italic,
-                  color: colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -184,8 +171,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
     Map<SemanticPriority, List<ednet.Attribute>> attributesByPriority,
     ScreenSizeCategory screenCategory,
   ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final isUltraWide = screenCategory == ScreenSizeCategory.ultraWide;
 
     return SingleChildScrollView(
@@ -201,7 +186,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Identifiers',
               attributesByPriority[SemanticPriority.critical]!,
-              colorScheme.primary,
               Icons.key,
             ),
 
@@ -210,7 +194,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Required Fields',
               attributesByPriority[SemanticPriority.important]!,
-              colorScheme.secondary,
               Icons.star,
             ),
 
@@ -219,7 +202,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Standard Properties',
               attributesByPriority[SemanticPriority.standard]!,
-              colorScheme.tertiary,
               Icons.list_alt,
             ),
 
@@ -228,7 +210,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Additional Information',
               attributesByPriority[SemanticPriority.auxiliary]!,
-              colorScheme.error,
               Icons.info_outline,
             ),
 
@@ -239,7 +220,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
               context,
               'Extended Details',
               attributesByPriority[SemanticPriority.supplementary]!,
-              colorScheme.surfaceTint,
               Icons.extension,
             ),
 
@@ -257,7 +237,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
     bool enhanced = false,
   }) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     // Extract title from entity properties
     final title = _getEntityTitle();
@@ -269,7 +248,7 @@ class ResponsiveEntityContainer extends StatelessWidget {
         horizontal: 16.0,
         vertical: compact ? 12.0 : 20.0,
       ),
-      color: colorScheme.surfaceContainerHighest,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -279,13 +258,13 @@ class ResponsiveEntityContainer extends StatelessWidget {
               Icon(
                 Icons.label_outline,
                 size: compact ? 16 : 20,
-                color: colorScheme.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Text(
                 conceptName,
                 style: theme.textTheme.labelLarge?.copyWith(
-                  color: colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.normal,
                 ),
               ),
@@ -294,7 +273,7 @@ class ResponsiveEntityContainer extends StatelessWidget {
                 Text(
                   '(${entity.code})',
                   style: theme.textTheme.labelMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -399,7 +378,6 @@ class ResponsiveEntityContainer extends StatelessWidget {
     BuildContext context,
     String title,
     List<ednet.Attribute> attributes,
-    Color color,
     IconData icon,
   ) {
     final theme = Theme.of(context);
@@ -415,12 +393,12 @@ class ResponsiveEntityContainer extends StatelessWidget {
           // Section header
           Row(
             children: [
-              Icon(icon, size: 18, color: color),
+              Icon(icon, size: 18, color: colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: color,
+                  color: colorScheme.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -444,7 +422,7 @@ class ResponsiveEntityContainer extends StatelessWidget {
                       child: AdaptiveAttributeDisplay(
                         entity: entity,
                         attribute: attribute,
-                        accentColor: color,
+                        accentColor: colorScheme.primary,
                         onEdit: onAttributeEdit,
                       ),
                     );
@@ -459,7 +437,7 @@ class ResponsiveEntityContainer extends StatelessWidget {
                     return AdaptiveAttributeDisplay(
                       entity: entity,
                       attribute: attribute,
-                      accentColor: color,
+                      accentColor: colorScheme.primary,
                       onEdit: onAttributeEdit,
                     );
                   }).toList(),
@@ -475,17 +453,18 @@ class ResponsiveEntityContainer extends StatelessWidget {
     bool isEnhanced = false,
   }) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     // Basic placeholder for now - would be expanded with actual relationship data
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLow,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.5),
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.5),
           width: 1,
         ),
       ),
@@ -497,13 +476,13 @@ class ResponsiveEntityContainer extends StatelessWidget {
               Icon(
                 Icons.connect_without_contact,
                 size: 20,
-                color: colorScheme.secondary,
+                color: Theme.of(context).colorScheme.secondary,
               ),
               const SizedBox(width: 8),
               Text(
                 'Relationships',
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.secondary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -577,22 +556,23 @@ class ResponsiveEntityContainer extends StatelessWidget {
     IconData icon,
   ) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLowest,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.3),
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.3),
           width: 1,
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: colorScheme.secondary),
+          Icon(icon, size: 14, color: Theme.of(context).colorScheme.secondary),
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -601,7 +581,7 @@ class ResponsiveEntityContainer extends StatelessWidget {
               Text(
                 label,
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               Text(

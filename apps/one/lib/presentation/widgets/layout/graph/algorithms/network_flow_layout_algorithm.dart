@@ -11,6 +11,7 @@ class NetworkFlowLayoutAlgorithm extends LayoutAlgorithm {
     final positions = <String, Offset>{};
     final graph = <String, Map<String, double>>{};
 
+    // Initial position calculation
     for (var domain in domains) {
       positions[domain.code] = Offset(size.width / 2, size.height / 2);
       graph[domain.code] = {};
@@ -43,12 +44,18 @@ class NetworkFlowLayoutAlgorithm extends LayoutAlgorithm {
       }
     }
 
+    // Calculate maxFlow for layout optimization
     final maxFlow = _edmondsKarp(graph, domains.first.code, domains.last.code);
-    // TODO: Implement position adjustment based on maxFlow value
-    // The maxFlow value can be used to:
-    // 1. Scale the distances between nodes
-    // 2. Adjust node positions to minimize edge crossings
-    // 3. Optimize the overall layout based on flow capacity
+
+    // 1. Scale distances between nodes based on flow
+    final scaleFactor = 1.0 + (maxFlow / 1000.0); // Normalize flow value
+    _scaleNodeDistances(positions, scaleFactor);
+
+    // 2. Adjust positions to minimize edge crossings
+    _minimizeEdgeCrossings(positions, graph);
+
+    // 3. Optimize layout based on flow capacity
+    _optimizeLayoutForFlow(positions, graph, maxFlow);
 
     return positions;
   }
@@ -112,5 +119,84 @@ class NetworkFlowLayoutAlgorithm extends LayoutAlgorithm {
     }
 
     return maxFlow;
+  }
+
+  /// Scale the distances between nodes
+  void _scaleNodeDistances(Map<String, Offset> positions, double scaleFactor) {
+    final center = Offset(0, 0);
+    positions.forEach((key, position) {
+      // Calculate distance from center and scale it
+      final distance = position - center;
+      positions[key] = center + (distance * scaleFactor);
+    });
+  }
+
+  /// Helper method to normalize an Offset vector
+  Offset _normalizeOffset(Offset offset) {
+    final distance = offset.distance;
+    if (distance == 0) return Offset.zero;
+    return Offset(offset.dx / distance, offset.dy / distance);
+  }
+
+  /// Minimize edge crossings using a simple force-directed approach
+  void _minimizeEdgeCrossings(
+    Map<String, Offset> positions,
+    Map<String, Map<String, double>> graph,
+  ) {
+    const iterations = 10;
+    const repulsionForce = 50.0;
+
+    for (var i = 0; i < iterations; i++) {
+      final forces = <String, Offset>{};
+
+      // Initialize forces
+      for (var node in positions.keys) {
+        forces[node] = Offset.zero;
+      }
+
+      // Calculate repulsion forces between all nodes
+      for (var node1 in positions.keys) {
+        for (var node2 in positions.keys) {
+          if (node1 != node2) {
+            final delta = positions[node2]! - positions[node1]!;
+            final distance = delta.distance;
+            if (distance < repulsionForce) {
+              final normalizedDelta = _normalizeOffset(delta);
+              final force = normalizedDelta * (repulsionForce - distance) / 2;
+              forces[node1] = forces[node1]! - force;
+              forces[node2] = forces[node2]! + force;
+            }
+          }
+        }
+      }
+
+      // Apply forces to update positions
+      for (var node in positions.keys) {
+        positions[node] = positions[node]! + forces[node]! * 0.1;
+      }
+    }
+  }
+
+  /// Optimize layout based on flow capacity
+  void _optimizeLayoutForFlow(
+    Map<String, Offset> positions,
+    Map<String, Map<String, double>> graph,
+    double maxFlow,
+  ) {
+    // Adjust node positions based on their flow capacity
+    graph.forEach((from, edges) {
+      edges.forEach((to, capacity) {
+        final flowRatio = capacity / maxFlow;
+        final idealDistance = 100.0 + (200.0 * flowRatio); // Scale with flow
+
+        final currentDistance = _distance(positions[from]!, positions[to]!);
+        final delta = positions[to]! - positions[from]!;
+        final adjustment =
+            delta * ((idealDistance - currentDistance) / currentDistance);
+
+        // Apply adjustment with weight based on flow ratio
+        positions[to] = positions[to]! + (adjustment * flowRatio);
+      });
+    });
   }
 }

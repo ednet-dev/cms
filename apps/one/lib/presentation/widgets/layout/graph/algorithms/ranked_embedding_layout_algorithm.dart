@@ -80,7 +80,7 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
       totalHeight += childSize.height + verticalGap;
     }
 
-    for (var attribute in concept.attributes) {
+    for (var _ in concept.attributes) {
       maxWidth = max(maxWidth, nodeWidth);
       totalHeight += nodeHeight + verticalGap;
     }

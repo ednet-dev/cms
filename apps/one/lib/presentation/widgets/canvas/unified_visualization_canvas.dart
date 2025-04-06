@@ -610,7 +610,7 @@ class UnifiedVisualizationPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.0
-          ..color = Colors.grey.withOpacity(0.7);
+          ..color = Colors.grey.withValues(alpha: 255.0 * 0.7);
 
     final selectedPaint =
         Paint()
@@ -642,7 +642,7 @@ class UnifiedVisualizationPainter extends CustomPainter {
 
       // Get color based on node type
       final color = _getNodeColor(nodeId);
-      nodeFillPaint.color = color.withOpacity(0.8);
+      nodeFillPaint.color = color.withValues(alpha: 255.0 * 0.8);
       nodeStrokePaint.color = color.darker();
 
       // Draw node
@@ -864,11 +864,11 @@ class LayoutControlPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha: 255.0 * 0.9),
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 255.0 * 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -949,11 +949,11 @@ class ZoomControlPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha: 255.0 * 0.9),
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 255.0 * 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
