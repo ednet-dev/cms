@@ -19,14 +19,14 @@ class FilterEntity extends Entity<FilterEntity> {
   @override
   bool get isEmpty => false;
 
+  /// Creates a new instance of FilterEntity
   @override
-  Id get id {
-    // Use 'name' as the identity attribute
-    final name = getAttribute('name');
-    if (name == null) {
-      throw StateError('Filter entity has no name attribute');
+  FilterEntity newEntity() {
+    var entity = FilterEntity();
+    if (concept != null) {
+      entity.concept = concept;
     }
-    return Id.withOid(Oid(name.toString()));
+    return entity;
   }
 }
 
@@ -126,6 +126,17 @@ class MessageFilterRepository {
   /// Creates a new repository with the given entities collection
   MessageFilterRepository(this.entities);
 
+  /// Creates a new FilterEntity instance
+  ///
+  /// This helper method creates a properly initialized FilterEntity with
+  /// the concept from the entities collection.
+  FilterEntity _createFilterEntity() {
+    // Create a new FilterEntity instance
+    final entity = FilterEntity();
+    entity.concept = entities.concept;
+    return entity;
+  }
+
   /// Creates a predicate-based message filter
   ///
   /// Example:
@@ -143,8 +154,10 @@ class MessageFilterRepository {
     required Channel targetChannel,
     required MessagePredicate predicate,
   }) async {
-    // Create and configure entity
-    final entity = FilterEntity();
+    // Create a new FilterEntity with the correct concept
+    final entity = _createFilterEntity();
+
+    // Set required attributes
     entity.setAttribute('name', name);
     entity.setAttribute('type', 'predicate');
     entity.setAttribute('status', 'inactive');
@@ -189,12 +202,20 @@ class MessageFilterRepository {
     required T expectedValue,
     bool Function(T, T)? comparator,
   }) async {
-    // Create and configure entity
-    final entity = FilterEntity();
+    // Create a new FilterEntity with the correct concept
+    final entity = _createFilterEntity();
+
+    // Set required attributes
     entity.setAttribute('name', name);
     entity.setAttribute('type', 'selector');
     entity.setAttribute('status', 'inactive');
-    entity.setAttribute('selectorType', T.toString());
+
+    // Try to set the selector type attribute if supported by the concept
+    try {
+      entity.setAttribute('selectorType', T.toString());
+    } catch (e) {
+      // Ignore if the attribute doesn't exist in the concept
+    }
 
     // Add to entities collection
     entities.add(entity);
@@ -240,13 +261,21 @@ class MessageFilterRepository {
     required List<MessagePredicate> filters,
     required String operation,
   }) async {
-    // Create and configure entity
-    final entity = FilterEntity();
+    // Create a new FilterEntity with the correct concept
+    final entity = _createFilterEntity();
+
+    // Set required attributes
     entity.setAttribute('name', name);
     entity.setAttribute('type', 'composite');
     entity.setAttribute('status', 'inactive');
     entity.setAttribute('operation', operation);
-    entity.setAttribute('filterCount', filters.length);
+
+    // Try to set the filter count attribute if supported by the concept
+    try {
+      entity.setAttribute('filterCount', filters.length);
+    } catch (e) {
+      // Ignore if the attribute doesn't exist in the concept
+    }
 
     // Add to entities collection
     entities.add(entity);
