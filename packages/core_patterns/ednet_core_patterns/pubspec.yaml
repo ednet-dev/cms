@@ -1,0 +1,18 @@
+name: ednet_core_patterns
+description: Implementation of Enterprise Integration Patterns for EDNet Core.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.7.2
+
+# Add regular dependencies here.
+dependencies:
+  ednet_core: ^1.0.0
+  meta: ^1.9.1
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.24.0
+  mockito: ^5.4.2
+  build_runner: ^2.4.6

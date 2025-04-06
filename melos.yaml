@@ -3,6 +3,7 @@ name: EDNetDev
 packages:
   - "apps/*"
   - "packages/core"
+  - "packages/core_patterns"
   - "packages/code_generation"
   - "packages/cms"
   - "packages/content"
@@ -133,3 +134,25 @@ scripts:
       git tag ednet_flow-v$VERSION && \
       git push origin main --tags && \
       melos publish --scope="ednet_flow" --no-dry-run
+
+  # Publish ednet_core_patterns
+  publish:core_patterns:
+    description: "Publish ednet_core_patterns package (create tag, push, and publish)"
+    run: |
+      melos version --manual-version="ednet_core_patterns:$VERSION" && \
+      git add . && \
+      git commit -m "chore(release): 🚀 ednet_core_patterns release v$VERSION" && \
+      git tag ednet_core_patterns-v$VERSION && \
+      git push origin main --tags && \
+      melos publish --scope="ednet_core_patterns" --no-dry-run
+
+  # Publish ednet_content
+  publish:content:
+    description: "Publish ednet_content package (create tag, push, and publish)"
+    run: |
+      melos version --manual-version="ednet_content:$VERSION" && \
+      git add . && \
+      git commit -m "chore(release): 🚀 ednet_content release v$VERSION" && \
+      git tag ednet_content-v$VERSION && \
+      git push origin main --tags && \
+      melos publish --scope="ednet_content" --no-dry-run
