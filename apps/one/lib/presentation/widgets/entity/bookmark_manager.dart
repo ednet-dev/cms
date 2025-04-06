@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A bookmark entity representing a saved reference to an entity

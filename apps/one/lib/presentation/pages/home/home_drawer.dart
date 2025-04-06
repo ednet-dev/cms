@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_state.dart';
 import 'package:ednet_one/presentation/theme/theme_components/custom_colors.dart';
+import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
+import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 
 /// Component for the application's main navigation drawer
 class HomeDrawer extends StatefulWidget {
@@ -306,10 +311,45 @@ class _DomainSection extends StatelessWidget {
                   onTap: () {
                     // If not already selected, select the domain
                     if (domain != state.selectedDomain) {
-                      // Dispatch the domain selection event
+                      debugPrint('🔍 Selecting domain: ${domain.code}');
+
+                      // 1. Dispatch the domain selection event
                       context.read<DomainSelectionBloc>().add(
                         SelectDomainEvent(domain),
                       );
+
+                      // 2. Update models for the selected domain
+                      final modelBloc = context.read<ModelSelectionBloc>();
+                      modelBloc.add(UpdateModelsForDomainEvent(domain));
+
+                      // 3. After a brief delay, select a model and update concepts
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        final modelState = modelBloc.state;
+                        if (modelState.availableModels.isNotEmpty) {
+                          // Try to find a non-Application model first
+                          Model? modelToSelect;
+                          for (var model in modelState.availableModels) {
+                            if (model.code.toLowerCase() != 'application') {
+                              modelToSelect = model;
+                              break;
+                            }
+                          }
+                          // If no alternative found, use the first model
+                          modelToSelect ??= modelState.availableModels.first;
+
+                          debugPrint(
+                            '🔍 Auto-selecting model: ${modelToSelect.code}',
+                          );
+                          modelBloc.add(SelectModelEvent(modelToSelect));
+
+                          // 4. Update concepts for the selected model
+                          final conceptBloc =
+                              context.read<ConceptSelectionBloc>();
+                          conceptBloc.add(
+                            UpdateConceptsForModelEvent(modelToSelect),
+                          );
+                        }
+                      });
                     }
                   },
                 ),
