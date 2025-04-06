@@ -1,6 +1,8 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/widgets/entity/entity_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
+    as header;
 
 import '../widgets/domain/models_widget.dart';
 import '../widgets/layout/web/header_widget.dart';
@@ -35,7 +37,7 @@ class DomainDetailPage extends StatelessWidget {
             }
           },
           filters: [],
-          onAddFilter: (FilterCriteria filter) {},
+          onAddFilter: (header.FilterCriteria filter) {},
           onBookmark: () {},
         ),
       ),

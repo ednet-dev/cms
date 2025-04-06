@@ -27,6 +27,12 @@ class HeaderWidget extends StatelessWidget {
   /// Optional callback when a bookmark is created
   final Function(Bookmark bookmark)? onBookmarkCreated;
 
+  /// Optional custom path segments
+  final List<String>? path;
+
+  /// Optional callback when a path segment is tapped
+  final Function(int index)? onPathSegmentTapped;
+
   /// Constructor for HeaderWidget
   const HeaderWidget({
     Key? key,
@@ -35,6 +41,8 @@ class HeaderWidget extends StatelessWidget {
     required this.onBookmark,
     this.bookmarkManager,
     this.onBookmarkCreated,
+    this.path,
+    this.onPathSegmentTapped,
   }) : super(key: key);
 
   @override
@@ -45,8 +53,10 @@ class HeaderWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Breadcrumb navigation that uses the current state
-        _buildBreadcrumb(context),
+        // Breadcrumb navigation that uses the current state or custom path
+        path != null
+            ? _buildCustomBreadcrumb(context)
+            : _buildBreadcrumb(context),
 
         // Active filters display
         if (filters.isNotEmpty)
@@ -75,6 +85,61 @@ class HeaderWidget extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+
+  /// Build a custom breadcrumb from string path
+  Widget _buildCustomBreadcrumb(BuildContext context) {
+    if (path == null || path!.isEmpty) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          children: [
+            for (int i = 0; i < path!.length; i++) ...[
+              if (i > 0)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Icon(
+                    Icons.chevron_right,
+                    size: 16,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              InkWell(
+                onTap:
+                    onPathSegmentTapped != null
+                        ? () => onPathSegmentTapped!(i)
+                        : null,
+                borderRadius: BorderRadius.circular(4),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
+                    vertical: 2.0,
+                  ),
+                  child: Text(
+                    path![i],
+                    style:
+                        i == path!.length - 1
+                            ? theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.primary,
+                            )
+                            : theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 

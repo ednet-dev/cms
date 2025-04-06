@@ -13,13 +13,15 @@ import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_event.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_state.dart';
 import 'package:ednet_one/presentation/widgets/layout/graph/algorithms/master_detail_layout_algorithm.dart';
-import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart';
+import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
+    as header_types;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../theme/theme.dart';
 import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
 import '../widgets/layout/web/footer_widget.dart';
+import '../widgets/layout/web/header_widget.dart';
 import '../widgets/layout/web/left_sidebar_widget.dart';
 import '../widgets/layout/web/main_content_widget.dart';
 import '../widgets/layout/web/right_sidebar_widget.dart';
@@ -180,7 +182,9 @@ class HomePageState extends State<HomePage> {
                             appBar: AppBar(
                               title: HeaderWidget(
                                 filters: const [],
-                                onAddFilter: (criteria) => print(criteria),
+                                onAddFilter:
+                                    (header_types.FilterCriteria criteria) =>
+                                        print(criteria),
                                 onBookmark: () => print('onBookmark'),
                                 onPathSegmentTapped: print,
                                 path: const ['Home'],
