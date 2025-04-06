@@ -1,0 +1,464 @@
+# EDNet One Presentation Layer Refactoring Plan
+
+## Refactoring Workflow
+
+### Principles
+1. **Healthy State First**: All refactoring must start from a healthy state where the application can run from main.dart and render correctly in browser.
+2. **Maintain Buildability**: After each logical refactoring step, ensure the application still builds successfully with Flutter.
+3. **Incremental Changes**: Make small, focused changes rather than large rewrites to maintain stability.
+4. **Test Frequently**: Run the application after each significant change to verify functionality.
+5. **Leverage Core Domain Model**: Prefer extending or implementing interfaces from ednet_core rather than introducing third-party dependencies. The core domain model already provides robust functionality for equality, immutability, and other key features.
+
+### Workflow Cycle
+1. **Verify Starting State**: Ensure the application is in a healthy state before beginning refactoring.
+2. **Select Refactoring Task**: Choose a specific task from the plan below, focusing on one logical change.
+3. **Implement Changes**: Make the necessary code changes to complete the selected task.
+4. **Build and Test**: Run `flutter build web` to verify the build succeeds.
+5. **Verify Functionality**: Run the application to ensure it works as expected.
+6. **Commit Changes**: Create a semantic commit scoped to "one" with a descriptive message of what was changed.
+7. **Update Progress**: Mark the completed task in this document and update the current focus.
+8. **Repeat**: Begin the next refactoring task from step 1.
+
+### Commit Message Format
+Format: `<type>(one): <description>`
+
+Types:
+- `refactor`: Code changes that neither fix a bug nor add a feature
+- `feat`: Addition of a new feature
+- `fix`: Bug fixes
+- `docs`: Documentation changes
+- `style`: Formatting, missing semicolons, etc; no code change
+- `test`: Adding or refactoring tests; no production code change
+
+Example: `refactor(one): Move theme files to dedicated theme directory`
+
+## Overview
+This document outlines a comprehensive refactoring plan for the presentation layer of the EDNet One application. The plan is organized into phases to allow incremental improvements without disrupting the existing functionality.
+
+## Phase 1: Project Structure Reorganization
+
+### Step 1.1: Create New Folder Structure
+- [x] Create the following folder structure:
+  ```
+  presentation/
+  ├── pages/          # Container components (smart)
+  ├── widgets/        # Reusable presentational components (dumb) 
+  ├── state/          # State management
+  │   ├── blocs/      # BLoC pattern implementations
+  │   ├── models/     # UI models/DTOs
+  │   └── providers/  # Service providers
+  ├── layouts/        # Layout components and strategies
+  ├── navigation/     # Navigation service and routes
+  └── theme/          # Theme configuration
+  ```
+
+### Step 1.2: Move and Rename Theme-Related Files
+- [x] Move theme.dart to presentation/theme/
+- [x] Create theme_constants.dart file for all theme constants
+- [x] Extract theme-related logic from blocs to a dedicated service
+
+### Step 1.3: Reorganize Widget Files
+- [x] Move screens with business logic to presentation/pages/
+- [x] Rename inconsistently named widget files (standardize naming convention)
+- [x] Move purely presentational widgets to presentation/widgets/
+- [x] Separate layout components to presentation/layouts/
+
+## Phase 2: State Management Refactoring
+
+### Step 2.1: Create UI Model Layer (Domain Abstraction)
+- [  ] Define UI model classes in presentation/state/models/ by extending the appropriate ednet_core base classes
+- [  ] Create mappers between domain models and UI models
+- [  ] Update references to use UI models instead of domain models directly
+
+### Step 2.2: Refactor BLoC Implementation
+- [x] Move bloc files to state/blocs directory
+- [x] Split DomainBloc into smaller, focused blocs:
+  - [x] DomainSelectionBloc (domain selection logic)
+  - [x] ModelSelectionBloc (model selection logic)
+  - [x] ConceptSelectionBloc (concept selection logic)
+- [x] Organize events, states, and blocs using a feature-based structure
+- [x] Implement proper dependency injection for blocs
+
+### Step 2.3: Create Service Providers
+- [x] Create a DomainService to handle domain-related operations
+- [x] Create a NavigationService for consistent navigation handling
+- [x] Create a ThemeService for theme management
+
+## Phase 3: Component Decomposition and Cleanup
+
+### Step 3.1: Break Down Large Widgets
+- [x] Refactor entity_widget.dart (859 lines) into smaller components:
+  - [x] Create a directory structure for entity components:
+    ```
+    presentation/
+    ├── widgets/
+    │   ├── entity/
+    │   │   ├── attribute_widget_factory.dart  # Factory for creating attribute widgets
+    │   │   ├── entity_attributes.dart         # Component for rendering attributes section
+    │   │   ├── entity_relationships.dart      # Component for rendering relationships section
+    │   │   ├── entity_header.dart             # Component for rendering entity header
+    │   │   ├── entity_actions.dart            # Component for entity action buttons
+    │   │   └── entity_widget.dart             # Main entity widget (orchestrates components)
+    ```
+  - [x] Extract AttributeWidgetFactory class to handle attribute widget creation based on type
+  - [x] Create EntityAttributes component for rendering the attributes section
+  - [x] Create EntityRelationships component for rendering the relationships section
+  - [x] Create EntityHeader component for rendering the entity header with title and metadata
+  - [x] Create EntityActions component for handling entity action buttons
+  - [x] Update the main EntityWidget to compose these components
+
+- [x] Refactor home_page.dart into smaller components:
+  - [x] Create a directory structure for home page components:
+    ```
+    presentation/
+    ├── pages/
+    │   ├── home/
+    │   │   ├── domain_selector.dart      # Domain selection component
+    │   │   ├── model_selector.dart       # Model selection component 
+    │   │   ├── concept_selector.dart     # Concept selection component
+    │   │   ├── home_app_bar.dart         # Custom app bar for home page
+    │   │   ├── home_drawer.dart          # Navigation drawer 
+    │   │   └── home_page.dart            # Main home page (orchestrates components)
+    ```
+  - [x] Extract domain selection UI into separate DomainSelector component
+  - [x] Extract model selection UI into separate ModelSelector component
+  - [x] Extract concept selection UI into separate ConceptSelector component
+  - [x] Create HomeAppBar component for the custom app bar
+  - [x] Create HomeDrawer component for the navigation drawer
+  - [x] Update the main HomePage to compose these components
+
+- [x] Refactor meta_domain_canvas.dart and meta_domain_painter.dart:
+  - [x] Create a directory structure for canvas components:
+    ```
+    presentation/
+    ├── widgets/
+    │   ├── canvas/
+    │   │   ├── painters/              # Custom painters
+    │   │   │   ├── entity_painter.dart
+    │   │   │   ├── relation_painter.dart
+    │   │   │   └── grid_painter.dart
+    │   │   ├── interactions/          # Gesture handlers
+    │   │   │   ├── pan_handler.dart
+    │   │   │   ├── zoom_handler.dart
+    │   │   │   └── selection_handler.dart
+    │   │   ├── render_objects/        # Canvas objects
+    │   │   │   ├── canvas_entity.dart
+    │   │   │   └── canvas_relation.dart
+    │   │   └── meta_domain_canvas.dart # Main canvas widget
+    ```
+  - [x] Extract entity painting logic into EntityPainter
+  - [x] Extract relation painting logic into RelationPainter
+  - [x] Extract grid painting logic into GridPainter
+  - [x] Create interaction handlers for pan, zoom, and selection
+  - [x] Create canvas-specific entity and relation classes for rendering
+  - [x] Update the main MetaDomainCanvas to use these components
+
+### Step 3.2: Standardize Component Interfaces
+- [x] Create consistent naming conventions (Page for container components, Widget for presentational)
+- [x] Standardize prop passing and callback patterns
+- [x] Apply composition over inheritance where appropriate
+
+### Step 3.3: Code Cleanup
+- [  ] Remove or repair commented-out code
+- [  ] Add proper error handling and null checking
+- [  ] Improve documentation and add widget documentation headers
+- [  ] Extract magic numbers and string constants to constants files
+
+## Phase 4: Graph and Layout Refactoring
+
+### Step 4.1: Reorganize Graph Implementation
+- [  ] Create a unified graph module in layouts/graph/
+- [  ] Standardize algorithm interfaces
+- [  ] Improve separation of concerns in graph code
+
+### Step 4.2: Optimize Layout Algorithms
+- [  ] Refactor layout algorithms for better performance
+- [  ] Add caching mechanisms for layout calculations
+- [  ] Implement lazy rendering for large graphs
+
+### Step 4.3: Create Abstraction for Decorators
+- [  ] Standardize decorator interfaces
+- [  ] Implement composable decorator pattern
+- [  ] Add documentation for creating custom decorators
+
+## Phase 5: Navigation and Routing
+
+### Step 5.1: Implement Consistent Navigation
+- [x] Create a route definition system in navigation/routes.dart
+- [  ] Implement named routes for all pages
+- [  ] Add route parameter handling
+
+### Step 5.2: Add Deep Linking Support
+- [  ] Implement URL-based navigation
+- [  ] Add bookmark and sharing functionality
+- [  ] Support state restoration
+
+## Phase 6: Testing and Documentation
+
+### Step 6.1: Add Unit Tests
+- [  ] Create tests for UI model mappers
+- [  ] Create tests for BLoC logic
+- [  ] Create tests for service providers
+
+### Step 6.2: Add Widget Tests
+- [  ] Create tests for key presentational components
+- [  ] Create tests for page components
+- [  ] Create tests for navigation flows
+
+### Step 6.3: Complete Documentation
+- [  ] Document component usage guidelines
+- [  ] Document state management patterns
+- [  ] Create example usage for custom components
+
+## Phase 7: Critical Feature Implementation
+
+### Step 7.1: Implement Navigable and Bookmarkable Breadcrumbs ⭐ PRIORITY ⭐
+- [ ] Create BreadcrumbWidget component in presentation/widgets/navigation/
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── navigation/
+  │   │   ├── breadcrumb/
+  │   │   │   ├── breadcrumb_item.dart       # Individual breadcrumb segment
+  │   │   │   ├── breadcrumb_separator.dart  # Visual separator between segments
+  │   │   │   └── breadcrumb_widget.dart     # Main breadcrumb component
+  ```
+- [ ] Tasks:
+  - [ ] Create BreadcrumbItem with navigation functionality
+  - [ ] Add bookmark icon to current/selected breadcrumb item
+  - [ ] Implement breadcrumb path generation using domain/model/concept/entity information
+  - [ ] Integrate with NavigationHelper to handle navigation on breadcrumb segment click
+  - [ ] Add smooth scrolling for long breadcrumb trails
+  - [ ] Create BookmarkAction that saves current navigation state
+  - [ ] Add tooltip support for long segment names
+  - [ ] Add keyboard shortcuts for breadcrumb navigation
+
+### Step 7.2: Enhance Bookmarking System
+- [ ] Create a comprehensive bookmarking system:
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── bookmarks/
+  │   │   ├── bookmark_item.dart          # Individual bookmark representation
+  │   │   ├── bookmark_category.dart      # Category component for grouping
+  │   │   ├── bookmark_sidebar.dart       # Collapsible sidebar for bookmarks
+  │   │   ├── bookmark_dialog.dart        # Dialog for creating/editing bookmarks
+  │   │   └── bookmarks_screen.dart       # Full bookmark management screen
+  ```
+- [ ] Tasks:
+  - [ ] Create BookmarkItem with customizable icons based on bookmark type
+  - [ ] Implement BookmarkCategory for organizing bookmarks
+  - [ ] Create a collapsible BookmarkSidebar accessible from the app bar
+  - [ ] Build BookmarkDialog for creating and editing bookmarks
+  - [ ] Create a full-featured BookmarksScreen accessible from main menu
+  - [ ] Add drag-and-drop support for organizing bookmarks
+  - [ ] Implement bookmark persistence using SharedPreferences
+  - [ ] Add bookmark export/import functionality
+
+### Step 7.3: Implement Entity Filtering System
+- [ ] Create a robust entity filtering system:
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── filters/
+  │   │   ├── filter_criteria.dart        # Data model for filter criteria
+  │   │   ├── filter_builder.dart         # UI for building complex filters
+  │   │   ├── filter_preset.dart          # Saved filter configurations
+  │   │   ├── attribute_filter.dart       # Filter for entity attributes
+  │   │   ├── relation_filter.dart        # Filter for entity relationships
+  │   │   ├── date_filter.dart            # Specialized date range filter
+  │   │   ├── numeric_filter.dart         # Specialized numeric filter
+  │   │   └── filter_drawer.dart          # Main filter UI container
+  ```
+- [ ] Tasks:
+  - [ ] Create FilterCriteria class to represent filter conditions
+  - [ ] Implement FilterBuilder UI for constructing complex queries
+  - [ ] Create specialized filter components (text, date, numeric)
+  - [ ] Build FilterDrawer that slides in from the right
+  - [ ] Create FilterPreset system for saving and applying filters
+  - [ ] Implement filter persistence with SharedPreferences
+  - [ ] Add filter combination operators (AND, OR, NOT)
+  - [ ] Create visual indicators for active filters
+
+### Step 7.4: Implement Master-Detail Navigation Enhancements
+- [ ] Enhance master-detail navigation:
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── navigation/
+  │   │   ├── history/
+  │   │   │   ├── navigation_history.dart      # Navigation history tracking
+  │   │   │   ├── history_dropdown.dart        # Dropdown for history navigation
+  │   │   │   └── forward_back_buttons.dart    # Forward/back navigation buttons
+  │   │   ├── related_panel.dart               # Panel for related entities
+  │   │   └── favorites_section.dart           # Section for favorite locations
+  ```
+- [ ] Tasks:
+  - [ ] Implement NavigationHistory to track visited entities
+  - [ ] Create forward/back navigation buttons
+  - [ ] Build a dropdown for quick access to navigation history
+  - [ ] Implement RelatedPanel to show entities related to the current selection
+  - [ ] Create FavoritesSection for quick access to commonly used locations
+  - [ ] Add keyboard shortcuts for navigation (Alt+Left/Right)
+  - [ ] Implement navigation state persistence
+  - [ ] Create visualization for navigation path
+
+### Step 7.5: Implement Enhanced Canvas Visualization
+- [ ] Enhance canvas visualization capabilities:
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── canvas/
+  │   │   ├── visualization/
+  │   │   │   ├── relationship_visualizer.dart   # Visualize entity relationships
+  │   │   │   ├── node_clustering.dart           # Clustering algorithm for complex domains
+  │   │   │   ├── mini_map.dart                  # Navigation mini-map
+  │   │   │   └── layout_manager.dart            # Manage different visualization layouts
+  ```
+- [ ] Tasks:
+  - [ ] Implement RelationshipVisualizer for entity connections
+  - [ ] Create NodeClustering to handle complex domains
+  - [ ] Add zoom and pan controls with intuitive gestures
+  - [ ] Build MiniMap for navigating complex graphs
+  - [ ] Create LayoutManager to switch between visualization strategies
+  - [ ] Implement entity grouping by attribute values
+  - [ ] Add visual styling options for nodes and edges
+  - [ ] Create animation effects for transitions
+
+### Step 7.6: Implement Comprehensive Theming
+- [ ] Create a comprehensive theming system:
+  ```
+  presentation/
+  ├── theme/
+  │   ├── selector/
+  │   │   ├── theme_selector.dart         # UI for selecting themes
+  │   │   ├── color_palette_selector.dart # UI for customizing colors
+  │   │   └── theme_preview.dart          # Preview component for themes
+  │   ├── presets/
+  │   │   ├── theme_night.dart            # Night theme preset
+  │   │   ├── theme_ocean.dart            # Ocean theme preset
+  │   │   └── theme_forest.dart           # Forest theme preset
+  ```
+- [ ] Tasks:
+  - [ ] Create ThemeSelector with visual previews
+  - [ ] Implement theme persistence in SharedPreferences
+  - [ ] Build ColorPaletteSelector for customization
+  - [ ] Add support for Material You/dynamic theming on Android
+  - [ ] Create named theme presets (Night, Ocean, Forest, etc.)
+  - [ ] Implement ThemePreview for seeing changes before applying
+  - [ ] Add animation for theme transitions
+  - [ ] Create theme export/import functionality
+
+### Step 7.7: Implement Multiplatform Support
+- [ ] Enhance multiplatform support:
+  ```
+  presentation/
+  ├── layouts/
+  │   ├── responsive/
+  │   │   ├── mobile_layout.dart          # Stacked layout for mobile
+  │   │   ├── tablet_layout.dart          # Hybrid layout for tablets
+  │   │   ├── desktop_layout.dart         # Side-by-side layout for desktop
+  │   │   └── responsive_builder.dart     # Builder that selects appropriate layout
+  ```
+- [ ] Tasks:
+  - [ ] Create platform-specific layouts (mobile, tablet, desktop)
+  - [ ] Implement ResponsiveBuilder for selecting layouts
+  - [ ] Add touch-friendly controls for mobile
+  - [ ] Implement keyboard shortcuts for desktop
+  - [ ] Create mobile-specific navigation (bottom navigation)
+  - [ ] Add platform detection and UI adaptation
+  - [ ] Implement gesture detection for different platforms
+  - [ ] Create adaptive drawer behavior
+
+## Progress Tracking
+- Phase 1: Complete (3/3 steps completed)
+- Phase 2: Complete (3/3 steps completed)
+- Phase 3: In Progress (2/3 steps completed)
+- Phase 4: Not started
+- Phase 5: In Progress (1/2 steps completed)
+- Phase 6: Not started
+- Phase 7: In Progress (3/7 steps completed - Breadcrumb navigation, Bookmarking system, and Entity Filtering System completed)
+
+## Current Focus
+- Phase 7, Step 7.4: Master-Detail Navigation Enhancements
+  - Next task: Enhance master-detail navigation
+  - Following task: Implement Enhanced Canvas Visualization
+
+## Implementation Updates
+- Completed integration of refactored home components:
+  - Modified main.dart to use the new HomePage component from the refactored structure
+  - Removed the old home_page.dart file after successful integration
+  - All home page functionality now uses the decomposed components for improved maintainability
+
+- Completed integration of refactored entity components:
+  - Created dedicated components for EntityWidget, EntityAttributes, EntityRelationships, etc.
+  - Added BookmarkManager and Bookmark classes in their own files
+  - Added EntitiesWidget in a dedicated file
+  - Updated all references to the old entity_widget.dart throughout the codebase
+  - Removed the old entity_widget.dart file after successful updates
+  - All entity-related functionality now uses the decomposed components
+
+- Completed refactoring of meta_domain_canvas.dart and meta_domain_painter.dart:
+  - Created dedicated directory structure for canvas components
+  - Extracted entity painter logic into EntityPainter
+  - Extracted relation painter logic into RelationPainter
+  - Extracted grid painter logic into GridPainter
+  - Created PanHandler, ZoomHandler, and SelectionHandler for interaction logic
+  - Created CanvasEntity and CanvasRelation classes for rendering
+  - Updated the main MetaDomainCanvas to use these components
+  - Updated imports in dependent files
+
+- Started implementation of the navigation helper:
+  - Created NavigationHelper class to centralize domain/model/concept navigation
+  - Updated all navigation code to use the helper for consistency
+  - Fixed issues with domain selection in the drawer
+
+- Completed implementation of navigable and bookmarkable breadcrumbs:
+  - Created BreadcrumbWidget component with bookmark functionality
+  - Implemented BreadcrumbItem and BreadcrumbSeparator components
+  - Added BreadcrumbPath model for structured navigation state
+  - Integrated breadcrumbs into the HeaderWidget
+  - Updated HomePage to use the new HeaderWidget interface
+  - Connected breadcrumb navigation to the existing NavigationHelper
+
+- Completed implementation of enhanced bookmarking system:
+  - Created a more robust BookmarkModel with categories and metadata
+  - Implemented an enhanced BookmarkManager with advanced features
+  - Created BookmarkItem component for displaying individual bookmarks
+  - Added BookmarkCategorySection for organizing bookmarks by category
+  - Implemented BookmarkDialog for creating and editing bookmarks
+  - Created BookmarkSidebar for quick access to bookmarks
+  - Added a full-featured BookmarksScreen with tabs, search, import/export
+
+- Completed implementation of Entity Filtering System:
+  - Created FilterCriteria, FilterGroup, and FilterPreset models
+  - Implemented FilterBuilder for building complex filter conditions
+  - Added specialized filter components (AttributeFilter, RelationFilter)
+  - Built FilterDrawer that slides in from the right
+  - Created FilterManager to manage filter state and persistence
+  - Added support for saving and applying filter presets
+  - Implemented filter import/export functionality
+  - Added visual indicators for active filters
+
+## Best Practices for Component Decomposition
+
+### Component Design Principles
+1. **Single Responsibility**: Each component should do one thing and do it well
+2. **Interface Segregation**: Components should expose minimal interfaces needed for their function
+3. **Composition**: Prefer composition over inheritance for component reuse
+4. **Statelessness**: Keep most components stateless where possible
+5. **Pure Rendering**: Separate rendering logic from business logic
+
+### Refactoring Strategy
+1. Extract each logical section into its own widget file
+2. Pass only the data and callbacks needed for that specific component
+3. Use constructor parameters with named arguments for clarity
+4. Document the purpose and usage of each component
+5. Test each component in isolation before integration
+
+### Performance Considerations
+1. Use const constructors where appropriate
+2. Implement shouldRebuild for custom render objects
+3. Apply the equatable pattern for efficient equality checks
+4. Consider lazy loading for complex component trees
+5. Profile performance before and after refactoring

@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Test-Driven Development Workflow Rule
+
+Before writing any implementation code, follow these TDD steps:
+
+1.  **Red**: Write a minimal failing test that clearly expresses the desired behavior or functionality. Ensure it fails for the *expected reason*.
+2.  **Green**: Write the simplest possible code to make the test pass. Avoid optimizations or handling edge cases at this stage.
+3.  **Refactor**: Improve the implementation code for clarity, efficiency, and adherence to design principles, ensuring all tests still pass. Remove duplication.
+
+- Apply this cycle for every small piece of functionality.
+- Keep tests focused on a single behavior.
+- Ensure tests are independent and run quickly.
+- Prioritize testing public APIs and critical domain logic.

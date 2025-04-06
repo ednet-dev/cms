@@ -1,0 +1,35 @@
+---
+description: Use when making design decisions, restructuring code, or implementing new architectural patterns.
+globs: 
+alwaysApply: false
+---
+# EDNet Architecture Principles Rule
+
+When making architectural decisions or implementing new features, adhere to these principles:
+
+## Core Architecture Values
+- **Domain Centricity**: Domain model is the central organizing principle
+- **Separation of Concerns**: Clear boundaries between domain, application, and infrastructure
+- **Composition Over Inheritance**: Prefer mixins and composition patterns
+- **Platform Independence**: Core domain logic should be platform-agnostic
+- **Clear Abstractions**: Create well-defined interfaces between components
+
+## Package Structure
+- Maintain clean dependency direction (core → specialized packages)
+- Avoid circular dependencies between packages
+- Use internal library structure to hide implementation details
+- Provide clear public APIs with consistent patterns
+
+## Integration Design
+- Design for extensibility through well-defined extension points
+- Support various persistence strategies (Drift, REST, in-memory)
+- Enable UI framework independence (Flutter, Web, CLI)
+- Maintain compatibility with event sourcing and CQRS patterns
+
+## Evolution Strategy
+- Plan for backward compatibility while enabling innovation
+- Document breaking changes with clear migration paths
+- Version packages semantically to signal compatibility
+- Design APIs that are resilient to domain model evolution
+
+Architectural decisions should maintain the integrity of domain models while enabling technological flexibility and evolution.

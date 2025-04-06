@@ -1,0 +1,45 @@
+---
+description: Development principles for the ednet_core library, covering architecture fundamentals, implementation guidelines, testing requirements, documentation standards, and refactoring guidelines to maintain semantic consistency and domain integrity.
+globs: 
+alwaysApply: false
+---
+Library index: [ednet_core.dart](mdc:packages/core/lib/ednet_core.dart)
+
+# EDNetOne Core Library Development Principles
+
+## Architecture Fundamentals
+- **Domain-Driven Design**: Maintain strict adherence to the EDNetOne domain model
+- **Semantic Consistency**: Ensure concepts are implemented consistently across the codebase
+- **Separation of Concerns**: Clearly separate domain logic from infrastructure and presentation
+- **Immutability**: Prefer immutable data structures to prevent unintended side effects
+- **Traceability**: All domain behaviors should map to specific use cases from the EDNetOne model
+
+## Dart Implementation Guidelines
+- **Part Files Organization**: Each domain concept should have a proper part file structure
+- **Null Safety**: Strictly enforce sound null safety throughout the codebase
+- **Interface Segregation**: Define clear interfaces for each capability
+- **Extension Methods**: Use for adding functionality without modifying core classes
+- **Error Handling**: Use typed exceptions for domain-specific error conditions
+
+## Testing Requirements
+- **Domain Integrity Tests**: Verify semantic consistency across domain model implementations
+- **Invariant Validation**: Test that domain rules cannot be violated
+- **State Transition Tests**: Verify all state machine transitions behave correctly
+- **Behavior-Driven Tests**: Write tests that express domain behaviors in business language
+- **Regression Testing**: Maintain comprehensive test coverage for all fixed bugs
+
+## Documentation Standards
+- **Domain Language**: Use precise EDNetOne terminology in all documentation
+- **Intent Comments**: Document the "why" behind complex design decisions
+- **UML Diagrams**: Keep domain_model.puml/.svg in sync with actual implementations
+- **Example Use Cases**: Provide concrete examples for key domain operations
+- **API Documentation**: Document every public API with consistent formatting
+
+## Refactoring Guidelines
+- **Preserve Semantics**: Refactoring should never change domain behavior
+- **Improve Coherence**: Refactoring should bring implementation closer to domain model
+- **Incremental Changes**: Break large refactorings into smaller, testable increments
+- **Version Compatibility**: Consider backward compatibility for all API changes
+- **Migration Path**: Provide clear migration guidance for breaking changes
+
+The EDNetOne Core is the foundation of the Explicit Democracy Network platform. Its quality, correctness, and coherence directly impact the integrity of democratic processes. All development must maintain the highest standards of precision, reliability, and semantic clarity.

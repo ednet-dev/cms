@@ -1,0 +1,88 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# EDNetOne Domain Model
+
+When examples or implementations require a business domain, use the EDNetOne (Explicit Democracy Network One) ecosystem - a comprehensive global direct democracy platform that integrates technological, social, and political dimensions.
+
+## Core Domain
+
+### Participant Roles
+- **Citizens**: Verified individuals with full voting rights
+- **Delegates**: Citizens who can receive delegated voting power
+- **Observers**: Non-voting participants who can view proceedings
+- **Experts**: Domain specialists who provide analysis on proposals
+- **Facilitators**: Neutral moderators who guide deliberation processes
+- **Auditors**: Independent reviewers of system integrity
+- **Developers**: Contributors to platform code and architecture
+
+### Governance Mechanisms
+- **Liquid Democracy**: Fluid delegation system allowing vote transfers
+- **Deliberative Processes**: Structured debate with knowledge-building
+- **Co-creation Workflows**: Collaborative proposal development
+- **Quadratic Voting**: Preference-weighted voting systems
+- **Futarchy**: Prediction markets informing decision-making
+- **Sortition**: Random selection for representative bodies
+- **Consensus Algorithms**: Graduated agreement measurement
+
+### Identity & Trust
+- **Sybil Resistance**: Prevention of duplicate identities
+- **Reputation Systems**: Context-specific trust metrics
+- **Pseudonymity**: Protected identity with accountability
+- **Credentialing**: Verified expertise and experience
+- **Progressive Trust**: Gradually increasing permissions
+- **Zero-Knowledge Proofs**: Privacy-preserving verification
+
+## Technical Components
+
+### Data Systems
+- **Public Ledgers**: Immutable voting records
+- **Knowledge Graphs**: Interconnected policy information
+- **Semantic Analysis**: Understanding of proposal implications
+- **Data Sovereignty**: User control over personal information
+- **Collective Intelligence**: Aggregation of distributed knowledge
+
+### Interface & Experience
+- **Accessibility Frameworks**: Universal design principles
+- **Progressive Disclosure**: Information revelation based on context
+- **Deliberation Visualization**: Maps of arguments and positions
+- **Preference Articulation**: Nuanced expression of citizen views
+- **Cultural Adaptation**: Localized engagement patterns
+
+### Security & Resilience
+- **Byzantine Fault Tolerance**: System reliability despite malicious actors
+- **Censorship Resistance**: Protection against suppression
+- **Distributed Architecture**: No single points of failure
+- **Threat Modeling**: Anticipation of attack vectors
+- **Participatory Security**: Community-based protection
+
+## Social Dynamics
+
+### Conflict Resolution
+- **Mediation Frameworks**: Structured disagreement resolution
+- **Impact Assessment**: Understanding effects across constituencies
+- **Restorative Processes**: Repairing harm in the community
+- **Value Pluralism**: Accommodating diverse ethical frameworks
+
+### Collective Action
+- **Resource Pooling**: Collaborative funding mechanisms
+- **Commons Management**: Shared resource governance
+- **Mobilization Patterns**: Activation of community response
+- **Distributed Coordination**: Self-organizing action networks
+
+## Use Cases
+- Participatory budgeting systems for municipal governance
+- Cross-border policy harmonization initiatives
+- Digital commons management for knowledge resources
+- Stakeholder-driven corporate governance
+- Community-owned infrastructure development
+- Inter-jurisdictional dispute resolution
+- Crisis response coordination systems
+- Long-term existential risk governance
+- Public-private collaboration frameworks
+- Scientific consensus-building platforms
+
+This domain offers rich opportunities for modeling complex human systems, emergent behaviors, and adaptive governance structures in technological contexts.

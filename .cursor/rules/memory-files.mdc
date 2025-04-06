@@ -1,0 +1,35 @@
+---
+description: When undertaking significant refactoring or feature development initiatives, maintain a Subject.Memory file to track progress and preserve context
+globs: 
+alwaysApply: false
+---
+# TDD Memory File Rule
+
+When undertaking significant refactoring or feature development initiatives, maintain a TDD Memory file to track progress and preserve context:
+
+## Memory File Structure
+- **Context Summary**: Brief overview of what's being worked on
+- **Current Status**: Current phase of development and immediate next tests
+- **Test Plan**: Organized checklist of test categories and specific test cases
+- **Completed Tests**: Detailed record of implemented tests with status
+- **Next Steps**: Prioritized list of upcoming work
+- **Recent Refactoring**: Notes on code changes and architectural decisions
+- **Technical Debt**: Identified issues to address in future iterations
+
+## Memory File Usage
+- Update the memory file before and after each significant development session
+- Record every completed test with implementation details
+- Document architectural decisions and their rationales
+- Track progress using checkboxes for planned test cases
+- Use consistent domain examples across all tests
+- Include semantic commit messages for completed work
+
+## Refactoring Guidelines
+- Never remove tests during refactoring unless they're explicitly obsolete
+- Update the memory file to reflect structural changes to the codebase
+- Document any shifts in testing strategy or architecture
+- Ensure refactoring preserves semantic meaning of domain concepts
+- Verify all existing tests pass after refactoring
+- Record any new technical debt introduced by refactoring
+
+The memory file serves as both documentation and a development guide, ensuring continuity across development sessions and providing clear context for the evolving codebase.

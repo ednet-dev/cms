@@ -73,7 +73,7 @@ class AttributeType extends Entity<AttributeType> {
     return regexp.hasMatch(email);
   }
 
-  validate(String value) {
+  bool validate(String value) {
     if (base == 'num') {
       try {
         num.parse(value);
@@ -111,6 +111,39 @@ class AttributeType extends Entity<AttributeType> {
       }
     } else if (code == 'Email') {
       return isEmail(value);
+    }
+    return true;
+  }
+
+  bool validateValue(dynamic value) {
+    if (value == null) {
+      return true;
+    }
+
+    if (base == 'num') {
+      return value is num;
+    } else if (base == 'int') {
+      return value is int;
+    } else if (base == 'double') {
+      return value is double;
+    } else if (base == 'bool') {
+      return value is bool;
+    } else if (base == 'DateTime') {
+      return value is DateTime;
+    } else if (base == 'Duration') {
+      return value is Duration;
+    } else if (base == 'Uri') {
+      return value is Uri;
+    } else if (code == 'Email') {
+      if (!(value is String)) {
+        return false;
+      }
+      return true;
+    } else if (base == 'String') {
+      if (!(value is String)) {
+        return false;
+      }
+      return true;
     }
     return true;
   }

@@ -1,14 +1,14 @@
  
 // test/project/core/project_core_resource_test.dart 
  
-import 'package:test/test.dart'; 
-import 'package:ednet_core/ednet_core.dart'; 
-import '../../../lib/project_core.dart'; 
+import "package:test/test.dart"; 
+import "package:ednet_core/ednet_core.dart"; 
+import "package:project_core/project_core.dart"; 
  
 void testProjectCoreResources( 
     ProjectDomain projectDomain, CoreModel coreModel, Resources resources) { 
   DomainSession session; 
-  group('Testing Project.Core.Resource', () { 
+  group("Testing Project.Core.Resource", () { 
     session = projectDomain.newSession();  
     setUp(() { 
       coreModel.init(); 
@@ -17,20 +17,20 @@ void testProjectCoreResources(
       coreModel.clear(); 
     }); 
  
-    test('Not empty model', () { 
+    test("Not empty model", () { 
       expect(coreModel.isEmpty, isFalse); 
       expect(resources.isEmpty, isFalse); 
     }); 
  
-    test('Empty model', () { 
+    test("Empty model", () { 
       coreModel.clear(); 
       expect(coreModel.isEmpty, isTrue); 
       expect(resources.isEmpty, isTrue); 
       expect(resources.exceptions.isEmpty, isTrue); 
     }); 
  
-    test('From model to JSON', () { 
-      final json = coreModel.toJson(); 
+    test("From model to JSON", () { 
+      var json = coreModel.toJson(); 
       expect(json, isNotNull); 
  
       print(json); 
@@ -38,8 +38,8 @@ void testProjectCoreResources(
       //coreModel.display(); 
     }); 
  
-    test('From JSON to model', () { 
-      final json = coreModel.toJson(); 
+    test("From JSON to model", () { 
+      var json = coreModel.toJson(); 
       coreModel.clear(); 
       expect(coreModel.isEmpty, isTrue); 
       coreModel.fromJson(json); 
@@ -48,187 +48,193 @@ void testProjectCoreResources(
       coreModel.display(); 
     }); 
  
-    test('From model entry to JSON', () { 
-      final json = coreModel.fromEntryToJson('Resource'); 
+    test("From model entry to JSON", () { 
+      var json = coreModel.fromEntryToJson("Resource"); 
       expect(json, isNotNull); 
  
       print(json); 
-      //coreModel.displayEntryJson('Resource'); 
+      //coreModel.displayEntryJson("Resource"); 
       //coreModel.displayJson(); 
       //coreModel.display(); 
     }); 
  
-    test('From JSON to model entry', () { 
-      final json = coreModel.fromEntryToJson('Resource'); 
+    test("From JSON to model entry", () { 
+      var json = coreModel.fromEntryToJson("Resource"); 
       resources.clear(); 
       expect(resources.isEmpty, isTrue); 
       coreModel.fromJsonToEntry(json); 
       expect(resources.isEmpty, isFalse); 
  
-      resources.display(title: 'From JSON to model entry'); 
+      resources.display(title: "From JSON to model entry"); 
     }); 
  
-    test('Add resource required error', () { 
+    test("Add resource required error", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Add resource unique error', () { 
+    test("Add resource unique error", () { 
       // no id attribute 
     }); 
  
-    test('Not found resource by oid', () { 
-      final ednetOid = Oid.ts(1345648254063); 
-      final resource = resources.singleWhereOid(ednetOid); 
+    test("Not found resource by oid", () { 
+      var ednetOid = Oid.ts(1345648254063); 
+      var resource = resources.singleWhereOid(ednetOid); 
       expect(resource, isNull); 
     }); 
  
-    test('Find resource by oid', () { 
-      final randomResource = coreModel.resources.random(); 
-      final resource = resources.singleWhereOid(randomResource.oid); 
+    test("Find resource by oid", () { 
+      var randomResource = coreModel.resources.random(); 
+      var resource = resources.singleWhereOid(randomResource.oid); 
       expect(resource, isNotNull); 
       expect(resource, equals(randomResource)); 
     }); 
  
-    test('Find resource by attribute id', () { 
+    test("Find resource by attribute id", () { 
       // no id attribute 
     }); 
  
-    test('Find resource by required attribute', () { 
+    test("Find resource by required attribute", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Find resource by attribute', () { 
-      final randomResource = coreModel.resources.random(); 
-      final resource = 
-          resources.firstWhereAttribute('name', randomResource.name); 
+    test("Find resource by attribute", () { 
+      var randomResource = coreModel.resources.random(); 
+      var resource = 
+          resources.firstWhereAttribute("name", randomResource.name); 
       expect(resource, isNotNull); 
       expect(resource.name, equals(randomResource.name)); 
     }); 
  
-    test('Select resources by attribute', () { 
-      final randomResource = coreModel.resources.random(); 
-      final selectedResources = 
-          resources.selectWhereAttribute('name', randomResource.name); 
+    test("Select resources by attribute", () { 
+      var randomResource = coreModel.resources.random(); 
+      var selectedResources = 
+          resources.selectWhereAttribute("name", randomResource.name); 
       expect(selectedResources.isEmpty, isFalse); 
-      for (final se in selectedResources) {        expect(se.name, equals(randomResource.name));      } 
-      //selectedResources.display(title: 'Select resources by name'); 
+      selectedResources.forEach((se) => 
+          expect(se.name, equals(randomResource.name))); 
+ 
+      //selectedResources.display(title: "Select resources by name"); 
     }); 
  
-    test('Select resources by required attribute', () { 
+    test("Select resources by required attribute", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Select resources by attribute, then add', () { 
-      final randomResource = coreModel.resources.random(); 
-      final selectedResources = 
-          resources.selectWhereAttribute('name', randomResource.name); 
+    test("Select resources by attribute, then add", () { 
+      var randomResource = coreModel.resources.random(); 
+      var selectedResources = 
+          resources.selectWhereAttribute("name", randomResource.name); 
       expect(selectedResources.isEmpty, isFalse); 
       expect(selectedResources.source?.isEmpty, isFalse); 
       var resourcesCount = resources.length; 
  
-      final resource = Resource(resources.concept) 
-
-      ..name = 'horse'
-      ..type = 'tree'
-      ..cost = 64.93998703292606;      final added = selectedResources.add(resource); 
+      var resource = Resource(resources.concept); 
+      resource.name = 'heaven'; 
+      resource.type = 'election'; 
+      resource.cost = 62.840963731458096; 
+      var added = selectedResources.add(resource); 
       expect(added, isTrue); 
       expect(resources.length, equals(++resourcesCount)); 
  
       //selectedResources.display(title: 
-      //  'Select resources by attribute, then add'); 
-      //resources.display(title: 'All resources'); 
+      //  "Select resources by attribute, then add"); 
+      //resources.display(title: "All resources"); 
     }); 
  
-    test('Select resources by attribute, then remove', () { 
-      final randomResource = coreModel.resources.random(); 
-      final selectedResources = 
-          resources.selectWhereAttribute('name', randomResource.name); 
+    test("Select resources by attribute, then remove", () { 
+      var randomResource = coreModel.resources.random(); 
+      var selectedResources = 
+          resources.selectWhereAttribute("name", randomResource.name); 
       expect(selectedResources.isEmpty, isFalse); 
       expect(selectedResources.source?.isEmpty, isFalse); 
       var resourcesCount = resources.length; 
  
-      final removed = selectedResources.remove(randomResource); 
+      var removed = selectedResources.remove(randomResource); 
       expect(removed, isTrue); 
       expect(resources.length, equals(--resourcesCount)); 
  
-      randomResource.display(prefix: 'removed'); 
+      randomResource.display(prefix: "removed"); 
       //selectedResources.display(title: 
-      //  'Select resources by attribute, then remove'); 
-      //resources.display(title: 'All resources'); 
+      //  "Select resources by attribute, then remove"); 
+      //resources.display(title: "All resources"); 
     }); 
  
-    test('Sort resources', () { 
+    test("Sort resources", () { 
       // no id attribute 
       // add compareTo method in the specific Resource class 
       /* 
       resources.sort(); 
  
-      //resources.display(title: 'Sort resources'); 
+      //resources.display(title: "Sort resources"); 
       */ 
     }); 
  
-    test('Order resources', () { 
+    test("Order resources", () { 
       // no id attribute 
       // add compareTo method in the specific Resource class 
       /* 
-      final orderedResources = resources.order(); 
+      var orderedResources = resources.order(); 
       expect(orderedResources.isEmpty, isFalse); 
       expect(orderedResources.length, equals(resources.length)); 
       expect(orderedResources.source?.isEmpty, isFalse); 
       expect(orderedResources.source?.length, equals(resources.length)); 
       expect(orderedResources, isNot(same(resources))); 
  
-      //orderedResources.display(title: 'Order resources'); 
+      //orderedResources.display(title: "Order resources"); 
       */ 
     }); 
  
-    test('Copy resources', () { 
-      final copiedResources = resources.copy(); 
+    test("Copy resources", () { 
+      var copiedResources = resources.copy(); 
       expect(copiedResources.isEmpty, isFalse); 
       expect(copiedResources.length, equals(resources.length)); 
       expect(copiedResources, isNot(same(resources))); 
-      for (final e in copiedResources) {        expect(e, equals(resources.singleWhereOid(e.oid)));      } 
+      copiedResources.forEach((e) => 
+        expect(e, equals(resources.singleWhereOid(e.oid)))); 
  
       //copiedResources.display(title: "Copy resources"); 
     }); 
  
-    test('True for every resource', () { 
+    test("True for every resource", () { 
       // no required attribute that is not id 
     }); 
  
-    test('Random resource', () { 
-      final resource1 = coreModel.resources.random(); 
+    test("Random resource", () { 
+      var resource1 = coreModel.resources.random(); 
       expect(resource1, isNotNull); 
-      final resource2 = coreModel.resources.random(); 
+      var resource2 = coreModel.resources.random(); 
       expect(resource2, isNotNull); 
  
-      //resource1.display(prefix: 'random1'); 
-      //resource2.display(prefix: 'random2'); 
+      //resource1.display(prefix: "random1"); 
+      //resource2.display(prefix: "random2"); 
     }); 
  
-    test('Update resource id with try', () { 
+    test("Update resource id with try", () { 
       // no id attribute 
     }); 
  
-    test('Update resource id without try', () { 
+    test("Update resource id without try", () { 
       // no id attribute 
     }); 
  
-    test('Update resource id with success', () { 
+    test("Update resource id with success", () { 
       // no id attribute 
     }); 
  
-    test('Update resource non id attribute with failure', () { 
-      final randomResource = coreModel.resources.random(); 
-      final afterUpdateEntity = randomResource.copy()..name = 'economy'; 
-      expect(afterUpdateEntity.name, equals('economy')); 
+    test("Update resource non id attribute with failure", () { 
+      var randomResource = coreModel.resources.random(); 
+      var afterUpdateEntity = randomResource.copy(); 
+      afterUpdateEntity.name = 'beach'; 
+      expect(afterUpdateEntity.name, equals('beach')); 
       // resources.update can only be used if oid, code or id is set. 
       expect(() => resources.update(randomResource, afterUpdateEntity), throwsA(isA<Exception>())); 
     }); 
  
-    test('Copy Equality', () { 
-      final randomResource = coreModel.resources.random()..display(prefix:'before copy: '); 
-      final randomResourceCopy = randomResource.copy()..display(prefix:'after copy: '); 
+    test("Copy Equality", () { 
+      var randomResource = coreModel.resources.random(); 
+      randomResource.display(prefix:"before copy: "); 
+      var randomResourceCopy = randomResource.copy(); 
+      randomResourceCopy.display(prefix:"after copy: "); 
       expect(randomResource, equals(randomResourceCopy)); 
       expect(randomResource.oid, equals(randomResourceCopy.oid)); 
       expect(randomResource.code, equals(randomResourceCopy.code)); 
@@ -238,13 +244,13 @@ void testProjectCoreResources(
  
     }); 
  
-    test('resource action undo and redo', () { 
+    test("resource action undo and redo", () { 
       var resourceCount = resources.length; 
-      final resource = Resource(resources.concept) 
-  
-      ..name = 'service'
-      ..type = 'family'
-      ..cost = 45.07975326541527;    final resourceTask = coreModel.tasks.random(); 
+      var resource = Resource(resources.concept); 
+        resource.name = 'small'; 
+      resource.type = 'school'; 
+      resource.cost = 75.43562557221168; 
+    var resourceTask = coreModel.tasks.random(); 
     resource.task = resourceTask; 
       resources.add(resource); 
     resourceTask.resources.add(resource); 
@@ -252,7 +258,8 @@ void testProjectCoreResources(
       resources.remove(resource); 
       expect(resources.length, equals(--resourceCount)); 
  
-      final action = AddCommand(session, resources, resource)..doIt(); 
+      var action = AddCommand(session, resources, resource); 
+      action.doIt(); 
       expect(resources.length, equals(++resourceCount)); 
  
       action.undo(); 
@@ -262,13 +269,13 @@ void testProjectCoreResources(
       expect(resources.length, equals(++resourceCount)); 
     }); 
  
-    test('resource session undo and redo', () { 
+    test("resource session undo and redo", () { 
       var resourceCount = resources.length; 
-      final resource = Resource(resources.concept) 
-  
-      ..name = 'teacher'
-      ..type = 'executive'
-      ..cost = 46.8312411516715;    final resourceTask = coreModel.tasks.random(); 
+      var resource = Resource(resources.concept); 
+        resource.name = 'void'; 
+      resource.type = 'revolution'; 
+      resource.cost = 20.49846026457426; 
+    var resourceTask = coreModel.tasks.random(); 
     resource.task = resourceTask; 
       resources.add(resource); 
     resourceTask.resources.add(resource); 
@@ -276,7 +283,8 @@ void testProjectCoreResources(
       resources.remove(resource); 
       expect(resources.length, equals(--resourceCount)); 
  
-      AddCommand(session, resources, resource).doIt();; 
+      var action = AddCommand(session, resources, resource); 
+      action.doIt(); 
       expect(resources.length, equals(++resourceCount)); 
  
       session.past.undo(); 
@@ -286,9 +294,10 @@ void testProjectCoreResources(
       expect(resources.length, equals(++resourceCount)); 
     }); 
  
-    test('Resource update undo and redo', () { 
-      final resource = coreModel.resources.random(); 
-      final action = SetAttributeCommand(session, resource, 'name', 'marriage')..doIt(); 
+    test("Resource update undo and redo", () { 
+      var resource = coreModel.resources.random(); 
+      var action = SetAttributeCommand(session, resource, "name", 'mind'); 
+      action.doIt(); 
  
       session.past.undo(); 
       expect(resource.name, equals(action.before)); 
@@ -297,16 +306,18 @@ void testProjectCoreResources(
       expect(resource.name, equals(action.after)); 
     }); 
  
-    test('Resource action with multiple undos and redos', () { 
+    test("Resource action with multiple undos and redos", () { 
       var resourceCount = resources.length; 
-      final resource1 = coreModel.resources.random(); 
+      var resource1 = coreModel.resources.random(); 
  
-      RemoveCommand(session, resources, resource1).doIt(); 
+      var action1 = RemoveCommand(session, resources, resource1); 
+      action1.doIt(); 
       expect(resources.length, equals(--resourceCount)); 
  
-      final resource2 = coreModel.resources.random(); 
+      var resource2 = coreModel.resources.random(); 
  
-      RemoveCommand(session, resources, resource2).doIt(); 
+      var action2 = RemoveCommand(session, resources, resource2); 
+      action2.doIt(); 
       expect(resources.length, equals(--resourceCount)); 
  
       //session.past.display(); 
@@ -328,70 +339,68 @@ void testProjectCoreResources(
       //session.past.display(); 
     }); 
  
-    test('Transaction undo and redo', () { 
+    test("Transaction undo and redo", () { 
       var resourceCount = resources.length; 
-      final resource1 = coreModel.resources.random(); 
+      var resource1 = coreModel.resources.random(); 
       var resource2 = coreModel.resources.random(); 
       while (resource1 == resource2) { 
         resource2 = coreModel.resources.random();  
       } 
-      final action1 = RemoveCommand(session, resources, resource1); 
-      final action2 = RemoveCommand(session, resources, resource2); 
+      var action1 = RemoveCommand(session, resources, resource1); 
+      var action2 = RemoveCommand(session, resources, resource2); 
  
-      Transaction('two removes on resources', session) 
-        ..add(action1) 
-        ..add(action2) 
-        ..doIt(); 
+      var transaction = new Transaction("two removes on resources", session); 
+      transaction.add(action1); 
+      transaction.add(action2); 
+      transaction.doIt(); 
       resourceCount = resourceCount - 2; 
       expect(resources.length, equals(resourceCount)); 
  
-      resources.display(title:'Transaction Done'); 
+      resources.display(title:"Transaction Done"); 
  
       session.past.undo(); 
       resourceCount = resourceCount + 2; 
       expect(resources.length, equals(resourceCount)); 
  
-      resources.display(title:'Transaction Undone'); 
+      resources.display(title:"Transaction Undone"); 
  
       session.past.redo(); 
       resourceCount = resourceCount - 2; 
       expect(resources.length, equals(resourceCount)); 
  
-      resources.display(title:'Transaction Redone'); 
+      resources.display(title:"Transaction Redone"); 
     }); 
  
-    test('Transaction with one action error', () { 
-      final resourceCount = resources.length; 
-      final resource1 = coreModel.resources.random(); 
-      final resource2 = resource1; 
-      final action1 = RemoveCommand(session, resources, resource1); 
-      final action2 = RemoveCommand(session, resources, resource2); 
+    test("Transaction with one action error", () { 
+      var resourceCount = resources.length; 
+      var resource1 = coreModel.resources.random(); 
+      var resource2 = resource1; 
+      var action1 = RemoveCommand(session, resources, resource1); 
+      var action2 = RemoveCommand(session, resources, resource2); 
  
-      final transaction = Transaction( 
-        'two removes on resources, with an error on the second',
-        session, 
-        )
-        ..add(action1) 
-        ..add(action2); 
-      final done = transaction.doIt(); 
+      var transaction = Transaction( 
+        "two removes on resources, with an error on the second", session); 
+      transaction.add(action1); 
+      transaction.add(action2); 
+      var done = transaction.doIt(); 
       expect(done, isFalse); 
       expect(resources.length, equals(resourceCount)); 
  
-      //resources.display(title:'Transaction with an error'); 
+      //resources.display(title:"Transaction with an error"); 
     }); 
  
-    test('Reactions to resource actions', () { 
+    test("Reactions to resource actions", () { 
       var resourceCount = resources.length; 
  
-      final reaction = ResourceReaction(); 
+      var reaction = ResourceReaction(); 
       expect(reaction, isNotNull); 
  
       projectDomain.startCommandReaction(reaction); 
-      final resource = Resource(resources.concept) 
-  
-      ..name = 'tent'
-      ..type = 'present'
-      ..cost = 8.750912397737242;    final resourceTask = coreModel.tasks.random(); 
+      var resource = Resource(resources.concept); 
+        resource.name = 'cardboard'; 
+      resource.type = 'circle'; 
+      resource.cost = 89.46632829203533; 
+    var resourceTask = coreModel.tasks.random(); 
     resource.task = resourceTask; 
       resources.add(resource); 
     resourceTask.resources.add(resource); 
@@ -399,17 +408,15 @@ void testProjectCoreResources(
       resources.remove(resource); 
       expect(resources.length, equals(--resourceCount)); 
  
-      final session = projectDomain.newSession(); 
-      AddCommand(session, resources, resource).doIt(); 
+      var session = projectDomain.newSession(); 
+      var addCommand = AddCommand(session, resources, resource); 
+      addCommand.doIt(); 
       expect(resources.length, equals(++resourceCount)); 
       expect(reaction.reactedOnAdd, isTrue); 
  
-      SetAttributeCommand( 
-        session,
-        resource,
-        'name',
-        'bank',
-      ).doIt();
+      var setAttributeCommand = SetAttributeCommand( 
+        session, resource, "name", 'pub'); 
+      setAttributeCommand.doIt(); 
       expect(reaction.reactedOnUpdate, isTrue); 
       projectDomain.cancelCommandReaction(reaction); 
     }); 
@@ -421,7 +428,7 @@ class ResourceReaction implements ICommandReaction {
   bool reactedOnAdd    = false; 
   bool reactedOnUpdate = false; 
  
-  @override  void react(ICommand action) { 
+  void react(ICommand action) { 
     if (action is IEntitiesCommand) { 
       reactedOnAdd = true; 
     } else if (action is IEntityCommand) { 
@@ -431,12 +438,12 @@ class ResourceReaction implements ICommandReaction {
 } 
  
 void main() { 
-  final repository = ProjectCoreRepo(); 
-  final projectDomain = repository.getDomainModels('Project') as ProjectDomain?;
-  assert(projectDomain != null, 'ProjectDomain is not defined'); 
-  final coreModel = projectDomain!.getModelEntries('Core') as CoreModel?;
-  assert(coreModel != null, 'CoreModel is not defined'); 
-  final resources = coreModel!.resources; 
+  var repository = ProjectCoreRepo(); 
+  ProjectDomain projectDomain = repository.getDomainModels("Project") as ProjectDomain;   
+  assert(projectDomain != null); 
+  CoreModel coreModel = projectDomain.getModelEntries("Core") as CoreModel;  
+  assert(coreModel != null); 
+  var resources = coreModel.resources; 
   testProjectCoreResources(projectDomain, coreModel, resources); 
 } 
  

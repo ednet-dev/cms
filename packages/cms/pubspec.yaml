@@ -4,7 +4,7 @@ version: 1.0.0
 homepage: https://github.com/ednet-dev/cms/tree/main/packages/ednet_cms
 
 environment:
-  sdk: '>=3.7.0 <4.0.0'
+  sdk: ">=3.7.0 <4.0.0"
   flutter: ">=3.29.0"
 
 dependencies:
@@ -36,9 +36,9 @@ executables:
 builders:
   contentWatcherBuilder:
     import: "package:ednet_cms/src/builders/content_watcher_builder.dart"
-    builder_factories: [ "contentWatcherBuilder" ]
-    build_extensions: { ".yaml": [ ".model.dart" ] }
+    builder_factories: ["contentWatcherBuilder"]
+    build_extensions: { ".yaml": [".model.dart"] }
     auto_apply: dependents
     build_to: source
-    runs_before: [ source_gen|combining_builder ]
-    applies_builders: [ source_gen|combining_builder ]
+    runs_before: [source_gen|combining_builder]
+    applies_builders: [source_gen|combining_builder]

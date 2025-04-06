@@ -1,55 +1,38 @@
-part of '../../../project_core.dart';
-
-// lib/gen/project/core/budgets.dart
-
-abstract class BudgetGen extends Entity<Budget> {
-  BudgetGen(Concept concept) {
-    this.concept = concept;
-    // concept.children.isEmpty
-  }
+part of project_core; 
+ 
+// lib/gen/project/core/budgets.dart 
+ 
+abstract class BudgetGen extends Entity<Budget> { 
+ 
+  BudgetGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Reference get projectReference => getReference("project") as Reference; 
+  void set projectReference(Reference reference) { setReference("project", reference); } 
   
-
-    Reference get projectReference => getReference('project')!;
+  Project get project => getParent("project") as Project; 
+  void set project(Project p) { setParent("project", p); } 
   
-  set projectReference(Reference reference) => 
-      setReference('project', reference);
-  Project get project =>
-      getParent('project')! as Project;
+  double get amount => getAttribute("amount"); 
+  void set amount(double a) { setAttribute("amount", a); } 
   
-  set project(Project p) => setParent('project', p);
-
-
-    double get amount => getAttribute('amount') as double;
+  String get currency => getAttribute("currency"); 
+  void set currency(String a) { setAttribute("currency", a); } 
   
-  set amount(double a) => setAttribute('amount', a);
-
-  String get currency => getAttribute('currency') as String;
+  Budget newEntity() => Budget(concept); 
+  Budgets newEntities() => Budgets(concept); 
   
-  set currency(String a) => setAttribute('currency', a);
-
-
+} 
+ 
+abstract class BudgetsGen extends Entities<Budget> { 
+ 
+  BudgetsGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Budgets newEntities() => Budgets(concept); 
+  Budget newEntity() => Budget(concept); 
   
-  @override
-  Budget newEntity() => Budget(concept);
-
-  @override
-  Budgets newEntities() => Budgets(concept);
-
-  
-}
-
-abstract class BudgetsGen extends Entities<Budget> {
-  BudgetsGen(Concept concept) {
-    this.concept = concept;
-  }
-
-  @override
-  Budgets newEntities() => Budgets(concept);
-
-  @override
-  Budget newEntity() => Budget(concept);
-}
-
-// Commands for Budget will be generated here
-// Events for Budget will be generated here
-// Policies for Budget will be generated here
+} 
+ 

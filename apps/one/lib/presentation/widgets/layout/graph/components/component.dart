@@ -5,7 +5,7 @@ import 'position_component.dart';
 class DraggableArtefact extends StatefulWidget {
   final Artefact artefact;
 
-  DraggableArtefact({required this.artefact});
+  const DraggableArtefact({super.key, required this.artefact});
 
   @override
   _DraggableArtefactState createState() => _DraggableArtefactState();
@@ -25,7 +25,6 @@ class _DraggableArtefactState extends State<DraggableArtefact> {
           color: Colors.transparent,
           child: _buildArtefactWidget(widget.artefact),
         ),
-        child: _buildArtefactWidget(widget.artefact),
         childWhenDragging: Container(),
         // Placeholder when dragging
         onDragEnd: (dragDetails) {
@@ -33,6 +32,7 @@ class _DraggableArtefactState extends State<DraggableArtefact> {
             position = dragDetails.offset;
           });
         },
+        child: _buildArtefactWidget(widget.artefact),
       ),
     );
   }

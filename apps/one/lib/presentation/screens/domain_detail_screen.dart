@@ -1,18 +1,32 @@
-import 'package:ednet_cms/ednet_cms.dart' as cms;
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/layout/web/header_widget.dart';
-import 'model_detail_screen.dart';
+import '../pages/domain_detail_page.dart';
 
+/// @deprecated Use DomainDetailPage instead
+/// This class is being phased out as part of the screens to pages migration.
+/// It will be removed in a future release.
+@Deprecated('Use DomainDetailPage instead')
 class DomainDetailScreen extends StatelessWidget {
   final Domain domain;
   final List<String> path;
   final void Function(Model model) onModelSelected;
 
-  DomainDetailScreen({required this.domain, required this.onModelSelected})
-      : path = ['Home', domain.code];
+  DomainDetailScreen({
+    super.key,
+    required this.domain,
+    required this.onModelSelected,
+  }) : path = ['Home', domain.code];
 
+  @override
+  Widget build(BuildContext context) {
+    // Use DomainDetailPage instead, keeping the same interface for backward compatibility
+    return DomainDetailPage(domain: domain, onModelSelected: onModelSelected);
+  }
+}
+
+// Old implementation kept for reference - will be removed in future
+/*
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,29 +41,30 @@ class DomainDetailScreen extends StatelessWidget {
             }
           },
           filters: [],
-          onAddFilter: (FilterCriteria filter) {},
+          onAddFilter: (header.FilterCriteria filter) {},
           onBookmark: () {},
         ),
       ),
-      body: cms.ModelsWidget(
+      body: ModelsWidget(
         models: domain.models,
         onModelSelected: (model) {
           onModelSelected(model);
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ModelDetailScreen(
-                domain: domain,
-                model: model,
-                path: path + [model.code],
-                onEntitySelected: (entity) {
-                  // Handle entity selection
-                },
-              ),
+              builder:
+                  (context) => ModelDetailPage(
+                    domain: domain,
+                    model: model,
+                    // path: path + [model.code],
+                    // onEntitySelected: (entity) {
+                    //   // Handle entity selection
+                    // },
+                  ),
             ),
           );
         },
       ),
     );
   }
-}
+*/

@@ -1,0 +1,34 @@
+---
+description: Use when preparing new package releases, updating version numbers, or managing the publication workflow.
+globs: 
+alwaysApply: false
+---
+# EDNet Package Publishing Rule
+
+When preparing to publish packages to pub.dev, ensure the following:
+
+## Version Management
+- Use semantic versioning consistently
+- Update CHANGELOG.md with all relevant changes
+- Coordinate version bumps across dependent packages
+- Validate version constraints in pubspec.yaml
+
+## Quality Checks
+- Run static analysis with pedantic/lint rules
+- Ensure test coverage meets minimum thresholds
+- Verify examples and documentation are up-to-date
+- Check for breaking changes and document migration paths
+
+## Publication Process
+- Use melos for coordinated releases
+- Test dry-run publication before actual release
+- Validate pub points and address any issues
+- Update package homepage and repository links
+
+## Post-Publication
+- Tag releases in the repository
+- Update example projects to use the latest versions
+- Announce significant releases in appropriate channels
+- Monitor initial feedback and address critical issues promptly
+
+Publishing is the key moment when your work becomes available to others - maintain high standards to ensure a positive developer experience.

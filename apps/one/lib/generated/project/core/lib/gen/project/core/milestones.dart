@@ -1,55 +1,38 @@
-part of '../../../project_core.dart';
-
-// lib/gen/project/core/milestones.dart
-
-abstract class MilestoneGen extends Entity<Milestone> {
-  MilestoneGen(Concept concept) {
-    this.concept = concept;
-    // concept.children.isEmpty
-  }
+part of project_core; 
+ 
+// lib/gen/project/core/milestones.dart 
+ 
+abstract class MilestoneGen extends Entity<Milestone> { 
+ 
+  MilestoneGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Reference get projectReference => getReference("project") as Reference; 
+  void set projectReference(Reference reference) { setReference("project", reference); } 
   
-
-    Reference get projectReference => getReference('project')!;
+  Project get project => getParent("project") as Project; 
+  void set project(Project p) { setParent("project", p); } 
   
-  set projectReference(Reference reference) => 
-      setReference('project', reference);
-  Project get project =>
-      getParent('project')! as Project;
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
   
-  set project(Project p) => setParent('project', p);
-
-
-    String get name => getAttribute('name') as String;
+  DateTime get date => getAttribute("date"); 
+  void set date(DateTime a) { setAttribute("date", a); } 
   
-  set name(String a) => setAttribute('name', a);
-
-  DateTime get date => getAttribute('date') as DateTime;
+  Milestone newEntity() => Milestone(concept); 
+  Milestones newEntities() => Milestones(concept); 
   
-  set date(DateTime a) => setAttribute('date', a);
-
-
+} 
+ 
+abstract class MilestonesGen extends Entities<Milestone> { 
+ 
+  MilestonesGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Milestones newEntities() => Milestones(concept); 
+  Milestone newEntity() => Milestone(concept); 
   
-  @override
-  Milestone newEntity() => Milestone(concept);
-
-  @override
-  Milestones newEntities() => Milestones(concept);
-
-  
-}
-
-abstract class MilestonesGen extends Entities<Milestone> {
-  MilestonesGen(Concept concept) {
-    this.concept = concept;
-  }
-
-  @override
-  Milestones newEntities() => Milestones(concept);
-
-  @override
-  Milestone newEntity() => Milestone(concept);
-}
-
-// Commands for Milestone will be generated here
-// Events for Milestone will be generated here
-// Policies for Milestone will be generated here
+} 
+ 

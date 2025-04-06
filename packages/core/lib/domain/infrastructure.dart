@@ -14,17 +14,19 @@
 /// Example usage:
 /// ```dart
 /// import 'package:ednet_core/domain/infrastructure.dart';
-/// 
+///
 /// // Use graph structures
 /// final graph = Graph();
-/// 
+///
 /// // Use repositories
 /// final repository = Repository();
 /// ```
 library infrastructure;
 
 /// Exports graph-related functionality for domain relationships.
-export 'infrastructure/graph.dart';
+// TODO: Fix missing import path
+// export '../../../ednet_flow/lib/src/graph.dart';
 
 /// Exports repository implementations for data persistence.
-export 'infrastructure/repository.dart';
+// TODO: Fix missing repository import
+// export 'infrastructure/repository.dart';

@@ -4,13 +4,13 @@ import 'package:ednet_core/ednet_core.dart';
 class EntriesSidebarWidget extends StatelessWidget {
   final Entities entries;
 
-  EntriesSidebarWidget({
+  const EntriesSidebarWidget({super.key, 
     required this.entries,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 200,
       child: ListView.builder(
         itemCount: entries.length,

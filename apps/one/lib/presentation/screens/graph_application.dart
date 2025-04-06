@@ -1,87 +1,47 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
-import 'package:graphview/GraphView.dart';
 
-import '../../staging/one_application.dart';
+import '../pages/graph_page.dart';
 
 void main() {
   // runApp(GraphApp());
 }
 
+/// @deprecated Use GraphPage instead
+/// This application is being phased out as part of the visualization refactoring.
+/// It will be removed in a future release. Use GraphPage with UnifiedVisualizationCanvas instead.
+@Deprecated('Use GraphPage with UnifiedVisualizationCanvas instead')
 class GraphApp extends StatelessWidget {
+  const GraphApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Graph Visualization'),
-        ),
-        body: GraphWidget(),
-      ),
-    );
+    // Use GraphPage instead, keeping the same interface for backward compatibility
+    return MaterialApp(home: const GraphPage());
   }
 }
 
+/// @deprecated Use GraphPage with UnifiedVisualizationCanvas instead
+/// This class is being phased out as part of the visualization refactoring.
+/// It will be removed in a future release.
+@Deprecated('Use GraphPage with UnifiedVisualizationCanvas instead')
 class GraphWidget extends StatelessWidget {
-  final Graph graph = Graph();
-
-  GraphWidget() {
-    OneApplication app = OneApplication();
-    _buildGraph(app.groupedDomains);
-  }
-
-  void _buildGraph(Domains domains) {
-    for (var domain in domains) {
-      Node domainNode = Node.Id(domain.code);
-      graph.addNode(domainNode);
-
-      for (var model in domain.models) {
-        Node modelNode = Node.Id(model.code);
-        graph.addNode(modelNode);
-        graph.addEdge(domainNode, modelNode);
-
-        for (var concept in model.concepts) {
-          Node conceptNode = Node.Id(concept.code);
-          graph.addNode(conceptNode);
-          graph.addEdge(modelNode, conceptNode);
-        }
-      }
-    }
-  }
+  GraphWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final BuchheimWalkerConfiguration builder = BuchheimWalkerConfiguration()
-      ..siblingSeparation = (100)
-      ..levelSeparation = (150)
-      ..subtreeSeparation = (150)
-      ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
-
-    return InteractiveViewer(
-      constrained: false,
-      boundaryMargin: EdgeInsets.all(100),
-      minScale: 0.01,
-      maxScale: 5.6,
-      child: GraphView(
-        graph: graph,
-        algorithm: BuchheimWalkerAlgorithm(builder, TreeEdgeRenderer(builder)),
-        builder: (Node node) {
-          // Render your node based on the data
-          var nodeText = node.key!.value as String;
-          return rectangleWidget(nodeText);
-        },
-      ),
-    );
-  }
-
-  Widget rectangleWidget(String text) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(text),
+    // Use the deprecated GraphWidget from graph_page.dart for compatibility
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'This visualization is deprecated. Please use the new unified visualization canvas.',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+        Expanded(child: GraphPage()),
+      ],
     );
   }
 }

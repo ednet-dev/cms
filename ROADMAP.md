@@ -6,159 +6,123 @@ psychology, and digital product limitations to create an intuitive content manag
 
 ### Development Strategy
 
-We will follow iterative refinement and enhancement of features, ensuring a robust and adaptive CMS.
+We follow iterative refinement and enhancement of features, ensuring a robust and adaptive CMS.
 
-## Milestones
+## In-Progress & Future Milestones
 
-### 0.1.0 Demonstration of Idea
+### 0.1.0 Domain Model Foundation - IN PROGRESS
 
-- **Goal**: Establish a basic CMS framework for EDNet CMS.
-    - [x] Define Roadmap and first Spiral MVP.
-    - [ ] Create a basic CMS for the EDNet CMS website.
-        - [ ] Implement a use case for displaying simple accessible text.
-          - [ ] Text management.
-          - [ ] Accessibility features.
-        - [ ] Implement a simple registration and login system.
-        - [ ] Welcome returning or authenticated users.
-        - [ ] Enable user evolve content model organically.
-            - [ ] Domain model
-                - [ ] Shared across devices and platforms.
-                - [ ] Collaborative Real-time editing.
-                - [ ] Versioning and rollback.
-                - [x] User-defined content concepts.
-                    - [x] User-defined concept attributes.
-                    - [ ] User-defined concept commands.
-                    - [ ] User-defined concept queries.
-                    - [ ] User-defined concept events.
-                    - [ ] User-defined concept policies.
-                    - [ ] User-defined concept workflows.
-                    - [ ] User-defined concept relationships.
-                - [x] User-defined concept relationships.
-        - [ ] In vivo domain model editing via canvas graph editor.
-          - [ ] Domain model editing.
-            - [x] Concept selection
-            - [ ] Domain model CRUD operations.
-          - [ ] Domain model validation.
-          - [ ] Domain model visualization.
-            - [ ] force-directed graph layout.
-            - [x] hierarchical graph layout.
-            - [ ] radial graph layout.
-            - [ ] grid graph layout.
-            - [ ] organic graph layout.
-            - [x] circular graph layout.
-            - [ ] tree graph layout.
-            - [ ] dagre graph layout.
-            - [ ] cola graph layout.
-            - [ ] spread graph layout.
-            - [ ] klay graph layout.
-            - [ ] avsdf graph layout.
-            - [ ] fruchterman–reingold graph layout.
-            - 
-          - [ ] Domain model export.
-          - [ ] Domain model import.
-          - [ ] Domain model sharing.
-          - [ ] Domain model collaboration.
-          - [ ] Domain model versioning.
-          - [ ] Domain model rollback.
-          - [ ] Domain model evolution.
-              
-    - [ ] Setup CI/CD:
-        - [ ] Basic CI/CD pipeline.
-        - [ ] CI/CD pipeline for Flutter Web.
+- **Goal**: Establish the foundational domain model framework for EDNet CMS.
+  - [x] Define Roadmap and first Spiral MVP.
+  - [x] Create a basic CMS for the EDNet CMS.
+  - [x] Enable user to evolve content model organically.
+  - [ ] Implement accessibility features.
+  - [ ] Implement a simple registration and login system.
+  - [ ] Welcome returning or authenticated users.
+  - [ ] Setup CI/CD pipeline for Flutter Web.
+  - [ ] Implement in vivo domain model editing via canvas graph editor with multiple visualization layouts.
+  - [ ] Support domain model sharing, collaboration, versioning, and evolution.
 
-- **Goal**: Ensure data integrity and recovery.
-    - [ ] Implement backup, restore, import, and export functionalities.
+### 0.2.0 Content Types - IN PROGRESS
 
-- **Goal**: Improve content discoverability.
-    - [ ] Implement links, tags, and categories.
-    - [ ] Develop a robust search functionality.
-    -
+- **Goal**: Support various content types in an accessible way.
+  - [ ] Implement image handling and display.
+  - [ ] Implement video playback and management.
+  - [ ] Implement audio playback and management.
+  - [ ] Support documents and complex text formatting.
+  - [ ] Implement backup, restore, import, and export functionalities.
+  - [ ] Implement links, tags, and categories for better discoverability.
+  - [ ] Develop a robust search functionality.
 
-### 0.2.0 Support accessible Images
-
-- **Goal**: Integrate image support into the CMS.
-    - [ ] Implement image handling and display.
-
-### 0.3.0 Support accessible Videos
-
-- **Goal**: Expand CMS capabilities to include video content.
-    - [ ] Implement video playback and management.
-
-### 0.4.0 Support accessible Audio
-
-- **Goal**: Add audio support for a richer media experience.
-    - [ ] Implement audio playback and management.
-
-### 0.5.0 Support accessible Complex Text and Binary Content
-
-- **Goal**: Enhance text and binary content handling.
-    - [ ] Support documents and complex text formatting.
-
-### 0.6.0 Authorization and Principals
+### 0.3.0 Security & Permissions - IN PROGRESS
 
 - **Goal**: Establish a secure user management system.
-    - [ ] Define users, roles, and permissions.
+  - [ ] Define users, roles, and permissions.
+  - [ ] Implement security measures and protocols.
+  - [ ] Strengthen security for unsecure environments.
 
-### 0.7.0 Content Management - accessible UI/UX Design and Patterns
+### 0.4.0 User Experience - IN PROGRESS
 
 - **Goal**: Enhance user interface and experience.
-    - [ ] Implement menus, widgets, themes, and notifications.
+  - [ ] Implement menus, widgets, themes, and notifications.
+  - [ ] Basic gamification framework.
+  - [ ] Achievement systems and user progression tracking.
+  - [ ] Reward mechanisms.
 
-### 0.8.0 Artificial Intelligence
-
-- **Goal**: Integrate AI for advanced accessible content management features.
-
-### 0.9.0 Gamification
-
-- **Goal**: Enhance user engagement through accessible gamification.
-    - [ ] Implement gamification features.
-
-### 0.10.0 Extendability
-
-- **Goal**: Enable extensibility through plugins.
-    - [ ] Develop plugin architecture and settings management.
-
-### 0.11.0 Visibility and Transparency
-
-- **Goal**: Incorporate accessible analytics for content insights.
-    - [ ] Implement comprehensive analytics tools.
-
-### 0.12.0 Security in Unsecure Environments
-
-- **Goal**: Strengthen security features.
-    - [ ] Implement security measures and protocols.
-
-### 0.13.0 Scalability
+### 0.5.0 Platform Integration - IN PROGRESS
 
 - **Goal**: Prepare the system for large-scale deployment.
-    - [ ] Implement logs, API, CLI, Docker, Kubernetes, and CI/CD improvements.
+  - [ ] Implement logs, API, CLI, Docker, Kubernetes, and CI/CD improvements.
+  - [ ] Develop plugin architecture and settings management.
+  - [ ] Implement comprehensive analytics tools.
 
-### 0.14.0 Blockchain
+### 0.6.0 Advanced Features - IN PROGRESS
 
-- **Goal**: Investigate blockchain for content management and security.
+- **Goal**: Integrate advanced technologies for enhanced functionality.
+  - [ ] Basic AI integration.
+  - [ ] Advanced AI content analysis and recommendations.
+  - [ ] Initial blockchain integration research.
+  - [ ] Blockchain-based content verification.
+  - [ ] Implement P2P capabilities for distributed content management.
+  - [ ] Enhance domain modeling with Event Storming capabilities.
 
-### 0.15.0 Community and Communication
-
-- **Goal**: Build a vibrant community around EDNet CMS.
-    - [ ] Develop documentation, tutorials, examples, and community engagement strategies.
-
-### 1.0.0 Release
+### 1.0.0 Official Release - PLANNED
 
 - **Goal**: Officially launch EDNet CMS.
-    - [ ] Provide support, marketing, finance, and legal structures.
+  - [ ] Finalize core functionality and fix remaining issues.
+  - [ ] Complete comprehensive documentation.
+  - [ ] Establish support, marketing, finance, and legal structures.
+  - [ ] Create official website and community resources.
 
 ## Long-term Vision
 
-### 2.0.0 Augmented Reality/Virtual Reality
+### 2.0.0 Extended Reality - PLANNED
 
 - **Goal**: Explore AR/VR applications in content management.
+  - [ ] AR content visualization.
+  - [ ] VR content creation and manipulation.
+  - [ ] Immersive content consumption experiences.
 
-### 3.0.0 Internet of Things
+### 3.0.0 Internet of Things - PLANNED
 
 - **Goal**: Expand CMS functionality to IoT devices.
+  - [ ] IoT device content management.
+  - [ ] Sensor data integration.
+  - [ ] Real-time IoT content updates.
 
-## Beyond the Horizon
+### 4.0.0 Quantum Computing - PLANNED
 
-### 4.0.0 Quantum Computing
+- **Goal**: Explore quantum computing implications in semantic CMS operating on all data.
+  - [ ] Quantum-resistant security measures.
+  - [ ] Quantum algorithms for content analysis.
+  - [ ] Quantum-powered search capabilities.
 
-- **Goal**: Explore quantum computing implications in semantic CMS operating on all data._
+## Completed Features
+
+### Core Domain Model - DONE
+
+- [x] User-defined content concepts with attributes.
+- [x] User-defined concept relationships.
+- [x] Domain model editing with concept selection.
+- [x] Domain model CRUD operations.
+- [x] Domain model validation.
+- [x] Domain model export and import.
+
+### Query System - DONE
+
+- [x] Implemented expression-based query system in ednet_core v1.0.0.
+- [x] Type-safe query building with composable expressions.
+- [x] Support for advanced filtering and relationship traversal.
+- [x] Integration with Drift database.
+
+### Documentation & Community - DONE
+
+- [x] Developed initial documentation, tutorials, and examples.
+- [x] Created comprehensive articles on domain-specific languages.
+- [x] Added articles on Event Sourcing and Meta-Modeling.
+- [x] Implemented rules for software development best practices.
+
+### Current WIP
+
+- [ ] Can I use <https://github.com/nutlope/llamacoder> clone it and adapt it to run with my local llama or llmstudio like deepseek coder etc.?
+- [ ] ?

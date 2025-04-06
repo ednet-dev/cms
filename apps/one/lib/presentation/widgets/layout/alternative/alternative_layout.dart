@@ -1,6 +1,6 @@
 // alternative_layout.dart
-import 'package:ednet_cms/ednet_cms.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/presentation/widgets/entity/entity_widget.dart';
 import 'package:flutter/material.dart';
 
 class AlternativeLayout extends StatefulWidget {
@@ -9,13 +9,14 @@ class AlternativeLayout extends StatefulWidget {
   final Function(Entity) onEntitySelected;
 
   const AlternativeLayout({
-    Key? key,
+    super.key,
     required this.domains,
     required this.selectedEntity,
     required this.onEntitySelected,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _AlternativeLayoutState createState() => _AlternativeLayoutState();
 }
 
@@ -35,13 +36,15 @@ class _AlternativeLayoutState extends State<AlternativeLayout> {
           CustomPaint(
             size: Size.infinite,
             painter: RelationshipPainter(
-                domains: widget.domains, offset: _dragOffset),
+              domains: widget.domains,
+              offset: _dragOffset,
+            ),
           ),
           Positioned(
             left: 16,
             top: 16,
             child: SingleChildScrollView(
-              child: Container(
+              child: SizedBox(
                 width: 200, // Set a fixed width for the container
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +56,7 @@ class _AlternativeLayoutState extends State<AlternativeLayout> {
                           // Navigate to domain details
                         },
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
@@ -64,9 +67,10 @@ class _AlternativeLayoutState extends State<AlternativeLayout> {
               left: 200 + _dragOffset.dx,
               top: 200 + _dragOffset.dy,
               child: SizedBox(
-                  width: 400,
-                  height: 800,
-                  child: EntityWidget(entity: widget.selectedEntity!)),
+                width: 400,
+                height: 800,
+                child: EntityWidget(entity: widget.selectedEntity!),
+              ),
             ),
         ],
       ),
@@ -82,9 +86,10 @@ class RelationshipPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2;
+    final paint =
+        Paint()
+          ..color = Colors.blue
+          ..strokeWidth = 2;
 
     // Draw relationships between entities
     for (var domain in domains) {
@@ -119,7 +124,7 @@ class RelationshipPainter extends CustomPainter {
 class EntityCard extends StatelessWidget {
   final Entity entity;
 
-  const EntityCard({Key? key, required this.entity}) : super(key: key);
+  const EntityCard({super.key, required this.entity});
 
   @override
   Widget build(BuildContext context) {

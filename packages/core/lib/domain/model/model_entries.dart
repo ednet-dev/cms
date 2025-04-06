@@ -84,7 +84,8 @@ class ModelEntries implements IModelEntries {
 
     if (concept == null) {
       throw ConceptException(
-          'Concept with code does not exist: ' + conceptCode);
+        'Concept with code does not exist: ' + conceptCode,
+      );
     }
 
     var conceptEntity = Entity<Concept>();
@@ -114,7 +115,8 @@ class ModelEntries implements IModelEntries {
   Entities getEntry(String entryConceptCode) {
     if (!_entryEntitiesMap.containsKey(entryConceptCode)) {
       throw ConceptException(
-          'Entry concept with code does not exist: ' + entryConceptCode);
+        'Entry concept with code does not exist: ' + entryConceptCode,
+      );
     }
     return _entryEntitiesMap[entryConceptCode]!;
   }
@@ -191,8 +193,8 @@ class ModelEntries implements IModelEntries {
   ///
   /// [entryConceptCode] is the code identifying the entry concept.
   /// Returns a map containing the domain, model, entry, and entities data.
-  Map<String, Object> fromEntryToMap(String entryConceptCode) {
-    Map<String, Object> entryMap = <String, Object>{};
+  Map<String, dynamic> fromEntryToMap(String entryConceptCode) {
+    Map<String, dynamic> entryMap = <String, Object>{};
     entryMap['domain'] = _model.domain.code;
     entryMap['model'] = _model.code;
     entryMap['entry'] = entryConceptCode;
@@ -233,7 +235,8 @@ class ModelEntries implements IModelEntries {
     Entities entryEntities = getEntry(entryConceptCode);
     if (entryEntities.isNotEmpty) {
       throw JsonException(
-          '$entryConceptCode entry receiving entities are not empty');
+        '$entryConceptCode entry receiving entities are not empty',
+      );
     }
     var entitiesList = entryMap['entities'];
     entryEntities.fromJsonList(entitiesList);
@@ -248,11 +251,15 @@ class ModelEntries implements IModelEntries {
       for (Parent parent in entity.concept.externalParents) {
         Reference? reference = entity.getReference(parent.code);
         if (reference != null) {
-          var parentEntity =
-              internalSingle(reference.entryConceptCode, reference.oid);
+          var parentEntity = internalSingle(
+            reference.entryConceptCode,
+            reference.oid,
+          );
           if (parentEntity == null) {
-            throw ParentException('Parent not found for the reference: '
-                '${reference.toString()}');
+            throw ParentException(
+              'Parent not found for the reference: '
+              '${reference.toString()}',
+            );
           }
           if (entity.getParent(parent.code) == null) {
             entity.setParent(parent.code, parentEntity);
@@ -283,7 +290,7 @@ class ModelEntries implements IModelEntries {
   /// [entryJson] is the JSON string containing the reference data.
   @override
   void populateEntryReferences(String entryJson) {
-    Map<String, Object> entryMap = jsonDecode(entryJson);
+    Map<String, dynamic> entryMap = jsonDecode(entryJson);
     populateEntryReferencesFromJsonMap(entryMap);
   }
 
@@ -296,7 +303,7 @@ class ModelEntries implements IModelEntries {
   /// Converts all entries to a map.
   ///
   /// Returns a map containing all entry data.
-  Map<String, Object> toJsonMap() {
+  Map<String, dynamic> toJsonMap() {
     var entriesMap = <String, Object>{};
     for (var entryConcept in _model.entryConcepts) {
       entriesMap[entryConcept.code] = fromEntryToMap(entryConcept.code);
@@ -348,7 +355,8 @@ class ModelEntries implements IModelEntries {
   void displayEntryJson(String entryConceptCode) {
     print('==============================================================');
     print(
-        '${_model.domain.code} ${_model.code} ${entryConceptCode} Data in JSON');
+      '${_model.domain.code} ${_model.code} ${entryConceptCode} Data in JSON',
+    );
     print('==============================================================');
     print(fromEntryToJson(entryConceptCode));
     print('--------------------------------------------------------------');

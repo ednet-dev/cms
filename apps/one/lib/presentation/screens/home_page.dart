@@ -1,44 +1,33 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
-import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/algorithms/master_detail_layout_algorithm.dart';
-import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../blocs/domain_block.dart';
-import '../blocs/domain_event.dart';
-import '../blocs/domain_state.dart';
-import '../blocs/layout_block.dart';
-import '../blocs/layout_event.dart';
-import '../blocs/layout_state.dart';
-import '../blocs/theme_block.dart';
-import '../blocs/theme_event.dart';
-import '../theme.dart';
-import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
-import '../widgets/layout/web/footer_widget.dart';
-import '../widgets/layout/web/left_sidebar_widget.dart';
-import '../widgets/layout/web/main_content_widget.dart';
-import '../widgets/layout/web/right_sidebar_widget.dart';
-
+/// @deprecated Use HomePage from pages/home instead
+/// This class is being phased out as part of the screens to pages migration.
+/// It will be removed in a future release.
+@Deprecated('Use HomePage from pages/home instead')
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title, required this.appLinks});
+  const HomePage({super.key, required this.title, this.appLinks});
 
   final String title;
-  final AppLinks appLinks;
+  final AppLinks? appLinks;
 
   @override
   HomePageState createState() => HomePageState();
 }
 
+/// @deprecated Use HomePageState from pages/home instead
+@Deprecated('Use HomePageState from pages/home instead')
 class HomePageState extends State<HomePage> {
   StreamSubscription<Uri>? _sub;
 
   @override
   void initState() {
     super.initState();
-    _sub = widget.appLinks.uriLinkStream.listen(_handleBookmarkSelected);
+    if (widget.appLinks != null) {
+      _sub = widget.appLinks!.uriLinkStream.listen(_handleBookmarkSelected);
+    }
   }
 
   @override
@@ -48,32 +37,66 @@ class HomePageState extends State<HomePage> {
   }
 
   void _handleBookmarkSelected(Uri? uri) {
-    // If needed, handle incoming link
+    // Placeholder
   }
 
+  @override
+  Widget build(BuildContext context) {
+    // Use a simple scaffold to inform users about the migration
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'This page has been migrated to a new implementation.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the home screen again - will use the new implementation
+                // from main.dart since we're not directly importing it here
+                Navigator.pushReplacementNamed(context, '/');
+              },
+              child: const Text('Go to New Home Page'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Old implementation retained for reference - will be removed in future
+/* 
   void _showDSLFromGraph(BuildContext context) {
     final domainBloc = context.read<DomainBloc>();
     final dsl = domainBloc.getDSL();
     showDialog(
-        context: context,
-        builder: (ctx) {
-          return AlertDialog(
-            title: const Text('DSL Export'),
-            content: SelectableText(dsl),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Close'))
-            ],
-          );
-        });
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('DSL Export'),
+          content: SelectableText(dsl),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _generateAndDownloadCode(BuildContext context) async {
     // Trigger code generation event
-    context.read<DomainBloc>().add(GenerateCodeEvent());
+    context.read<DomainBloc>().add(domain_events.GenerateCodeEvent());
     ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Code generation & download triggered.')));
+      const SnackBar(content: Text('Code generation & download triggered.')),
+    );
   }
 
   @override
@@ -94,13 +117,14 @@ class HomePageState extends State<HomePage> {
                         for (var domain
                             in context.read<DomainBloc>().app.groupedDomains)
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ),
                             child: GestureDetector(
                               onTap: () {
-                                context
-                                    .read<DomainBloc>()
-                                    .add(SelectDomainEvent(domain));
+                                context.read<DomainBloc>().add(
+                                  domain_events.SelectDomainEvent(domain),
+                                );
                               },
                               child: Text(domain.code),
                             ),
@@ -121,9 +145,9 @@ class HomePageState extends State<HomePage> {
                             onPressed: () {
                               // Instead of toggling showMetaCanvas via setState,
                               // we can keep layout toggling in LayoutBloc.
-                              context
-                                  .read<LayoutBloc>()
-                                  .add(ToggleLayoutEvent());
+                              context.read<LayoutBloc>().add(
+                                ToggleLayoutEvent(),
+                              );
                             },
                           ),
                         ),
@@ -132,9 +156,9 @@ class HomePageState extends State<HomePage> {
                           child: IconButton(
                             icon: const Icon(Icons.swap_horiz),
                             onPressed: () {
-                              context
-                                  .read<LayoutBloc>()
-                                  .add(ToggleLayoutEvent());
+                              context.read<LayoutBloc>().add(
+                                ToggleLayoutEvent(),
+                              );
                             },
                           ),
                         ),
@@ -157,71 +181,87 @@ class HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  body: showMetaCanvas
-                      ? MetaDomainCanvas(
-                          domains: domainState.selectedDomain != null
-                              ? domainState.selectedDomain!.toDomains()
-                              : Domains(),
-                          initialTransformation: null,
-                          onTransformationChanged: (m) {},
-                          onChangeLayoutAlgorithm: (algo) {},
-                          layoutAlgorithm: MasterDetailLayoutAlgorithm(),
-                          decorators: const [],
-                        )
-                      : Scaffold(
-                          appBar: AppBar(
-                            title: HeaderWidget(
-                              filters: const [],
-                              onAddFilter: (criteria) => print(criteria),
-                              onBookmark: () => print('onBookmark'),
-                              onPathSegmentTapped: print,
-                              path: const ['Home'],
+                  body:
+                      showMetaCanvas
+                          ? MetaDomainCanvas(
+                            domains:
+                                domainState.selectedDomain != null
+                                    ? domainState.selectedDomain!.toDomains()
+                                    : Domains(),
+                            initialTransformation: null,
+                            onTransformationChanged: (m) {},
+                            onChangeLayoutAlgorithm: (algo) {},
+                            layoutAlgorithm: MasterDetailLayoutAlgorithm(),
+                            decorators: const [],
+                          )
+                          : Scaffold(
+                            appBar: AppBar(
+                              title: HeaderWidget(
+                                filters: const [],
+                                onAddFilter:
+                                    (header_types.FilterCriteria criteria) =>
+                                        print(criteria),
+                                onBookmark: () => print('onBookmark'),
+                                onPathSegmentTapped: print,
+                                path: const ['Home'],
+                              ),
                             ),
-                          ),
-                          body: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: domainState.selectedEntries == null
-                                    ? const Center(child: Text('No Entries'))
-                                    : LeftSidebarWidget(
-                                        entries: domainState.selectedEntries
-                                            as Concepts,
-                                        onConceptSelected: (concept) {
-                                          context
-                                              .read<DomainBloc>()
-                                              .add(SelectConceptEvent(concept));
-                                        },
-                                      ),
-                              ),
-                              Expanded(
-                                flex: 8,
-                                child: domainState.selectedConcept != null
-                                    ? MainContentWidget(
-                                        entities:
-                                            domainState.selectedEntities ??
+                            body: Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child:
+                                      domainState.selectedEntries == null
+                                          ? const Center(
+                                            child: Text('No Entries'),
+                                          )
+                                          : LeftSidebarWidget(
+                                            entries:
+                                                domainState.selectedEntries
+                                                    as Concepts,
+                                            onConceptSelected: (concept) {
+                                              context.read<DomainBloc>().add(
+                                                domain_events.SelectConceptEvent(
+                                                  concept,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                ),
+                                Expanded(
+                                  flex: 8,
+                                  child:
+                                      domainState.selectedConcept != null
+                                          ? MainContentWidget(
+                                            entities:
+                                                domainState.selectedEntities ??
                                                 Entities<Concept>(),
-                                      )
-                                    : const Text('No Concept selected'),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: domainState.selectedDomain != null
-                                    ? RightSidebarWidget(
-                                        models:
-                                            domainState.selectedDomain!.models,
-                                        onModelSelected: (model) {
-                                          context
-                                              .read<DomainBloc>()
-                                              .add(SelectModelEvent(model));
-                                        },
-                                      )
-                                    : const Text('No Domain selected'),
-                              ),
-                            ],
+                                          )
+                                          : const Text('No Concept selected'),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child:
+                                      domainState.selectedDomain != null
+                                          ? RightSidebarWidget(
+                                            models:
+                                                domainState
+                                                    .selectedDomain!
+                                                    .models,
+                                            onModelSelected: (model) {
+                                              context.read<DomainBloc>().add(
+                                                domain_events.SelectModelEvent(
+                                                  model,
+                                                ),
+                                              );
+                                            },
+                                          )
+                                          : const Text('No Domain selected'),
+                                ),
+                              ],
+                            ),
+                            bottomNavigationBar: const FooterWidget(),
                           ),
-                          bottomNavigationBar: const FooterWidget(),
-                        ),
                 );
               },
             );
@@ -246,24 +286,26 @@ class _ThemeDropdown extends StatelessWidget {
     final themeState = context.watch<ThemeBloc>().state;
     final brightness = themeState.isDarkMode ? 'dark' : 'light';
     final currentThemeName = themes[brightness]!.keys.firstWhere(
-        (themeName) => themes[brightness]![themeName] == themeState.themeData,
-        orElse: () => themes[brightness]!.keys.first);
+      (themeName) => themes[brightness]![themeName] == themeState.themeData,
+      orElse: () => themes[brightness]!.keys.first,
+    );
 
     return DropdownButton<String>(
       value: currentThemeName,
       hint: const Text('Select Theme'),
-      items: themes[brightness]!.keys.map((String themeName) {
-        return DropdownMenuItem<String>(
-          value: themeName,
-          child: Text(themeName),
-        );
-      }).toList(),
+      items:
+          themes[brightness]!.keys.map((String themeName) {
+            return DropdownMenuItem<String>(
+              value: themeName,
+              child: Text(themeName),
+            );
+          }).toList(),
       onChanged: (themeName) {
         if (themeName != null) {
-          final themeData = themes[brightness]![themeName]!;
-          context.read<ThemeBloc>().add(ChangeThemeEvent(themeData));
+          context.read<ThemeBloc>().add(ChangeThemeEvent(themeName));
         }
       },
     );
   }
 }
+*/

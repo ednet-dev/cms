@@ -11,26 +11,25 @@ environment:
   sdk: '>=3.7.0 <4.0.0'
 dependencies:
   browser: '>=0.10.0 <0.11.0'
-  ednet_core: '>=2.0.0 <3.0.0'
+  ednet_core: ^1.0.0
   yaml:
   # ednet_core_default_app: '>=2.0.0 <3.0.0'
 
 dependencies:
   browser: '>=0.10.0 <0.11.0'
-  ednet_core:
-    git: 'https://github.com/context-dev/ednet_core.git'
+  ednet_core: ^1.0.0
   # ednet_core_default_app:
   #  git: 'https://github.com/context-dev/ednet_core_default_app.git'
 
 dependencies:
   browser: '>=0.10.0 <0.11.0'
-  ednet_core: ^0.0.1+2
+  ednet_core: ^1.0.0
   # ednet_core_default_app:
     # path: 'C:\\Users\\userName\\dart\\model\\ednet_core_default_app'
 
 dependencies:
   browser: any
-  ednet_core: ^0.0.1+2
+  ednet_core: ^1.0.0
   # ednet_core_default_app:
   #   path: /home/user_name/dart/model/ednet_core_default_app
   ''';

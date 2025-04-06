@@ -1,0 +1,14 @@
+name: project_brainstorming
+version: 1.0.0
+
+description: project_brainstorming application that uses ednet_core for its model.
+
+homepage: https://ednet.one/
+
+environment:
+  sdk: ">=3.7.0 <4.0.0"
+
+dependencies:
+  ednet_core: ^1.0.0
+  yaml:
+  # ednet_core_default_app:

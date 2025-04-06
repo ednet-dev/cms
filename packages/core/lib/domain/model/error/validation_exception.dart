@@ -15,16 +15,16 @@ part of ednet_core;
 /// ```dart
 /// throw ValidationException('required', 'The name field is required');
 /// ```
-class ValidationException implements Exception {
+class ValidationException implements Exception, IValidationExceptions {
   /// The category of the validation error (e.g., 'required', 'format', 'domain rule').
   final String category;
-  
+
   /// A descriptive message explaining the validation error.
   final String message;
-  
+
   /// The entity that caused the validation error, if any.
   final Entity? entity;
-  
+
   /// The attribute that failed validation, if applicable.
   final String? attribute;
 
@@ -35,7 +35,7 @@ class ValidationException implements Exception {
   /// [entity] is the optional entity that failed validation.
   /// [attribute] is the optional attribute that failed validation.
   ValidationException(
-    this.category, 
+    this.category,
     this.message, {
     this.entity,
     this.attribute,
@@ -44,10 +44,31 @@ class ValidationException implements Exception {
       print('VALIDATION EXCEPTION: $category - $message');
     }
   }
-  
+
   /// Whether to log exceptions to the console.
   /// This can be useful for debugging, but might be turned off in production.
   static bool logExceptions = true;
+
+  /// Implementation of IValidationExceptions interface
+  @override
+  int get length => 1;
+
+  @override
+  void add(IValidationExceptions exception) {
+    /// Single exception can't add other exceptions
+    throw UnsupportedError(
+      "Can't add exceptions to a ValidationException instance",
+    );
+  }
+
+  @override
+  void clear() {
+    /// Single exception can't be cleared
+    throw UnsupportedError("Can't clear a ValidationException instance");
+  }
+
+  @override
+  List<IValidationExceptions> toList() => [this];
 
   /// Returns a string that represents the error.
   @override
@@ -59,7 +80,7 @@ class ValidationException implements Exception {
   }
 
   /// Displays (prints) an exception.
-  /// 
+  ///
   /// This method formats and prints details about the exception,
   /// which can be useful for debugging.
   ///
@@ -78,37 +99,34 @@ class ValidationException implements Exception {
     print('$prefix******************************************');
     print('');
   }
-  
+
   /// Converts this exception to an error result for the application layer.
-  /// 
+  ///
   /// This method facilitates error reporting to the application layer in
   /// a standardized format that can be used by application services.
-  /// 
+  ///
   /// Returns a map with error details.
   Map<String, dynamic> toErrorResult() {
-    final result = <String, dynamic>{
-      'category': category,
-      'message': message,
-    };
-    
+    final result = <String, dynamic>{'category': category, 'message': message};
+
     if (attribute != null) {
       result['attribute'] = attribute;
     }
-    
+
     if (entity != null) {
       result['entityType'] = entity?.concept.code;
       result['entityId'] = entity?.id?.toString();
     }
-    
+
     return result;
   }
-  
+
   /// Creates a validation exception from an error result.
-  /// 
+  ///
   /// This static method creates a validation exception from an error result
   /// that originated in the application layer, enabling bidirectional
   /// conversion between the layers.
-  /// 
+  ///
   /// [errorResult] is the error result to convert.
   /// Returns a new [ValidationException].
   static ValidationException fromErrorResult(Map<String, dynamic> errorResult) {

@@ -12,13 +12,14 @@
 /// - Double-tap or context menu actions for adding attributes, editing details, or removing concepts.
 /// - A toolbar to add concepts, export DSL, and run validations.
 /// - The underlying domain model can be regenerated into YAML or code on demand.
+library;
 
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 
 class DomainGraphNode {
-  final Concept concept;
+  final ednet.Concept concept;
   Offset position;
   DomainGraphNode(this.concept, this.position);
 }
@@ -30,14 +31,14 @@ class DomainGraphEdge {
 }
 
 class DomainModelGraph {
-  final Domain domain;
-  final Model model;
+  final ednet.Domain domain;
+  final ednet.Model model;
   List<DomainGraphNode> nodes = [];
   List<DomainGraphEdge> edges = [];
 
   DomainModelGraph({required this.domain, required this.model});
 
-  void addConceptNode(Concept concept, Offset position) {
+  void addConceptNode(ednet.Concept concept, Offset position) {
     nodes.add(DomainGraphNode(concept, position));
   }
 
@@ -62,22 +63,24 @@ class DomainModelGraph {
     return 'domain: ${domain.code}\nmodel: ${model.code}\nconcepts:\n';
   }
 
-// Additional validation or code gen logic can be placed here
+  // Additional validation or code gen logic can be placed here
 }
 
 class DomainModelEditorCanvas extends StatefulWidget {
-  final Domain domain;
-  final Model model;
+  final ednet.Domain domain;
+  final ednet.Model model;
 
-  DomainModelEditorCanvas({required this.domain, required this.model});
+  const DomainModelEditorCanvas({super.key, required this.domain, required this.model});
 
   @override
-  _DomainModelEditorCanvasState createState() => _DomainModelEditorCanvasState();
+  _DomainModelEditorCanvasState createState() =>
+      _DomainModelEditorCanvasState();
 }
 
 class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
   late DomainModelGraph graph;
-  TransformationController _transformationController = TransformationController();
+  final TransformationController _transformationController =
+      TransformationController();
   bool _isAddingConcept = false;
   DomainGraphNode? _selectedNode;
 
@@ -88,14 +91,20 @@ class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
     // Optionally pre-populate the graph with existing concepts
     for (var concept in widget.model.concepts) {
       // Random or fixed initial positions
-      graph.addConceptNode(concept, Offset(200 + Random().nextDouble() * 400, 200 + Random().nextDouble() * 300));
+      graph.addConceptNode(
+        concept,
+        Offset(
+          200 + Random().nextDouble() * 400,
+          200 + Random().nextDouble() * 300,
+        ),
+      );
     }
   }
 
   void _addConcept() {
     // Creates a new concept and adds to model
     final conceptCode = 'NewConcept${graph.nodes.length}';
-    final newConcept = Concept(widget.model, conceptCode);
+    final newConcept = ednet.Concept(widget.model, conceptCode);
     widget.model.concepts.add(newConcept);
     setState(() {
       _isAddingConcept = true;
@@ -154,9 +163,14 @@ class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
           ),
           child: Column(
             children: [
-              Text(node.concept.code, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                node.concept.code,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               if (node.concept.attributes.isNotEmpty)
-                ...node.concept.attributes.map((attr) => Text(attr.code, style: TextStyle(fontSize: 12))),
+                ...node.concept.attributes.map(
+                  (attr) => Text(attr.code, style: TextStyle(fontSize: 12)),
+                ),
             ],
           ),
         ),
@@ -164,18 +178,19 @@ class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
     );
   }
 
-  Future<void> _editConceptDialog(Concept concept) async {
+  Future<void> _editConceptDialog(ednet.Concept concept) async {
     // Show a dialog or a side panel to edit concept attributes
     // For simplicity, show a dialog that lists attributes and allow adding/removing
     await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Edit ${concept.code}'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...concept.attributes.map((attr) => ListTile(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit ${concept.code}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...concept.attributes.map(
+                (attr) => ListTile(
                   title: Text(attr.code),
                   trailing: IconButton(
                     icon: Icon(Icons.delete),
@@ -185,30 +200,30 @@ class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
                       });
                     },
                   ),
-                )),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      final newAttrCode = 'attr${concept.attributes.length}';
-                      final attr = Attribute(concept, newAttrCode);
-                      attr.type = concept.model.domain.getType('String');
-                      concept.attributes.add(attr);
-                    });
-                  },
-                  child: Text('Add Attribute'),
                 ),
-              ],
-            ),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: Text('Close')),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    final newAttrCode = 'attr${concept.attributes.length}';
+                    final attr = ednet.Attribute(concept, newAttrCode);
+                    attr.type = concept.model.domain.getType('String');
+                    concept.attributes.add(attr);
+                  });
+                },
+                child: Text('Add Attribute'),
+              ),
             ],
-          );
-        });
-    setState(() {});
-  }
-
-  CustomPainter _buildEdgesPainter() {
-    return _EdgePainter(graph: graph, transformationController: _transformationController);
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   String _exportDSL() {
@@ -218,89 +233,89 @@ class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
   void _showDSL() {
     final dsl = _exportDSL();
     showDialog(
-        context: context,
-        builder: (ctx) {
-          return AlertDialog(
-            title: Text('DSL Export'),
-            content: SelectableText(dsl),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx), child: Text('Close'))
-            ],
-          );
-        });
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text('DSL Export'),
+          content: SelectableText(dsl),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Domain Model Editor - Infinite Canvas'),
-        actions: [
-          IconButton(icon: Icon(Icons.add), onPressed: _addConcept, tooltip: 'Add Concept'),
-          IconButton(icon: Icon(Icons.download), onPressed: _showDSL, tooltip: 'Export DSL'),
-        ],
-      ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        return GestureDetector(
-          onTapUp: _onTapUp,
-          child: InteractiveViewer(
-            transformationController: _transformationController,
-            boundaryMargin: EdgeInsets.all(double.infinity),
-            minScale: 0.1,
-            maxScale: 5.0,
-            child: Stack(
-              children: [
-                // Edges (painted on a Canvas)
-                CustomPaint(
-                  painter: _buildEdgesPainter(),
-                  size: Size.infinite,
-                ),
-                // Nodes
-                for (var node in graph.nodes) _buildNode(node),
-              ],
+    return Stack(
+      children: [
+        InteractiveViewer(
+          transformationController: _transformationController,
+          boundaryMargin: EdgeInsets.all(double.infinity),
+          minScale: 0.1,
+          maxScale: 4.0,
+          child: GestureDetector(
+            onTapUp: _onTapUp,
+            child: Container(
+              width: 2000,
+              height: 2000,
+              color: Colors.grey[100],
+              child: Stack(
+                children: [
+                  // Draw edges
+                  ...graph.edges.map((edge) {
+                    final start = edge.from.position;
+                    final end = edge.to.position;
+                    return CustomPaint(
+                      painter: EdgePainter(start: start, end: end),
+                      size: Size(2000, 2000),
+                    );
+                  }),
+                  // Draw nodes
+                  ...graph.nodes.map(_buildNode),
+                ],
+              ),
             ),
           ),
-        );
-      }),
+        ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: FloatingActionButton(
+            onPressed: _addConcept,
+            tooltip: 'Add Concept',
+            child: Icon(Icons.add),
+          ),
+        ),
+      ],
     );
   }
 }
 
-class _EdgePainter extends CustomPainter {
-  final DomainModelGraph graph;
-  final TransformationController transformationController;
+class EdgePainter extends CustomPainter {
+  final Offset start;
+  final Offset end;
 
-  _EdgePainter({required this.graph, required this.transformationController});
+  EdgePainter({required this.start, required this.end});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey.shade700
-      ..strokeWidth = 2.0;
+    final paint =
+        Paint()
+          ..color = Colors.grey
+          ..strokeWidth = 2
+          ..style = PaintingStyle.stroke;
 
-    // Since we are using InteractiveViewer, positions are already in "scene" space.
-    // No extra transformation needed here.
-    for (var edge in graph.edges) {
-      final start = edge.from.position + Offset(60, 30); // approximate center of node
-      final end = edge.to.position + Offset(60, 30);
-      canvas.drawLine(start, end, paint);
-      // Optionally draw an arrow or relationship name
-      // For arrow: Draw a line and a small triangle at end
-      final arrowLength = 10.0;
-      final angle = (end - start).direction;
-      final arrowP1 = end - Offset(cos(angle) * arrowLength, sin(angle) * arrowLength);
-      final path = Path();
-      path.moveTo(end.dx, end.dy);
-      path.lineTo(arrowP1.dx - 5 * cos(angle + pi / 2), arrowP1.dy - 5 * sin(angle + pi / 2));
-      path.lineTo(arrowP1.dx + 5 * cos(angle + pi / 2), arrowP1.dy + 5 * sin(angle + pi / 2));
-      path.close();
-      canvas.drawPath(path, paint);
-    }
+    canvas.drawLine(start, end, paint);
   }
 
   @override
-  bool shouldRepaint(_EdgePainter oldDelegate) {
-    return oldDelegate.graph != graph;
+  bool shouldRepaint(EdgePainter oldDelegate) {
+    return start != oldDelegate.start || end != oldDelegate.end;
   }
 }
 

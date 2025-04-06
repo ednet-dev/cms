@@ -1,51 +1,35 @@
-part of '../../../project_core.dart';
-
-// lib/gen/project/core/initiatives.dart
-
-abstract class InitiativeGen extends Entity<Initiative> {
-  InitiativeGen(Concept concept) {
-    this.concept = concept;
-    // concept.children.isEmpty
-  }
+part of project_core; 
+ 
+// lib/gen/project/core/initiatives.dart 
+ 
+abstract class InitiativeGen extends Entity<Initiative> { 
+ 
+  InitiativeGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Reference get projectReference => getReference("project") as Reference; 
+  void set projectReference(Reference reference) { setReference("project", reference); } 
   
-
-    Reference get projectReference => getReference('project')!;
+  Project get project => getParent("project") as Project; 
+  void set project(Project p) { setParent("project", p); } 
   
-  set projectReference(Reference reference) => 
-      setReference('project', reference);
-  Project get project =>
-      getParent('project')! as Project;
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
   
-  set project(Project p) => setParent('project', p);
-
-
-    String get name => getAttribute('name') as String;
+  Initiative newEntity() => Initiative(concept); 
+  Initiatives newEntities() => Initiatives(concept); 
   
-  set name(String a) => setAttribute('name', a);
-
-
+} 
+ 
+abstract class InitiativesGen extends Entities<Initiative> { 
+ 
+  InitiativesGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Initiatives newEntities() => Initiatives(concept); 
+  Initiative newEntity() => Initiative(concept); 
   
-  @override
-  Initiative newEntity() => Initiative(concept);
-
-  @override
-  Initiatives newEntities() => Initiatives(concept);
-
-  
-}
-
-abstract class InitiativesGen extends Entities<Initiative> {
-  InitiativesGen(Concept concept) {
-    this.concept = concept;
-  }
-
-  @override
-  Initiatives newEntities() => Initiatives(concept);
-
-  @override
-  Initiative newEntity() => Initiative(concept);
-}
-
-// Commands for Initiative will be generated here
-// Events for Initiative will be generated here
-// Policies for Initiative will be generated here
+} 
+ 

@@ -1,56 +1,40 @@
-part of '../../../project_core.dart';
-
-// lib/gen/project/core/teams.dart
-
-abstract class TeamGen extends Entity<Team> {
-  TeamGen(Concept concept) {
-    this.concept = concept;
-        final roleConcept = 
-        concept.model.concepts.singleWhereCode('Role');
-    assert(roleConcept != null, 'Role concept is not defined');
-    setChild('roles', Roles(roleConcept!));
-
-  }
+part of project_core; 
+ 
+// lib/gen/project/core/teams.dart 
+ 
+abstract class TeamGen extends Entity<Team> { 
+ 
+  TeamGen(Concept concept) { 
+    this.concept = concept; 
+    Concept roleConcept = concept.model.concepts.singleWhereCode("Role") as Concept; 
+    assert(roleConcept != null); 
+    setChild("roles", Roles(roleConcept)); 
+  } 
+ 
+  Reference get projectReference => getReference("project") as Reference; 
+  void set projectReference(Reference reference) { setReference("project", reference); } 
   
-
-    Reference get projectReference => getReference('project')!;
+  Project get project => getParent("project") as Project; 
+  void set project(Project p) { setParent("project", p); } 
   
-  set projectReference(Reference reference) => 
-      setReference('project', reference);
-  Project get project =>
-      getParent('project')! as Project;
+  String get name => getAttribute("name"); 
+  void set name(String a) { setAttribute("name", a); } 
   
-  set project(Project p) => setParent('project', p);
-
-
-    String get name => getAttribute('name') as String;
+  Roles get roles => getChild("roles") as Roles; 
   
-  set name(String a) => setAttribute('name', a);
-
-
-    Roles get roles => getChild('roles')! as Roles;
-
-  @override
-  Team newEntity() => Team(concept);
-
-  @override
-  Teams newEntities() => Teams(concept);
-
+  Team newEntity() => Team(concept); 
+  Teams newEntities() => Teams(concept); 
   
-}
-
-abstract class TeamsGen extends Entities<Team> {
-  TeamsGen(Concept concept) {
-    this.concept = concept;
-  }
-
-  @override
-  Teams newEntities() => Teams(concept);
-
-  @override
-  Team newEntity() => Team(concept);
-}
-
-// Commands for Team will be generated here
-// Events for Team will be generated here
-// Policies for Team will be generated here
+} 
+ 
+abstract class TeamsGen extends Entities<Team> { 
+ 
+  TeamsGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Teams newEntities() => Teams(concept); 
+  Team newEntity() => Team(concept); 
+  
+} 
+ 

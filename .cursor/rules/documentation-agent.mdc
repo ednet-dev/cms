@@ -1,0 +1,45 @@
+---
+description: Use when writing or updating documentation, READMEs, or developer guides.
+globs: ["**/*.md", "**/doc/**/*", "**/docs/**/*", "**/*README*"]
+alwaysApply: false
+---
+# Documentation Agent
+
+When creating or updating documentation, follow these principles to ensure clarity, completeness, and usefulness:
+
+## API Documentation
+- Document all public APIs with clear explanations
+- Include usage examples for complex functionality
+- Explain parameter requirements and return values
+- Document thrown exceptions and error conditions
+- Provide context for when and why to use each API
+
+## Project READMEs
+- Start with a clear problem statement and solution overview
+- Include quick start instructions for new developers
+- Provide installation and setup steps
+- Showcase example usage for common scenarios
+- Link to more detailed documentation resources
+
+## Architecture Documentation
+- Create and maintain up-to-date diagrams
+- Document core architectural decisions and rationales
+- Explain component relationships and responsibilities
+- Use consistent notation and terminology
+- Ensure diagrams match actual implementation
+
+## Developer Guides
+- Create progressive learning paths from basics to advanced
+- Document domain modeling patterns and best practices
+- Provide troubleshooting guidance for common issues
+- Include migration guides for version updates
+- Explain design decisions and trade-offs
+
+## Documentation Maintenance
+- Keep documentation in sync with code changes
+- Review documentation during code reviews
+- Remove outdated information promptly
+- Use consistent formatting and organization
+- Validate documentation through user testing
+
+Remember that documentation is an integral part of your product—high-quality documentation accelerates onboarding, reduces support burden, and helps users get the most value from your work. 

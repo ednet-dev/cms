@@ -143,11 +143,16 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   /// Compares entities by their OID.
   @override
   bool contains(Object? entity) {
-    E element = _oidEntityMap[(entity as E).oid.timeStamp]!;
-    if (entity == element) {
-      return true;
+    if (entity == null || !(entity is E) || _oidEntityMap.isEmpty) {
+      return false;
     }
-    return false;
+
+    E? element = _oidEntityMap[(entity as E).oid.timeStamp];
+    if (element == null) {
+      return false;
+    }
+
+    return entity == element;
   }
 
   /// Returns the entity at the given [index].
@@ -571,10 +576,10 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   String toJson() => jsonEncode(toJsonList());
 
   /// Converts the collection to a list of JSON maps.
-  List<Map<String, Object>> toJsonList() {
-    List<Map<String, Object>> entityList = <Map<String, Object>>[];
+  List<Map<String, dynamic>> toJsonList() {
+    List<Map<String, dynamic>> entityList = <Map<String, dynamic>>[];
     for (E entity in _entityList) {
-      entityList.add(entity.toJsonMap() as Map<String, Object>);
+      entityList.add(entity.toJsonMap() as Map<String, dynamic>);
     }
     return entityList;
   }
@@ -582,7 +587,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   /// Loads entities from a JSON string.
   @override
   void fromJson(String entitiesJson) {
-    List<Map<String, Object>> entitiesList = jsonDecode(entitiesJson);
+    List<Map<String, dynamic>> entitiesList = jsonDecode(entitiesJson);
     fromJsonList(entitiesList);
   }
 
@@ -655,6 +660,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       throw new AddException('An entity cannot be added to ${_concept!.code}.');
     }
 
+    // Clear any existing exceptions before validation
+    exceptions.clear();
+
     bool isValid = true;
 
     // max validation
@@ -671,26 +679,27 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   /// Validates uniqueness constraints for an entity.
   bool validateUnique(entity, bool isValid) {
-    bool result = true;
-
     if (entity.id != null && singleWhereId(entity.id) != null) {
       ValidationException exception = new ValidationException(
         'unique',
         '${entity.concept.code}.id ${entity.id.toString()} is not unique.',
       );
       exceptions.add(exception as IValidationExceptions);
-      result = false;
+      return false;
     }
 
-    return result;
+    return isValid;
   }
 
   /// Validates increment and required constraints for an entity.
   bool validateIncrementAndRequired(entity, bool isValid) {
+    bool result = isValid;
+
     for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       var shouldIncrement = a.increment != null;
       var exists = entity.getAttribute(a.code) != null;
       var isRequired = a.required;
+      var isDerived = a.derive;
 
       if (shouldIncrement) {
         if (length == 0) {
@@ -700,7 +709,22 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           int incrementAttribute = lastEntity.getAttribute(a.code) as int;
           var attributeUpdate = a.update;
           a.update = true;
-          entity.setAttribute(a.code, incrementAttribute + a.increment!);
+
+          // Validate increment sequence
+          int expectedValue = incrementAttribute + a.increment!;
+          int providedValue = entity.getAttribute(a.code) as int? ?? 0;
+
+          if (providedValue != expectedValue) {
+            const category = 'increment';
+            final message =
+                '${entity.concept.code}.${a.code} attribute increment sequence is invalid. Expected: $expectedValue, Got: $providedValue';
+            final exception = ValidationException(category, message);
+            exceptions.add(exception);
+            result = false;
+          } else {
+            entity.setAttribute(a.code, expectedValue);
+          }
+
           a.update = attributeUpdate;
         } else {
           throw TypeException(
@@ -709,24 +733,74 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         }
       } else if (isRequired && !exists) {
         const category = 'required';
-        final message = '${entity.concept.code}.${a.code} attribute is null.';
+        final message =
+            '${entity.concept.code}.${a.code} attribute is required.';
         final exception = ValidationException(category, message);
 
-        exceptions.add(exception as IValidationExceptions);
-        isValid = false;
+        exceptions.add(exception);
+        result = false;
+      } else if (isDerived && exists) {
+        // Derived attributes should not be updated by the user
+        const category = 'update';
+        final message =
+            '${entity.concept.code}.${a.code} is a derived attribute and cannot be updated directly.';
+        final exception = ValidationException(category, message);
+
+        exceptions.add(exception);
+        result = false;
+      } else if (exists) {
+        var value = entity.getAttribute(a.code);
+
+        // Type validation
+        if (!a.type!.validateValue(value)) {
+          const category = 'type';
+          final message =
+              '${entity.concept.code}.${a.code} attribute value is not of type ${a.type!.code}.';
+          final exception = ValidationException(category, message);
+
+          exceptions.add(exception);
+          result = false;
+        }
+        // String length validation
+        else if (a.type!.base == 'String' &&
+            value is String &&
+            a.length != null &&
+            value.length > a.length!) {
+          const category = 'length';
+          final message =
+              '${entity.concept.code}.${a.code} attribute value exceeds maximum length of ${a.length}.';
+          final exception = ValidationException(category, message);
+
+          exceptions.add(exception);
+          result = false;
+        }
+        // Email format validation
+        else if (a.type!.code == 'Email' &&
+            value is String &&
+            !a.type!.isEmail(value)) {
+          const category = 'format';
+          final message =
+              '${entity.concept.code}.${a.code} attribute value is not a valid email format.';
+          final exception = ValidationException(category, message);
+
+          exceptions.add(exception);
+          result = false;
+        }
       }
     }
+
     for (Parent p in _concept!.parents.whereType<Parent>()) {
       if (p.required && entity.getParent(p.code) == null) {
         const category = 'required';
-        final message = '${entity.concept.code}.${p.code} parent is null.';
+        final message = '${entity.concept.code}.${p.code} parent is required.';
         final exception = ValidationException(category, message);
 
-        exceptions.add(exception as IValidationExceptions);
-        isValid = false;
+        exceptions.add(exception);
+        result = false;
       }
     }
-    return isValid;
+
+    return result;
   }
 
   /// Validates cardinality constraints.
@@ -740,8 +814,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           final message = '${_concept!.code}.max is $maxC.';
           var exception = ValidationException(category, message);
 
-          exceptions.add(exception as IValidationExceptions);
-          isValid = false;
+          exceptions.add(exception);
+          return false;
         }
       } on FormatException catch (e) {
         throw AddException(
@@ -855,7 +929,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
             message,
           );
 
-          exceptions.add(exception as IValidationExceptions);
+          exceptions.add(exception);
           result = false;
         }
       } on FormatException catch (e) {
@@ -958,7 +1032,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           final message =
               '${_concept!.code}.update fails to add after update entity.';
           var exception = ValidationException(category, message);
-          exceptions.add(exception as IValidationExceptions);
+          exceptions.add(exception);
         } else {
           throw UpdateException(
             '${_concept!.code}.update fails to add back before update entity.',
@@ -971,7 +1045,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           '${_concept!.code}.update fails to remove before update entity.';
       var exception = ValidationException(category, message);
 
-      exceptions.add(exception as IValidationExceptions);
+      exceptions.add(exception);
     }
     return false;
   }

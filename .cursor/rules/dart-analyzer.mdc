@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+If conversation involves code generation or commiting before running main process or commiting to git run dart analyzer on affected files and first address any issue be that warning or error or lint issue and only when all green from dart analyzer side we can proceed to run or commit code!

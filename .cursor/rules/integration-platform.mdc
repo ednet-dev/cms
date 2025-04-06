@@ -1,0 +1,45 @@
+---
+description: Use when implementing platform-specific functionality or integrating with external systems/services.
+globs: ["**/platform/**/*", "**/integration/**/*", "**/api/**/*"]
+alwaysApply: false
+---
+# Integration & Platform Adaptation Agent
+
+When integrating with external systems or adapting for specific platforms, follow these principles:
+
+## Platform-Specific Implementation
+- Tailor UI and interactions to each platform's standards
+- Follow Material/Cupertino guidelines for Flutter
+- Implement responsive layouts for web platforms
+- Respect platform-specific navigation patterns
+- Ensure native feel while maintaining cross-platform consistency
+
+## External System Integration
+- Design APIs that align with domain models
+- Create clear abstractions for third-party services
+- Implement proper error handling for integration points
+- Support pagination and partial data loading
+- Document API contracts and expected behaviors
+
+## Dependency Management
+- Use dependency injection for platform services
+- Create mockable interfaces for external dependencies
+- Isolate platform-specific code in dedicated adapters
+- Keep core functionality platform-agnostic
+- Version external dependencies explicitly
+
+## Reliability Patterns
+- Implement retry mechanisms for transient failures
+- Add circuit breakers for unreliable services
+- Create fallback mechanisms for critical features
+- Monitor integration health and performance
+- Log detailed diagnostics for integration issues
+
+## Testing Strategy
+- Test each integration point in isolation
+- Create integration tests for end-to-end flows
+- Simulate various failure conditions
+- Verify correct behavior across platforms
+- Test with realistic data volumes and conditions
+
+Remember that good integration respects both the external system's constraints and your application's domain model, creating a seamless experience while maintaining system integrity. 

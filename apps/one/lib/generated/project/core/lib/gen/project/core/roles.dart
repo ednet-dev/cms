@@ -1,55 +1,38 @@
-part of '../../../project_core.dart';
-
-// lib/gen/project/core/roles.dart
-
-abstract class RoleGen extends Entity<Role> {
-  RoleGen(Concept concept) {
-    this.concept = concept;
-    // concept.children.isEmpty
-  }
+part of project_core; 
+ 
+// lib/gen/project/core/roles.dart 
+ 
+abstract class RoleGen extends Entity<Role> { 
+ 
+  RoleGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Reference get teamReference => getReference("team") as Reference; 
+  void set teamReference(Reference reference) { setReference("team", reference); } 
   
-
-    Reference get teamReference => getReference('team')!;
+  Team get team => getParent("team") as Team; 
+  void set team(Team p) { setParent("team", p); } 
   
-  set teamReference(Reference reference) => 
-      setReference('team', reference);
-  Team get team =>
-      getParent('team')! as Team;
+  String get title => getAttribute("title"); 
+  void set title(String a) { setAttribute("title", a); } 
   
-  set team(Team p) => setParent('team', p);
-
-
-    String get title => getAttribute('title') as String;
+  String get responsibility => getAttribute("responsibility"); 
+  void set responsibility(String a) { setAttribute("responsibility", a); } 
   
-  set title(String a) => setAttribute('title', a);
-
-  String get responsibility => getAttribute('responsibility') as String;
+  Role newEntity() => Role(concept); 
+  Roles newEntities() => Roles(concept); 
   
-  set responsibility(String a) => setAttribute('responsibility', a);
-
-
+} 
+ 
+abstract class RolesGen extends Entities<Role> { 
+ 
+  RolesGen(Concept concept) { 
+    this.concept = concept; 
+  } 
+ 
+  Roles newEntities() => Roles(concept); 
+  Role newEntity() => Role(concept); 
   
-  @override
-  Role newEntity() => Role(concept);
-
-  @override
-  Roles newEntities() => Roles(concept);
-
-  
-}
-
-abstract class RolesGen extends Entities<Role> {
-  RolesGen(Concept concept) {
-    this.concept = concept;
-  }
-
-  @override
-  Roles newEntities() => Roles(concept);
-
-  @override
-  Role newEntity() => Role(concept);
-}
-
-// Commands for Role will be generated here
-// Events for Role will be generated here
-// Policies for Role will be generated here
+} 
+ 

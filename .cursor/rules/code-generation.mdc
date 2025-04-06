@@ -1,0 +1,32 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# EDNet Code Generation Rule
+
+When implementing or modifying code generation functionality, adhere to these principles:
+
+## YAML Definitions
+- Maintain backward compatibility with existing YAML schemas
+- Follow consistent naming conventions between YAML and generated Dart
+- Support incremental code generation to avoid overwriting custom code
+
+## Generation Patterns
+- Generate complete, ready-to-use Dart projects with proper package structure
+- Include appropriate test scaffolding for all generated components
+- Maintain separation between generated and hand-written code
+- Preserve semantic meaning from domain model to generated code
+
+## CLI Interface
+- Support both project creation (`--genall`) and code regeneration (`--gengen`)
+- Provide clear error messages for schema validation issues
+- Allow domain/model configuration through command line parameters
+
+## Integration Points
+- Ensure smooth integration with ednet_core domain models
+- Generate code compatible with ednet_cms visualization
+- Support cross-platform Flutter code generation where applicable
+
+Remember that code generation is the bridge between domain modeling and implementation - prioritize maintainability and semantic clarity.

@@ -10,13 +10,13 @@ class LayoutTemplate extends StatelessWidget {
   final Widget? footer;
 
   const LayoutTemplate({
-    Key? key,
+    super.key,
     this.header,
     this.leftSidebar,
     this.rightSidebar,
     required this.mainContent,
     this.footer,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

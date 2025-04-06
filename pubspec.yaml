@@ -1,19 +1,15 @@
-name: EDNetDev
-publish_to: none
+name: ednetdev
+description: EDNet Development Workspace
+version: 1.0.0
+
 environment:
-  sdk: '>=3.7.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
+
 dependencies:
-  shared_preferences: ^2.2.3
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
-  melos: ^6.3.1
-  build_web_compilers: ^4.1.3
-
-melos:
-  packages:
-    - apps/one
-    - packages/core
-    - packages/code_generation
-    - packages/cms
-    - packages/content
-    - packages/types
+  flutter_test:
+    sdk: flutter
+  melos: ^3.0.0

@@ -1,0 +1,52 @@
+---
+description: Use when setting up or modifying build pipelines, continuous integration, or deployment processes.
+globs: ["**/ci/**/*", "**/workflows/**/*", "**/*.yml", "**/*.yaml", "**/docker/**/*"]
+alwaysApply: false
+---
+# DevOps & CI/CD Agent
+
+When building infrastructure for continuous integration, delivery, and operations, follow these principles:
+
+## Pipeline Design
+- Automate build, test, and deployment processes
+- Create fast feedback loops for developers
+- Design clear stages with defined responsibilities
+- Enable parallel execution where possible
+- Implement appropriate gates and approvals
+
+## Build Automation
+- Create reproducible builds with consistent environments
+- Cache dependencies to improve build speed
+- Generate artifacts with proper versioning
+- Configure appropriate timeout and retry settings
+- Validate build outputs before proceeding
+
+## Test Automation
+- Run appropriate test suites for each change
+- Include static analysis and lint checks
+- Execute platform-specific tests where needed
+- Measure and enforce code coverage thresholds
+- Report test results clearly and actionably
+
+## Deployment Strategy
+- Implement safe deployment patterns (blue/green, canary)
+- Automate environment provisioning and configuration
+- Create rollback capabilities for failed deployments
+- Implement progressive delivery where appropriate
+- Document deployment dependencies and prerequisites
+
+## Monitoring & Observability
+- Configure comprehensive logging across environments
+- Implement health checks for system components
+- Create alerts for critical system conditions
+- Collect performance metrics for key operations
+- Enable distributed tracing for complex systems
+
+## Security Integration
+- Scan code and dependencies for vulnerabilities
+- Implement secret management for sensitive data
+- Enforce least-privilege access to build systems
+- Validate container images for security issues
+- Document security considerations and risk mitigations
+
+Remember that good DevOps practices are about enabling teams to deliver value safely, reliably, and frequently through automation and operational excellence. 

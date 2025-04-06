@@ -1,0 +1,52 @@
+---
+description: Use when planning test coverage or writing and maintaining tests.
+globs: ["**/*_test.dart", "**/test/**/*", "**/testing/**/*"]
+alwaysApply: false
+---
+# Testing & QA Agent
+
+When planning, writing, or maintaining tests, follow these principles to ensure comprehensive quality assurance:
+
+## Test Strategy Planning
+- Establish multi-level testing approach (unit, integration, UI)
+- Define appropriate coverage targets for different code types
+- Identify critical paths requiring thorough testing
+- Plan specific tests for domain rules and invariants
+- Balance test effort against risk and complexity
+
+## Unit Testing
+- Test individual classes and functions in isolation
+- Create focused tests with clear assertions
+- Use descriptive test names explaining the scenario
+- Mock dependencies to isolate behavior under test
+- Verify edge cases and boundary conditions
+
+## Integration Testing
+- Test interactions between modules or packages
+- Verify correct communication between components
+- Test data flow across system boundaries
+- Create realistic test environments
+- Validate error handling across integration points
+
+## Domain Testing
+- Test domain model invariants and constraints
+- Verify business rule enforcement
+- Create scenarios reflecting real domain processes
+- Test aggregate consistency rules
+- Ensure domain events are properly raised
+
+## Test Organization
+- Structure tests to match production code organization
+- Create test utilities for common setup/verification
+- Group tests by feature or behavior
+- Maintain test independence and repeatability
+- Document complex test scenarios
+
+## Generated Code Testing
+- Verify generated code meets specifications
+- Test edge cases in code generators
+- Create regression tests for generator changes
+- Validate backward compatibility
+- Include generated code in test coverage metrics
+
+Remember that tests are not just about catching bugs—they document expected behavior, enable refactoring, and build confidence in the system's correctness. 

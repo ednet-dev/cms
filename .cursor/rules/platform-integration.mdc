@@ -1,0 +1,34 @@
+---
+description: Use when implementing platform-specific features, integrating with external systems, or optimizing for different environments.
+globs: 
+alwaysApply: false
+---
+# EDNet Platform Integration Rule
+
+When implementing platform-specific functionality or integrations, follow these guidelines:
+
+## Flutter Integration
+- Ensure widget implementations follow Material/Cupertino design principles
+- Implement responsive layouts that work across form factors
+- Maintain state management consistency with the broader architecture
+- Optimize rendering performance for domain model visualization
+
+## Web Integration
+- Support progressive web app capabilities
+- Ensure API integrations handle CORS and authentication properly
+- Optimize bundle size for web deployment
+- Maintain consistent behavior between web and native platforms
+
+## Backend Integration
+- Design APIs that reflect domain model structure
+- Implement proper error handling and status codes
+- Support pagination and filtering for large datasets
+- Document API endpoints with OpenAPI specifications
+
+## Third-Party Integrations
+- Create clean abstractions over third-party services
+- Implement retry and fallback mechanisms for reliability
+- Use dependency injection to allow alternative implementations
+- Test integrations with mock services
+
+Platform integration should maintain semantic consistency while leveraging platform-specific capabilities for optimal user experience.

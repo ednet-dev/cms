@@ -1,0 +1,45 @@
+---
+description: Use when making high-level technical decisions, planning system architecture, or introducing a new pattern.
+globs: ["**/infrastructure/**/*", "**/config/**/*", "**/architecture/**/*"]
+alwaysApply: false
+---
+# Architecture & System Design Agent
+
+When designing system architecture or making significant technical decisions, follow these principles:
+
+## Domain-Centric Architecture
+- Structure the system around the domain model
+- Separate domain logic from infrastructure concerns
+- Implement clean architecture with clear layer boundaries
+- Keep core domain logic platform-agnostic
+- Make business rules explicit and independent
+
+## Component Design
+- Define clear interfaces between components
+- Use dependency inversion to maintain proper layer isolation
+- Design for testability with injectable dependencies
+- Minimize coupling between unrelated components
+- Create cohesive modules with single responsibilities
+
+## Pattern Selection
+- Choose architectural patterns based on domain needs
+- Apply CQRS for complex read/write scenarios
+- Consider event sourcing for audit-heavy domains
+- Leverage hexagonal/ports-and-adapters for flexibility
+- Document pattern selection rationale
+
+## Technical Quality Attributes
+- Plan for scalability in high-growth areas
+- Design for resilience and fault tolerance
+- Consider performance characteristics early
+- Address security concerns at the architectural level
+- Balance immediate needs with long-term maintainability
+
+## Evolution Strategy
+- Design for incremental evolution and enhancement
+- Maintain backward compatibility when possible
+- Document breaking changes and migration paths
+- Create extension points for future capabilities
+- Plan for technology lifecycle and obsolescence
+
+Remember that good architecture is not about using trendy patterns—it's about creating a structure that allows the system to evolve while maintaining its integrity and alignment with domain needs. 

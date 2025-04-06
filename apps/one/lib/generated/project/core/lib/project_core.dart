@@ -32,58 +32,77 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-library project_core;
+    library project_core;
 
-import 'package:ednet_core/ednet_core.dart';
-import 'package:yaml/yaml.dart';
+    import "package:ednet_core/ednet_core.dart";
+    import "package:yaml/yaml.dart";
+
+    part "repository.dart";
+    part "gen/project/i_domain_models.dart";
+    part "gen/project/core/model_entries.dart";
+    part "project/domain.dart";
+    part "project/core/model.dart";
+    part "project/core/json/data.dart";
+    part "project/core/json/model.dart";
+    
+part "project/core/tasks.dart";
 
 
-part 'repository.dart';
-part 'gen/project/i_domain_models.dart';
-part 'gen/project/core/model_entries.dart';
-part 'project/domain.dart';
-part 'project/core/model.dart';
-part 'project/core/json/data.dart';
-part 'project/core/json/model.dart';
+part "project/core/projects.dart";
 
-part 'project/core/tasks.dart';
 
-part 'project/core/projects.dart';
+part "project/core/milestones.dart";
 
-part 'project/core/milestones.dart';
 
-part 'project/core/resources.dart';
+part "project/core/resources.dart";
 
-part 'project/core/roles.dart';
 
-part 'project/core/teams.dart';
+part "project/core/roles.dart";
 
-part 'project/core/skills.dart';
 
-part 'project/core/times.dart';
+part "project/core/teams.dart";
 
-part 'project/core/budgets.dart';
 
-part 'project/core/initiatives.dart';
+part "project/core/skills.dart";
 
-part 'gen/project/core/tasks.dart';
 
-part 'gen/project/core/projects.dart';
+part "project/core/times.dart";
 
-part 'gen/project/core/milestones.dart';
 
-part 'gen/project/core/resources.dart';
+part "project/core/budgets.dart";
 
-part 'gen/project/core/roles.dart';
 
-part 'gen/project/core/teams.dart';
+part "project/core/initiatives.dart";
 
-part 'gen/project/core/skills.dart';
+    
+part "gen/project/core/tasks.dart";
 
-part 'gen/project/core/times.dart';
 
-part 'gen/project/core/budgets.dart';
+part "gen/project/core/projects.dart";
 
-part 'gen/project/core/initiatives.dart';
+
+part "gen/project/core/milestones.dart";
+
+
+part "gen/project/core/resources.dart";
+
+
+part "gen/project/core/roles.dart";
+
+
+part "gen/project/core/teams.dart";
+
+
+part "gen/project/core/skills.dart";
+
+
+part "gen/project/core/times.dart";
+
+
+part "gen/project/core/budgets.dart";
+
+
+part "gen/project/core/initiatives.dart";
+
     
   

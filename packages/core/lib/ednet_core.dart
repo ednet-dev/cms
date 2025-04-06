@@ -6,6 +6,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:expressions/expressions.dart';
+import 'package:meta/meta.dart';
 import 'package:yaml/yaml.dart';
 
 // Core components
@@ -19,7 +20,7 @@ part 'domain/core/serializable.dart';
 part 'domain/domain_models.dart';
 
 part 'domain/i_domain_models.dart';
-// part 'domain/model/aggregate_root/aggregate_root.dart';
+part 'domain/model/aggregate_root/aggregate_root.dart';
 
 // Entity components
 part 'domain/model/oid.dart';
@@ -141,15 +142,6 @@ part 'domain/model/error/i_validation_exception.dart';
 part 'domain/model/error/validation_exception.dart';
 part 'domain/model/error/validation_exceptions.dart';
 
-// Infrastructure components
-// part 'domain/infrastructure/graph/domain_model_graph.dart';
-// part 'domain/infrastructure/graph/edge.dart';
-// part 'domain/infrastructure/graph/edge_direction.dart';
-// part 'domain/infrastructure/graph/edge_type.dart';
-// part 'domain/infrastructure/graph/node.dart';
-// part 'domain/infrastructure/graph/node_type.dart';
-// part 'domain/infrastructure/repository/interfaces/i_repository.dart';
-
 // Configuration
 // part 'configuration/bootstrap.dart';
 part 'utilities/dsl/bootstrap_domain_model_from_yaml.dart';
@@ -195,3 +187,13 @@ part 'domain/model/error/exceptions.dart';
 part 'domain/model/model_entries.dart';
 
 part 'domain/model/i_model_entries.dart';
+
+// Enterprise Integration Patterns
+part 'domain/patterns/aggregator/aggregator.dart';
+part 'domain/patterns/common/base_message.dart';
+part 'domain/patterns/common/channel.dart';
+part 'domain/patterns/common/http_types.dart';
+part 'domain/patterns/filter/message_filter.dart';
+part 'domain/patterns/filter/ednet_core_message_filter.dart';
+part 'domain/patterns/channel/adapter/channel_adapter.dart';
+part 'domain/patterns/canonical/canonical_model.dart';
