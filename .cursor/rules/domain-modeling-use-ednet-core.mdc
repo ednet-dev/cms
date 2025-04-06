@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# New code creation and refactoring
+Always model solution using [ednet_core.dart](mdc:packages/core/lib/ednet_core.dart) power!
