@@ -5,6 +5,7 @@ import 'dart:developer' as developer;
 // Add imports for the Graph page
 import '../pages/graph_page.dart';
 import '../pages/domain_modeler/domain_model_editor.dart';
+import '../pages/model_instance/model_instance_page.dart';
 
 /// Routes available in the application
 class AppRoutes {
@@ -15,6 +16,7 @@ class AppRoutes {
   static const graph = '/graph';
   static const settings = '/settings';
   static const domainModelEditor = '/domain-model-editor';
+  static const modelInstance = '/model-instance';
 
   /// Convert a route pattern to a concrete path
   static String mapToPath(String route, Map<String, String> params) {
@@ -152,6 +154,23 @@ class NavigationService {
       // Fallback to creating a new route if the named route fails
       return navigatorKey.currentState!.push(
         MaterialPageRoute(builder: (context) => const DomainModelEditor()),
+      );
+    }
+  }
+
+  /// Navigate to the model instance manager
+  Future<dynamic> navigateToModelInstance() {
+    developer.log('Navigating to Model Instance Manager', name: 'Navigation');
+    try {
+      return navigatorKey.currentState!.pushNamed(ModelInstancePage.routeName);
+    } catch (e, stack) {
+      developer.log(
+        'Error navigating to model instance manager: $e\n$stack',
+        name: 'Navigation',
+      );
+      // Fallback to creating a new route if the named route fails
+      return navigatorKey.currentState!.push(
+        MaterialPageRoute(builder: (context) => const ModelInstancePage()),
       );
     }
   }

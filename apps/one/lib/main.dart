@@ -16,6 +16,7 @@ import 'package:ednet_core/ednet_core.dart';
 import 'domain/repositories/entity_repository.dart';
 import 'domain/repositories/entity_repository_impl.dart';
 import 'domain/services/persistence_service.dart';
+import 'domain/services/model_instance_service.dart';
 
 import 'presentation/di/bloc_providers.dart' as bloc_providers;
 import 'presentation/layouts/app_shell.dart';
@@ -29,6 +30,7 @@ import 'presentation/theme/providers/theme_provider.dart';
 import 'presentation/pages/workspace/immersive_workspace_page.dart';
 import 'presentation/pages/examples/entity_persistence_example_page.dart';
 import 'presentation/pages/domain_modeler/domain_model_editor.dart';
+import 'presentation/pages/model_instance/model_instance_page.dart';
 
 // Application singletons
 final oneApplication = OneApplication();
@@ -322,6 +324,8 @@ class MyAppState extends State<MyApp> {
               (context) => EntityPersistenceExamplePage(),
           // Add the domain model editor route
           DomainModelEditor.routeName: (context) => const DomainModelEditor(),
+          // Add the model instance manager route
+          ModelInstancePage.routeName: (context) => const ModelInstancePage(),
         },
       ),
     );

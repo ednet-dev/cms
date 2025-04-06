@@ -5,6 +5,7 @@ import 'model_manager/model_manager_module.dart';
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
 import '../pages/domain_modeler/domain_model_editor.dart';
+import '../pages/model_instance/model_instance_page.dart';
 
 /// A singleton registry for all application modules
 class AppModuleRegistry {
@@ -32,6 +33,9 @@ class AppModuleRegistry {
 
     // Domain Modeler module
     _registry.registerModule(DomainModelEditorModule());
+
+    // Model Instance Manager module
+    _registry.registerModule(ModelInstanceModule());
 
     _initialized = true;
   }
@@ -70,6 +74,36 @@ class DomainModelEditorModule extends AppModule {
         tooltip: 'Save Domain Model',
         onPressed: () {
           // This would be handled by the DomainModelEditor itself
+        },
+      ),
+    ];
+  }
+}
+
+/// Module for the Model Instance Manager
+class ModelInstanceModule extends AppModule {
+  @override
+  String get id => 'model-instance';
+
+  @override
+  String get name => 'Model Instances';
+
+  @override
+  IconData get icon => Icons.play_circle_outline;
+
+  @override
+  Widget buildModuleContent(BuildContext context) {
+    return const ModelInstancePage();
+  }
+
+  @override
+  List<Widget> buildAppBarActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.add),
+        tooltip: 'Create New Instance',
+        onPressed: () {
+          // This would be handled by the ModelInstancePage
         },
       ),
     ];
