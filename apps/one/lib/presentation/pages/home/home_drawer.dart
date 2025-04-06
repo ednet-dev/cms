@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_state.dart';
 import 'package:ednet_one/presentation/theme/theme_components/custom_colors.dart';
 
@@ -33,7 +34,7 @@ class HomeDrawer extends StatefulWidget {
     this.onAbout,
     this.onHelp,
     this.onPinStateChanged,
-    this.isPinned = false,
+    this.isPinned = true,
   });
 
   @override
@@ -45,7 +46,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   static const _drawerPinnedKey = 'drawer_pinned';
 
   bool _isDomainSectionExpanded = true;
-  bool _isPinned = false;
+  bool _isPinned = true;
 
   @override
   void initState() {
@@ -67,9 +68,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     setState(() {
       _isDomainSectionExpanded =
           prefs.getBool(_domainSectionExpandedKey) ?? true; // Default expanded
-      _isPinned =
-          prefs.getBool(_drawerPinnedKey) ??
-          false; // Use widget value as fallback
+      _isPinned = prefs.getBool(_drawerPinnedKey) ?? true; // Default to pinned
     });
   }
 
@@ -101,89 +100,94 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
     return Drawer(
       elevation: _isPinned ? 0 : 16, // Reduced elevation when pinned
-      child: Column(
-        children: [
-          // Header with logo, app info, and pin option
-          _buildHeader(context),
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Header with logo, app info, and pin option
+            _buildHeader(context),
 
-          // Navigation options
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                // Domains section
-                _DomainSection(
-                  isExpanded: _isDomainSectionExpanded,
-                  onExpansionChanged: _saveExpandedState,
+            // Navigation options in a scrollable container
+            Expanded(
+              child: Scrollbar(
+                thumbVisibility: true,
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    // Domains section
+                    _DomainSection(
+                      isExpanded: _isDomainSectionExpanded,
+                      onExpansionChanged: _saveExpandedState,
+                    ),
+
+                    const Divider(),
+
+                    // App options
+                    ListTile(
+                      leading: const Icon(Icons.dashboard),
+                      title: const Text('Dashboard'),
+                      onTap: () {
+                        if (!_isPinned) Navigator.pop(context);
+                        // Navigate to dashboard
+                      },
+                    ),
+
+                    if (widget.onSettings != null)
+                      ListTile(
+                        leading: const Icon(Icons.settings),
+                        title: const Text('Settings'),
+                        onTap: () {
+                          if (!_isPinned) Navigator.pop(context);
+                          widget.onSettings!();
+                        },
+                      ),
+
+                    if (widget.onDocs != null)
+                      ListTile(
+                        leading: const Icon(Icons.description),
+                        title: const Text('Documentation'),
+                        onTap: () {
+                          if (!_isPinned) Navigator.pop(context);
+                          widget.onDocs!();
+                        },
+                      ),
+
+                    if (widget.onHelp != null)
+                      ListTile(
+                        leading: const Icon(Icons.help),
+                        title: const Text('Help'),
+                        onTap: () {
+                          if (!_isPinned) Navigator.pop(context);
+                          widget.onHelp!();
+                        },
+                      ),
+
+                    if (widget.onAbout != null)
+                      ListTile(
+                        leading: const Icon(Icons.info),
+                        title: const Text('About'),
+                        onTap: () {
+                          if (!_isPinned) Navigator.pop(context);
+                          widget.onAbout!();
+                        },
+                      ),
+                  ],
                 ),
-
-                const Divider(),
-
-                // App options
-                ListTile(
-                  leading: const Icon(Icons.dashboard),
-                  title: const Text('Dashboard'),
-                  onTap: () {
-                    if (!_isPinned) Navigator.pop(context);
-                    // Navigate to dashboard
-                  },
-                ),
-
-                if (widget.onSettings != null)
-                  ListTile(
-                    leading: const Icon(Icons.settings),
-                    title: const Text('Settings'),
-                    onTap: () {
-                      if (!_isPinned) Navigator.pop(context);
-                      widget.onSettings!();
-                    },
-                  ),
-
-                if (widget.onDocs != null)
-                  ListTile(
-                    leading: const Icon(Icons.description),
-                    title: const Text('Documentation'),
-                    onTap: () {
-                      if (!_isPinned) Navigator.pop(context);
-                      widget.onDocs!();
-                    },
-                  ),
-
-                if (widget.onHelp != null)
-                  ListTile(
-                    leading: const Icon(Icons.help),
-                    title: const Text('Help'),
-                    onTap: () {
-                      if (!_isPinned) Navigator.pop(context);
-                      widget.onHelp!();
-                    },
-                  ),
-
-                if (widget.onAbout != null)
-                  ListTile(
-                    leading: const Icon(Icons.info),
-                    title: const Text('About'),
-                    onTap: () {
-                      if (!_isPinned) Navigator.pop(context);
-                      widget.onAbout!();
-                    },
-                  ),
-              ],
-            ),
-          ),
-
-          // Footer with version info
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'EDNet One v1.0.0',
-              style: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.5),
-                fontSize: 12,
               ),
             ),
-          ),
-        ],
+
+            // Footer with version info
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'EDNet One v1.0.0',
+                style: TextStyle(
+                  color: colorScheme.onSurface.withOpacity(0.5),
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -192,55 +196,51 @@ class _HomeDrawerState extends State<HomeDrawer> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return DrawerHeader(
-      margin: EdgeInsets.zero,
-      padding: EdgeInsets.zero,
-      decoration: BoxDecoration(color: colorScheme.primary),
-      child: Stack(
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      color: colorScheme.primary,
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Use minimum size needed
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Main drawer header content
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  backgroundColor: colorScheme.onPrimary,
-                  radius: 30,
-                  child: Icon(Icons.code, color: colorScheme.primary, size: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CircleAvatar(
+                backgroundColor: colorScheme.onPrimary,
+                radius: 25, // Smaller radius
+                child: Icon(
+                  Icons.code,
+                  color: colorScheme.primary,
+                  size: 25, // Smaller icon
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  'EDNet One',
-                  style: TextStyle(
-                    color: colorScheme.onPrimary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              // Pin button
+              IconButton(
+                icon: Icon(
+                  _isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                  color: colorScheme.onPrimary,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Domain-Driven Design Platform',
-                  style: TextStyle(
-                    color: colorScheme.onPrimary.withOpacity(0.8),
-                    fontSize: 12,
-                  ),
-                ),
-              ],
+                tooltip: _isPinned ? 'Unpin drawer' : 'Pin drawer',
+                onPressed: _togglePinState,
+              ),
+            ],
+          ),
+          const SizedBox(height: 10), // Reduced space
+          Text(
+            'EDNet One',
+            style: TextStyle(
+              color: colorScheme.onPrimary,
+              fontSize: 20, // Smaller font
+              fontWeight: FontWeight.bold,
             ),
           ),
-
-          // Pin button in the top-right corner
-          Positioned(
-            top: 8,
-            right: 8,
-            child: IconButton(
-              icon: Icon(
-                _isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-                color: colorScheme.onPrimary,
-              ),
-              tooltip: _isPinned ? 'Unpin drawer' : 'Pin drawer',
-              onPressed: _togglePinState,
+          const SizedBox(height: 2), // Reduced space
+          Text(
+            'Domain Modeling Platform',
+            style: TextStyle(
+              color: colorScheme.onPrimary.withOpacity(0.8),
+              fontSize: 12,
             ),
           ),
         ],
@@ -305,8 +305,10 @@ class _DomainSection extends StatelessWidget {
                   onTap: () {
                     // If not already selected, select the domain
                     if (domain != state.selectedDomain) {
-                      // This would dispatch the domain selection event
-                      // The actual implementation would come from the HomePage
+                      // Dispatch the domain selection event
+                      context.read<DomainSelectionBloc>().add(
+                        SelectDomainEvent(domain),
+                      );
                     }
                   },
                 ),

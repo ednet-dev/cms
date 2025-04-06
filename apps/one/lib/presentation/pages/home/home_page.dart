@@ -8,8 +8,10 @@ import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_sel
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_state.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_state.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
 
 // Refactored components
@@ -45,19 +47,79 @@ class HomePageState extends State<HomePage> {
   static const String _drawerPinnedKey = 'drawer_pinned';
 
   bool _showMetaCanvas = false;
-  bool _isDrawerPinned = false;
+  bool _isDrawerPinned = true; // Default to pinned
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     _loadDrawerState();
+    // Trigger domain selection after a short delay to ensure UI is built
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _initializeSelections();
+    });
+  }
+
+  /// Initialize domain, model, and concept selections if not already selected
+  void _initializeSelections() {
+    final domainState = context.read<DomainSelectionBloc>().state;
+    final modelState = context.read<ModelSelectionBloc>().state;
+    final conceptState = context.read<ConceptSelectionBloc>().state;
+
+    debugPrint('📱 Initializing selections:');
+    debugPrint('📱 Domains available: ${domainState.allDomains.length}');
+    debugPrint('📱 Current domain: ${domainState.selectedDomain?.code}');
+    debugPrint('📱 Models available: ${modelState.availableModels.length}');
+    debugPrint('📱 Current model: ${modelState.selectedModel?.code}');
+    debugPrint(
+      '📱 Concepts available: ${conceptState.availableConcepts.length}',
+    );
+    debugPrint('📱 Current concept: ${conceptState.selectedConcept?.code}');
+    debugPrint(
+      '📱 Entities available: ${conceptState.selectedEntities?.length ?? 0}',
+    );
+
+    // If no domain is selected but domains are available, select the first one
+    if (domainState.selectedDomain == null &&
+        domainState.allDomains.isNotEmpty) {
+      debugPrint(
+        '📱 Auto-selecting first domain: ${domainState.allDomains.first.code}',
+      );
+      context.read<DomainSelectionBloc>().add(
+        SelectDomainEvent(domainState.allDomains.first),
+      );
+    }
+
+    // If domain is selected but no model is selected, select the first model
+    if (domainState.selectedDomain != null &&
+        modelState.selectedModel == null &&
+        modelState.availableModels.isNotEmpty) {
+      debugPrint(
+        '📱 Auto-selecting first model: ${modelState.availableModels.first.code}',
+      );
+      context.read<ModelSelectionBloc>().add(
+        SelectModelEvent(modelState.availableModels.first),
+      );
+    }
+
+    // If model is selected but no concept is selected, select the first concept
+    if (modelState.selectedModel != null &&
+        conceptState.selectedConcept == null &&
+        conceptState.availableConcepts.isNotEmpty) {
+      debugPrint(
+        '📱 Auto-selecting first concept: ${conceptState.availableConcepts.first.code}',
+      );
+      context.read<ConceptSelectionBloc>().add(
+        SelectConceptEvent(conceptState.availableConcepts.first),
+      );
+    }
   }
 
   Future<void> _loadDrawerState() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _isDrawerPinned = prefs.getBool(_drawerPinnedKey) ?? false;
+      _isDrawerPinned =
+          prefs.getBool(_drawerPinnedKey) ?? true; // Default to pinned
     });
   }
 
@@ -128,7 +190,7 @@ class HomePageState extends State<HomePage> {
           // Show drawer permanently if pinned
           if (_isDrawerPinned)
             SizedBox(
-              width: 280, // Standard drawer width
+              width: 300, // Wider drawer for better readability
               child: _buildDrawer(),
             ),
 
@@ -211,6 +273,10 @@ class HomePageState extends State<HomePage> {
     ModelSelectionState modelState,
     ConceptSelectionState conceptState,
   ) {
+    // Get screen width to determine layout
+    final screenWidth = MediaQuery.of(context).size.width;
+    final useCompactLayout = screenWidth < 1100;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading:
@@ -237,26 +303,88 @@ class HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: Row(
-        children: [
-          // Left Sidebar with Concepts
-          Expanded(flex: 2, child: ConceptSelector()),
+      body:
+          useCompactLayout
+              // Compact layout for smaller screens - stack the panels vertically
+              ? Column(
+                children: [
+                  // Top row with concept and model selectors
+                  SizedBox(
+                    height: 200,
+                    child: Row(
+                      children: [
+                        // Left panel - Concepts
+                        Expanded(
+                          child: Card(
+                            margin: const EdgeInsets.all(8.0),
+                            child: ConceptSelector(),
+                          ),
+                        ),
+                        // Right panel - Models
+                        Expanded(
+                          child: Card(
+                            margin: const EdgeInsets.all(8.0),
+                            child: ModelSelector(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-          // Main Content with Entities
-          Expanded(
-            flex: 8,
-            child:
-                conceptState.selectedEntities != null
-                    ? MainContentWidget(
-                      entities: conceptState.selectedEntities!,
-                    )
-                    : const Center(child: Text('No Entities Selected')),
-          ),
+                  // Main content area
+                  Expanded(
+                    child: Card(
+                      margin: const EdgeInsets.all(8.0),
+                      child:
+                          conceptState.selectedEntities != null
+                              ? MainContentWidget(
+                                entities: conceptState.selectedEntities!,
+                              )
+                              : const Center(
+                                child: Text('No Entities Selected'),
+                              ),
+                    ),
+                  ),
+                ],
+              )
+              // Standard layout for larger screens - side by side panels
+              : Row(
+                children: [
+                  // Left Sidebar with Concepts - smaller for better proportions
+                  Expanded(
+                    flex: 2,
+                    child: Card(
+                      margin: const EdgeInsets.all(8.0),
+                      child: ConceptSelector(),
+                    ),
+                  ),
 
-          // Right Sidebar with Models
-          Expanded(flex: 2, child: ModelSelector()),
-        ],
-      ),
+                  // Main Content with Entities - larger to show more content
+                  Expanded(
+                    flex: 5,
+                    child: Card(
+                      margin: const EdgeInsets.all(8.0),
+                      child:
+                          conceptState.selectedEntities != null
+                              ? MainContentWidget(
+                                entities: conceptState.selectedEntities!,
+                              )
+                              : const Center(
+                                child: Text('No Entities Selected'),
+                              ),
+                    ),
+                  ),
+
+                  // Right Sidebar with Models - smaller for better proportions
+                  Expanded(
+                    flex: 2,
+                    child: Card(
+                      margin: const EdgeInsets.all(8.0),
+                      child: ModelSelector(),
+                    ),
+                  ),
+                ],
+              ),
       bottomNavigationBar: const FooterWidget(),
     );
   }
