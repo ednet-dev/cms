@@ -6,6 +6,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:expressions/expressions.dart';
+import 'package:meta/meta.dart';
 import 'package:yaml/yaml.dart';
 
 // Core components
@@ -186,3 +187,11 @@ part 'domain/model/error/exceptions.dart';
 part 'domain/model/model_entries.dart';
 
 part 'domain/model/i_model_entries.dart';
+
+// Enterprise Integration Patterns
+part 'domain/patterns/common/base_message.dart';
+part 'domain/patterns/common/channel.dart';
+part 'domain/patterns/common/http_types.dart';
+part 'domain/patterns/filter/message_filter.dart';
+part 'domain/patterns/filter/ednet_core_message_filter.dart';
+part 'domain/patterns/channel/adapter/channel_adapter.dart';
