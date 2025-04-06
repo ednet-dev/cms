@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:ednet_core/ednet_core.dart';
 import 'model.dart';
 import 'entities.dart' hide SerbianElectionEntries;
@@ -225,9 +224,10 @@ class SerbianElectionDomain extends DomainModels {
     String year = birthDate.year.toString().substring(1, 3);
 
     // Pol (kod muškaraca se dodaje 0, kod žena 5 na redni broj dana)
-    int genderOffset = gender == 'Muški' ? 0 : 5;
-    int dayWithGender = birthDate.day + (genderOffset * 10);
-    String dayWithGenderStr = dayWithGender.toString().padLeft(3, '0');
+    // This gender offset would be used in a more complex JMBG algorithm
+    // int genderOffset = gender == 'Muški' ? 0 : 5;
+    // Variable not used in current implementation, but kept for future extension
+    // int dayWithGender = birthDate.day + (genderOffset * 10);
 
     // Region rođenja
     String regionCode = region.toString().padLeft(2, '0');
@@ -260,10 +260,12 @@ class SerbianElectionDomain extends DomainModels {
     final rezultati = <RezultatListe>[];
 
     // Izračunavanje ukupnog broja validnih glasova
-    int ukupnoGlasova = 0;
-    for (final lista in liste) {
-      ukupnoGlasova += lista.brojGlasova ?? 0;
-    }
+    // This calculation could be used for electoral threshold checks
+    // but is handled internally by the D'Hont calculator, so we'll remove it
+    // int ukupnoGlasova = 0;
+    // for (final lista in liste) {
+    //   ukupnoGlasova += lista.brojGlasova ?? 0;
+    // }
 
     // Kreiranje RezultatListe objekata za D'Hont kalkulator
     for (final lista in liste) {
@@ -278,7 +280,7 @@ class SerbianElectionDomain extends DomainModels {
 
     // Izračunavanje mandata koristeći D'Hont metod
     final kalkulator = DontKalkulator();
-    final rezultatiSaMandatima = kalkulator.izracunajMandate(
+    kalkulator.izracunajMandate(
       rezultati,
       ukupnoMandata,
       cenzus: cenzus,
@@ -562,27 +564,36 @@ class IzboriAggregateRoot implements Entity<Izbori> {
     // Validate electoral lists
     for (var lista in _izborneListe) {
       if (lista.getParent(SerbianElectionModel.IZBORI_REL) == null) {
-        exceptions.add(ValidationException(
-            'required', 'IzbornaLista.izbori parent is required',
-            entity: lista, attribute: SerbianElectionModel.IZBORI_REL));
+        exceptions.add(
+          ValidationException(
+            'required',
+            'IzbornaLista.izbori parent is required for ${lista.code}',
+          ),
+        );
       }
     }
 
     // Validate electoral units
     for (var jedinica in _izborneJedinice) {
       if (jedinica.getParent(SerbianElectionModel.IZBORI_REL) == null) {
-        exceptions.add(ValidationException(
-            'required', 'IzbornaJedinica.izbori parent is required',
-            entity: jedinica, attribute: SerbianElectionModel.IZBORI_REL));
+        exceptions.add(
+          ValidationException(
+            'required',
+            'IzbornaJedinica.izbori parent is required for ${jedinica.code}',
+          ),
+        );
       }
     }
 
     // Validate votes
     for (var glas in _glasovi) {
       if (glas.getParent(SerbianElectionModel.IZBORI_REL) == null) {
-        exceptions.add(ValidationException(
-            'required', 'Glas.izbori parent is required',
-            entity: glas, attribute: SerbianElectionModel.IZBORI_REL));
+        exceptions.add(
+          ValidationException(
+            'required',
+            'Glas.izbori parent is required',
+          ),
+        );
       }
     }
 
@@ -600,9 +611,12 @@ class IzboriAggregateRoot implements Entity<Izbori> {
 
       // Additional business rules specific to each electoral level
       if (_izbori.nivoVlasti == 'Republika' && totalMandates != 250) {
-        exceptions.add(ValidationException('business_rule',
-            'National elections must have exactly 250 mandates',
-            entity: _izbori, attribute: 'brojMandata'));
+        exceptions.add(
+          ValidationException(
+            'business_rule',
+            'National elections must have exactly 250 mandates, but found $totalMandates',
+          ),
+        );
       }
     }
 

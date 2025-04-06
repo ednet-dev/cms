@@ -23,6 +23,10 @@ import 'presentation/state/providers/domain_service.dart';
 import 'presentation/pages/model_detail_page.dart';
 import 'presentation/pages/domain_detail_page.dart';
 import 'presentation/pages/graph_page.dart';
+import 'presentation/pages/domains_page.dart';
+import 'presentation/pages/concepts_page.dart';
+import 'presentation/pages/models_page.dart';
+import 'presentation/pages/entity_detail_page.dart';
 
 // Application singletons
 final oneApplication = OneApplication();
@@ -262,6 +266,18 @@ class MyAppState extends State<MyApp> {
         BookmarksPage.routeName: (context) => const BookmarksPage(),
         // Simple route for GraphPage as it doesn't require special parameters
         GraphPage.routeName: (context) => const GraphPage(),
+        // Add DomainsPage route with empty domains as a placeholder
+        // The actual domains will be passed when navigating programmatically
+        DomainsPage.routeName:
+            (context) => DomainsPage(
+              domains: oneApplication.groupedDomains,
+              onDomainSelected: (domain) {
+                Navigator.of(
+                  context,
+                ).pushNamed(DomainDetailPage.routeName, arguments: domain);
+              },
+            ),
+        // ConceptsPage route requires model and domain context - handled in onGenerateRoute
       },
       // Use onGenerateRoute for routes that need parameters
       onGenerateRoute: (settings) {
@@ -271,6 +287,53 @@ class MyAppState extends State<MyApp> {
           // using Navigator.push with MaterialPageRoute instead
           return null;
         }
+
+        // Handle ConceptsPage routing with parameters
+        if (settings.name == ConceptsPage.routeName) {
+          // Extract the arguments as a Map
+          final args = settings.arguments as Map<String, dynamic>;
+          return MaterialPageRoute(
+            builder:
+                (context) => ConceptsPage(
+                  concepts: args['concepts'] as Concepts,
+                  domainName: args['domainName'] as String,
+                  modelName: args['modelName'] as String,
+                  onConceptSelected:
+                      args['onConceptSelected'] as void Function(Concept)?,
+                ),
+          );
+        }
+
+        // Handle ModelsPage routing with parameters
+        if (settings.name == ModelsPage.routeName) {
+          // Extract the arguments as a Map
+          final args = settings.arguments as Map<String, dynamic>;
+          return MaterialPageRoute(
+            builder:
+                (context) => ModelsPage(
+                  models: args['models'] as Models,
+                  domainName: args['domainName'] as String,
+                  onModelSelected:
+                      args['onModelSelected'] as void Function(Model)?,
+                ),
+          );
+        }
+
+        // Handle EntityDetailPage routing with parameters
+        if (settings.name == EntityDetailPage.routeName) {
+          // Extract the arguments as a Map
+          final args = settings.arguments as Map<String, dynamic>;
+          return MaterialPageRoute(
+            builder:
+                (context) => EntityDetailPage(
+                  entities: args['entities'] as Entities,
+                  domainName: args['domainName'] as String,
+                  modelName: args['modelName'] as String,
+                  conceptName: args['conceptName'] as String,
+                ),
+          );
+        }
+
         return null;
       },
     );

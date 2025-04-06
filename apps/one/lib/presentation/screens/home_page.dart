@@ -1,48 +1,33 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
-import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/state/blocs/domain_block.dart';
-import 'package:ednet_one/presentation/state/blocs/domain_event.dart'
-    as domain_events;
-import 'package:ednet_one/presentation/state/blocs/domain_state.dart';
-import 'package:ednet_one/presentation/state/blocs/layout_block.dart';
-import 'package:ednet_one/presentation/state/blocs/layout_event.dart';
-import 'package:ednet_one/presentation/state/blocs/layout_state.dart';
-import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_event.dart';
-import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_state.dart';
-import 'package:ednet_one/presentation/widgets/layout/graph/algorithms/master_detail_layout_algorithm.dart';
-import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
-    as header_types;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../theme/theme.dart';
-import '../widgets/layout/graph/painters/meta_domain_canvas.dart';
-import '../widgets/layout/web/footer_widget.dart';
-import '../widgets/layout/web/header_widget.dart';
-import '../widgets/layout/web/left_sidebar_widget.dart';
-import '../widgets/layout/web/main_content_widget.dart';
-import '../widgets/layout/web/right_sidebar_widget.dart';
-
+/// @deprecated Use HomePage from pages/home instead
+/// This class is being phased out as part of the screens to pages migration.
+/// It will be removed in a future release.
+@Deprecated('Use HomePage from pages/home instead')
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title, required this.appLinks});
+  const HomePage({super.key, required this.title, this.appLinks});
 
   final String title;
-  final AppLinks appLinks;
+  final AppLinks? appLinks;
 
   @override
   HomePageState createState() => HomePageState();
 }
 
+/// @deprecated Use HomePageState from pages/home instead
+@Deprecated('Use HomePageState from pages/home instead')
 class HomePageState extends State<HomePage> {
   StreamSubscription<Uri>? _sub;
 
   @override
   void initState() {
     super.initState();
-    _sub = widget.appLinks.uriLinkStream.listen(_handleBookmarkSelected);
+    if (widget.appLinks != null) {
+      _sub = widget.appLinks!.uriLinkStream.listen(_handleBookmarkSelected);
+    }
   }
 
   @override
@@ -52,9 +37,40 @@ class HomePageState extends State<HomePage> {
   }
 
   void _handleBookmarkSelected(Uri? uri) {
-    // If needed, handle incoming link
+    // Placeholder
   }
 
+  @override
+  Widget build(BuildContext context) {
+    // Use a simple scaffold to inform users about the migration
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'This page has been migrated to a new implementation.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the home screen again - will use the new implementation
+                // from main.dart since we're not directly importing it here
+                Navigator.pushReplacementNamed(context, '/');
+              },
+              child: const Text('Go to New Home Page'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Old implementation retained for reference - will be removed in future
+/* 
   void _showDSLFromGraph(BuildContext context) {
     final domainBloc = context.read<DomainBloc>();
     final dsl = domainBloc.getDSL();
@@ -292,3 +308,4 @@ class _ThemeDropdown extends StatelessWidget {
     );
   }
 }
+*/

@@ -1,27 +1,45 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
+    as header;
 import 'package:ednet_one/presentation/widgets/entity/entities_widget.dart';
 import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_manager.dart';
 import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_model.dart';
 import 'package:ednet_one/presentation/widgets/entity/entity_widget.dart';
 
-/// @deprecated Use EntityDetailPage instead
-/// This class is being phased out as part of the screens to pages migration.
-/// It will be removed in a future release.
-@Deprecated('Use EntityDetailPage instead')
-class MainContentWidget extends StatefulWidget {
+import '../widgets/layout/web/header_widget.dart';
+
+/// Entity detail page for displaying entities and their details
+///
+/// This page shows a list of entities and allows viewing their details
+/// in a master-detail layout.
+class EntityDetailPage extends StatefulWidget {
+  /// Route name for this page
+  static const String routeName = '/entities';
+
   /// The entities to display
   final Entities entities;
 
-  /// Constructor for MainContentWidget
-  const MainContentWidget({super.key, required this.entities});
+  /// The current domain, model, and concept names for navigation context
+  final String domainName;
+  final String modelName;
+  final String conceptName;
+
+  /// Creates an entity detail page
+  const EntityDetailPage({
+    super.key,
+    required this.entities,
+    required this.domainName,
+    required this.modelName,
+    required this.conceptName,
+  });
 
   @override
-  State<MainContentWidget> createState() => _MainContentWidgetState();
+  State<EntityDetailPage> createState() => _EntityDetailPageState();
 }
 
-class _MainContentWidgetState extends State<MainContentWidget> {
+class _EntityDetailPageState extends State<EntityDetailPage> {
   Object? _selectedEntity; // Use Object type to handle both Entity types
 
   @override
@@ -31,7 +49,7 @@ class _MainContentWidgetState extends State<MainContentWidget> {
   }
 
   @override
-  void didUpdateWidget(MainContentWidget oldWidget) {
+  void didUpdateWidget(EntityDetailPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.entities != oldWidget.entities) {
       _selectInitialEntity();
@@ -76,7 +94,44 @@ class _MainContentWidgetState extends State<MainContentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildContent(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: HeaderWidget(
+          path: [
+            'Home',
+            widget.domainName,
+            widget.modelName,
+            widget.conceptName,
+            'Entities',
+          ],
+          onPathSegmentTapped: (index) {
+            if (index == 0) {
+              Navigator.popUntil(context, ModalRoute.withName('/'));
+            } else if (index == 1) {
+              Navigator.popUntil(context, ModalRoute.withName('/domains'));
+            } else if (index == 2) {
+              Navigator.pop(context, 2);
+            } else if (index == 3) {
+              Navigator.pop(context);
+            }
+          },
+          filters: [],
+          onAddFilter: (header.FilterCriteria filter) {},
+          onBookmark: () {
+            if (_selectedEntity != null) {
+              final bookmark = Bookmark(
+                title: 'Entity: ${_selectedEntity.toString()}',
+                url: '/entities/${_selectedEntity.toString()}',
+                category: BookmarkCategory.entity,
+                entity: _selectedEntity,
+              );
+              _createBookmark(bookmark);
+            }
+          },
+        ),
+      ),
+      body: _buildContent(context),
+    );
   }
 
   Widget _buildContent(BuildContext context) {
@@ -142,7 +197,7 @@ class _MainContentWidgetState extends State<MainContentWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline, color: Colors.red, size: 48),
+                const Icon(Icons.error_outline, color: Colors.red, size: 48),
                 const SizedBox(height: 16),
                 Text(
                   "Entity Display Error",

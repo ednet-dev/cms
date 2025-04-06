@@ -36,7 +36,7 @@ This layer is currently undergoing a significant refactoring to improve architec
 2. Breaking down large components into smaller, focused ones
 3. Implementing enhanced navigation with breadcrumbs
 4. Adding a comprehensive bookmarking system
-5. Implementing entity filtering
+5. Implementing entity filtering and search capabilities
 
 For detailed information, see:
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Defines architectural standards
@@ -51,11 +51,24 @@ The presentation layer is undergoing a migration from screens (legacy container 
 - ModelDetailScreenScaffold → ModelDetailPage
 - DomainDetailScreen → DomainDetailPage
 - GraphApp (in graph_application.dart) → GraphPage
+- HomePage (screens version) → HomePage (pages/home version)
+- DomainsWidget → DomainsPage with DomainsListWidget
+- LeftSidebarWidget → ConceptsPage with ConceptsListWidget
+- RightSidebarWidget → ModelsPage with ModelsListWidget
+- MainContentWidget → EntityDetailPage
+- BookmarkWidget → BookmarkPage with BookmarkListWidget
 
 ### In Progress:
-- Migrating HomePage from screens to pages
-- Adding support for named routes
-- Implementing enhanced breadcrumb navigation
+- FilterWidget refactoring to support all entity types
+- Creating comprehensive test suite for migrated components (60% coverage)
+- Implementing consistent navigation and routing strategy
+- Addressing remaining analyzer warnings
+
+### Coming Soon:
+- NavigationRail consolidation into layouts/navigation_layout.dart
+- Dark mode support implementation
+- Accessibility enhancements
+- Component structure cleanup (Phase 3)
 
 For detailed information on the migration progress and plan, see [MIGRATION-PLAN.md](./MIGRATION-PLAN.md).
 
@@ -69,7 +82,7 @@ Pages are container components that handle business logic, state management, and
 - Handle routing and navigation
 - Manage the overall state of a screen
 
-Examples: `HomePage`, `ModelDetailPage`, `GraphPage`
+Examples: `HomePage`, `ModelDetailPage`, `GraphPage`, `DomainsPage`
 
 ### Widgets
 
@@ -79,7 +92,7 @@ Widgets are reusable UI components that are primarily presentational. They:
 - Have minimal internal state
 - Focus on rendering and user interaction
 
-Examples: `EntityWidget`, `AttributeWidget`, `RelationshipNavigator`
+Examples: `EntityWidget`, `AttributeWidget`, `RelationshipNavigator`, `FilterListItem`
 
 ### BLoC Pattern
 
@@ -88,7 +101,33 @@ The BLoC (Business Logic Component) pattern is used for state management. Key co
 - **Events**: Trigger state changes
 - **States**: Represent the UI state at a point in time
 
-Examples: `DomainSelectionBloc`, `ModelSelectionBloc`, `ConceptSelectionBloc`
+Examples: `DomainSelectionBloc`, `ModelSelectionBloc`, `ConceptSelectionBloc`, `BookmarkBloc`
+
+## Features and Capabilities
+
+### Navigation System
+
+The presentation layer implements a comprehensive navigation system:
+- **Route Management**: Centralized route definitions
+- **Breadcrumbs**: Consistent navigation path display
+- **Deep Linking**: Support for direct access to specific entities
+- **History Management**: Support for browser back/forward navigation
+
+### Bookmarking System
+
+A full-featured bookmarking system allows users to:
+- Save frequently accessed entities
+- Categorize bookmarks by type and purpose
+- Search and filter bookmarks
+- Share bookmarks between sessions
+
+### Entity Filtering
+
+The entity filtering system provides:
+- Type-based filtering (concepts, models, domains)
+- Text search functionality
+- Advanced filter combinations
+- Saved filter presets
 
 ## Best Practices
 
@@ -116,10 +155,28 @@ Examples: `DomainSelectionBloc`, `ModelSelectionBloc`, `ConceptSelectionBloc`
 4. **Document Changes**: Update relevant documentation
 5. **Update Tests**: Keep tests in sync with implementation changes
 
+## Performance Optimization
+
+Current optimization efforts include:
+1. Widget memoization for frequently used components
+2. Selective rebuilds to avoid unnecessary UI updates
+3. Lazy loading for complex component hierarchies
+4. Virtualized scrolling for large entity lists
+5. BLoC state optimization to minimize rebuilds
+
 ## Maintenance and Support
 
 The presentation layer is actively maintained as part of the EDNet One application development. For questions or issues:
 
 1. Review the documentation in this directory
 2. Check the migration and refactoring plans
-3. Consult with the development team 
+3. Consult with the development team
+
+## Future Roadmap
+
+After completing the current migration, planned improvements include:
+1. Enhanced responsiveness for mobile and tablet views
+2. Improved accessibility features
+3. Advanced visualization capabilities for domain models
+4. Integration with ednet_core for more direct domain model interaction
+5. Comprehensive component showcase and documentation 
