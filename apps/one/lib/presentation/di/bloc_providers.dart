@@ -11,6 +11,7 @@ import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selec
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/entity/entity_bloc.dart';
 import 'package:ednet_one/presentation/state/providers/filter_manager.dart';
 import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_manager.dart';
 
@@ -21,7 +22,8 @@ import 'package:ednet_one/main.dart'
         createModelSelectionBloc,
         createConceptSelectionBloc,
         createDomainBloc,
-        createThemeBloc;
+        createThemeBloc,
+        entityRepository;
 
 /// Utility class to provide all BLoCs at once
 class AppBlocProviders {
@@ -50,6 +52,9 @@ class AppBlocProviders {
               createDomainBloc()..add(domain_events.InitializeDomainEvent()),
     ),
     BlocProvider<ThemeBloc>(create: (context) => createThemeBloc()),
+    BlocProvider<EntityBloc>(
+      create: (context) => EntityBloc(repository: entityRepository),
+    ),
   ];
 
   /// Wraps a widget with all the necessary providers

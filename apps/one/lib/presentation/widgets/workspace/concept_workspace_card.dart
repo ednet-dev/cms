@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/generated/one_application.dart';
+import 'package:ednet_one/domain/repositories/entity_repository.dart';
+import 'package:ednet_one/main.dart'; // Import main.dart to access global variables
+import 'package:ednet_one/presentation/state/blocs/entity/entity_bloc.dart';
+import 'package:ednet_one/presentation/state/blocs/entity/entity_event.dart';
+import 'package:ednet_one/presentation/state/blocs/entity/entity_state.dart';
 import 'package:ednet_one/presentation/theme/providers/theme_provider.dart';
 import 'package:ednet_one/presentation/theme/extensions/theme_spacing.dart';
+import 'package:ednet_one/presentation/widgets/entity/entity_dialog.dart';
 import 'immersive_workspace_container.dart';
 
 /// A specialized immersive workspace for Concept entities
@@ -50,7 +58,18 @@ class ConceptWorkspaceCard extends StatelessWidget {
       onExpand: onExpand,
       onCollapse: onCollapse,
       cardContent: _buildCardContent(context, isEntry, entityCount),
-      workspaceContent: _buildWorkspaceContent(context, isEntry, entityCount),
+      workspaceContent: BlocProvider(
+        create: (context) => EntityBloc(repository: entityRepository),
+        child: Builder(
+          builder:
+              (context) => _buildWorkspaceContent(
+                context,
+                isEntry,
+                entityCount,
+                oneApplication,
+              ),
+        ),
+      ),
     );
   }
 
@@ -172,7 +191,21 @@ class ConceptWorkspaceCard extends StatelessWidget {
     BuildContext context,
     bool isEntry,
     int entityCount,
+    OneApplication app,
   ) {
+    // Get the current domain and model
+    final domain = concept.model?.domain;
+    final model = concept.model;
+
+    if (domain == null || model == null) {
+      return Center(
+        child: Text(
+          'Concept is not properly linked to a domain and model',
+          style: context.conceptTextStyle('Error', role: 'message'),
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -308,7 +341,13 @@ class ConceptWorkspaceCard extends StatelessWidget {
                       _buildRelationshipsTab(context),
 
                       // Entities tab (only for entry concepts)
-                      if (isEntry) _buildEntitiesTab(context),
+                      if (isEntry)
+                        _buildEntitiesTabWithDataBinding(
+                          context,
+                          domain,
+                          model,
+                          app,
+                        ),
                     ],
                   ),
                 ),
@@ -431,27 +470,139 @@ class ConceptWorkspaceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildEntitiesTab(BuildContext context) {
-    if (entities == null || entities!.isEmpty) {
-      return _buildEmptyState(
-        context,
-        'No entities found',
-        'Add Entity',
-        Icons.add_box,
-      );
-    }
+  /// Builds the entities tab with data binding
+  Widget _buildEntitiesTabWithDataBinding(
+    BuildContext context,
+    Domain domain,
+    Model model,
+    OneApplication app,
+  ) {
+    return BlocConsumer<EntityBloc, EntityState>(
+      listener: (context, state) {
+        // Handle state changes if needed
+      },
+      builder: (context, state) {
+        if (state.status == EntityStatus.initial) {
+          // Load entities on first build
+          context.read<EntityBloc>().add(
+            LoadEntitiesEvent(domain: domain, model: model, concept: concept),
+          );
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return ListView.builder(
-      padding: EdgeInsets.all(context.spacingM),
-      itemCount: entities!.length,
-      itemBuilder: (context, index) {
-        final entity = entities![index];
-        return _buildEntityItem(context, entity);
+        if (state.status == EntityStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state.status == EntityStatus.failure) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: context.conceptColor('Error', role: 'icon'),
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  state.errorMessage ?? 'Failed to load entities',
+                  style: context.conceptTextStyle('Error', role: 'message'),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    // Retry loading entities
+                    context.read<EntityBloc>().add(
+                      LoadEntitiesEvent(
+                        domain: domain,
+                        model: model,
+                        concept: concept,
+                      ),
+                    );
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state.entities.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.inventory,
+                  size: 64,
+                  color: context
+                      .conceptColor('Concept', role: 'icon')
+                      .withValues(alpha: 255.0 * 0.3),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No entities found',
+                  style: context.conceptTextStyle(
+                    'Concept',
+                    role: 'emptyState',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.add),
+                  label: const Text('Create Entity'),
+                  onPressed:
+                      () => _showEntityDialog(context, domain, model, app),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Show entities list
+        return Stack(
+          children: [
+            // Entities list
+            ListView.builder(
+              padding: EdgeInsets.all(context.spacingM),
+              itemCount: state.entities.length,
+              itemBuilder: (context, index) {
+                final entity = state.entities[index];
+                return _buildEntityItemWithActions(
+                  context,
+                  entity,
+                  domain,
+                  model,
+                  app,
+                );
+              },
+            ),
+
+            // Floating action button for adding new entities
+            Positioned(
+              right: context.spacingM,
+              bottom: context.spacingM,
+              child: FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () => _showEntityDialog(context, domain, model, app),
+              ),
+            ),
+          ],
+        );
       },
     );
   }
 
-  Widget _buildEntityItem(BuildContext context, Entity<dynamic> entity) {
+  /// Build an entity item with edit and delete actions
+  Widget _buildEntityItemWithActions(
+    BuildContext context,
+    Entity<dynamic> entity,
+    Domain domain,
+    Model model,
+    OneApplication app,
+  ) {
     // Extract entity fields based on concept attributes
     final Map<String, dynamic> entityData = {};
     for (final property in concept.attributes) {
@@ -489,10 +640,25 @@ class ConceptWorkspaceCard extends StatelessWidget {
                       style: context.conceptTextStyle('Entity', role: 'title'),
                     ),
                   ),
+                  // Edit button
                   IconButton(
                     icon: const Icon(Icons.edit),
                     tooltip: 'Edit',
-                    onPressed: () {},
+                    onPressed:
+                        () => _showEntityDialog(
+                          context,
+                          domain,
+                          model,
+                          app,
+                          entity: entity,
+                        ),
+                  ),
+                  // Delete button
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    tooltip: 'Delete',
+                    onPressed:
+                        () => _showDeleteDialog(context, entity, domain, model),
                   ),
                 ],
               ),
@@ -528,6 +694,76 @@ class ConceptWorkspaceCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Show dialog for creating/editing an entity
+  Future<void> _showEntityDialog(
+    BuildContext context,
+    Domain domain,
+    Model model,
+    OneApplication app, {
+    Entity<dynamic>? entity,
+  }) async {
+    final result = await EntityDialog.show(
+      context: context,
+      concept: concept,
+      domain: domain,
+      model: model,
+      app: app,
+      entity: entity,
+    );
+
+    if (result == true) {
+      // Refresh entities list
+      if (!context.mounted) return;
+
+      context.read<EntityBloc>().add(
+        LoadEntitiesEvent(domain: domain, model: model, concept: concept),
+      );
+    }
+  }
+
+  /// Show confirmation dialog for deleting an entity
+  Future<void> _showDeleteDialog(
+    BuildContext context,
+    Entity<dynamic> entity,
+    Domain domain,
+    Model model,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Confirm Deletion'),
+            content: Text(
+              'Are you sure you want to delete this ${concept.code}?',
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () => Navigator.of(context).pop(false),
+              ),
+              TextButton(
+                child: const Text('Delete'),
+                onPressed: () => Navigator.of(context).pop(true),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed == true) {
+      if (!context.mounted) return;
+
+      // Delete the entity
+      context.read<EntityBloc>().add(
+        DeleteEntityEvent(
+          domain: domain,
+          model: model,
+          concept: concept,
+          entity: entity,
+        ),
+      );
+    }
   }
 
   Widget _buildEntityAttribute(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ednet_one/generated/one_application.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_block.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_event.dart'
@@ -12,6 +13,9 @@ import 'package:ednet_one/presentation/state/blocs/model_selection/model_selecti
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'domain/repositories/entity_repository.dart';
+import 'domain/repositories/entity_repository_impl.dart';
+import 'domain/services/persistence_service.dart';
 
 import 'presentation/di/bloc_providers.dart' as bloc_providers;
 import 'presentation/layouts/app_shell.dart';
@@ -23,6 +27,8 @@ import 'presentation/state/providers/domain_service.dart';
 import 'presentation/layouts/providers/layout_provider.dart';
 import 'presentation/theme/providers/theme_provider.dart';
 import 'presentation/pages/workspace/immersive_workspace_page.dart';
+import 'presentation/pages/examples/entity_persistence_example_page.dart';
+import 'presentation/pages/domain_modeler/domain_model_editor.dart';
 
 // Application singletons
 final oneApplication = OneApplication();
@@ -30,6 +36,8 @@ final navigationService = NavigationService();
 final themeService = ThemeService();
 final domainService = DomainService(oneApplication);
 final moduleRegistry = AppModuleRegistry();
+final entityRepository = EntityRepositoryImpl(oneApplication);
+late final PersistenceService persistenceService;
 
 // Bloc factories
 DomainSelectionBloc createDomainSelectionBloc() =>
@@ -64,6 +72,26 @@ void main() async {
     );
     debugPrint('Available domains: ${oneApplication.domains.length}');
     debugPrint('Grouped domains: ${oneApplication.groupedDomains.length}');
+
+    // Initialize persistence service
+    persistenceService = PersistenceService(oneApplication);
+
+    // Try to load previous state
+    try {
+      debugPrint('Loading domain models from persistence...');
+      final loaded = await persistenceService.loadAllDomainModels();
+      debugPrint(
+        loaded
+            ? 'Successfully loaded domain models from persistence'
+            : 'No domain models loaded from persistence',
+      );
+
+      // Set up auto-save
+      PersistenceService.setupAutoSave(oneApplication);
+      debugPrint('Auto-save scheduled for domain models');
+    } catch (e) {
+      debugPrint('❌ Error loading domain models: $e');
+    }
 
     // Register modules
     moduleRegistry.registerModules(oneApplication);
@@ -289,6 +317,11 @@ class MyAppState extends State<MyApp> {
           // Add the immersive workspace page route
           ImmersiveWorkspacePage.routeName:
               (context) => ImmersiveWorkspacePage(title: 'Workspace'),
+          // Add the entity persistence example page route
+          EntityPersistenceExamplePage.routeName:
+              (context) => EntityPersistenceExamplePage(),
+          // Add the domain model editor route
+          DomainModelEditor.routeName: (context) => const DomainModelEditor(),
         },
       ),
     );

@@ -9,6 +9,7 @@ import 'package:ednet_one/presentation/widgets/semantic_concept_container.dart';
 import 'package:ednet_one/presentation/theme/providers/theme_provider.dart';
 import 'package:ednet_one/presentation/theme/extensions/theme_spacing.dart';
 import 'package:ednet_one/presentation/pages/workspace/immersive_workspace_page.dart';
+import 'package:ednet_one/presentation/pages/examples/entity_persistence_example_page.dart';
 
 /// Component for the application's main navigation drawer
 ///
@@ -160,9 +161,24 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         title: 'Immersive Workspace',
                         onTap: () {
                           if (!_isPinned) Navigator.pop(context);
-                          Navigator.of(
+                          Navigator.pushNamed(
                             context,
-                          ).pushNamed(ImmersiveWorkspacePage.routeName);
+                            ImmersiveWorkspacePage.routeName,
+                          );
+                        },
+                      ),
+
+                      // Add Entity Persistence Example
+                      _buildNavigationItem(
+                        context,
+                        icon: Icons.storage,
+                        title: 'Entity Persistence',
+                        onTap: () {
+                          if (!_isPinned) Navigator.pop(context);
+                          Navigator.pushNamed(
+                            context,
+                            EntityPersistenceExamplePage.routeName,
+                          );
                         },
                       ),
 

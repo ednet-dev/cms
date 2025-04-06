@@ -2,6 +2,9 @@ import 'package:ednet_one/generated/one_application.dart';
 import '../layouts/app_module.dart';
 import 'domain_explorer/domain_explorer_module.dart';
 import 'model_manager/model_manager_module.dart';
+import 'package:flutter/material.dart';
+import 'package:ednet_core/ednet_core.dart';
+import '../pages/domain_modeler/domain_model_editor.dart';
 
 /// A singleton registry for all application modules
 class AppModuleRegistry {
@@ -27,6 +30,9 @@ class AppModuleRegistry {
     // - GraphVisualizerModule
     // - SettingsModule
 
+    // Domain Modeler module
+    _registry.registerModule(DomainModelEditorModule());
+
     _initialized = true;
   }
 
@@ -38,4 +44,34 @@ class AppModuleRegistry {
 
   /// Get all registered routes
   Map<String, ModuleRoute> get routes => _registry.routes;
+}
+
+/// Module for the Domain Model Editor
+class DomainModelEditorModule extends AppModule {
+  @override
+  String get id => 'domain-modeler';
+
+  @override
+  String get name => 'Domain Modeler';
+
+  @override
+  IconData get icon => Icons.edit_note;
+
+  @override
+  Widget buildModuleContent(BuildContext context) {
+    return const DomainModelEditor();
+  }
+
+  @override
+  List<Widget> buildAppBarActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.save),
+        tooltip: 'Save Domain Model',
+        onPressed: () {
+          // This would be handled by the DomainModelEditor itself
+        },
+      ),
+    ];
+  }
 }
