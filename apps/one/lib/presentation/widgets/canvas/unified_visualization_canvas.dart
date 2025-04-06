@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
 
 import '../layout/graph/algorithms/bin_packing.dart';
 import '../layout/graph/algorithms/enhanced_quadtree.dart';
@@ -113,7 +114,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     // Calculate initial layout
     _layoutPositions = _currentAlgorithm.calculateLayout(
       widget.domains,
-      Size(1000, 1000), // Default size, will be updated in layout
+      const Size(1000, 1000), // Default size, will be updated in layout
     );
 
     // Initialize interaction handlers
@@ -143,13 +144,13 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
 
     // Apply initial transformation if provided
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_isInitialLoad) {
+      if (_isInitialLoad && mounted) {
         if (widget.initialTransformation != null) {
           _transformationController.value = widget.initialTransformation!;
           _zoomHandler.zoomLevel =
               _transformationController.value.getMaxScaleOnAxis();
         } else {
-          _centerAndZoom();
+          _centerAndZoomSafely();
         }
         _isInitialLoad = false;
       }
@@ -158,7 +159,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     // Listen for transformation changes
     _transformationController.addListener(() {
       widget.onTransformationChanged(_transformationController.value);
-      _updateVisibleNodes();
+      _updateVisibleNodesSafely();
     });
   }
 
@@ -202,16 +203,41 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
 
   /// Centers and zooms the view to fit all entities
   void _centerAndZoom() {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    if (!mounted) return;
+
+    final BuildContext? currentContext = context;
+    if (currentContext == null) return;
+
+    final RenderBox? renderBox =
+        currentContext.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return;
+
     final Size canvasSize = renderBox.size;
+    if (canvasSize.isEmpty) return;
 
     _zoomHandler.centerAndZoom(canvasSize, _layoutPositions);
   }
 
+  /// Safely calls center and zoom with null checks
+  void _centerAndZoomSafely() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _centerAndZoom();
+    });
+  }
+
   /// Updates the spatial index for efficient spatial queries
   void _updateSpatialIndex() {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    if (!mounted) return;
+
+    final BuildContext? currentContext = context;
+    if (currentContext == null) return;
+
+    final RenderBox? renderBox =
+        currentContext.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return;
+
     final Size size = renderBox.size;
+    if (size.isEmpty) return;
 
     _spatialIndex = EnhancedQuadtree<String>(
       bounds: Rect.fromLTWH(0, 0, size.width, size.height),
@@ -225,10 +251,17 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
 
   /// Updates the entity states for nodes in the visible area
   void _updateVisibleNodes() {
-    if (_spatialIndex == null || context.size == null) return;
+    if (!mounted || _spatialIndex == null) return;
 
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final BuildContext? currentContext = context;
+    if (currentContext == null) return;
+
+    final RenderBox? renderBox =
+        currentContext.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return;
+
     final Size size = renderBox.size;
+    if (size.isEmpty) return;
 
     // Calculate the visible area in scene coordinates
     final topLeft = _transformationController.toScene(Offset.zero);
@@ -267,11 +300,23 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     }
   }
 
+  /// Safely calls updateVisibleNodes with proper null checks
+  void _updateVisibleNodesSafely() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _updateVisibleNodes();
+    });
+  }
+
   /// Optimizes the placement of labels to avoid overlaps
   void _optimizeLabelPositions() {
-    if (context.size == null) return;
+    if (!mounted) return;
 
-    final Size canvasSize = context.size!;
+    final BuildContext? currentContext = context;
+    if (currentContext == null) return;
+
+    final Size? canvasSize = currentContext.size;
+    if (canvasSize == null || canvasSize.isEmpty) return;
+
     final requests = <LabelPlacementRequest>[];
 
     // Create label placement requests for entities
@@ -359,108 +404,142 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
 
   @override
   Widget build(BuildContext context) {
-    // Update performance metrics
-    _updatePerformanceMetrics();
+    try {
+      // Update performance metrics
+      _updatePerformanceMetrics();
 
-    return Stack(
-      children: [
-        // Main canvas area
-        Expanded(
-          child: Listener(
-            onPointerHover: _handleHover,
-            child: GestureDetector(
-              onScaleStart: _panHandler.onPanStart,
-              onScaleEnd: _panHandler.onPanEnd,
-              onTapUp: _handleTap,
-              child: InteractiveViewer(
-                transformationController: _transformationController,
-                onInteractionUpdate: (details) {
-                  // Handle pan and zoom updates
-                  _panHandler.onPanUpdate(details);
-                  _zoomHandler.onZoomUpdate(details);
-                },
-                minScale: 0.1,
-                maxScale: 5.0,
-                child: AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    return CustomPaint(
-                      size: Size.infinite,
-                      painter: UnifiedVisualizationPainter(
-                        domains: widget.domains,
-                        transformationController: _transformationController,
-                        layoutPositions: _layoutPositions,
-                        entityStates: _entityStates,
-                        labelPositions: _labelPositions,
-                        selectedNode: _selectedNode,
-                        hoveredNode: _hoveredNode,
-                        isAnimating: _isAnimating,
-                        animationValue: _animationController.value,
-                        decorators: widget.decorators,
-                        debugMode: widget.debugMode,
-                      ),
-                    );
+      return Stack(
+        children: [
+          // Main canvas area
+          Positioned.fill(
+            child: Listener(
+              onPointerHover: _safeHandleHover,
+              child: GestureDetector(
+                onScaleStart: _panHandler.onPanStart,
+                onScaleEnd: _panHandler.onPanEnd,
+                onTapUp: _safeHandleTap,
+                child: InteractiveViewer(
+                  transformationController: _transformationController,
+                  onInteractionUpdate: (details) {
+                    try {
+                      // Handle pan and zoom updates
+                      _panHandler.onPanUpdate(details);
+                      _zoomHandler.onZoomUpdate(details);
+                    } catch (e) {
+                      developer.log(
+                        'Error during interaction: $e',
+                        name: 'UnifiedCanvas',
+                      );
+                    }
                   },
+                  minScale: 0.1,
+                  maxScale: 5.0,
+                  boundaryMargin: const EdgeInsets.all(500),
+                  constrained: true,
+                  child: AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, child) {
+                      return Container(
+                        color: Colors.white,
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: CustomPaint(
+                          painter: UnifiedVisualizationPainter(
+                            domains: widget.domains,
+                            transformationController: _transformationController,
+                            layoutPositions: _layoutPositions,
+                            entityStates: _entityStates,
+                            labelPositions: _labelPositions,
+                            selectedNode: _selectedNode,
+                            hoveredNode: _hoveredNode,
+                            isAnimating: _isAnimating,
+                            animationValue: _animationController.value,
+                            decorators: widget.decorators,
+                            debugMode: widget.debugMode,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
           ),
-        ),
 
-        // Layout control buttons
-        Positioned(
-          top: 16.0,
-          left: 16.0,
-          child: LayoutControlPanel(
-            currentAlgorithm: _currentAlgorithm,
-            onChangeAlgorithm: _changeLayoutAlgorithm,
-          ),
-        ),
-
-        // Zoom controls
-        Positioned(
-          bottom: 16.0,
-          right: 16.0,
-          child: ZoomControlPanel(
-            zoomLevel: _zoomHandler.zoomLevel,
-            onZoomIn: () => _zoomHandler.zoom(1.1),
-            onZoomOut: () => _zoomHandler.zoom(0.9),
-            onResetView: _centerAndZoom,
-          ),
-        ),
-
-        // Debug info (if in debug mode)
-        if (widget.debugMode)
+          // Layout control buttons
           Positioned(
             top: 16.0,
-            right: 16.0,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'FPS: ${_fps.toStringAsFixed(1)}',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    'Nodes: ${_entityStates.length}',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    'Visible: ${_entityStates.values.where((e) => e.visible).length}',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
+            left: 16.0,
+            child: LayoutControlPanel(
+              currentAlgorithm: _currentAlgorithm,
+              onChangeAlgorithm: _changeLayoutAlgorithm,
             ),
           ),
-      ],
-    );
+
+          // Zoom controls
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: ZoomControlPanel(
+              zoomLevel: _zoomHandler.zoomLevel,
+              onZoomIn: () => _zoomHandler.zoom(1.1),
+              onZoomOut: () => _zoomHandler.zoom(0.9),
+              onResetView: _centerAndZoomSafely,
+            ),
+          ),
+
+          // Debug info (if in debug mode)
+          if (widget.debugMode)
+            Positioned(
+              top: 16.0,
+              right: 16.0,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'FPS: ${_fps.toStringAsFixed(1)}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      'Nodes: ${_entityStates.length}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      'Visible: ${_entityStates.values.where((e) => e.visible).length}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      );
+    } catch (e, stack) {
+      developer.log('Error building canvas: $e\n$stack', name: 'UnifiedCanvas');
+
+      // Return a fallback widget
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red, size: 48),
+            const SizedBox(height: 16),
+            const Text(
+              'Error rendering visualization canvas',
+              style: TextStyle(color: Colors.red, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(e.toString(), style: const TextStyle(fontSize: 12)),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -469,6 +548,23 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     _transformationController.dispose();
     _animationController.dispose();
     super.dispose();
+  }
+
+  // Add safe wrapper methods around event handlers
+  void _safeHandleTap(TapUpDetails details) {
+    try {
+      _handleTap(details);
+    } catch (e, stack) {
+      developer.log('Error handling tap: $e\n$stack', name: 'UnifiedCanvas');
+    }
+  }
+
+  void _safeHandleHover(PointerHoverEvent event) {
+    try {
+      _handleHover(event);
+    } catch (e, stack) {
+      developer.log('Error handling hover: $e\n$stack', name: 'UnifiedCanvas');
+    }
   }
 }
 

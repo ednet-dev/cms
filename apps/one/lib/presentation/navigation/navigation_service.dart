@@ -1,5 +1,9 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
+
+// Add imports for the Graph page
+import '../pages/graph_page.dart';
 
 /// Routes available in the application
 class AppRoutes {
@@ -29,6 +33,7 @@ class NavigationService {
     String routeName, {
     Map<String, dynamic>? arguments,
   }) {
+    developer.log('Navigating to: $routeName', name: 'Navigation');
     return navigatorKey.currentState!.pushNamed(
       routeName,
       arguments: arguments,
@@ -84,11 +89,29 @@ class NavigationService {
 
   /// Navigate to graph view
   Future<dynamic> navigateToGraph() {
-    return navigateTo(AppRoutes.graph);
+    developer.log('Navigating to Graph Visualization', name: 'Navigation');
+    try {
+      return navigatorKey.currentState!.pushNamed(GraphPage.routeName);
+    } catch (e, stack) {
+      developer.log(
+        'Error navigating to graph: $e\n$stack',
+        name: 'Navigation',
+      );
+      // Fallback to creating a new route if the named route fails
+      return navigatorKey.currentState!.push(
+        MaterialPageRoute(builder: (context) => const GraphPage()),
+      );
+    }
   }
 
   /// Navigate back to the previous route
   void goBack() {
     return navigatorKey.currentState!.pop();
+  }
+
+  // Add a method for debug access to the graph page
+  void setDebugGraphAccess() {
+    developer.log('Setting up debug graph access', name: 'Navigation');
+    // Nothing to set up by default - this is just a hook for debugging
   }
 }

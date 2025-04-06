@@ -1,17 +1,18 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
-import 'package:graphview/GraphView.dart';
-import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
-    as header;
+import 'dart:developer' as developer;
 
 import '../../generated/one_application.dart';
-import '../widgets/layout/web/header_widget.dart';
+import '../widgets/canvas/unified_visualization_canvas.dart';
+import '../widgets/layout/graph/algorithms/optimized_force_directed.dart';
+import '../widgets/layout/graph/layout/layout_algorithm.dart';
+import '../widgets/layout/web/header_widget.dart' as header;
 
 /// Graph visualization page for domain models
 ///
 /// This page provides a visual representation of domains, models, and their concepts
 /// using an interactive graph view that allows zooming and panning.
-class GraphPage extends StatelessWidget {
+class GraphPage extends StatefulWidget {
   /// Route name for this page
   static const String routeName = '/graph';
 
@@ -19,10 +20,81 @@ class GraphPage extends StatelessWidget {
   const GraphPage({super.key});
 
   @override
+  State<GraphPage> createState() => _GraphPageState();
+}
+
+class _GraphPageState extends State<GraphPage> with TickerProviderStateMixin {
+  late OneApplication _application;
+  late LayoutAlgorithm _currentLayoutAlgorithm;
+  Matrix4? _currentTransformation;
+  bool _isLoading = true;
+  String _debugInfo = '';
+
+  @override
+  void initState() {
+    super.initState();
+    developer.log(
+      'Initializing GraphPage with new implementation',
+      name: 'GraphViz',
+    );
+    _application = OneApplication();
+    _currentLayoutAlgorithm = OptimizedForceDirectedLayout();
+
+    // Defer initialization to ensure application data is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeData();
+    });
+  }
+
+  void _initializeData() async {
+    try {
+      developer.log('Loading data for visualization', name: 'GraphViz');
+
+      // Check if domains are available
+      if (_application.groupedDomains.isEmpty) {
+        setState(() {
+          _debugInfo = 'No domain data available. Please try again later.';
+          _isLoading = false;
+        });
+        developer.log(
+          'No domain data available for visualization',
+          name: 'GraphViz',
+        );
+        return;
+      }
+
+      // Log domain data for debugging
+      developer.log(
+        'Domains loaded: ${_application.groupedDomains.length} domains, ' +
+            'first domain has ${_application.groupedDomains.first.models.length} models',
+        name: 'GraphViz',
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e, stack) {
+      developer.log(
+        'Error initializing graph visualization: $e\n$stack',
+        name: 'GraphViz',
+      );
+      setState(() {
+        _debugInfo = 'Error loading visualization: ${e.toString()}';
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    developer.log(
+      'Building GraphPage with newest implementation',
+      name: 'GraphViz',
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: HeaderWidget(
+        title: header.HeaderWidget(
           path: const ['Home', 'Graph Visualization'],
           onPathSegmentTapped: (index) {
             if (index == 0) {
@@ -33,92 +105,104 @@ class GraphPage extends StatelessWidget {
           onAddFilter: (header.FilterCriteria filter) {},
           onBookmark: () {},
         ),
+        actions: [
+          // Add a refresh button
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh visualization',
+            onPressed: () {
+              setState(() {
+                _isLoading = true;
+                _debugInfo = '';
+              });
+              _initializeData();
+            },
+          ),
+        ],
       ),
-      body: GraphWidget(),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _debugInfo.isNotEmpty
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(_debugInfo, style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _isLoading = true;
+                          _debugInfo = '';
+                        });
+                        _initializeData();
+                      },
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              )
+              : LayoutBuilder(
+                builder: (context, constraints) {
+                  // Ensure the canvas has proper constraints
+                  if (constraints.maxHeight == 0 || constraints.maxWidth == 0) {
+                    return const Center(
+                      child: Text('Insufficient space to render visualization'),
+                    );
+                  }
+
+                  return SizedBox(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    child: UnifiedVisualizationCanvas(
+                      domains: _application.groupedDomains,
+                      layoutAlgorithm: _currentLayoutAlgorithm,
+                      initialTransformation: _currentTransformation,
+                      onTransformationChanged: (matrix) {
+                        _currentTransformation = matrix;
+                      },
+                      onChangeLayoutAlgorithm: (algorithm) {
+                        setState(() {
+                          _currentLayoutAlgorithm = algorithm;
+                        });
+                      },
+                      debugMode: true, // Enable debug mode to see metrics
+                    ),
+                  );
+                },
+              ),
     );
   }
 }
 
-/// Graph widget for visualizing domain models and their relationships
-///
-/// This widget creates an interactive graph representation of the domain model structure,
-/// allowing users to explore the relationships between domains, models, and concepts.
+/// @deprecated Use GraphPage instead
+/// This class is being phased out as part of the visualization refactoring.
+/// It will be removed in a future release.
+@Deprecated('Use GraphPage with UnifiedVisualizationCanvas instead')
 class GraphWidget extends StatelessWidget {
-  /// The graph data structure
-  final Graph graph = Graph();
-
-  /// Creates a graph widget
-  GraphWidget({super.key}) {
-    OneApplication app = OneApplication();
-    _buildGraph(app.groupedDomains);
-  }
-
-  /// Builds the graph structure from domains
-  void _buildGraph(Domains domains) {
-    for (var domain in domains) {
-      Node domainNode = Node.Id(domain.code);
-      graph.addNode(domainNode);
-
-      for (var model in domain.models) {
-        Node modelNode = Node.Id(model.code);
-        graph.addNode(modelNode);
-        graph.addEdge(domainNode, modelNode);
-
-        for (var concept in model.concepts) {
-          Node conceptNode = Node.Id(concept.code);
-          graph.addNode(conceptNode);
-          graph.addEdge(modelNode, conceptNode);
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    final BuchheimWalkerConfiguration builder =
-        BuchheimWalkerConfiguration()
-          ..siblingSeparation = (100)
-          ..levelSeparation = (150)
-          ..subtreeSeparation = (150)
-          ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
-
-    return InteractiveViewer(
-      constrained: false,
-      boundaryMargin: const EdgeInsets.all(100),
-      minScale: 0.01,
-      maxScale: 5.6,
-      child: GraphView(
-        graph: graph,
-        algorithm: BuchheimWalkerAlgorithm(builder, TreeEdgeRenderer(builder)),
-        builder: (Node node) {
-          // Render your node based on the data
-          var nodeText = node.key!.value as String;
-          return _buildNodeWidget(nodeText, colorScheme);
-        },
-      ),
-    );
-  }
-
-  /// Builds a node widget with consistent styling
-  Widget _buildNodeWidget(String text, ColorScheme colorScheme) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        border: Border.all(color: colorScheme.outline),
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withAlpha(50),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+    // Redirect to the new implementation to maintain backward compatibility
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'This visualization is deprecated. Please use the new unified visualization canvas.',
+            style: TextStyle(color: Colors.red),
           ),
-        ],
-      ),
-      child: Text(text, style: TextStyle(color: colorScheme.onSurface)),
+        ),
+        Expanded(
+          child: UnifiedVisualizationCanvas(
+            domains: OneApplication().groupedDomains,
+            layoutAlgorithm: OptimizedForceDirectedLayout(),
+            onTransformationChanged: (_) {},
+            onChangeLayoutAlgorithm: (_) {},
+            debugMode: false,
+          ),
+        ),
+      ],
     );
   }
 }

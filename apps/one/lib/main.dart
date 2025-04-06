@@ -167,8 +167,15 @@ void _forceDomainSelection() {
       );
     }
 
-    // NOTE: We don't close the blocs here as they will be used by the widget tree
-    // Let the BLoC providers handle their lifecycle
+    // After initialization is complete, ensure the graph page is accessible
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPrint('🔍 Setting up direct graph page access for testing');
+
+      // Add a floating action button to the main app to directly access graph page
+      // This can be done in the main app's state or through a global key
+      // For now, we'll just ensure the navigationService can access it
+      navigationService.setDebugGraphAccess();
+    });
   } catch (e, stack) {
     debugPrint('❌ Error in _forceDomainSelection: $e');
     debugPrint('Stack trace: $stack');

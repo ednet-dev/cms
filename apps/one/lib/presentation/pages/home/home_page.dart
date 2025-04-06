@@ -499,6 +499,20 @@ class HomePageState extends State<HomePage> {
                                                   ),
                                         ),
                                       ),
+
+                                    // Add this to the navigation list, menu or sidebar
+                                    IconButton(
+                                      icon: const Icon(Icons.bubble_chart),
+                                      tooltip: 'Graph Visualization',
+                                      onPressed: () {
+                                        debugPrint(
+                                          'Navigating to Graph Visualization page',
+                                        );
+                                        Navigator.of(
+                                          context,
+                                        ).pushNamed('/graph');
+                                      },
+                                    ),
                                   ],
                                 ),
                               ),
@@ -553,6 +567,14 @@ class HomePageState extends State<HomePage> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          debugPrint('Navigating to graph visualization from FAB');
+          Navigator.of(context).pushNamed('/graph');
+        },
+        tooltip: 'View Graph',
+        child: const Icon(Icons.bubble_chart),
       ),
     );
   }
