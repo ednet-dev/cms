@@ -6,27 +6,20 @@ import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_manager.dart';
 import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_model.dart';
 import 'package:ednet_one/presentation/widgets/entity/entity_widget.dart';
 
-/// @deprecated Use EntityDetailPage instead
-/// This class is being phased out as part of the screens to pages migration.
-/// It will be removed in a future release.
-@Deprecated('Use EntityDetailPage instead')
-class MainContentWidget extends StatefulWidget {
-  /// The entities to display
+/// A page that displays a list of entities and their details in a master-detail layout.
+/// This is the modern replacement for MainContentWidget.
+class EntityDetailPage extends StatefulWidget {
   final Entities entities;
 
-  /// Constructor for MainContentWidget
-  const MainContentWidget({super.key, required this.entities});
+  /// Constructor for EntityDetailPage
+  const EntityDetailPage({super.key, required this.entities});
 
   @override
-  State<MainContentWidget> createState() => _MainContentWidgetState();
+  State<EntityDetailPage> createState() => _EntityDetailPageState();
 }
 
-/// @deprecated Use EntityDetailPage instead
-/// This is the state class for MainContentWidget which is being phased out.
-/// It will be removed along with MainContentWidget in a future release.
-@Deprecated('Use EntityDetailPage instead')
-class _MainContentWidgetState extends State<MainContentWidget> {
-  Object? _selectedEntity; // Use Object type to handle both Entity types
+class _EntityDetailPageState extends State<EntityDetailPage> {
+  Object? _selectedEntity;
 
   @override
   void initState() {
@@ -35,7 +28,7 @@ class _MainContentWidgetState extends State<MainContentWidget> {
   }
 
   @override
-  void didUpdateWidget(MainContentWidget oldWidget) {
+  void didUpdateWidget(EntityDetailPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.entities != oldWidget.entities) {
       _selectInitialEntity();
@@ -43,7 +36,6 @@ class _MainContentWidgetState extends State<MainContentWidget> {
   }
 
   void _selectInitialEntity() {
-    // Select the first entity by default, if available
     if (widget.entities.isNotEmpty) {
       setState(() {
         _selectedEntity = widget.entities.first;
@@ -67,7 +59,6 @@ class _MainContentWidgetState extends State<MainContentWidget> {
       listen: false,
     );
     await bookmarkManager.addBookmark(bookmark);
-    // Show success message
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -89,15 +80,12 @@ class _MainContentWidgetState extends State<MainContentWidget> {
       listen: false,
     );
 
-    // Handle empty entities case
     if (widget.entities.isEmpty) {
       return _buildEmptyStateMessage(context);
     }
 
-    // Split view with entities list on left and selected entity details on right
     return Row(
       children: [
-        // Entities list (1/3 of the space)
         Expanded(
           flex: 1,
           child: EntitiesWidget(
@@ -107,8 +95,6 @@ class _MainContentWidgetState extends State<MainContentWidget> {
             onBookmarkCreated: (bookmark) => _createBookmark(bookmark),
           ),
         ),
-
-        // Entity details (2/3 of the space)
         Expanded(
           flex: 2,
           child:
@@ -136,7 +122,6 @@ class _MainContentWidgetState extends State<MainContentWidget> {
         },
       );
     } catch (e) {
-      // If there's an error rendering the entity widget, show an error message
       return Center(
         child: Card(
           margin: const EdgeInsets.all(16),
@@ -146,7 +131,7 @@ class _MainContentWidgetState extends State<MainContentWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline, color: Colors.red, size: 48),
+                const Icon(Icons.error_outline, color: Colors.red, size: 48),
                 const SizedBox(height: 16),
                 Text(
                   "Entity Display Error",

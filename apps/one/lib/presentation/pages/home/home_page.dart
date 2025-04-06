@@ -1,7 +1,8 @@
-import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_one/presentation/widgets/layout/web/entity_detail_page.dart';
 
 // State management blocs
 // Import OneApplication
@@ -28,7 +29,6 @@ import 'model_selector.dart';
 // Layout components
 import '../../widgets/layout/graph/algorithms/master_detail_layout_algorithm.dart';
 import '../../widgets/layout/web/footer_widget.dart';
-import '../../widgets/layout/web/main_content_widget.dart';
 import '../../widgets/canvas/meta_domain_canvas.dart';
 
 // Importing domain_selector directly
@@ -523,7 +523,7 @@ class HomePageState extends State<HomePage> {
                                     conceptState.selectedConcept != null &&
                                             conceptState.selectedEntities !=
                                                 null
-                                        ? MainContentWidget(
+                                        ? EntityDetailPage(
                                           entities:
                                               conceptState.selectedEntities!,
                                         )

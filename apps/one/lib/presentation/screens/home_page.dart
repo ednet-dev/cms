@@ -232,7 +232,7 @@ class HomePageState extends State<HomePage> {
                                   flex: 8,
                                   child:
                                       domainState.selectedConcept != null
-                                          ? MainContentWidget(
+                                          ? EntityDetailPage(
                                             entities:
                                                 domainState.selectedEntities ??
                                                 Entities<Concept>(),

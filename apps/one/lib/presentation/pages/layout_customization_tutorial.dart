@@ -186,7 +186,7 @@ class _LayoutCustomizationTutorialState
         return Theme(
           data: theme.copyWith(
             colorScheme: theme.colorScheme.copyWith(
-              surface: theme.colorScheme.surface.withOpacity(0.9),
+              surface: theme.colorScheme.surface.withValues(alpha: 255.0 * 0.9),
             ),
           ),
           child: _buildPinningDemo(context),
