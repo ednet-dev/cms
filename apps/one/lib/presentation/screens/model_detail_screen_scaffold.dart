@@ -1,14 +1,7 @@
 /*  */
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:provider/provider.dart';
-import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
-    as header;
 
-import '../widgets/layout/web/header_widget.dart';
-import '../widgets/entity/entity_widget.dart';
-import '../widgets/entity/entities_widget.dart';
-import '../widgets/bookmarks/bookmark_manager.dart';
 import '../pages/model_detail_page.dart';
 
 /// @deprecated Use ModelDetailPage instead

@@ -218,7 +218,7 @@ class EntityWidget extends StatelessWidget {
           elevation: 2, // Slightly more elevation for better depth perception
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: statusColor.withOpacity(0.6), width: 1.5),
+            side: BorderSide(color: statusColor.withValues(alpha: 255.0 * 0.6), width: 1.5),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,7 +230,7 @@ class EntityWidget extends StatelessWidget {
                   horizontal: 16.0,
                   vertical: 12.0, // Increased for better touch target
                 ),
-                color: statusColor.withOpacity(0.1),
+                color: statusColor.withValues(alpha: 255.0 * 0.1),
                 child: Row(
                   children: [
                     Icon(
@@ -257,7 +257,7 @@ class EntityWidget extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.2),
+                              color: statusColor.withValues(alpha: 255.0 * 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -308,7 +308,7 @@ class EntityWidget extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 4),
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 255.0 * 0.1),
                   child: Text(
                     'This entity has been deleted ${_formatDate(entity.whenRemoved)}',
                     textAlign: TextAlign.center,
@@ -414,7 +414,7 @@ class EntityWidget extends StatelessWidget {
                           color: colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: colorScheme.secondary.withOpacity(0.3),
+                            color: colorScheme.secondary.withValues(alpha: 255.0 * 0.3),
                             width: 1,
                           ),
                         ),
@@ -439,7 +439,7 @@ class EntityWidget extends StatelessWidget {
                     color: colorScheme.surfaceContainerHighest,
                     border: Border(
                       top: BorderSide(
-                        color: colorScheme.outlineVariant.withOpacity(0.3),
+                        color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.3),
                         width: 1,
                       ),
                     ),
@@ -471,8 +471,8 @@ class EntityWidget extends StatelessWidget {
     Color color,
   ) {
     return Chip(
-      backgroundColor: color.withOpacity(0.1),
-      side: BorderSide(color: color.withOpacity(0.3), width: 1),
+      backgroundColor: color.withValues(alpha: 255.0 * 0.1),
+      side: BorderSide(color: color.withValues(alpha: 255.0 * 0.3), width: 1),
       labelPadding: const EdgeInsets.symmetric(horizontal: 4),
       avatar: Icon(icon, size: 16, color: color),
       label: RichText(
@@ -490,7 +490,7 @@ class EntityWidget extends StatelessWidget {
               text: date,
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
               ),
             ),
           ],
@@ -535,7 +535,7 @@ class EntityWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 255.0 * 0.3), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -590,7 +590,7 @@ class EntityWidget extends StatelessWidget {
         color: colorScheme.surfaceContainerLow,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: accentColor.withOpacity(0.2), width: 0.5),
+          side: BorderSide(color: accentColor.withValues(alpha: 255.0 * 0.2), width: 0.5),
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -649,7 +649,7 @@ class EntityWidget extends StatelessWidget {
           style: TextStyle(
             letterSpacing: 2,
             fontFamily: 'monospace',
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
           ),
         ),
       ],
@@ -671,7 +671,7 @@ class EntityWidget extends StatelessWidget {
         'Not set',
         style: TextStyle(
           fontStyle: FontStyle.italic,
-          color: colorScheme.onSurface.withOpacity(0.5),
+          color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.5),
         ),
       );
     }
@@ -780,7 +780,7 @@ class EntityWidget extends StatelessWidget {
             Text(
               "This may be caused by data model changes or initialization issues.",
               style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onErrorContainer.withOpacity(0.8),
+                color: colorScheme.onErrorContainer.withValues(alpha: 255.0 * 0.8),
               ),
               textAlign: TextAlign.center,
             ),

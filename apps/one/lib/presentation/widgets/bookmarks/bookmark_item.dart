@@ -43,7 +43,7 @@ class BookmarkItem extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+      color: colorScheme.surfaceContainerHighest.withValues(alpha: 255.0 * 0.3),
       margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: InkWell(
         onTap: onPressed,

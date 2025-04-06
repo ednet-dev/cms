@@ -1,42 +1,61 @@
-import 'package:ednet_core/ednet_core.dart';
+import 'package:ednet_core/ednet_core.dart' as ednet;
 
 /// State for the domain selection bloc
 ///
 /// Contains the currently selected domain and a list of all available domains.
 /// This state object extends the ednet_core ValueObject for immutability and equality.
-class DomainSelectionState extends ValueObject {
+class DomainSelectionState extends ednet.ValueObject {
   /// Currently selected domain
-  final Domain? selectedDomain;
+  final ednet.Domain? selectedDomain;
 
-  /// All available domains
-  final Domains allDomains;
+  /// List of available domains
+  final ednet.Domains availableDomains;
+
+  /// Models associated with the selected domain
+  final ednet.Models? selectedModels;
 
   /// Creates a new domain selection state
-  DomainSelectionState({this.selectedDomain, required this.allDomains});
+  DomainSelectionState({
+    this.selectedDomain,
+    required this.availableDomains,
+    this.selectedModels,
+  });
 
   /// Initial state with no selected domain
-  factory DomainSelectionState.initial() =>
-      DomainSelectionState(selectedDomain: null, allDomains: Domains());
+  factory DomainSelectionState.initial() => DomainSelectionState(
+    selectedDomain: null,
+    availableDomains: ednet.Domains(),
+    selectedModels: null,
+  );
 
-  /// Creates a copy of this state with the given fields replaced
-  @override
-  DomainSelectionState copyWith({Domain? selectedDomain, Domains? allDomains}) {
+  /// Create a copy with the given fields replaced
+  DomainSelectionState copyWith({
+    ednet.Domain? selectedDomain,
+    ednet.Domains? availableDomains,
+    ednet.Models? selectedModels,
+  }) {
     return DomainSelectionState(
       selectedDomain: selectedDomain ?? this.selectedDomain,
-      allDomains: allDomains ?? this.allDomains,
+      availableDomains: availableDomains ?? this.availableDomains,
+      selectedModels: selectedModels ?? this.selectedModels,
     );
   }
 
   /// Properties used for equality comparison and hash code generation
   @override
-  List<Object> get props => [selectedDomain ?? Domain('default'), allDomains];
+  List<Object> get props => [
+    selectedDomain ?? ednet.Domain('default'),
+    availableDomains,
+    selectedModels ?? ednet.Models(),
+  ];
 
   /// Convert the state to a JSON map
-  @override
   Map<String, dynamic> toJson() {
     return {
-      'selectedDomain': selectedDomain?.toJsonMap(),
-      'allDomains': allDomains.map((domain) => domain.toJsonMap()).toList(),
+      'selectedDomain': selectedDomain?.code,
+      'availableDomains':
+          availableDomains.map((domain) => domain.code).toList(),
+      'selectedModels': selectedModels != null ? true : false,
     };
   }
 }

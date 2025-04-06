@@ -251,7 +251,9 @@ class _RelationshipNavigatorState extends State<RelationshipNavigator> {
                         color:
                             i == _navigationHistory.length - 1
                                 ? colorScheme.primary
-                                : colorScheme.primary.withOpacity(0.7),
+                                : colorScheme.primary.withValues(
+                                  alpha: 255.0 * 0.7,
+                                ),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -414,8 +416,8 @@ class _RelationshipNavigatorState extends State<RelationshipNavigator> {
                           child: Text(
                             'No entities in this collection',
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant.withOpacity(
-                                0.7,
+                              color: colorScheme.onSurfaceVariant.withValues(
+                                alpha: 255.0 * 0.7,
                               ),
                               fontStyle: FontStyle.italic,
                             ),
@@ -466,8 +468,9 @@ class _RelationshipNavigatorState extends State<RelationshipNavigator> {
                                                 .code,
                                           ),
                                           size: 14,
-                                          color: colorScheme.primary
-                                              .withOpacity(0.7),
+                                          color: colorScheme.primary.withValues(
+                                            alpha: 255.0 * 0.7,
+                                          ),
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
@@ -555,16 +558,20 @@ class _RelationshipNavigatorState extends State<RelationshipNavigator> {
             color:
                 hasValue
                     ? relationship.identifier
-                        ? colorScheme.primaryContainer.withOpacity(0.7)
-                        : colorScheme.secondaryContainer.withOpacity(0.5)
+                        ? colorScheme.primaryContainer.withValues(
+                          alpha: 255.0 * 0.7,
+                        )
+                        : colorScheme.secondaryContainer.withValues(
+                          alpha: 255.0 * 0.5,
+                        )
                     : colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color:
                   hasValue
                       ? relationship.identifier
-                          ? colorScheme.primary.withOpacity(0.5)
-                          : colorScheme.secondary.withOpacity(0.3)
+                          ? colorScheme.primary.withValues(alpha: 255.0 * 0.5)
+                          : colorScheme.secondary.withValues(alpha: 255.0 * 0.3)
                       : colorScheme.outlineVariant,
               width: relationship.required ? 1.5 : 1,
             ),
@@ -603,7 +610,9 @@ class _RelationshipNavigatorState extends State<RelationshipNavigator> {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest.withOpacity(0.7),
+                    color: colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 255.0 * 0.7,
+                    ),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -632,16 +641,20 @@ class _RelationshipNavigatorState extends State<RelationshipNavigator> {
         color:
             hasValue
                 ? relationship.internal
-                    ? colorScheme.tertiaryContainer.withOpacity(0.5)
-                    : colorScheme.secondaryContainer.withOpacity(0.3)
+                    ? colorScheme.tertiaryContainer.withValues(
+                      alpha: 255.0 * 0.5,
+                    )
+                    : colorScheme.secondaryContainer.withValues(
+                      alpha: 255.0 * 0.3,
+                    )
                 : colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color:
               hasValue
                   ? relationship.internal
-                      ? colorScheme.tertiary.withOpacity(0.3)
-                      : colorScheme.secondary.withOpacity(0.2)
+                      ? colorScheme.tertiary.withValues(alpha: 255.0 * 0.3)
+                      : colorScheme.secondary.withValues(alpha: 255.0 * 0.2)
                   : colorScheme.outlineVariant,
           width: 1,
         ),
@@ -676,7 +689,9 @@ class _RelationshipNavigatorState extends State<RelationshipNavigator> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withOpacity(0.7),
+                color: colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 255.0 * 0.7,
+                ),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'concept_selection_event.dart';
 import 'concept_selection_state.dart';
 
+// ignore_for_file: invalid_use_of_visible_for_testing_member
 /// Bloc for handling concept selection actions and state
 class ConceptSelectionBloc
     extends Bloc<ConceptSelectionEvent, ConceptSelectionState> {

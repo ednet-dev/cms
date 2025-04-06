@@ -19,7 +19,7 @@ class DomainSelector extends StatelessWidget {
       builder: (context, domainState) {
         return Row(
           children: [
-            for (var domain in domainState.allDomains)
+            for (var domain in domainState.availableDomains)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: _DomainButton(

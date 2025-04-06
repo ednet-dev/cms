@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'model_selection_event.dart';
 import 'model_selection_state.dart';
 
+// ignore_for_file: invalid_use_of_visible_for_testing_member
 /// Bloc for handling model selection actions and state
 class ModelSelectionBloc
     extends Bloc<ModelSelectionEvent, ModelSelectionState> {

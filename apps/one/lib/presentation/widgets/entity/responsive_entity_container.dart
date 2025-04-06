@@ -485,7 +485,7 @@ class ResponsiveEntityContainer extends StatelessWidget {
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: colorScheme.outlineVariant.withOpacity(0.5),
+          color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.5),
           width: 1,
         ),
       ),
@@ -539,8 +539,8 @@ class ResponsiveEntityContainer extends StatelessWidget {
     Color color,
   ) {
     return Chip(
-      backgroundColor: color.withOpacity(0.1),
-      side: BorderSide(color: color.withOpacity(0.3), width: 1),
+      backgroundColor: color.withValues(alpha: 255.0 * 0.1),
+      side: BorderSide(color: color.withValues(alpha: 255.0 * 0.3), width: 1),
       labelPadding: const EdgeInsets.symmetric(horizontal: 4),
       avatar: Icon(icon, size: 16, color: color),
       label: RichText(
@@ -558,7 +558,7 @@ class ResponsiveEntityContainer extends StatelessWidget {
               text: date,
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
               ),
             ),
           ],
@@ -583,7 +583,7 @@ class ResponsiveEntityContainer extends StatelessWidget {
         color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: colorScheme.outlineVariant.withOpacity(0.3),
+          color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.3),
           width: 1,
         ),
       ),

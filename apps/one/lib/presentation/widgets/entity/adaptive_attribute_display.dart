@@ -101,7 +101,7 @@ class AdaptiveAttributeDisplay extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: color.withOpacity(0.3), width: 1.5),
+        side: BorderSide(color: color.withValues(alpha: 255.0 * 0.3), width: 1.5),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -230,7 +230,7 @@ class AdaptiveAttributeDisplay extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: color.withOpacity(0.2), width: 1),
+        side: BorderSide(color: color.withValues(alpha: 255.0 * 0.2), width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -404,7 +404,7 @@ class AdaptiveAttributeDisplay extends StatelessWidget {
           style: TextStyle(
             letterSpacing: 2,
             fontFamily: 'monospace',
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
           ),
         ),
       ],
@@ -425,7 +425,7 @@ class AdaptiveAttributeDisplay extends StatelessWidget {
         'Not set',
         style: TextStyle(
           fontStyle: FontStyle.italic,
-          color: colorScheme.onSurface.withOpacity(0.5),
+          color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.5),
         ),
       );
     }

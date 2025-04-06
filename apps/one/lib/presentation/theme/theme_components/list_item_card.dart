@@ -71,7 +71,7 @@ class ListItemCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(
-          color: colorScheme.outlineVariant.withOpacity(0.2),
+          color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.2),
           width: 1,
         ),
       ),
@@ -89,7 +89,7 @@ class ListItemCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color:
                       iconBackgroundColor ??
-                      colorScheme.primaryContainer.withOpacity(0.3),
+                      colorScheme.primaryContainer.withValues(alpha: 255.0 * 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -143,7 +143,7 @@ class ListItemCard extends StatelessWidget {
                       Text(
                         subtitle!,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurface.withOpacity(0.7),
+                          color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -158,13 +158,13 @@ class ListItemCard extends StatelessWidget {
                           Icon(
                             infoIcon ?? Icons.info_outline,
                             size: 14,
-                            color: colorScheme.secondary.withOpacity(0.7),
+                            color: colorScheme.secondary.withValues(alpha: 255.0 * 0.7),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             infoText!,
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: colorScheme.secondary.withOpacity(0.7),
+                              color: colorScheme.secondary.withValues(alpha: 255.0 * 0.7),
                             ),
                           ),
                         ],
@@ -179,7 +179,7 @@ class ListItemCard extends StatelessWidget {
                   (showChevron
                       ? Icon(
                         Icons.chevron_right,
-                        color: colorScheme.onSurface.withOpacity(0.5),
+                        color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.5),
                       )
                       : const SizedBox.shrink()),
             ],

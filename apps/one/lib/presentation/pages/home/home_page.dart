@@ -92,19 +92,19 @@ class HomePageState extends State<HomePage> {
         final domainState = domainSelectionBloc.state;
 
         debugPrint(
-          '📱 After init - Domains available: ${domainState.allDomains.length}',
+          '📱 After init - Domains available: ${domainState.availableDomains.length}',
         );
-        if (domainState.allDomains.isEmpty && domains.isNotEmpty) {
+        if (domainState.availableDomains.isEmpty && domains.isNotEmpty) {
           // If BLoC doesn't have domains but application does, force direct update
           debugPrint('📱 Directly setting domains in BLoC');
-          domainSelectionBloc.updateDomainsDirectly(domains);
+          domainSelectionBloc.updateDomains(domains);
         }
 
         // 2. Select the first domain if none is selected
         final selectedDomain =
             domainState.selectedDomain ??
-            (domainState.allDomains.isNotEmpty
-                ? domainState.allDomains.first
+            (domainState.availableDomains.isNotEmpty
+                ? domainState.availableDomains.first
                 : null);
 
         if (selectedDomain == null && domains.isNotEmpty) {
@@ -264,7 +264,7 @@ class HomePageState extends State<HomePage> {
     final conceptState = context.read<ConceptSelectionBloc>().state;
 
     debugPrint('📱 Initializing selections:');
-    debugPrint('📱 Domains available: ${domainState.allDomains.length}');
+    debugPrint('📱 Domains available: ${domainState.availableDomains.length}');
     debugPrint('📱 Current domain: ${domainState.selectedDomain?.code}');
     debugPrint('📱 Models available: ${modelState.availableModels.length}');
     debugPrint('📱 Current model: ${modelState.selectedModel?.code}');
@@ -278,11 +278,14 @@ class HomePageState extends State<HomePage> {
 
     // If no domain is selected but domains are available, select the first one
     if (domainState.selectedDomain == null &&
-        domainState.allDomains.isNotEmpty) {
+        domainState.availableDomains.isNotEmpty) {
       debugPrint(
-        '📱 Auto-selecting first domain: ${domainState.allDomains.first.code}',
+        '📱 Auto-selecting first domain: ${domainState.availableDomains.first.code}',
       );
-      NavigationHelper.navigateToDomain(context, domainState.allDomains.first);
+      NavigationHelper.navigateToDomain(
+        context,
+        domainState.availableDomains.first,
+      );
     }
     // If domain is selected but no model is selected, select the first model
     else if (domainState.selectedDomain != null &&
@@ -411,7 +414,7 @@ class HomePageState extends State<HomePage> {
                       >(
                         builder: (context, conceptState) {
                           // Check if we need to initialize selections
-                          if (domainState.allDomains.isNotEmpty &&
+                          if (domainState.availableDomains.isNotEmpty &&
                               (domainState.selectedDomain == null ||
                                   modelState.selectedModel == null ||
                                   conceptState.selectedConcept == null)) {
@@ -441,7 +444,7 @@ class HomePageState extends State<HomePage> {
                                   border: Border(
                                     bottom: BorderSide(
                                       color: colorScheme.outlineVariant
-                                          .withOpacity(0.3),
+                                          .withValues(alpha: 255.0 * 0.3),
                                       width: 1,
                                     ),
                                   ),
@@ -522,8 +525,8 @@ class HomePageState extends State<HomePage> {
                                   color: colorScheme.surface,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: colorScheme.shadow.withOpacity(
-                                        0.1,
+                                      color: colorScheme.shadow.withValues(
+                                        alpha: 255.0 * 0.1,
                                       ),
                                       blurRadius: 4,
                                       offset: const Offset(0, -1),
@@ -532,7 +535,7 @@ class HomePageState extends State<HomePage> {
                                   border: Border(
                                     top: BorderSide(
                                       color: colorScheme.outlineVariant
-                                          .withOpacity(0.3),
+                                          .withValues(alpha: 255.0 * 0.3),
                                       width: 1,
                                     ),
                                   ),
@@ -561,7 +564,7 @@ class HomePageState extends State<HomePage> {
     ConceptSelectionState conceptState,
   ) {
     return MetaDomainCanvas(
-      domains: domainState.allDomains,
+      domains: domainState.availableDomains,
       layoutAlgorithm: MasterDetailLayoutAlgorithm(),
       decorators: const [],
       onTransformationChanged: (matrix) {},
@@ -580,7 +583,7 @@ class HomePageState extends State<HomePage> {
           Icon(
             Icons.touch_app,
             size: 64,
-            color: theme.colorScheme.primary.withOpacity(0.5),
+            color: theme.colorScheme.primary.withValues(alpha: 255.0 * 0.5),
           ),
           const SizedBox(height: 24),
           Text(

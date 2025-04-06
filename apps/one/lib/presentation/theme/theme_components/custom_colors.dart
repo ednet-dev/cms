@@ -64,14 +64,14 @@ extension CustomColors on ColorScheme {
   /// Color for highlighting items on hover
   Color get hoverHighlight =>
       brightness == Brightness.light
-          ? Colors.black.withOpacity(0.05)
-          : Colors.white.withOpacity(0.1);
+          ? Colors.black.withValues(alpha: 255.0 * 0.05)
+          : Colors.white.withValues(alpha: 255.0 * 0.1);
 
   /// Background color for selected items
   Color get selectedBackground =>
       brightness == Brightness.light
-          ? primary.withOpacity(0.1)
-          : primary.withOpacity(0.2);
+          ? primary.withValues(alpha: 255.0 * 0.1)
+          : primary.withValues(alpha: 255.0 * 0.2);
 
   /// Text color for code blocks or terminal output
   Color get codeText =>

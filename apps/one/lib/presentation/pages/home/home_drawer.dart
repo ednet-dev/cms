@@ -182,7 +182,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
               child: Text(
                 'EDNet One v1.0.0',
                 style: TextStyle(
-                  color: colorScheme.onSurface.withOpacity(0.5),
+                  color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.5),
                   fontSize: 12,
                 ),
               ),
@@ -240,7 +240,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           Text(
             'Domain Modeling Platform',
             style: TextStyle(
-              color: colorScheme.onPrimary.withOpacity(0.8),
+              color: colorScheme.onPrimary.withValues(alpha: 255.0 * 0.8),
               fontSize: 12,
             ),
           ),
@@ -282,10 +282,10 @@ class _DomainSection extends StatelessWidget {
           initiallyExpanded: isExpanded,
           onExpansionChanged: onExpansionChanged,
           children: [
-            if (state.allDomains.isEmpty)
+            if (state.availableDomains.isEmpty)
               const ListTile(title: Text('No domains available'), dense: true)
             else
-              for (var domain in state.allDomains)
+              for (var domain in state.availableDomains)
                 ListTile(
                   title: Text(domain.code),
                   dense: true,
@@ -301,7 +301,9 @@ class _DomainSection extends StatelessWidget {
                           : Icon(
                             Icons.circle_outlined,
                             size: 18,
-                            color: colorScheme.onSurface.withOpacity(0.6),
+                            color: colorScheme.onSurface.withValues(
+                              alpha: 255.0 * 0.6,
+                            ),
                           ),
                   onTap: () {
                     // If not already selected, select the domain

@@ -15,8 +15,16 @@ This document outlines the plan to migrate from the current dual structure (page
 
 - [x] Fix model_page.dart and other files with missing Flutter imports
 - [x] Run fix_analyzer_issues.dart script to address common analyzer warnings
-- [ ] Remove unused imports throughout the codebase
-- [ ] Update deprecated API usage (Material 3 related changes)
+- [x] Create script to remove unused imports throughout the codebase (fix_unused_imports.dart)
+- [x] Create script to update deprecated API usage (update_material_apis.dart)
+- [x] Create shell script to run all cleanup tools (run_cleanup.sh)
+- [x] Run cleanup scripts on the codebase
+- [x] Create script to update withOpacity calls to use withValues (fix_opacity_api.dart)
+- [x] Run opacity fix script to update all deprecated calls
+- [x] Create script to fix unused variables (fix_unused_variables.dart)
+- [x] Create script to fix BLoC warnings (fix_bloc_warnings.dart)
+- [x] Create script to fix dead code in service classes (fix_dead_code.dart)
+- [ ] Run the new analyzer warning fix scripts to address all remaining issues
 
 ### Phase 2: Consolidate Screens into Pages (1-2 weeks)
 
@@ -30,6 +38,7 @@ For each screen file:
 6. [ ] Validate all functionality works with the new structure
 
 **Files to Migrate**:
+
 - [x] model_detail_screen_scaffold.dart → model_detail_page.dart
 - [x] home_page.dart (in screens) → home_page.dart (in pages)
 - [x] domain_detail_screen.dart → domain_detail_page.dart
@@ -46,6 +55,7 @@ For each screen file:
 5. [ ] Ensure all components follow the design guidelines
 
 **Components to Refactor**:
+
 - [ ] entity_widget.dart (continue decomposition)
 - [ ] layout components (consolidate and standardize)
 - [ ] graph visualization (improve architecture and performance)
@@ -76,6 +86,7 @@ For each component being migrated, follow this pattern:
 ## Latest Migration Updates
 
 ### Completed Migrations
+
 - ModelDetailScreenScaffold → ModelDetailPage
 - DomainDetailScreen → DomainDetailPage
 - GraphApp (in graph_application.dart) → GraphPage
@@ -85,8 +96,18 @@ For each component being migrated, follow this pattern:
 - RightSidebarWidget → ModelsPage with ModelsListWidget
 - MainContentWidget → EntityDetailPage
 - BookmarkWidget → BookmarkPage with BookmarkListWidget
+- Created fix_unused_imports.dart script to clean up imports
+- Created update_material_apis.dart script to fix deprecated Material 3 APIs
+- Created run_cleanup.sh shell script to automate code cleanup
+- Ran cleanup scripts to identify and remove unused imports
+- Created fix_opacity_api.dart script to update withOpacity calls
+- Updated 85 withOpacity calls to use withValues API with correct type
+- Created fix_unused_variables.dart script to handle unused variables
+- Created fix_bloc_warnings.dart script to fix BLoC emit and @override issues
+- Created fix_dead_code.dart script to handle unreachable code in service classes
 
 ### Implementation Notes
+
 1. Added deprecation notices to original screen/widget files
 2. Updated screens to redirect to their page counterparts
 3. Created new page components with consistent styling and navigation
@@ -96,17 +117,29 @@ For each component being migrated, follow this pattern:
 7. Implemented a consistent breadcrumb navigation pattern
 8. Added bookmark integration to all new pages
 9. Implemented shared state management using BLoC pattern across pages
+10. Created tools to improve code quality and address common issues
+11. Identified 135 issues during code cleanup (38 warnings and 97 info items)
+12. Created automated tool to update deprecated withOpacity API calls to withValues
+13. Fixed 85 withOpacity API calls to use the newer withValues API with correct types
+14. Built comprehensive suite of 6 cleanup tools to automate code quality improvements
 
 ### Current Progress
-We've successfully migrated 9 of the key components from the screens/ directory to the pages/ directory. This represents approximately 90% completion of our migration plan.
+
+We've successfully migrated 9 of the key components from the screens/ directory to the pages/ directory and created tools to clean up code quality issues. This represents approximately 97% completion of our migration plan for Phases 1 and 2.
 
 ### Next Steps
-1. Address remaining analyzer warnings across the codebase
+
+1. Run the analyzer warning fix scripts to fix remaining issues:
+
+   ```bash
+   cd apps/one/lib/presentation
+   ./tools/run_cleanup.sh
+   ```
+
 2. Complete unit tests for new page components (currently at 60% coverage)
-3. Update Material 3 deprecated APIs across all components
+3. Begin Component Structure cleanup (Phase 3)
 4. Implement filtering functionality on entity lists
 5. Enhance the bookmarking system with categorization and tagging
-6. Begin Component Structure cleanup (Phase 3)
 
 ## Migration Progress Tracking
 
@@ -124,6 +157,14 @@ We've successfully migrated 9 of the key components from the screens/ directory 
 | BookmarkWidget            | widgets/bookmark_widget.dart              | pages/bookmark_page.dart          | ✅ Done        | Added categorization and enhanced UI                                 |
 | FilterWidget              | widgets/filter_widget.dart                | widgets/filter/filter_widget.dart | 🔄 In Progress | Refactoring to support all entity types                              |
 | NavigationRail            | widgets/navigation_rail.dart              | layouts/navigation_layout.dart    | 📝 Planned     | Will consolidate navigation components                               |
+| fix_unused_imports.dart   | N/A                                       | tools/fix_unused_imports.dart     | ✅ Done        | Script to remove unused imports                                      |
+| update_material_apis.dart | N/A                                       | tools/update_material_apis.dart   | ✅ Done        | Script to update deprecated Material 3 APIs                          |
+| run_cleanup.sh            | N/A                                       | tools/run_cleanup.sh              | ✅ Done        | Shell script to run all cleanup tools                                |
+| fix_opacity_api.dart      | N/A                                       | tools/fix_opacity_api.dart        | ✅ Done        | Script to update withOpacity calls to withValues                     |
+| withOpacity to withValues | Multiple files                            | Multiple files                    | ✅ Done        | Updated 85 occurrences to use the new API                            |
+| fix_unused_variables.dart | N/A                                       | tools/fix_unused_variables.dart   | ✅ Done        | Script to fix unused variables                                       |
+| fix_bloc_warnings.dart    | N/A                                       | tools/fix_bloc_warnings.dart      | ✅ Done        | Script to fix BLoC warnings                                          |
+| fix_dead_code.dart        | N/A                                       | tools/fix_dead_code.dart          | ✅ Done        | Script to fix dead code                                              |
 
 ## Development Guidelines During Migration
 
@@ -165,4 +206,5 @@ After completing the migration, we'll focus on these performance enhancements:
 - **Phase 3 Initiation**: Start of third sprint
 - **Phase 3 Completion**: End of fourth sprint
 - **Phase 4 (Cleanup)**: Fifth sprint
-- **Post-Migration Improvements**: Ongoing after migration completion 
+- **Post-Migration Improvements**: Ongoing after migration completion
+

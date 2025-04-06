@@ -19,7 +19,7 @@ class GridPainter {
   void paintGrid(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = gridLineColor.withOpacity(0.3)
+          ..color = gridLineColor.withValues(alpha: 255.0 * 0.3)
           ..strokeWidth = gridLineWidth;
 
     // Draw vertical lines

@@ -99,7 +99,7 @@ class _BookmarkSidebarState extends State<BookmarkSidebar> {
         if (_isCollapsed) {
           return Container(
             width: 50,
-            color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+            color: colorScheme.surfaceContainerHighest.withValues(alpha: 255.0 * 0.5),
             child: Column(
               children: [
                 // Expand button
@@ -144,7 +144,7 @@ class _BookmarkSidebarState extends State<BookmarkSidebar> {
         // Full expanded sidebar
         return Container(
           width: 300,
-          color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+          color: colorScheme.surfaceContainerHighest.withValues(alpha: 255.0 * 0.5),
           child: Column(
             children: [
               // Header with search and collapse button

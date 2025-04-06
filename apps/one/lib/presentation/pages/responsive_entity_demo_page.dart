@@ -89,7 +89,7 @@ class _ResponsiveEntityDemoPageState extends State<ResponsiveEntityDemoPage> {
           // Current screen size indicator
           if (_useOverride)
             Container(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 255.0 * 0.1),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
               child: Row(
                 children: [

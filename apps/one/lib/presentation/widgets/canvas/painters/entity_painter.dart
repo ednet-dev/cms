@@ -32,7 +32,7 @@ class EntityPainter {
         style: Theme.of(
           context,
         ).textTheme.labelLarge!.copyWith(color: Colors.white),
-        backgroundColor: Colors.black.withOpacity(0.5),
+        backgroundColor: Colors.black.withValues(alpha: 255.0 * 0.5),
       ),
     );
     return node;

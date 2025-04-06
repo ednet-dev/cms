@@ -165,7 +165,7 @@ class CheerfulThemeComponent implements ThemeComponent {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: colorScheme.outlineVariant.withOpacity(0.5),
+            color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.5),
             width: 0.5,
           ),
         ),
@@ -187,7 +187,7 @@ class CheerfulThemeComponent implements ThemeComponent {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-            color: colorScheme.outlineVariant.withOpacity(0.5),
+            color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.5),
             width: 0.5,
           ),
         ),
@@ -201,7 +201,7 @@ class CheerfulThemeComponent implements ThemeComponent {
         contentTextStyle: textTheme.bodyMedium,
       ),
       dividerTheme: DividerThemeData(
-        color: colorScheme.outlineVariant.withOpacity(0.5),
+        color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.5),
         thickness: 1,
         space: 1,
       ),
@@ -258,7 +258,7 @@ class CheerfulThemeComponent implements ThemeComponent {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: colorScheme.outline.withOpacity(0.5),
+            color: colorScheme.outline.withValues(alpha: 255.0 * 0.5),
             width: 1,
           ),
         ),
@@ -275,7 +275,7 @@ class CheerfulThemeComponent implements ThemeComponent {
           vertical: 12,
         ),
         hintStyle: textTheme.bodyMedium?.copyWith(
-          color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 255.0 * 0.7),
         ),
         labelStyle: textTheme.bodyMedium?.copyWith(
           color: colorScheme.onSurfaceVariant,
@@ -284,7 +284,7 @@ class CheerfulThemeComponent implements ThemeComponent {
       ),
       listTileTheme: ListTileThemeData(
         tileColor: colorScheme.surface,
-        selectedTileColor: colorScheme.primaryContainer.withOpacity(0.3),
+        selectedTileColor: colorScheme.primaryContainer.withValues(alpha: 255.0 * 0.3),
         iconColor: colorScheme.primary,
         textColor: colorScheme.onSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -303,7 +303,7 @@ class CheerfulThemeComponent implements ThemeComponent {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.disabled)) {
-            return colorScheme.onSurface.withOpacity(0.38);
+            return colorScheme.onSurface.withValues(alpha: 255.0 * 0.38);
           }
           if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
@@ -312,7 +312,7 @@ class CheerfulThemeComponent implements ThemeComponent {
         }),
         trackColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.disabled)) {
-            return colorScheme.onSurface.withOpacity(0.12);
+            return colorScheme.onSurface.withValues(alpha: 255.0 * 0.12);
           }
           if (states.contains(WidgetState.selected)) {
             return colorScheme.primaryContainer;
@@ -323,7 +323,7 @@ class CheerfulThemeComponent implements ThemeComponent {
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.disabled)) {
-            return colorScheme.onSurface.withOpacity(0.38);
+            return colorScheme.onSurface.withValues(alpha: 255.0 * 0.38);
           }
           if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;

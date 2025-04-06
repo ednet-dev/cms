@@ -25,7 +25,7 @@ class EntityAttributes extends StatelessWidget {
         child: Text(
           'No attributes available',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurface.withOpacity(0.6),
+            color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -123,15 +123,15 @@ class EntityAttributes extends StatelessWidget {
         elevation: 0,
         color:
             isPrimary
-                ? colorScheme.primaryContainer.withOpacity(0.3)
+                ? colorScheme.primaryContainer.withValues(alpha: 255.0 * 0.3)
                 : colorScheme.surfaceContainerLow,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: BorderSide(
             color:
                 isPrimary
-                    ? colorScheme.primary.withOpacity(0.5)
-                    : colorScheme.outline.withOpacity(0.2),
+                    ? colorScheme.primary.withValues(alpha: 255.0 * 0.5)
+                    : colorScheme.outline.withValues(alpha: 255.0 * 0.2),
             width: isPrimary ? 1 : 0.5,
           ),
         ),

@@ -51,7 +51,6 @@ class ConceptSelectionState extends ednet.ValueObject {
   }
 
   /// Creates a copy of this state with the given fields replaced
-  @override
   ConceptSelectionState copyWith({
     ednet.Concept? selectedConcept,
     ednet.Concepts? availableConcepts,
@@ -83,7 +82,6 @@ class ConceptSelectionState extends ednet.ValueObject {
   ];
 
   /// Convert the state to a JSON map
-  @override
   Map<String, dynamic> toJson() {
     return {
       'selectedConcept': selectedConcept?.code,

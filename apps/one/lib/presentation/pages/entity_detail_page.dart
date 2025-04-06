@@ -230,7 +230,7 @@ class _EntityDetailPageState extends State<EntityDetailPage> {
           Icon(
             Icons.inbox_outlined,
             size: 64,
-            color: theme.colorScheme.primary.withOpacity(0.5),
+            color: theme.colorScheme.primary.withValues(alpha: 255.0 * 0.5),
           ),
           const SizedBox(height: 16),
           Text('No Entities Available', style: theme.textTheme.titleLarge),
@@ -255,7 +255,7 @@ class _EntityDetailPageState extends State<EntityDetailPage> {
           Icon(
             Icons.touch_app_outlined,
             size: 64,
-            color: theme.colorScheme.primary.withOpacity(0.5),
+            color: theme.colorScheme.primary.withValues(alpha: 255.0 * 0.5),
           ),
           const SizedBox(height: 16),
           Text('No Entity Selected', style: theme.textTheme.titleLarge),

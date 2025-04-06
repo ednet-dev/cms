@@ -357,7 +357,7 @@ class _LayoutCustomizationTutorialState
         border: Border.all(color: colorScheme.outlineVariant),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 255.0 * 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

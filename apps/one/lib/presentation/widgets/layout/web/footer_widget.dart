@@ -30,7 +30,7 @@ class FooterWidget extends StatelessWidget {
             child: Text(
               'Updated: $formattedDate',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant.withOpacity(0.8),
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 255.0 * 0.8),
               ),
             ),
           ),

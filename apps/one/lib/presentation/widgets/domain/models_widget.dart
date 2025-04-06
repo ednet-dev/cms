@@ -58,7 +58,7 @@ class ModelsWidget extends StatelessWidget {
                 Text(
                   '(${models.length})',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
                   ),
                 ),
               ],
@@ -87,7 +87,7 @@ class ModelsWidget extends StatelessWidget {
                           ? '${model.concepts.length} concepts'
                           : null,
                   infoIcon: Icons.topic_outlined,
-                  iconBackgroundColor: colorScheme.modelColor.withOpacity(0.2),
+                  iconBackgroundColor: colorScheme.modelColor.withValues(alpha: 255.0 * 0.2),
                   iconColor: colorScheme.modelColor,
                 ),
               );

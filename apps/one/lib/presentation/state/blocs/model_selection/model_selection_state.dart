@@ -37,7 +37,6 @@ class ModelSelectionState extends ednet.ValueObject {
       );
 
   /// Creates a copy of this state with the given fields replaced
-  @override
   ModelSelectionState copyWith({
     ednet.Model? selectedModel,
     ednet.Models? availableModels,
@@ -59,13 +58,11 @@ class ModelSelectionState extends ednet.ValueObject {
   ];
 
   /// Convert the state to a JSON map
-  @override
   Map<String, dynamic> toJson() {
     return {
-      'selectedModel': selectedModel?.toJsonMap(),
-      'availableModels':
-          availableModels.map((model) => model.toJsonMap()).toList(),
-      'domain': domain?.toJsonMap(),
+      'selectedModel': selectedModel?.code,
+      'availableModels': availableModels.map((model) => model.code).toList(),
+      'domain': domain?.code,
     };
   }
 }

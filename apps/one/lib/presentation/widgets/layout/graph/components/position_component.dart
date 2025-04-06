@@ -75,7 +75,7 @@ class RenderComponent extends Component {
   void render(Canvas canvas) {
     if (glow > 0.0) {
       final glowPaint = Paint()
-        ..color = paint.color.withOpacity(0.5)
+        ..color = paint.color.withValues(alpha: 255.0 * 0.5)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, glow);
       canvas.drawRect(rect.inflate(glow), glowPaint);
     }
