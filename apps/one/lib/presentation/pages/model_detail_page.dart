@@ -1,13 +1,15 @@
 /*  */
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'package:provider/provider.dart';
 import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
     as header;
 
 import '../widgets/layout/web/header_widget.dart';
 import '../widgets/entity/entity_widget.dart';
 import '../widgets/entity/entities_widget.dart';
-import '../widgets/entity/bookmark_manager.dart';
+import '../widgets/bookmarks/bookmark_manager.dart';
+import '../widgets/bookmarks/bookmark_model.dart';
 
 /// Model detail page displaying concepts from a specific model
 ///
@@ -34,6 +36,10 @@ class ModelDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectivePath = [...path, domain.code, model.code];
+    final bookmarkManager = Provider.of<BookmarkManager>(
+      context,
+      listen: false,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -62,8 +68,18 @@ class ModelDetailPage extends StatelessWidget {
             ),
           );
         },
-        bookmarkManager: BookmarkManager(),
-        onBookmarkCreated: (Bookmark bookmark) {},
+        bookmarkManager: bookmarkManager,
+        onBookmarkCreated: (bookmark) async {
+          await bookmarkManager.addBookmark(bookmark);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Bookmark added'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        },
       ),
     );
   }

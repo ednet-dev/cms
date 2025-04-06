@@ -1,13 +1,15 @@
 /*  */
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
+import 'package:provider/provider.dart';
 import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
     as header;
 
 import '../widgets/layout/web/header_widget.dart';
 import '../widgets/entity/entity_widget.dart';
 import '../widgets/entity/entities_widget.dart';
-import '../widgets/entity/bookmark_manager.dart';
+import '../widgets/bookmarks/bookmark_manager.dart';
+import '../widgets/bookmarks/bookmark_model.dart';
 
 class ModelDetailScreenScaffold extends StatelessWidget {
   final Domain domain;
@@ -25,6 +27,11 @@ class ModelDetailScreenScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bookmarkManager = Provider.of<BookmarkManager>(
+      context,
+      listen: false,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: HeaderWidget(
@@ -54,8 +61,18 @@ class ModelDetailScreenScaffold extends StatelessWidget {
             ),
           );
         },
-        bookmarkManager: BookmarkManager(),
-        onBookmarkCreated: (Bookmark bookmark) {},
+        bookmarkManager: bookmarkManager,
+        onBookmarkCreated: (bookmark) async {
+          await bookmarkManager.addBookmark(bookmark);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Bookmark added'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        },
       ),
     );
   }

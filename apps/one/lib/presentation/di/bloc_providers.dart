@@ -9,6 +9,7 @@ import 'package:ednet_one/presentation/state/blocs/model_selection/model_selecti
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_bloc.dart';
 import 'package:ednet_one/presentation/state/providers/filter_manager.dart';
+import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_manager.dart';
 
 // Import the global instances from main.dart
 import 'package:ednet_one/main.dart'
@@ -46,8 +47,11 @@ class AppBlocProviders {
   static Widget wrapWithProviders(Widget child) {
     return MultiBlocProvider(
       providers: blocProviders,
-      child: ChangeNotifierProvider(
-        create: (_) => FilterManager(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => FilterManager()),
+          ChangeNotifierProvider(create: (_) => BookmarkManager()),
+        ],
         child: child,
       ),
     );

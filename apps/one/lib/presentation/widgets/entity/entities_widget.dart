@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import '../../state/providers/filter_manager.dart';
 import '../filters/filter_button.dart';
 import '../filters/filter_criteria.dart' as filters;
-import 'bookmark_manager.dart';
+import '../bookmarks/bookmark_manager.dart';
+import '../bookmarks/bookmark_model.dart';
 import 'entity_collection_view.dart';
 
 /// Widget for displaying a collection of entities

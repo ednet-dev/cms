@@ -1,7 +1,9 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ednet_one/presentation/widgets/entity/entities_widget.dart';
-import 'package:ednet_one/presentation/widgets/entity/bookmark_manager.dart';
+import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_manager.dart';
+import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_model.dart';
 import 'package:ednet_one/presentation/widgets/entity/entity_widget.dart';
 
 /// Widget for displaying the main content of the application
@@ -17,7 +19,6 @@ class MainContentWidget extends StatefulWidget {
 }
 
 class _MainContentWidgetState extends State<MainContentWidget> {
-  final _bookmarkManager = BookmarkManager();
   Object? _selectedEntity; // Use Object type to handle both Entity types
 
   @override
@@ -53,19 +54,34 @@ class _MainContentWidgetState extends State<MainContentWidget> {
     });
   }
 
-  void _createBookmark(Bookmark bookmark) {
-    _bookmarkManager.addBookmark(bookmark);
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Bookmark added'),
-        duration: Duration(seconds: 2),
-      ),
+  void _createBookmark(Bookmark bookmark) async {
+    final bookmarkManager = Provider.of<BookmarkManager>(
+      context,
+      listen: false,
     );
+    await bookmarkManager.addBookmark(bookmark);
+    // Show success message
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Bookmark added'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    return _buildContent(context);
+  }
+
+  Widget _buildContent(BuildContext context) {
+    final bookmarkManager = Provider.of<BookmarkManager>(
+      context,
+      listen: false,
+    );
+
     // Handle empty entities case
     if (widget.entities.isEmpty) {
       return _buildEmptyStateMessage(context);
@@ -80,8 +96,8 @@ class _MainContentWidgetState extends State<MainContentWidget> {
           child: EntitiesWidget(
             entities: widget.entities,
             onEntitySelected: _selectEntity,
-            bookmarkManager: _bookmarkManager,
-            onBookmarkCreated: _createBookmark,
+            bookmarkManager: bookmarkManager,
+            onBookmarkCreated: (bookmark) => _createBookmark(bookmark),
           ),
         ),
 
@@ -103,7 +119,13 @@ class _MainContentWidgetState extends State<MainContentWidget> {
         entity: entity,
         onEntitySelected: _selectEntity,
         onBookmark: (title, url) {
-          _createBookmark(Bookmark(title: title, url: url));
+          final bookmark = Bookmark(
+            title: title,
+            url: url,
+            category: BookmarkCategory.entity,
+            entity: entity,
+          );
+          _createBookmark(bookmark);
         },
       );
     } catch (e) {
