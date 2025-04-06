@@ -11,6 +11,122 @@ We're refactoring the EDNet visualization framework to create a unified, high-pe
 - Optimized force-directed layout with Barnes-Hut approximation
 - Enhanced selection handling with nearest-neighbor search
 
+## Refactoring Plan
+
+### Phase 1: Unify Visualization Components
+
+1. **Refactor GraphPage to use UnifiedVisualizationCanvas**
+   - Replace current GraphWidget with UnifiedVisualizationCanvas
+   - Ensure proper domain model data is passed to the canvas
+   - Implement necessary callbacks for interactions
+   - Adapt existing UI elements to work with the new canvas
+
+2. **Deprecate GraphApplication**
+   - Ensure GraphPage fully replaces GraphApplication functionality
+   - Add migration notices to guide users to the new implementation
+   - Keep backward compatibility during transition
+
+3. **Standardize Panning and Zooming**
+   - Apply consistent pan/zoom behavior across all visualizations
+   - Implement smooth animation transitions
+   - Add zoom controls (buttons for zoom in/out, reset view)
+   - Support pinch-to-zoom and momentum scrolling
+
+### Phase 2: Performance Optimization
+
+4. **Implement Visibility Culling**
+   - Only render nodes visible in the current viewport
+   - Use quadtree for efficient spatial queries
+   - Implement level-of-detail rendering based on zoom level
+
+5. **Optimize Rendering Pipeline**
+   - Implement caching for static elements
+   - Use incremental rendering for large graphs
+   - Apply hardware acceleration where appropriate
+   - Add debug metrics for performance monitoring
+
+6. **Enhance Layout Algorithms**
+   - Finalize Barnes-Hut optimized force-directed layout
+   - Implement additional layout options (hierarchical, circular, etc.)
+   - Add user controls to switch between layout algorithms
+
+### Phase 3: UX Enhancements
+
+7. **Improve Selection and Interaction**
+   - Implement "magnetic" selection using nearest-neighbor search
+   - Add multi-select capabilities
+   - Implement context menus for entities
+   - Add hover effects and tooltips
+
+8. **Add Animation Effects**
+   - Implement smooth transitions between states
+   - Add enter/exit animations for entities
+   - Create feedback animations for user interactions
+   - Ensure animations are performant on large graphs
+
+9. **Enhance Label Placement**
+   - Implement smart label positioning to avoid overlaps
+   - Add priority-based placement for important entities
+   - Support different label styles and sizes
+   - Implement label collision avoidance
+
+### Phase 4: Integration and Testing
+
+10. **Integrate with Existing Application Flow**
+    - Ensure the visualization works within the existing app navigation
+    - Update routes and navigation to support the new visualization
+    - Add feature flags for gradual rollout
+
+11. **Comprehensive Testing**
+    - Test performance with large domain models
+    - Verify interaction behaviors across different devices
+    - Ensure accessibility compliance
+    - Validate rendering across different screen sizes
+
+12. **Documentation and Examples**
+    - Create documentation for the new visualization API
+    - Add example usage patterns
+    - Document available customization options
+    - Update user guides with new visualization features
+
+## Implementation Progress
+
+### Completed
+- [x] Created core geometric algorithms for visualization
+- [x] Implemented UnifiedVisualizationCanvas
+- [x] Developed EnhancedQuadtree for spatial indexing
+- [x] Created BinPacking algorithm for label placement
+- [x] Implemented OptimizedForceDirectedLayout with Barnes-Hut
+- [x] Developed EnhancedSelectionHandler with nearest-neighbor search
+- [x] Refactored GraphPage to use UnifiedVisualizationCanvas
+- [x] Added migration notices for deprecated components
+
+### In Progress
+- [ ] Implementing visibility culling for large graphs
+- [ ] Adding animation effects for transitions
+- [ ] Standardizing pan/zoom behavior
+- [ ] Testing performance with large domain models
+
+### Next Steps
+- [ ] Add layout algorithm selection controls
+- [ ] Implement smart label placement
+- [ ] Add debug performance metrics
+- [ ] Create smooth animations for state transitions
+- [ ] Integrate additional layout algorithms
+- [ ] Add multi-select capabilities
+- [ ] Implement context menus for entities
+
+## Day 1 Milestone Summary
+We've successfully refactored the GraphPage to use our new UnifiedVisualizationCanvas component and deprecated the old GraphApplication implementation with appropriate migration notices. 
+
+The new implementation leverages:
+- Optimized force-directed layout with Barnes-Hut algorithm for O(n log n) performance
+- Enhanced quadtree for spatial indexing and efficient nearest-neighbor search
+- Bin packing for optimal label placement
+- Smart selection handling with "magnetic" behavior
+
+Next, we'll focus on enhancing the user experience with additional layout algorithms, multi-select capabilities, and further performance optimizations for large domain models.
+
 ## Architectural Progress
 
 ### Implemented Features
