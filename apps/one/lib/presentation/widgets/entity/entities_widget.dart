@@ -308,85 +308,99 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      children: [
-        // Search and Filter bar
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              // Search field
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search entities...',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: theme.colorScheme.outline),
-                    ),
-                    filled: true,
-                    fillColor: theme.colorScheme.surfaceContainerLowest,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          children: [
+            // Search and Filter bar
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  // Search field
+                  Expanded(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 48),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search entities...',
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: theme.colorScheme.outline,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: theme.colorScheme.surfaceContainerLowest,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                          });
+                        },
+                      ),
                     ),
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                  },
+
+                  // Filter button
+                  const SizedBox(width: 8),
+                  FilterButton(
+                    availableFields: _filterableAttributes,
+                    fieldTypes: _attributeTypes,
+                    onFilterApplied: (filter) {
+                      // This will trigger a rebuild through the provider
+                      Provider.of<FilterManager>(
+                        context,
+                        listen: false,
+                      ).setActiveFilter(filter);
+                    },
+                  ),
+
+                  // View mode toggle
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: Icon(
+                      _currentViewMode == ViewMode.cards
+                          ? Icons.view_list
+                          : Icons.grid_view,
+                    ),
+                    tooltip: 'Toggle view mode',
+                    onPressed: () {
+                      setState(() {
+                        _currentViewMode =
+                            _currentViewMode == ViewMode.cards
+                                ? ViewMode.table
+                                : ViewMode.cards;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            // Entity collection view with constrained height
+            Expanded(
+              child: SizedBox(
+                height:
+                    constraints.maxHeight -
+                    80, // Account for the search bar height
+                child: EntityCollectionView(
+                  entities: widget.entities,
+                  viewMode: _currentViewMode,
+                  onEntitySelected: widget.onEntitySelected,
+                  filter: _filterEntity,
+                  groupBy: _groupByConceptCode,
                 ),
               ),
-
-              // Filter button
-              const SizedBox(width: 8),
-              FilterButton(
-                availableFields: _filterableAttributes,
-                fieldTypes: _attributeTypes,
-                onFilterApplied: (filter) {
-                  // This will trigger a rebuild through the provider
-                  Provider.of<FilterManager>(
-                    context,
-                    listen: false,
-                  ).setActiveFilter(filter);
-                },
-              ),
-
-              // View mode toggle
-              const SizedBox(width: 8),
-              IconButton(
-                icon: Icon(
-                  _currentViewMode == ViewMode.cards
-                      ? Icons.view_list
-                      : Icons.grid_view,
-                ),
-                tooltip: 'Toggle view mode',
-                onPressed: () {
-                  setState(() {
-                    _currentViewMode =
-                        _currentViewMode == ViewMode.cards
-                            ? ViewMode.table
-                            : ViewMode.cards;
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-
-        // Entity collection view
-        Expanded(
-          child: EntityCollectionView(
-            entities: widget.entities,
-            viewMode: _currentViewMode,
-            onEntitySelected: widget.onEntitySelected,
-            filter: _filterEntity,
-            groupBy: _groupByConceptCode,
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

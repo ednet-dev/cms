@@ -232,33 +232,36 @@ class _EntityCollectionViewState extends State<EntityCollectionView> {
   }
 
   Widget _buildCardsView() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children:
-              _groupedEntities.entries.map((entry) {
-                final groupName = entry.key;
-                final entities = entry.value;
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final entry = _groupedEntities.entries.elementAt(index);
+              final groupName = entry.key;
+              final entities = entry.value;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Group header if we have multiple groups
-                    if (_groupedEntities.length > 1)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
-                        child: Text(
-                          groupName,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Group header if we have multiple groups
+                  if (_groupedEntities.length > 1)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
+                      child: Text(
+                        groupName,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
+                    ),
 
-                    // Card grid
-                    GridView.builder(
-                      shrinkWrap: true,
+                  // Card grid using SliverGrid
+                  SizedBox(
+                    height:
+                        ((entities.length + 1) ~/ 2) *
+                        240, // Calculate height based on number of items and row height
+                    child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -268,8 +271,8 @@ class _EntityCollectionViewState extends State<EntityCollectionView> {
                             mainAxisSpacing: 16,
                           ),
                       itemCount: entities.length,
-                      itemBuilder: (context, index) {
-                        final entity = entities[index] as Entity;
+                      itemBuilder: (context, entityIndex) {
+                        final entity = entities[entityIndex] as Entity;
                         return InkWell(
                           onTap: () => widget.onEntitySelected?.call(entity),
                           child: Card(
@@ -345,11 +348,13 @@ class _EntityCollectionViewState extends State<EntityCollectionView> {
                         );
                       },
                     ),
-                  ],
-                );
-              }).toList(),
+                  ),
+                ],
+              );
+            }, childCount: _groupedEntities.length),
+          ),
         ),
-      ),
+      ],
     );
   }
 

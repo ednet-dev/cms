@@ -13,7 +13,7 @@ import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_sel
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_core/ednet_core.dart';
 
-import 'presentation/di/bloc_providers.dart';
+import 'presentation/di/bloc_providers.dart' as bloc_providers;
 import 'presentation/navigation/navigation_service.dart';
 import 'presentation/pages/bookmarks_page.dart';
 import 'presentation/pages/home/home_page.dart';
@@ -27,6 +27,8 @@ import 'presentation/pages/domains_page.dart';
 import 'presentation/pages/concepts_page.dart';
 import 'presentation/pages/models_page.dart';
 import 'presentation/pages/entity_detail_page.dart';
+import 'presentation/layouts/providers/layout_provider.dart';
+import 'presentation/theme/providers/theme_provider.dart';
 
 // Application singletons
 final oneApplication = OneApplication();
@@ -343,6 +345,30 @@ class MyAppState extends State<MyApp> {
 
         return null;
       },
+    );
+  }
+}
+
+class AppBlocProviders {
+  static Widget wrapWithProviders(Widget child) {
+    // Use the original bloc providers from the bloc_providers.dart file
+    Widget wrappedWithBlocs = bloc_providers.AppBlocProviders.wrapWithProviders(
+      child,
+    );
+
+    // Then add our new providers
+    return MultiProvider(
+      providers: [
+        // Add the LayoutProvider
+        ChangeNotifierProvider<LayoutProvider>(create: (_) => LayoutProvider()),
+        // Add the ThemeProvider
+        ChangeNotifierProvider<ThemeProvider>(
+          create: (_) => ThemeProvider(themeService),
+        ),
+        // Add the domain model provider
+        Provider<IOneApplication>.value(value: oneApplication),
+      ],
+      child: wrappedWithBlocs,
     );
   }
 }
