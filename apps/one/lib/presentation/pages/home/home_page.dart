@@ -32,6 +32,9 @@ import '../../widgets/layout/web/header_widget.dart';
 import '../../widgets/layout/web/main_content_widget.dart';
 import '../../widgets/canvas/meta_domain_canvas.dart';
 
+// Importing domain_selector directly
+import 'domain_selector.dart';
+
 /// Main application page for EDNet One
 ///
 /// This page serves as the primary entry point for the application interface.
@@ -363,6 +366,14 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size for responsive adjustments
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 600;
+
+    // Get theme for consistent styling
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     // Create a responsive layout that handles the pinned drawer
     return Scaffold(
       key: _scaffoldKey,
@@ -378,44 +389,211 @@ class HomePageState extends State<HomePage> {
       // Use drawer or show permanently based on pin state
       drawer: _isDrawerPinned ? null : _buildDrawer(),
       // Adjust body layout based on drawer being pinned or not
-      body: Row(
+      body: SafeArea(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Show drawer permanently if pinned
+            if (_isDrawerPinned)
+              SizedBox(
+                width: isSmallScreen ? 240 : 300, // Adjust for screen size
+                child: _buildDrawer(),
+              ),
+
+            // Main content area
+            Expanded(
+              child: BlocBuilder<DomainSelectionBloc, DomainSelectionState>(
+                builder: (context, domainState) {
+                  return BlocBuilder<ModelSelectionBloc, ModelSelectionState>(
+                    builder: (context, modelState) {
+                      return BlocBuilder<
+                        ConceptSelectionBloc,
+                        ConceptSelectionState
+                      >(
+                        builder: (context, conceptState) {
+                          // Check if we need to initialize selections
+                          if (domainState.allDomains.isNotEmpty &&
+                              (domainState.selectedDomain == null ||
+                                  modelState.selectedModel == null ||
+                                  conceptState.selectedConcept == null)) {
+                            // Use a post-frame callback to avoid build-phase navigation
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _initializeSelections();
+                            });
+                          }
+
+                          // Show the meta domain canvas if enabled
+                          if (_showMetaCanvas) {
+                            return _buildMetaDomainCanvas(
+                              domainState,
+                              modelState,
+                              conceptState,
+                            );
+                          }
+
+                          // Main layout with improved accessibility and spacing
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Top section with improved selector spacing
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: colorScheme.surface,
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: colorScheme.outlineVariant
+                                          .withOpacity(0.3),
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isSmallScreen ? 12.0 : 16.0,
+                                  vertical: 12.0,
+                                ),
+                                child: Wrap(
+                                  spacing: 16.0,
+                                  runSpacing: 16.0,
+                                  alignment: WrapAlignment.start,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    // Domain selector with improved focus management
+                                    Semantics(
+                                      label: 'Domain Selection',
+                                      child: DomainSelector(
+                                        onDomainSelected:
+                                            (domain) =>
+                                                NavigationHelper.navigateToDomain(
+                                                  context,
+                                                  domain,
+                                                ),
+                                      ),
+                                    ),
+
+                                    // Model selector with improved focus management
+                                    if (domainState.selectedDomain != null)
+                                      Semantics(
+                                        label: 'Model Selection',
+                                        child: ModelSelector(
+                                          onModelSelected:
+                                              (model) =>
+                                                  NavigationHelper.navigateToModel(
+                                                    context,
+                                                    model,
+                                                  ),
+                                        ),
+                                      ),
+
+                                    // Concept selector with improved focus management
+                                    if (modelState.selectedModel != null)
+                                      Semantics(
+                                        label: 'Concept Selection',
+                                        child: ConceptSelector(
+                                          onConceptSelected:
+                                              (concept) =>
+                                                  NavigationHelper.navigateToConcept(
+                                                    context,
+                                                    concept,
+                                                  ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+
+                              // Content area - expanded to fill remaining space
+                              Expanded(
+                                child:
+                                    conceptState.selectedConcept != null &&
+                                            conceptState.selectedEntities !=
+                                                null
+                                        ? MainContentWidget(
+                                          entities:
+                                              conceptState.selectedEntities!,
+                                        )
+                                        : _buildNoConceptSelectedMessage(
+                                          context,
+                                        ),
+                              ),
+
+                              // Footer with improved contrast
+                              Container(
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.surface,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: colorScheme.shadow.withOpacity(
+                                        0.1,
+                                      ),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, -1),
+                                    ),
+                                  ],
+                                  border: Border(
+                                    top: BorderSide(
+                                      color: colorScheme.outlineVariant
+                                          .withOpacity(0.3),
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                child: const FooterWidget(),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Build the meta domain canvas view
+  Widget _buildMetaDomainCanvas(
+    DomainSelectionState domainState,
+    ModelSelectionState modelState,
+    ConceptSelectionState conceptState,
+  ) {
+    return MetaDomainCanvas(
+      domains: domainState.allDomains,
+      layoutAlgorithm: MasterDetailLayoutAlgorithm(),
+      decorators: const [],
+      onTransformationChanged: (matrix) {},
+      onChangeLayoutAlgorithm: (algorithm) {},
+    );
+  }
+
+  /// Build a message for when no concept is selected
+  Widget _buildNoConceptSelectedMessage(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Show drawer permanently if pinned
-          if (_isDrawerPinned)
-            SizedBox(
-              width: 300, // Wider drawer for better readability
-              child: _buildDrawer(),
-            ),
-
-          // Main content area
-          Expanded(
-            child: BlocBuilder<DomainSelectionBloc, DomainSelectionState>(
-              builder: (context, domainState) {
-                return BlocBuilder<ModelSelectionBloc, ModelSelectionState>(
-                  builder: (context, modelState) {
-                    return BlocBuilder<
-                      ConceptSelectionBloc,
-                      ConceptSelectionState
-                    >(
-                      builder: (context, conceptState) {
-                        // Show the meta domain canvas if enabled
-                        if (_showMetaCanvas) {
-                          return _buildMetaCanvas(domainState);
-                        }
-
-                        // Otherwise show the standard layout with selectors and content
-                        return _buildStandardLayout(
-                          context,
-                          domainState,
-                          modelState,
-                          conceptState,
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+          Icon(
+            Icons.touch_app,
+            size: 64,
+            color: theme.colorScheme.primary.withOpacity(0.5),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Select a concept to view entities',
+            style: theme.textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Use the selectors above to navigate through domains, models, and concepts',
+            style: theme.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -439,245 +617,6 @@ class HomePageState extends State<HomePage> {
       onAbout: () {
         // Handle about navigation
       },
-    );
-  }
-
-  /// Builds the meta domain canvas view
-  Widget _buildMetaCanvas(DomainSelectionState domainState) {
-    final domains = Domains();
-    if (domainState.selectedDomain != null) {
-      domains.add(domainState.selectedDomain!);
-    }
-
-    return MetaDomainCanvas(
-      domains: domains,
-      initialTransformation: null,
-      onTransformationChanged: (m) {},
-      onChangeLayoutAlgorithm: (algo) {},
-      layoutAlgorithm: MasterDetailLayoutAlgorithm(),
-      decorators: const [],
-    );
-  }
-
-  /// Builds the standard layout with sidebars and content area
-  Widget _buildStandardLayout(
-    BuildContext context,
-    DomainSelectionState domainState,
-    ModelSelectionState modelState,
-    ConceptSelectionState conceptState,
-  ) {
-    // Get screen width to determine layout
-    final screenWidth = MediaQuery.of(context).size.width;
-    final useCompactLayout = screenWidth < 1100;
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    // Show loading state if domains are still empty but OneApplication has domains
-    final appHasDomains = oneApplication.groupedDomains.isNotEmpty;
-    final uiHasDomains = domainState.allDomains.isNotEmpty;
-
-    if (appHasDomains && !uiHasDomains) {
-      // Application has data, but UI doesn't yet - still initializing
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 16),
-            Text(
-              'Initializing domain data...',
-              style: theme.textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Available domains: ${oneApplication.groupedDomains.length}',
-              style: theme.textTheme.bodyMedium,
-            ),
-            TextButton(
-              onPressed: _forceInitialSelections,
-              child: const Text('Force Initialization'),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading:
-            false, // Don't show back button in nested scaffold
-        title: HeaderWidget(
-          filters: const [],
-          onAddFilter: (criteria) {
-            debugPrint('Filter criteria: $criteria');
-          },
-          onBookmark: () {
-            debugPrint('Bookmark action triggered');
-          },
-          onBookmarkCreated: (bookmark) {
-            debugPrint('Bookmark created: ${bookmark.title}');
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Bookmark created: ${bookmark.title}'),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          },
-        ),
-      ),
-      body:
-          useCompactLayout
-              // Compact layout for smaller screens - stack the panels vertically
-              ? Column(
-                children: [
-                  // Top row with concept and model selectors
-                  SizedBox(
-                    height: 200,
-                    child: Row(
-                      children: [
-                        // Left panel - Concepts
-                        Expanded(
-                          child: Card(
-                            margin: const EdgeInsets.all(8.0),
-                            child: ConceptSelector(),
-                          ),
-                        ),
-                        // Right panel - Models
-                        Expanded(
-                          child: Card(
-                            margin: const EdgeInsets.all(8.0),
-                            child: ModelSelector(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Main content area
-                  Expanded(
-                    child: Card(
-                      margin: const EdgeInsets.all(8.0),
-                      child:
-                          conceptState.selectedEntities != null
-                              ? MainContentWidget(
-                                entities: conceptState.selectedEntities!,
-                              )
-                              : Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.inventory_2_outlined,
-                                      size: 48,
-                                      color: colorScheme.primary.withOpacity(
-                                        0.5,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'No Entities Selected',
-                                      style: theme.textTheme.titleMedium,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Select a domain, model, and concept to view entities',
-                                      style: theme.textTheme.bodyMedium,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                    ),
-                  ),
-                ],
-              )
-              // Standard layout for larger screens - side by side panels
-              : Row(
-                children: [
-                  // Left Sidebar with Concepts - smaller for better proportions
-                  Expanded(
-                    flex: 2,
-                    child: Card(
-                      margin: const EdgeInsets.all(8.0),
-                      child: ConceptSelector(),
-                    ),
-                  ),
-
-                  // Main Content with Entities - larger to show more content
-                  Expanded(
-                    flex: 5,
-                    child: Card(
-                      margin: const EdgeInsets.all(8.0),
-                      child:
-                          conceptState.selectedEntities != null
-                              ? MainContentWidget(
-                                entities: conceptState.selectedEntities!,
-                              )
-                              : Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.inventory_2_outlined,
-                                      size: 48,
-                                      color: colorScheme.primary.withOpacity(
-                                        0.5,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'No Entities Selected',
-                                      style: theme.textTheme.titleMedium,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Select a domain, model, and concept to view entities',
-                                      style: theme.textTheme.bodyMedium,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    if (conceptState.selectedConcept !=
-                                        null) ...[
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        'Selected concept: ${conceptState.selectedConcept!.code}',
-                                        style: theme.textTheme.bodySmall,
-                                      ),
-                                      Text(
-                                        'Is entry concept: ${conceptState.selectedConcept!.entry}',
-                                        style: theme.textTheme.bodySmall,
-                                      ),
-                                      const SizedBox(height: 16),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          final conceptBloc =
-                                              context
-                                                  .read<ConceptSelectionBloc>();
-                                          conceptBloc.add(
-                                            RefreshConceptEvent(
-                                              conceptState.selectedConcept!,
-                                            ),
-                                          );
-                                        },
-                                        child: const Text('Refresh Entities'),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ),
-                    ),
-                  ),
-
-                  // Right Sidebar with Models - smaller for better proportions
-                  Expanded(
-                    flex: 2,
-                    child: Card(
-                      margin: const EdgeInsets.all(8.0),
-                      child: ModelSelector(),
-                    ),
-                  ),
-                ],
-              ),
-      bottomNavigationBar: const FooterWidget(),
     );
   }
 }
