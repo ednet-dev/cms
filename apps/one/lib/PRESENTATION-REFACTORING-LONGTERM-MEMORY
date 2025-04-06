@@ -127,8 +127,8 @@ This document outlines a comprehensive refactoring plan for the presentation lay
   - [x] Create HomeDrawer component for the navigation drawer
   - [x] Update the main HomePage to compose these components
 
-- [  ] Refactor meta_domain_canvas.dart and meta_domain_painter.dart:
-  - [  ] Create a directory structure for canvas components:
+- [x] Refactor meta_domain_canvas.dart and meta_domain_painter.dart:
+  - [x] Create a directory structure for canvas components:
     ```
     presentation/
     ├── widgets/
@@ -146,17 +146,17 @@ This document outlines a comprehensive refactoring plan for the presentation lay
     │   │   │   └── canvas_relation.dart
     │   │   └── meta_domain_canvas.dart # Main canvas widget
     ```
-  - [  ] Extract entity painting logic into EntityPainter
-  - [  ] Extract relation painting logic into RelationPainter
-  - [  ] Extract grid painting logic into GridPainter
-  - [  ] Create interaction handlers for pan, zoom, and selection
-  - [  ] Create canvas-specific entity and relation classes for rendering
-  - [  ] Update the main MetaDomainCanvas to use these components
+  - [x] Extract entity painting logic into EntityPainter
+  - [x] Extract relation painting logic into RelationPainter
+  - [x] Extract grid painting logic into GridPainter
+  - [x] Create interaction handlers for pan, zoom, and selection
+  - [x] Create canvas-specific entity and relation classes for rendering
+  - [x] Update the main MetaDomainCanvas to use these components
 
 ### Step 3.2: Standardize Component Interfaces
-- [  ] Create consistent naming conventions (Page for container components, Widget for presentational)
-- [  ] Standardize prop passing and callback patterns
-- [  ] Apply composition over inheritance where appropriate
+- [x] Create consistent naming conventions (Page for container components, Widget for presentational)
+- [x] Standardize prop passing and callback patterns
+- [x] Apply composition over inheritance where appropriate
 
 ### Step 3.3: Code Cleanup
 - [  ] Remove or repair commented-out code
@@ -210,18 +210,225 @@ This document outlines a comprehensive refactoring plan for the presentation lay
 - [  ] Document state management patterns
 - [  ] Create example usage for custom components
 
+## Phase 7: Critical Feature Implementation
+
+### Step 7.1: Implement Navigable and Bookmarkable Breadcrumbs ⭐ PRIORITY ⭐
+- [ ] Create BreadcrumbWidget component in presentation/widgets/navigation/
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── navigation/
+  │   │   ├── breadcrumb/
+  │   │   │   ├── breadcrumb_item.dart       # Individual breadcrumb segment
+  │   │   │   ├── breadcrumb_separator.dart  # Visual separator between segments
+  │   │   │   └── breadcrumb_widget.dart     # Main breadcrumb component
+  ```
+- [ ] Tasks:
+  - [ ] Create BreadcrumbItem with navigation functionality
+  - [ ] Add bookmark icon to current/selected breadcrumb item
+  - [ ] Implement breadcrumb path generation using domain/model/concept/entity information
+  - [ ] Integrate with NavigationHelper to handle navigation on breadcrumb segment click
+  - [ ] Add smooth scrolling for long breadcrumb trails
+  - [ ] Create BookmarkAction that saves current navigation state
+  - [ ] Add tooltip support for long segment names
+  - [ ] Add keyboard shortcuts for breadcrumb navigation
+
+### Step 7.2: Enhance Bookmarking System
+- [ ] Create a comprehensive bookmarking system:
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── bookmarks/
+  │   │   ├── bookmark_item.dart          # Individual bookmark representation
+  │   │   ├── bookmark_category.dart      # Category component for grouping
+  │   │   ├── bookmark_sidebar.dart       # Collapsible sidebar for bookmarks
+  │   │   ├── bookmark_dialog.dart        # Dialog for creating/editing bookmarks
+  │   │   └── bookmarks_screen.dart       # Full bookmark management screen
+  ```
+- [ ] Tasks:
+  - [ ] Create BookmarkItem with customizable icons based on bookmark type
+  - [ ] Implement BookmarkCategory for organizing bookmarks
+  - [ ] Create a collapsible BookmarkSidebar accessible from the app bar
+  - [ ] Build BookmarkDialog for creating and editing bookmarks
+  - [ ] Create a full-featured BookmarksScreen accessible from main menu
+  - [ ] Add drag-and-drop support for organizing bookmarks
+  - [ ] Implement bookmark persistence using SharedPreferences
+  - [ ] Add bookmark export/import functionality
+
+### Step 7.3: Implement Entity Filtering System
+- [ ] Create a robust entity filtering system:
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── filters/
+  │   │   ├── filter_criteria.dart        # Data model for filter criteria
+  │   │   ├── filter_builder.dart         # UI for building complex filters
+  │   │   ├── filter_preset.dart          # Saved filter configurations
+  │   │   ├── attribute_filter.dart       # Filter for entity attributes
+  │   │   ├── relation_filter.dart        # Filter for entity relationships
+  │   │   ├── date_filter.dart            # Specialized date range filter
+  │   │   ├── numeric_filter.dart         # Specialized numeric filter
+  │   │   └── filter_drawer.dart          # Main filter UI container
+  ```
+- [ ] Tasks:
+  - [ ] Create FilterCriteria class to represent filter conditions
+  - [ ] Implement FilterBuilder UI for constructing complex queries
+  - [ ] Create specialized filter components (text, date, numeric)
+  - [ ] Build FilterDrawer that slides in from the right
+  - [ ] Create FilterPreset system for saving and applying filters
+  - [ ] Implement filter persistence with SharedPreferences
+  - [ ] Add filter combination operators (AND, OR, NOT)
+  - [ ] Create visual indicators for active filters
+
+### Step 7.4: Implement Master-Detail Navigation Enhancements
+- [ ] Enhance master-detail navigation:
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── navigation/
+  │   │   ├── history/
+  │   │   │   ├── navigation_history.dart      # Navigation history tracking
+  │   │   │   ├── history_dropdown.dart        # Dropdown for history navigation
+  │   │   │   └── forward_back_buttons.dart    # Forward/back navigation buttons
+  │   │   ├── related_panel.dart               # Panel for related entities
+  │   │   └── favorites_section.dart           # Section for favorite locations
+  ```
+- [ ] Tasks:
+  - [ ] Implement NavigationHistory to track visited entities
+  - [ ] Create forward/back navigation buttons
+  - [ ] Build a dropdown for quick access to navigation history
+  - [ ] Implement RelatedPanel to show entities related to the current selection
+  - [ ] Create FavoritesSection for quick access to commonly used locations
+  - [ ] Add keyboard shortcuts for navigation (Alt+Left/Right)
+  - [ ] Implement navigation state persistence
+  - [ ] Create visualization for navigation path
+
+### Step 7.5: Implement Enhanced Canvas Visualization
+- [ ] Enhance canvas visualization capabilities:
+  ```
+  presentation/
+  ├── widgets/
+  │   ├── canvas/
+  │   │   ├── visualization/
+  │   │   │   ├── relationship_visualizer.dart   # Visualize entity relationships
+  │   │   │   ├── node_clustering.dart           # Clustering algorithm for complex domains
+  │   │   │   ├── mini_map.dart                  # Navigation mini-map
+  │   │   │   └── layout_manager.dart            # Manage different visualization layouts
+  ```
+- [ ] Tasks:
+  - [ ] Implement RelationshipVisualizer for entity connections
+  - [ ] Create NodeClustering to handle complex domains
+  - [ ] Add zoom and pan controls with intuitive gestures
+  - [ ] Build MiniMap for navigating complex graphs
+  - [ ] Create LayoutManager to switch between visualization strategies
+  - [ ] Implement entity grouping by attribute values
+  - [ ] Add visual styling options for nodes and edges
+  - [ ] Create animation effects for transitions
+
+### Step 7.6: Implement Comprehensive Theming
+- [ ] Create a comprehensive theming system:
+  ```
+  presentation/
+  ├── theme/
+  │   ├── selector/
+  │   │   ├── theme_selector.dart         # UI for selecting themes
+  │   │   ├── color_palette_selector.dart # UI for customizing colors
+  │   │   └── theme_preview.dart          # Preview component for themes
+  │   ├── presets/
+  │   │   ├── theme_night.dart            # Night theme preset
+  │   │   ├── theme_ocean.dart            # Ocean theme preset
+  │   │   └── theme_forest.dart           # Forest theme preset
+  ```
+- [ ] Tasks:
+  - [ ] Create ThemeSelector with visual previews
+  - [ ] Implement theme persistence in SharedPreferences
+  - [ ] Build ColorPaletteSelector for customization
+  - [ ] Add support for Material You/dynamic theming on Android
+  - [ ] Create named theme presets (Night, Ocean, Forest, etc.)
+  - [ ] Implement ThemePreview for seeing changes before applying
+  - [ ] Add animation for theme transitions
+  - [ ] Create theme export/import functionality
+
+### Step 7.7: Implement Multiplatform Support
+- [ ] Enhance multiplatform support:
+  ```
+  presentation/
+  ├── layouts/
+  │   ├── responsive/
+  │   │   ├── mobile_layout.dart          # Stacked layout for mobile
+  │   │   ├── tablet_layout.dart          # Hybrid layout for tablets
+  │   │   ├── desktop_layout.dart         # Side-by-side layout for desktop
+  │   │   └── responsive_builder.dart     # Builder that selects appropriate layout
+  ```
+- [ ] Tasks:
+  - [ ] Create platform-specific layouts (mobile, tablet, desktop)
+  - [ ] Implement ResponsiveBuilder for selecting layouts
+  - [ ] Add touch-friendly controls for mobile
+  - [ ] Implement keyboard shortcuts for desktop
+  - [ ] Create mobile-specific navigation (bottom navigation)
+  - [ ] Add platform detection and UI adaptation
+  - [ ] Implement gesture detection for different platforms
+  - [ ] Create adaptive drawer behavior
+
 ## Progress Tracking
 - Phase 1: Complete (3/3 steps completed)
 - Phase 2: Complete (3/3 steps completed)
-- Phase 3: In Progress (0/3 steps in progress, Step 3.1 is 2/3 complete)
+- Phase 3: In Progress (2/3 steps completed)
 - Phase 4: Not started
-- Phase 5: In Progress (1/3 steps completed)
+- Phase 5: In Progress (1/2 steps completed)
 - Phase 6: Not started
+- Phase 7: In Progress (2/7 steps completed - Breadcrumb navigation and Bookmarking system completed)
 
 ## Current Focus
-- Phase 3, Step 3.1: Refactoring meta_domain_canvas.dart and meta_domain_painter.dart
-  - Next task: Create directory structure for canvas components
-  - Following task: Extract entity painting logic into EntityPainter
+- Phase 7, Step 7.3: Entity Filtering System
+  - Next task: Create a robust entity filtering system
+  - Following task: Implement Master-Detail Navigation Enhancements
+
+## Implementation Updates
+- Completed integration of refactored home components:
+  - Modified main.dart to use the new HomePage component from the refactored structure
+  - Removed the old home_page.dart file after successful integration
+  - All home page functionality now uses the decomposed components for improved maintainability
+
+- Completed integration of refactored entity components:
+  - Created dedicated components for EntityWidget, EntityAttributes, EntityRelationships, etc.
+  - Added BookmarkManager and Bookmark classes in their own files
+  - Added EntitiesWidget in a dedicated file
+  - Updated all references to the old entity_widget.dart throughout the codebase
+  - Removed the old entity_widget.dart file after successful updates
+  - All entity-related functionality now uses the decomposed components
+
+- Completed refactoring of meta_domain_canvas.dart and meta_domain_painter.dart:
+  - Created dedicated directory structure for canvas components
+  - Extracted entity painter logic into EntityPainter
+  - Extracted relation painter logic into RelationPainter
+  - Extracted grid painter logic into GridPainter
+  - Created PanHandler, ZoomHandler, and SelectionHandler for interaction logic
+  - Created CanvasEntity and CanvasRelation classes for rendering
+  - Updated the main MetaDomainCanvas to use these components
+  - Updated imports in dependent files
+
+- Started implementation of the navigation helper:
+  - Created NavigationHelper class to centralize domain/model/concept navigation
+  - Updated all navigation code to use the helper for consistency
+  - Fixed issues with domain selection in the drawer
+
+- Completed implementation of navigable and bookmarkable breadcrumbs:
+  - Created BreadcrumbWidget component with bookmark functionality
+  - Implemented BreadcrumbItem and BreadcrumbSeparator components
+  - Added BreadcrumbPath model for structured navigation state
+  - Integrated breadcrumbs into the HeaderWidget
+  - Updated HomePage to use the new HeaderWidget interface
+  - Connected breadcrumb navigation to the existing NavigationHelper
+
+- Completed implementation of enhanced bookmarking system:
+  - Created a more robust BookmarkModel with categories and metadata
+  - Implemented an enhanced BookmarkManager with advanced features
+  - Created BookmarkItem component for displaying individual bookmarks
+  - Added BookmarkCategorySection for organizing bookmarks by category
+  - Implemented BookmarkDialog for creating and editing bookmarks
+  - Created BookmarkSidebar for quick access to bookmarks
+  - Added a full-featured BookmarksScreen with tabs, search, import/export
 
 ## Best Practices for Component Decomposition
 

@@ -23,366 +23,245 @@ class CheerfulThemeComponent implements ThemeComponent {
   @override
   ThemeData getTheme(bool isDarkMode) => isDarkMode ? darkTheme : lightTheme;
 
-  /// Build the dark cheerful theme with Material 3 design and accessibility focus
+  /// Build the dark cheerful theme with Material 3 design
   ThemeData _buildDarkTheme() {
-    final textTheme = _buildTextTheme(Colors.white);
-
-    // Material 3 dark color scheme with cheerful accents - improved for contrast
-    final colorScheme = ColorScheme.dark(
-      // Primary amber with better contrast against dark backgrounds
-      primary: Color(0xFFFFD54F),
-      onPrimary: Color(0xFF000000), // Black for maximum contrast on primary
-      primaryContainer: Color(
-        0xFFBF9F00,
-      ), // Darker amber for better distinction
-      onPrimaryContainer: Color(0xFF000000), // Black for contrast
-      // Secondary with improved contrast
-      secondary: Color(0xFF4DD0E1), // Brighter cyan for better visibility
-      onSecondary: Color(0xFF000000), // Black for maximum contrast
-      secondaryContainer: Color(0xFF00838F), // Darker teal for container
-      onSecondaryContainer: Color(0xFFFFFFFF), // White for contrast
-      // Tertiary with better contrast
-      tertiary: Color(0xFFFFAB91), // Deep orange accent
-      onTertiary: Color(0xFF000000), // Black for contrast
-      tertiaryContainer: Color(0xFFE64A19), // Deeper orange for container
-      onTertiaryContainer: Color(0xFFFFFFFF), // White for contrast
-      // Error with improved visibility
-      error: Color(0xFFFF8A80), // Brighter red for better visibility
-      onError: Color(0xFF000000), // Black for contrast
-      // Surface colors with better distinction
-      surface: Color(0xFF121212), // Dark surface
-      onSurface: Color(0xFFFAFAFA), // Almost white for maximum contrast
-      surfaceContainerHighest: Color(0xFF2D2D2D), // Higher contrast container
-      onSurfaceVariant: Color(0xFFE0E0E0), // Light gray for variants
-      // Better outline for focus and boundaries
-      outline: Color(0xFFBDBDBD), // Lighter gray for better visibility
-      outlineVariant: Color(0xFF9E9E9E), // Variant for borders
-
-      surfaceTint: Color(0xFFFFD54F), // Surface tint consistent with primary
-    );
-
-    return ThemeData(
-      useMaterial3: true,
+    // Use dark amber as primary color for cheerful theme in dark mode
+    final ColorScheme colorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFFFFD54F),
       brightness: Brightness.dark,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.surface,
-
-      // App bar theme with improved spacing and contrast
-      appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
-        elevation: 0,
-        centerTitle: false, // Left-aligned titles for better accessibility
-        titleTextStyle: TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.15, // Improved letter spacing
-          color: colorScheme.onSurface,
-        ),
-        iconTheme: IconThemeData(
-          color: colorScheme.primary,
-          size: 24, // Consistent icon sizing
-        ),
-        toolbarHeight: 64, // More comfortable toolbar height
-        systemOverlayStyle:
-            SystemUiOverlayStyle.light, // Light status bar icons
-      ),
-
-      // Text theme with improved readability and spacing
-      textTheme: textTheme,
-
-      // Card theme with improved spacing and borders
-      cardTheme: CardTheme(
-        elevation: 1, // Slight elevation for depth
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        color: colorScheme.surfaceContainerHighest,
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        clipBehavior: Clip.antiAlias, // Clip for clean appearance
-      ),
-
-      // Input decoration with improved focus states and spacing
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: colorScheme.surfaceContainerHighest,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.outline, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.outline, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.error, width: 1),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.error, width: 2),
-        ),
-        labelStyle: TextStyle(
-          color: colorScheme.onSurfaceVariant,
-          fontSize: 16, // Larger for better readability
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        isDense: false, // Not dense for better touch targets
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-      ),
-
-      // Elevated button with improved accessibility
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: 2, // Slight elevation for depth perception
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          padding: EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ), // Larger padding for touch
-          minimumSize: Size(64, 48), // Minimum size for touch target
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-
-      // Outlined button with improved visibility
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: colorScheme.primary,
-          side: BorderSide(
-            color: colorScheme.primary,
-            width: 1.5,
-          ), // Thicker for visibility
-          padding: EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ), // Consistent with elevated
-          minimumSize: Size(64, 48), // Consistent minimum size
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-
-      // Text button with improved touch target
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: colorScheme.primary,
-          padding: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ), // Larger touch target
-          minimumSize: Size(64, 40), // Minimum size for touch
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-
-      // Floating action button with improved visibility
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: colorScheme.primaryContainer,
-        foregroundColor: colorScheme.onPrimaryContainer,
-        elevation: 4, // More elevation for depth perception
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        extendedPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        extendedTextStyle: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          letterSpacing: 0.5,
-        ),
-      ),
-
-      // Checkbox with improved visibility and touch target
-      checkboxTheme: CheckboxThemeData(
-        fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary;
-          }
-          return Colors.transparent;
-        }),
-        checkColor: WidgetStateProperty.all(colorScheme.onPrimary),
-        side: BorderSide(
-          color: colorScheme.outline,
-          width: 1.5,
-        ), // Thicker border when unchecked
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        materialTapTargetSize:
-            MaterialTapTargetSize.padded, // Larger tap target
-      ),
-
-      // Divider with better visibility
-      dividerTheme: DividerThemeData(
-        color: colorScheme.outline.withOpacity(
-          0.6,
-        ), // More opaque for visibility
-        thickness: 1,
-        space: 24,
-        indent: 8,
-        endIndent: 8,
-      ),
-
-      // Switch with improved visibility and touch target
-      switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary;
-          }
-          return colorScheme.onSurfaceVariant;
-        }),
-        trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return colorScheme.primaryContainer;
-          }
-          return colorScheme.surfaceContainerHighest;
-        }),
-        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return Colors.transparent;
-          }
-          return colorScheme.outline;
-        }),
-        materialTapTargetSize:
-            MaterialTapTargetSize.padded, // Larger tap target
-      ),
-
-      // Slider with improved visibility
-      sliderTheme: SliderThemeData(
-        activeTrackColor: colorScheme.primary,
-        inactiveTrackColor: colorScheme.primary.withOpacity(0.3),
-        thumbColor: colorScheme.primary,
-        overlayColor: colorScheme.primary.withOpacity(0.2),
-        trackHeight: 4, // Thicker track for visibility
-        thumbShape: RoundSliderThumbShape(
-          enabledThumbRadius: 12,
-        ), // Larger thumb for touch
-      ),
-
-      // Tooltip with better contrast
-      tooltipTheme: TooltipThemeData(
-        decoration: BoxDecoration(
-          color: colorScheme.inverseSurface,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        textStyle: TextStyle(color: colorScheme.onInverseSurface, fontSize: 14),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      ),
-
-      // Dialog theme with improved spacing
-      dialogTheme: DialogTheme(
-        backgroundColor: colorScheme.surface,
-        elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        titleTextStyle: textTheme.headlineSmall,
-        contentTextStyle: textTheme.bodyLarge,
-      ),
+      primary: const Color(0xFFFFD54F),
+      onPrimary: const Color(0xFF1F1B08),
+      primaryContainer: const Color(0xFF4D4536),
+      onPrimaryContainer: const Color(0xFFFFF6DE),
+      secondary: const Color(0xFF57CBFF), // Bright blue for accents
+      onSecondary: const Color(0xFF0B2029),
+      secondaryContainer: const Color(0xFF2E4E5F),
+      onSecondaryContainer: const Color(0xFFDDF4FF),
+      tertiary: const Color(0xFFFF8A65), // Coral for highlights
+      onTertiary: const Color(0xFF291807),
+      tertiaryContainer: const Color(0xFF5D3D2C),
+      onTertiaryContainer: const Color(0xFFFFEEE8),
+      error: const Color(0xFFFF8A80),
+      onError: const Color(0xFF340D09),
+      errorContainer: const Color(0xFF542320),
+      onErrorContainer: const Color(0xFFFFDAD6),
+      background: const Color(0xFF121212),
+      onBackground: const Color(0xFFEAEAEA),
+      surface: const Color(0xFF1E1E1E),
+      onSurface: const Color(0xFFEAEAEA),
+      surfaceContainerHighest: const Color(0xFF3E3E3E),
+      surfaceContainerHigh: const Color(0xFF323232),
+      surfaceContainerLow: const Color(0xFF252525),
+      surfaceContainerLowest: const Color(0xFF181818),
+      surfaceBright: const Color(0xFF2E2E2E),
+      surfaceDim: const Color(0xFF1C1C1C),
+      surfaceVariant: const Color(0xFF322A1E),
+      onSurfaceVariant: const Color(0xFFE7DCC9),
+      outline: const Color(0xFF998D79),
+      outlineVariant: const Color(0xFF665E4F),
+      shadow: const Color(0xFF000000),
+      scrim: const Color(0xFF000000),
+      inverseSurface: const Color(0xFFE0E0E0),
+      onInverseSurface: const Color(0xFF2C2C2C),
+      inversePrimary: const Color(0xFF825C00),
+      surfaceTint: const Color(0xFFFFD54F),
     );
+
+    // Build and return the dark theme
+    return _buildThemeFromColorScheme(colorScheme, Brightness.dark);
   }
 
   /// Build the light cheerful theme with Material 3 design
   ThemeData _buildLightTheme() {
-    final textTheme = _buildTextTheme(Colors.black);
-
-    // Material 3 light color scheme with cheerful accents - improved for contrast
-    final colorScheme = ColorScheme.light(
-      // Primary blue with better contrast
-      primary: Color(0xFF0D47A1), // Darker blue for better contrast
-      onPrimary: Color(0xFFFFFFFF), // White for contrast
-      primaryContainer: Color(0xFFBBDEFB), // Light blue container
-      onPrimaryContainer: Color(0xFF0D47A1), // Dark text on light container
-      // Secondary with good contrast
-      secondary: Color(0xFF00796B), // Teal with better contrast ratio
-      onSecondary: Color(0xFFFFFFFF), // White for contrast
-      secondaryContainer: Color(0xFFB2DFDB), // Light teal container
-      onSecondaryContainer: Color(0xFF004D40), // Dark text for contrast
-      // Tertiary with accessible contrast
-      tertiary: Color(0xFFC2185B), // Darker pink for better contrast
-      onTertiary: Color(0xFFFFFFFF), // White for contrast
-      tertiaryContainer: Color(0xFFF8BBD0), // Light pink container
-      onTertiaryContainer: Color(0xFF880E4F), // Dark text for contrast
-      // Error with good contrast
-      error: Color(0xFFC62828), // Dark red for contrast with white
-      onError: Color(0xFFFFFFFF), // White text
-      // Surface colors with better distinction
-      surface: Color(0xFFFAFAFA), // Very light surface
-      onSurface: Color(0xFF212121), // Dark text for contrast
-      surfaceContainerHighest: Color(0xFFEEEEEE), // Light container
-      onSurfaceVariant: Color(
-        0xFF555555,
-      ), // Darker variant for better readability
-      // Better outline colors
-      outline: Color(0xFF757575), // Mid-gray for outlines
-      outlineVariant: Color(0xFFBDBDBD), // Lighter variant for subtle borders
-
-      surfaceTint: Color(0xFF0D47A1), // Surface tint matching primary
+    // Use amber as primary color for cheerful theme in light mode
+    final ColorScheme colorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFFFFB300), // Amber base
+      brightness: Brightness.light,
+      primary: const Color(0xFFFFB300),
+      onPrimary: const Color(0xFF2E2800),
+      primaryContainer: const Color(0xFFFFE082),
+      onPrimaryContainer: const Color(0xFF291E00),
+      secondary: const Color(0xFF0288D1), // Blue for accents
+      onSecondary: const Color(0xFFFFFFFF),
+      secondaryContainer: const Color(0xFFBBDEFB),
+      onSecondaryContainer: const Color(0xFF001E2E),
+      tertiary: const Color(0xFFE64A19), // Deep orange for highlights
+      onTertiary: const Color(0xFFFFFFFF),
+      tertiaryContainer: const Color(0xFFFFCCBC),
+      onTertiaryContainer: const Color(0xFF341906),
+      error: const Color(0xFFD32F2F),
+      onError: const Color(0xFFFFFFFF),
+      errorContainer: const Color(0xFFFFDAD6),
+      onErrorContainer: const Color(0xFF410002),
+      background: const Color(0xFFFFFBFF),
+      onBackground: const Color(0xFF1A1C18),
+      surface: const Color(0xFFFFFBFF),
+      onSurface: const Color(0xFF1A1C18),
+      surfaceContainerHighest: const Color(0xFFE4E1D8),
+      surfaceContainerHigh: const Color(0xFFEAE6DD),
+      surfaceContainerLow: const Color(0xFFF6F2E8),
+      surfaceContainerLowest: const Color(0xFFFBF8EF),
+      surfaceBright: const Color(0xFFFFFBFF),
+      surfaceDim: const Color(0xFFDED9D0),
+      surfaceVariant: const Color(0xFFEDE1CF),
+      onSurfaceVariant: const Color(0xFF4D4639),
+      outline: const Color(0xFF807667),
+      outlineVariant: const Color(0xFFD1C7B7),
+      shadow: const Color(0xFF000000),
+      scrim: const Color(0xFF000000),
+      inverseSurface: const Color(0xFF2F312D),
+      onInverseSurface: const Color(0xFFF0F1E9),
+      inversePrimary: const Color(0xFFE5C32A),
+      surfaceTint: const Color(0xFFFFB300),
     );
 
+    // Build and return the light theme
+    return _buildThemeFromColorScheme(colorScheme, Brightness.light);
+  }
+
+  /// Build theme from color scheme with additional customization
+  ThemeData _buildThemeFromColorScheme(
+    ColorScheme colorScheme,
+    Brightness brightness,
+  ) {
+    // Get base text theme
+    final textTheme =
+        brightness == Brightness.dark
+            ? ThemeData.dark().textTheme
+            : ThemeData.light().textTheme;
+
+    // Select status bar style based on theme brightness
+    final SystemUiOverlayStyle statusBarStyle =
+        brightness == Brightness.light
+            ? SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+              systemNavigationBarColor: colorScheme.background,
+              systemNavigationBarIconBrightness: Brightness.dark,
+            )
+            : SystemUiOverlayStyle.light.copyWith(
+              statusBarColor: Colors.transparent,
+              systemNavigationBarColor: colorScheme.background,
+              systemNavigationBarIconBrightness: Brightness.light,
+            );
+
+    // Build theme with Material 3 and our custom color scheme
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.light,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.surface,
-
-      // App bar theme with improved spacing and contrast
+      brightness: brightness,
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
-        centerTitle: false, // Left-aligned titles for better accessibility
-        titleTextStyle: TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.15, // Improved letter spacing
+        centerTitle: false,
+        systemOverlayStyle: statusBarStyle,
+        iconTheme: IconThemeData(color: colorScheme.primary, size: 24),
+        actionsIconTheme: IconThemeData(color: colorScheme.primary, size: 24),
+        titleTextStyle: textTheme.titleLarge?.copyWith(
           color: colorScheme.onSurface,
         ),
-        iconTheme: IconThemeData(
-          color: colorScheme.primary,
-          size: 24, // Consistent icon sizing
-        ),
-        toolbarHeight: 64, // More comfortable toolbar height
-        systemOverlayStyle: SystemUiOverlayStyle.dark, // Dark status bar icons
       ),
-
-      // Text theme with improved readability
-      textTheme: textTheme,
-
-      // Card theme with improved spacing and borders
       cardTheme: CardTheme(
-        elevation: 1, // Slight elevation for depth
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: colorScheme.outlineVariant.withOpacity(0.5),
+            width: 0.5,
+          ),
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         color: colorScheme.surface,
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        shadowColor: colorScheme.shadow.withOpacity(0.3),
-        clipBehavior: Clip.antiAlias, // Clip for clean appearance
       ),
-
-      // Input decoration with improved focus states and spacing
+      chipTheme: ChipThemeData(
+        backgroundColor: colorScheme.surfaceContainerLow,
+        deleteIconColor: colorScheme.onSurfaceVariant,
+        disabledColor: colorScheme.surfaceContainerLowest,
+        selectedColor: colorScheme.primaryContainer,
+        secondarySelectedColor: colorScheme.secondaryContainer,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        labelStyle: textTheme.labelMedium,
+        secondaryLabelStyle: textTheme.labelMedium?.copyWith(
+          color: colorScheme.onSecondaryContainer,
+        ),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: colorScheme.outlineVariant.withOpacity(0.5),
+            width: 0.5,
+          ),
+        ),
+      ),
+      scaffoldBackgroundColor: colorScheme.background,
+      dialogTheme: DialogTheme(
+        backgroundColor: colorScheme.surface,
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        titleTextStyle: textTheme.headlineSmall,
+        contentTextStyle: textTheme.bodyMedium,
+      ),
+      dividerTheme: DividerThemeData(
+        color: colorScheme.outlineVariant.withOpacity(0.5),
+        thickness: 1,
+        space: 1,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+          elevation: 1,
+          textStyle: textTheme.labelLarge,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          minimumSize: const Size(64, 48),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: colorScheme.primary,
+          side: BorderSide(color: colorScheme.outline, width: 1),
+          textStyle: textTheme.labelLarge,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          minimumSize: const Size(64, 48),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: colorScheme.primary,
+          textStyle: textTheme.labelLarge,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          minimumSize: const Size(64, 40),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colorScheme.primaryContainer,
+        foregroundColor: colorScheme.onPrimaryContainer,
+        elevation: 2,
+        highlightElevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surface,
+        fillColor: colorScheme.surfaceContainerLowest,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: colorScheme.outline, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.outline, width: 1),
+          borderSide: BorderSide(
+            color: colorScheme.outline.withOpacity(0.5),
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -392,255 +271,116 @@ class CheerfulThemeComponent implements ThemeComponent {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: colorScheme.error, width: 1),
         ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.error, width: 2),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
         ),
-        labelStyle: TextStyle(
+        hintStyle: textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+        ),
+        labelStyle: textTheme.bodyMedium?.copyWith(
           color: colorScheme.onSurfaceVariant,
-          fontSize: 16, // Larger for better readability
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        isDense: false, // Not dense for better touch targets
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        errorStyle: textTheme.bodySmall?.copyWith(color: colorScheme.error),
       ),
-
-      // Elevated button with improved accessibility
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: 2, // Slight elevation for depth perception
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          padding: EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ), // Larger padding for touch
-          minimumSize: Size(64, 48), // Minimum size for touch target
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            letterSpacing: 0.5,
-          ),
+      listTileTheme: ListTileThemeData(
+        tileColor: colorScheme.surface,
+        selectedTileColor: colorScheme.primaryContainer.withOpacity(0.3),
+        iconColor: colorScheme.primary,
+        textColor: colorScheme.onSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+      tabBarTheme: TabBarTheme(
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
+        labelColor: colorScheme.primary,
+        unselectedLabelColor: colorScheme.onSurfaceVariant,
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelStyle: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: textTheme.titleSmall,
       ),
-
-      // Outlined button with improved visibility
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: colorScheme.primary,
-          side: BorderSide(
-            color: colorScheme.primary,
-            width: 1.5,
-          ), // Thicker for visibility
-          padding: EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ), // Consistent with elevated
-          minimumSize: Size(64, 48), // Consistent minimum size
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-
-      // Text button with improved touch target
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: colorScheme.primary,
-          padding: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ), // Larger touch target
-          minimumSize: Size(64, 40), // Minimum size for touch
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-
-      // Floating action button with improved visibility
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
-        elevation: 4, // More elevation for depth perception
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        extendedPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        extendedTextStyle: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          letterSpacing: 0.5,
-        ),
-      ),
-
-      // Checkbox with improved visibility and touch target
-      checkboxTheme: CheckboxThemeData(
-        fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary;
-          }
-          return Colors.transparent;
-        }),
-        checkColor: WidgetStateProperty.all(colorScheme.onPrimary),
-        side: BorderSide(
-          color: colorScheme.outline,
-          width: 1.5,
-        ), // Thicker border when unchecked
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        materialTapTargetSize:
-            MaterialTapTargetSize.padded, // Larger tap target
-      ),
-
-      // Divider with better visibility
-      dividerTheme: DividerThemeData(
-        color: colorScheme.outline.withOpacity(0.3),
-        thickness: 1,
-        space: 24,
-        indent: 8,
-        endIndent: 8,
-      ),
-
-      // Switch with improved visibility and touch target
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
+        thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
+          if (states.contains(MaterialState.disabled)) {
+            return colorScheme.onSurface.withOpacity(0.38);
+          }
+          if (states.contains(MaterialState.selected)) {
             return colorScheme.primary;
           }
-          return colorScheme.onSurfaceVariant;
+          return colorScheme.outline;
         }),
-        trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
+        trackColor: MaterialStateProperty.resolveWith<Color>((states) {
+          if (states.contains(MaterialState.disabled)) {
+            return colorScheme.onSurface.withOpacity(0.12);
+          }
+          if (states.contains(MaterialState.selected)) {
             return colorScheme.primaryContainer;
           }
           return colorScheme.surfaceContainerHighest;
         }),
-        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return Colors.transparent;
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+          if (states.contains(MaterialState.disabled)) {
+            return colorScheme.onSurface.withOpacity(0.38);
           }
-          return colorScheme.outline;
+          if (states.contains(MaterialState.selected)) {
+            return colorScheme.primary;
+          }
+          return Colors.transparent;
         }),
-        materialTapTargetSize:
-            MaterialTapTargetSize.padded, // Larger tap target
+        checkColor: MaterialStateProperty.all(colorScheme.onPrimary),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        side: BorderSide(color: colorScheme.outline, width: 1.5),
       ),
-
-      // Slider with improved visibility
-      sliderTheme: SliderThemeData(
-        activeTrackColor: colorScheme.primary,
-        inactiveTrackColor: colorScheme.primary.withOpacity(0.3),
-        thumbColor: colorScheme.primary,
-        overlayColor: colorScheme.primary.withOpacity(0.2),
-        trackHeight: 4, // Thicker track for visibility
-        thumbShape: RoundSliderThumbShape(
-          enabledThumbRadius: 12,
-        ), // Larger thumb for touch
-      ),
-
-      // Tooltip with better contrast
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
           color: colorScheme.inverseSurface,
           borderRadius: BorderRadius.circular(4),
         ),
-        textStyle: TextStyle(color: colorScheme.onInverseSurface, fontSize: 14),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        textStyle: textTheme.bodySmall?.copyWith(
+          color: colorScheme.onInverseSurface,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       ),
-
-      // Dialog theme with improved spacing
-      dialogTheme: DialogTheme(
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colorScheme.surface,
-        elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        titleTextStyle: textTheme.headlineSmall,
-        contentTextStyle: textTheme.bodyLarge,
+        modalBackgroundColor: colorScheme.surface,
+        modalBarrierColor: Colors.black54,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        elevation: 4,
       ),
-    );
-  }
-
-  /// Helper function to build standard text theme with improved accessibility
-  TextTheme _buildTextTheme(Color color) {
-    return TextTheme(
-      displayLarge: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        30, // Larger for better readability
-        fontWeight: FontWeight.w700, // Bolder for emphasis
+      badgeTheme: BadgeThemeData(
+        backgroundColor: colorScheme.error,
+        textColor: colorScheme.onError,
+        textStyle: textTheme.labelSmall,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       ),
-      displayMedium: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        26,
-        fontWeight: FontWeight.w700,
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: colorScheme.surface,
+        elevation: 1,
+        selectedIconTheme: IconThemeData(color: colorScheme.primary, size: 24),
+        unselectedIconTheme: IconThemeData(
+          color: colorScheme.onSurfaceVariant,
+          size: 24,
+        ),
+        selectedLabelTextStyle: textTheme.labelMedium?.copyWith(
+          color: colorScheme.primary,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelTextStyle: textTheme.labelMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        useIndicator: true,
+        indicatorColor: colorScheme.primaryContainer,
       ),
-      displaySmall: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        22,
-        fontWeight: FontWeight.w600,
-      ),
-      headlineLarge: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        24,
-        fontWeight: FontWeight.w600,
-      ),
-      headlineMedium: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        22,
-        fontWeight: FontWeight.w600,
-      ),
-      headlineSmall: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        20,
-        fontWeight: FontWeight.w600,
-      ),
-      titleLarge: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        20,
-        fontWeight: FontWeight.w600,
-      ),
-      titleMedium: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        18,
-        fontWeight: FontWeight.w600,
-      ),
-      titleSmall: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        16,
-        fontWeight: FontWeight.w600,
-      ),
-      bodyLarge: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        16,
-        fontWeight: FontWeight.w400,
-      ),
-      bodyMedium: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        14,
-        fontWeight: FontWeight.w400,
-      ),
-      bodySmall: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        12,
-        fontWeight: FontWeight.w400,
-      ),
-      labelLarge: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        14,
-        fontWeight: FontWeight.w500,
-      ),
-      labelMedium: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        12,
-        fontWeight: FontWeight.w500,
-      ),
-      labelSmall: ThemeTextStyles.buildStandardTextStyle(
-        color,
-        11, // Slightly larger than original 10 for readability
-        fontWeight: FontWeight.w500,
-      ),
+      iconTheme: IconThemeData(color: colorScheme.onSurfaceVariant, size: 24.0),
+      primaryIconTheme: IconThemeData(color: colorScheme.primary, size: 24.0),
     );
   }
 }
