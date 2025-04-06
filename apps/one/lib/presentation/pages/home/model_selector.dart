@@ -5,9 +5,10 @@ import 'package:ednet_one/presentation/state/blocs/model_selection/model_selecti
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
 import 'package:ednet_one/presentation/state/navigation_helper.dart';
 import 'package:ednet_one/presentation/widgets/layout/model_pin_manager_dialog.dart';
+import 'package:ednet_one/presentation/widgets/layout/semantic_layout_requirements.dart';
 
 /// A component for selecting models in the application
-class ModelSelector extends StatelessWidget {
+class ModelSelector extends StatefulWidget {
   /// Optional callback when a model is selected
   final Function(Model)? onModelSelected;
 
@@ -26,6 +27,19 @@ class ModelSelector extends StatelessWidget {
   });
 
   @override
+  _ModelSelectorState createState() => _ModelSelectorState();
+}
+
+class _ModelSelectorState extends State<ModelSelector> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ModelSelectionBloc, ModelSelectionState>(
       builder: (context, modelState) {
@@ -34,65 +48,93 @@ class ModelSelector extends StatelessWidget {
         if (availableModels.isEmpty) {
           return Center(
             child: Text(
-              emptyMessage,
+              widget.emptyMessage,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           );
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with Pin Manager button
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(title, style: Theme.of(context).textTheme.titleLarge),
-                  if (modelState.selectedModel != null)
-                    IconButton(
-                      icon: const Icon(Icons.push_pin_outlined),
-                      tooltip: 'Manage Pinned Items',
-                      onPressed: () {
-                        ModelPinManagerDialog.show(
-                          context,
-                          modelState.selectedModel!.code,
-                          title:
-                              'Pinned Items for ${modelState.selectedModel!.code}',
-                        );
-                      },
+        return SemanticLayoutContainer(
+          conceptType: 'Model',
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with Pin Manager button
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                ],
+                    if (modelState.selectedModel != null)
+                      IconButton(
+                        icon: const Icon(Icons.push_pin_outlined),
+                        tooltip: 'Manage Pinned Items',
+                        onPressed: () {
+                          ModelPinManagerDialog.show(
+                            context,
+                            modelState.selectedModel!.code,
+                            title:
+                                'Pinned Items for ${modelState.selectedModel!.code}',
+                          );
+                        },
+                      ),
+                  ],
+                ),
               ),
-            ),
 
-            // Models list
-            Expanded(
-              child: ListView.builder(
-                controller: ScrollController(),
-                itemCount: availableModels.length,
-                itemBuilder: (context, index) {
-                  final model = availableModels.elementAt(index);
-                  final isSelected = model == modelState.selectedModel;
+              // Models list with fixed height constraint
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Safely calculate list height, ensuring it's always positive
+                  final headerHeight = 64.0; // Height of the header
+                  final availableHeight = constraints.maxHeight;
+                  final listHeight =
+                      (availableHeight > headerHeight)
+                          ? availableHeight - headerHeight
+                          : 200.0; // Default safe height if calculation would be negative
 
-                  return _ModelListItem(
-                    model: model,
-                    isSelected: isSelected,
-                    onTap: () {
-                      // Use the centralized navigation helper
-                      NavigationHelper.navigateToModel(context, model);
+                  return SizedBox(
+                    height: listHeight.clamp(
+                      100.0,
+                      300.0,
+                    ), // Constrain between 100 and 300
+                    child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        itemCount: availableModels.length,
+                        itemBuilder: (context, index) {
+                          final model = availableModels.elementAt(index);
+                          final isSelected = model == modelState.selectedModel;
 
-                      // Call optional callback
-                      if (onModelSelected != null) {
-                        onModelSelected!(model);
-                      }
-                    },
+                          return _ModelListItem(
+                            model: model,
+                            isSelected: isSelected,
+                            onTap: () {
+                              // Use the centralized navigation helper
+                              NavigationHelper.navigateToModel(context, model);
+
+                              // Call optional callback
+                              if (widget.onModelSelected != null) {
+                                widget.onModelSelected!(model);
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

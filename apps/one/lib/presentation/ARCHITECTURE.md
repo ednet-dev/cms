@@ -106,4 +106,87 @@ When refactoring existing code:
 - Decomposing large components into smaller, focused ones
 - Implementing enhanced navigation and breadcrumb functionality
 - Adding comprehensive bookmarking system
-- Implementing entity filtering 
+- Implementing entity filtering
+
+## Component Structure
+
+The presentation layer of EDNet One follows a nested component structure:
+
+```
+presentation/
+  ├── pages/            # Full pages representing key user flows
+  ├── widgets/          # Reusable UI components 
+  ├── state/            # State management (BLoCs, providers)
+  ├── theme/            # Theming and styling
+  ├── layouts/          # Layout strategies and providers
+  └── navigation/       # Navigation services and routes
+```
+
+## State Management Pattern
+
+EDNet One uses a combination of:
+
+1. **BLoC Pattern** for complex state with events, states, and transformations
+2. **Provider Pattern** for simpler shared state and dependencies
+3. **Repository Pattern** for data access
+
+## Architecture Pattern: "Holy Trinity"
+
+The presentation layer is built on what we call the "Holy Trinity" architecture, which separates three core concerns:
+
+1. **Layout Strategy** - How UI components are sized and positioned
+2. **Theme Strategy** - How UI components are visually styled  
+3. **Domain Model** - The underlying business concepts
+
+By making these three aspects pluggable and interchangeable while maintaining semantic connections, we achieve a flexible architecture that can adapt to different user preferences and device capabilities.
+
+### Layout Strategy
+
+Layout strategies determine how UI components are sized and positioned based on semantic concepts from the domain model. They are implemented in `presentation/layouts/strategy/`.
+
+Key components:
+- `LayoutStrategy` - Abstract interface
+- `CompactLayoutStrategy` - For space-efficient layouts
+- `DetailedLayoutStrategy` - For information-rich layouts
+- `LayoutProvider` - Manages active strategy
+
+### Theme Strategy
+
+Theme strategies determine how UI components are visually styled based on semantic concepts from the domain model. They are implemented in `presentation/theme/strategy/`.
+
+Key components:
+- `ThemeStrategy` - Abstract interface
+- `ThemeProvider` - Manages active strategy
+
+### Semantic Components
+
+These components connect layout and theme to domain concepts:
+
+- `SemanticConceptContainer` - Applies appropriate layout to a domain concept
+- `SemanticFlowContainer` - Arranges multiple components in a flow layout
+- `SemanticConstraintsBuilder` - Provides semantic constraints for custom layouts
+
+For more details on the Holy Trinity architecture, see the [README.md](README.md).
+
+## Communication Patterns
+
+1. **BLoC Events/States** - Component → BLoC → Component
+2. **Provider Notifications** - Provider → Component
+3. **Callbacks** - Child → Parent component
+4. **Navigation** - Component → Router
+
+## Design Principles
+
+1. **Separation of Concerns** - UI, state, and business logic are separated
+2. **Composition Over Inheritance** - Build complex UIs from simple components 
+3. **Single Responsibility** - Each component has one purpose
+4. **Domain-Driven Design** - UI components maintain semantic connection to domain
+5. **Adaptability** - UI adapts to different screen sizes and device capabilities
+
+## Future Directions
+
+1. Better support for testing UI components
+2. Improved accessibility 
+3. Advanced visualization capabilities for domain models
+4. Integration with ednet_core for more direct domain model interaction
+5. Comprehensive component showcase and documentation 

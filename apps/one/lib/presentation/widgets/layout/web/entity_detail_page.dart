@@ -84,25 +84,34 @@ class _EntityDetailPageState extends State<EntityDetailPage> {
       return _buildEmptyStateMessage(context);
     }
 
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: EntitiesWidget(
-            entities: widget.entities,
-            onEntitySelected: _selectEntity,
-            bookmarkManager: bookmarkManager,
-            onBookmarkCreated: (bookmark) => _createBookmark(bookmark),
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child:
-              _selectedEntity != null
-                  ? _buildEntityContent(_selectedEntity as dynamic)
-                  : _buildNoEntitySelectedMessage(context),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: constraints.maxWidth * 0.33, // 1/3 of available width
+              child: EntitiesWidget(
+                entities: widget.entities,
+                onEntitySelected: _selectEntity,
+                bookmarkManager: bookmarkManager,
+                onBookmarkCreated: (bookmark) => _createBookmark(bookmark),
+              ),
+            ),
+            Container(
+              width: constraints.maxWidth * 0.67, // 2/3 of available width
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
+                maxHeight: constraints.maxHeight,
+              ),
+              child:
+                  _selectedEntity != null
+                      ? _buildEntityContent(_selectedEntity as dynamic)
+                      : _buildNoEntitySelectedMessage(context),
+            ),
+          ],
+        );
+      },
     );
   }
 

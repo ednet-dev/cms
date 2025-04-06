@@ -46,7 +46,32 @@ For each screen file:
 - [x] domains_widget.dart → domains_page.dart
 - [x] entries_sidebar_widget.dart → sidebar_page.dart or component
 
-### Phase 3: Clean Up Component Structure (2-3 weeks)
+### Phase 3: Holy Trinity Architecture Implementation (1-2 weeks)
+
+1. [x] Implement core infrastructure
+   - [x] LayoutProvider and layout strategies
+   - [x] ThemeProvider and theme strategies
+   - [x] DomainModelProvider extension for semantic concepts
+   - [x] Semantic concept containers for widgets
+
+2. [x] Create sample components
+   - [x] HolyTrinitySample example widget
+   - [x] Convert ModelDetailPage to use Holy Trinity
+   - [x] Convert EntityDetailPage to use Holy Trinity
+
+3. [ ] Migrate remaining key components
+   - [ ] HomePage and main navigation
+   - [ ] EntityWidget to use semantic concepts
+   - [ ] EntitiesWidget to use semantic concepts 
+   - [ ] HeaderWidget to use semantic concepts
+   - [ ] Dialog components to use semantic concepts
+
+4. [ ] Add semantic concept registry
+   - [ ] Create a registry of all semantic concepts used in the UI
+   - [ ] Document the mapping between domain concepts and UI concepts
+   - [ ] Create a style guide for semantic concepts
+
+### Phase 4: Clean Up Component Structure (2-3 weeks)
 
 1. [ ] Extract large components into smaller, focused ones
 2. [ ] Apply consistent naming conventions
@@ -62,7 +87,7 @@ For each screen file:
 - [ ] bookmark_widget.dart (enhance with consistent interface)
 - [ ] breadcrumb_navigation.dart (standardize across all pages)
 
-### Phase 4: Remove Deprecated Screen Directory (Future)
+### Phase 5: Remove Deprecated Screen Directory (Future)
 
 Once all functionality has been migrated:
 
@@ -82,6 +107,28 @@ For each component being migrated, follow this pattern:
 5. **Test**: Verify the component works as expected
 6. **Document**: Add documentation for the component
 7. **Remove**: Delete the original component when safe
+
+## Holy Trinity Architecture
+
+The Holy Trinity architecture has been implemented as a foundational architectural pattern for our UI. This architecture separates three core concerns:
+
+1. **Layout Strategy** - How UI components are sized and positioned
+2. **Theme Strategy** - How UI components are visually styled
+3. **Domain Model** - The underlying business concepts
+
+Key components:
+
+- **LayoutProvider**: Manages the active layout strategy
+- **ThemeProvider**: Manages the active theme strategy
+- **DomainModelProvider**: Extensions for OneApplication to connect domain models to semantic concepts
+- **SemanticConceptContainer**: Primary widget for applying semantic layout and styling
+
+Migration of existing components to the Holy Trinity architecture involves:
+
+1. Wrapping components in SemanticConceptContainer
+2. Replacing hardcoded styles with theme strategy methods
+3. Replacing fixed layouts with layout strategy constraints
+4. Using domain model extensions to connect with semantic concepts
 
 ## Latest Migration Updates
 
@@ -105,6 +152,12 @@ For each component being migrated, follow this pattern:
 - Created fix_unused_variables.dart script to handle unused variables
 - Created fix_bloc_warnings.dart script to fix BLoC emit and @override issues
 - Created fix_dead_code.dart script to handle unreachable code in service classes
+- Implemented Holy Trinity architecture core components
+- Created ThemeProvider and StandardThemeStrategy
+- Created DomainModelProvider extensions for OneApplication
+- Converted ModelDetailPage to use Holy Trinity architecture
+- Converted EntityDetailPage to use Holy Trinity architecture
+- Created HolyTrinitySample widget as a reference
 
 ### Implementation Notes
 
@@ -122,10 +175,13 @@ For each component being migrated, follow this pattern:
 12. Created automated tool to update deprecated withOpacity API calls to withValues
 13. Fixed 85 withOpacity API calls to use the newer withValues API with correct types
 14. Built comprehensive suite of 6 cleanup tools to automate code quality improvements
+15. Implemented Holy Trinity architecture with separation of layout, theme, and domain model
+16. Created semantic concept containers to apply consistent styling and layout
+17. Connected domain model with UI through semantic concept mappings
 
 ### Current Progress
 
-We've successfully migrated 9 of the key components from the screens/ directory to the pages/ directory and created tools to clean up code quality issues. This represents approximately 97% completion of our migration plan for Phases 1 and 2.
+We've successfully migrated 9 of the key components from the screens/ directory to the pages/ directory, implemented the core Holy Trinity architecture, and converted 2 key pages to use it. This represents approximately 60% completion of the migration plan.
 
 ### Next Steps
 
@@ -136,35 +192,49 @@ We've successfully migrated 9 of the key components from the screens/ directory 
    ./tools/run_cleanup.sh
    ```
 
-2. Complete unit tests for new page components (currently at 60% coverage)
-3. Begin Component Structure cleanup (Phase 3)
-4. Implement filtering functionality on entity lists
-5. Enhance the bookmarking system with categorization and tagging
+2. Complete the Holy Trinity migration for remaining key components:
+   - HomePage and main navigation
+   - EntityWidget and EntitiesWidget
+   - HeaderWidget and dialog components
+
+3. Create a semantic concept registry to document all semantic concepts
+
+4. Complete unit tests for new page components (currently at 60% coverage)
+
+5. Begin Component Structure cleanup (Phase 4)
 
 ## Migration Progress Tracking
 
-| Component                 | Original Location                         | New Location                      | Status        | Issues                                                               |
-| ------------------------- | ----------------------------------------- | --------------------------------- | ------------- | -------------------------------------------------------------------- |
-| ModelPage                 | pages/model_page.dart                     | (Fixed in place)                  | ✅ Done        | Missing imports fixed                                                |
-| HomePage                  | screens/home_page.dart                    | pages/home/home_page.dart         | ✅ Done        | Added deprecation notice, redirects to new HomePage                  |
-| ModelDetailScreenScaffold | screens/model_detail_screen_scaffold.dart | pages/model_detail_page.dart      | ✅ Done        | Added deprecation notice, redirects to ModelDetailPage               |
-| DomainDetailScreen        | screens/domain_detail_screen.dart         | pages/domain_detail_page.dart     | ✅ Done        | Added deprecation notice, redirects to DomainDetailPage              |
-| GraphApp                  | screens/graph_application.dart            | pages/graph_page.dart             | ✅ Done        | Added deprecation notice, enhanced GraphPage with consistent styling |
-| DomainsWidget             | screens/domains_widget.dart               | pages/domains_page.dart           | ✅ Done        | Split into DomainsPage and DomainsListWidget                         |
-| LeftSidebarWidget         | widgets/sidebar/left_sidebar_widget.dart  | pages/concepts_page.dart          | ✅ Done        | Reimplemented with proper navigation and state management            |
-| RightSidebarWidget        | widgets/sidebar/right_sidebar_widget.dart | pages/models_page.dart            | ✅ Done        | Enhanced with filtering and consistent styling                       |
-| MainContentWidget         | widgets/main_content_widget.dart          | pages/entity_detail_page.dart     | ✅ Done        | Improved with tabs and proper state management                       |
-| BookmarkWidget            | widgets/bookmark_widget.dart              | pages/bookmark_page.dart          | ✅ Done        | Added categorization and enhanced UI                                 |
-| FilterWidget              | widgets/filter_widget.dart                | widgets/filter/filter_widget.dart | 🔄 In Progress | Refactoring to support all entity types                              |
-| NavigationRail            | widgets/navigation_rail.dart              | layouts/navigation_layout.dart    | 📝 Planned     | Will consolidate navigation components                               |
-| fix_unused_imports.dart   | N/A                                       | tools/fix_unused_imports.dart     | ✅ Done        | Script to remove unused imports                                      |
-| update_material_apis.dart | N/A                                       | tools/update_material_apis.dart   | ✅ Done        | Script to update deprecated Material 3 APIs                          |
-| run_cleanup.sh            | N/A                                       | tools/run_cleanup.sh              | ✅ Done        | Shell script to run all cleanup tools                                |
-| fix_opacity_api.dart      | N/A                                       | tools/fix_opacity_api.dart        | ✅ Done        | Script to update withOpacity calls to withValues                     |
-| withOpacity to withValues | Multiple files                            | Multiple files                    | ✅ Done        | Updated 85 occurrences to use the new API                            |
-| fix_unused_variables.dart | N/A                                       | tools/fix_unused_variables.dart   | ✅ Done        | Script to fix unused variables                                       |
-| fix_bloc_warnings.dart    | N/A                                       | tools/fix_bloc_warnings.dart      | ✅ Done        | Script to fix BLoC warnings                                          |
-| fix_dead_code.dart        | N/A                                       | tools/fix_dead_code.dart          | ✅ Done        | Script to fix dead code                                              |
+| Component                       | Original Location                         | New Location                                | Status        | Issues                                                               |
+| ------------------------------- | ----------------------------------------- | ------------------------------------------- | ------------- | -------------------------------------------------------------------- |
+| ModelPage                       | pages/model_page.dart                     | (Fixed in place)                            | ✅ Done        | Missing imports fixed                                                |
+| HomePage                        | screens/home_page.dart                    | pages/home/home_page.dart                   | ✅ Done        | Added deprecation notice, redirects to new HomePage                  |
+| ModelDetailScreenScaffold       | screens/model_detail_screen_scaffold.dart | pages/model_detail_page.dart                | ✅ Done        | Added deprecation notice, redirects to ModelDetailPage               |
+| DomainDetailScreen              | screens/domain_detail_screen.dart         | pages/domain_detail_page.dart               | ✅ Done        | Added deprecation notice, redirects to DomainDetailPage              |
+| GraphApp                        | screens/graph_application.dart            | pages/graph_page.dart                       | ✅ Done        | Added deprecation notice, enhanced GraphPage with consistent styling |
+| DomainsWidget                   | screens/domains_widget.dart               | pages/domains_page.dart                     | ✅ Done        | Split into DomainsPage and DomainsListWidget                         |
+| LeftSidebarWidget               | widgets/sidebar/left_sidebar_widget.dart  | pages/concepts_page.dart                    | ✅ Done        | Reimplemented with proper navigation and state management            |
+| RightSidebarWidget              | widgets/sidebar/right_sidebar_widget.dart | pages/models_page.dart                      | ✅ Done        | Enhanced with filtering and consistent styling                       |
+| MainContentWidget               | widgets/main_content_widget.dart          | pages/entity_detail_page.dart               | ✅ Done        | Improved with tabs and proper state management                       |
+| BookmarkWidget                  | widgets/bookmark_widget.dart              | pages/bookmark_page.dart                    | ✅ Done        | Added categorization and enhanced UI                                 |
+| Holy Trinity Architecture       | N/A                                       | Multiple files                              | ✅ Done        | Core infrastructure implemented                                      |
+| StandardThemeStrategy           | N/A                                       | theme/strategy/standard_theme_strategy.dart | ✅ Done        | Theme strategy implementation                                        |
+| ThemeProvider                   | N/A                                       | theme/providers/theme_provider.dart         | ✅ Done        | Theme provider implementation                                        |
+| DomainModelProvider             | N/A                                       | domain/domain_model_provider.dart           | ✅ Done        | Domain model extension implementation                                |
+| ModelDetailPage (Holy Trinity)  | pages/model_detail_page.dart              | pages/model_detail_page.dart                | ✅ Done        | Converted to use Holy Trinity architecture                           |
+| EntityDetailPage (Holy Trinity) | pages/entity_detail_page.dart             | pages/entity_detail_page.dart               | ✅ Done        | Converted to use Holy Trinity architecture                           |
+| FilterWidget                    | widgets/filter_widget.dart                | widgets/filter/filter_widget.dart           | 🔄 In Progress | Refactoring to support all entity types                              |
+| EntityWidget (Holy Trinity)     | widgets/entity/entity_widget.dart         | widgets/entity/entity_widget.dart           | 📝 Planned     | Will convert to use Holy Trinity architecture                        |
+| EntitiesWidget (Holy Trinity)   | widgets/entity/entities_widget.dart       | widgets/entity/entities_widget.dart         | 📝 Planned     | Will convert to use Holy Trinity architecture                        |
+| NavigationRail                  | widgets/navigation_rail.dart              | layouts/navigation_layout.dart              | 📝 Planned     | Will consolidate navigation components                               |
+| fix_unused_imports.dart         | N/A                                       | tools/fix_unused_imports.dart               | ✅ Done        | Script to remove unused imports                                      |
+| update_material_apis.dart       | N/A                                       | tools/update_material_apis.dart             | ✅ Done        | Script to update deprecated Material 3 APIs                          |
+| run_cleanup.sh                  | N/A                                       | tools/run_cleanup.sh                        | ✅ Done        | Shell script to run all cleanup tools                                |
+| fix_opacity_api.dart            | N/A                                       | tools/fix_opacity_api.dart                  | ✅ Done        | Script to update withOpacity calls to withValues                     |
+| withOpacity to withValues       | Multiple files                            | Multiple files                              | ✅ Done        | Updated 85 occurrences to use the new API                            |
+| fix_unused_variables.dart       | N/A                                       | tools/fix_unused_variables.dart             | ✅ Done        | Script to fix unused variables                                       |
+| fix_bloc_warnings.dart          | N/A                                       | tools/fix_bloc_warnings.dart                | ✅ Done        | Script to fix BLoC warnings                                          |
+| fix_dead_code.dart              | N/A                                       | tools/fix_dead_code.dart                    | ✅ Done        | Script to fix dead code                                              |
 
 ## Development Guidelines During Migration
 
@@ -173,6 +243,8 @@ We've successfully migrated 9 of the key components from the screens/ directory 
 3. **Validate Each Change**: Ensure the application works after each migration step
 4. **Document Changes**: Keep this migration plan updated with progress
 5. **Consider Dependencies**: Be careful with shared components and imports
+6. **Use Holy Trinity**: All new components should use the Holy Trinity architecture
+7. **Semantic Naming**: Use consistent semantic concept names in the UI
 
 ## Post-Migration Improvements
 
@@ -203,8 +275,9 @@ After completing the migration, we'll focus on these performance enhancements:
 
 - **Phase 1 Completion**: End of current sprint
 - **Phase 2 Completion**: Mid-next sprint
-- **Phase 3 Initiation**: Start of third sprint
-- **Phase 3 Completion**: End of fourth sprint
-- **Phase 4 (Cleanup)**: Fifth sprint
+- **Phase 3 Completion**: End of next sprint
+- **Phase 4 Initiation**: Start of third sprint
+- **Phase 4 Completion**: End of fourth sprint
+- **Phase 5 (Cleanup)**: Fifth sprint
 - **Post-Migration Improvements**: Ongoing after migration completion
 

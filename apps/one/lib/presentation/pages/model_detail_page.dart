@@ -9,12 +9,15 @@ import '../widgets/layout/web/header_widget.dart';
 import '../widgets/entity/entity_widget.dart';
 import '../widgets/entity/entities_widget.dart';
 import '../widgets/bookmarks/bookmark_manager.dart';
+import '../widgets/semantic_concept_container.dart';
+import '../theme/providers/theme_provider.dart';
+import '../domain/domain_model_provider.dart';
 
 /// Model detail page displaying concepts from a specific model
 ///
 /// This page shows the detailed view of a model, including all its concepts,
 /// and allows navigation to entity details.
-class ModelDetailPage extends StatelessWidget {
+class ModelDetailPage extends StatefulWidget {
   /// Route name for this page
   static const String routeName = '/model-detail';
 
@@ -44,52 +47,93 @@ class ModelDetailPage extends StatelessWidget {
   }
 
   @override
+  State<ModelDetailPage> createState() => _ModelDetailPageState();
+}
+
+class _ModelDetailPageState extends State<ModelDetailPage> {
+  final ScrollController _entityListScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _entityListScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final effectivePath = [...path, domain.code, model.code];
+    final effectivePath = [
+      ...widget.path,
+      widget.domain.code,
+      widget.model.code,
+    ];
     final bookmarkManager = Provider.of<BookmarkManager>(
       context,
       listen: false,
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: HeaderWidget(
-          path: effectivePath,
-          onPathSegmentTapped: (index) {
-            if (index == 0) {
-              Navigator.popUntil(context, ModalRoute.withName('/'));
-            } else if (index < effectivePath.length - 1) {
-              Navigator.pop(context);
-            }
-          },
-          filters: [],
-          onAddFilter: (header.FilterCriteria filter) {},
-          onBookmark: () {},
+    // Get the semantic concept type for the model
+    final modelConceptType = context.conceptTypeForModel(widget.model);
+
+    return SemanticConceptContainer(
+      conceptType: modelConceptType,
+      child: Scaffold(
+        appBar: AppBar(
+          title: HeaderWidget(
+            path: effectivePath,
+            onPathSegmentTapped: (index) {
+              if (index == 0) {
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+              } else if (index < effectivePath.length - 1) {
+                Navigator.pop(context);
+              }
+            },
+            filters: [],
+            onAddFilter: (header.FilterCriteria filter) {},
+            onBookmark: () {},
+          ),
         ),
-      ),
-      body: EntitiesWidget(
-        entities: model.concepts,
-        onEntitySelected: (entity) {
-          onEntitySelected(entity);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EntityDetailScreen(entity: entity),
-            ),
-          );
-        },
-        bookmarkManager: bookmarkManager,
-        onBookmarkCreated: (bookmark) async {
-          await bookmarkManager.addBookmark(bookmark);
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Bookmark added'),
-                duration: Duration(seconds: 2),
-              ),
-            );
-          }
-        },
+        body: SemanticConceptContainer(
+          conceptType: 'EntityList',
+          fillHeight: true,
+          scrollable: true,
+          scrollController: _entityListScrollController,
+          child: EntitiesWidget(
+            entities: widget.model.concepts,
+            onEntitySelected: (entity) {
+              widget.onEntitySelected(entity);
+
+              // Use the existing EntityDetailScreen for now
+              // We'll migrate this in a future iteration
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EntityDetailScreen(entity: entity),
+                ),
+              );
+            },
+            bookmarkManager: bookmarkManager,
+            onBookmarkCreated: (bookmark) async {
+              await bookmarkManager.addBookmark(bookmark);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Bookmark added',
+                      style: context.conceptTextStyle(
+                        'Success',
+                        role: 'message',
+                      ),
+                    ),
+                    backgroundColor: context
+                        .conceptColor('Success')
+                        .withOpacity(0.2),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
       ),
     );
   }

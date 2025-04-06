@@ -45,8 +45,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
   static const _domainSectionExpandedKey = 'domain_section_expanded';
   static const _drawerPinnedKey = 'drawer_pinned';
 
+  bool _isPinned = false;
   bool _isDomainSectionExpanded = true;
-  bool _isPinned = true;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -61,6 +62,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
     if (oldWidget.isPinned != widget.isPinned) {
       _isPinned = widget.isPinned;
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadPreferences() async {
@@ -111,7 +118,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
               child: Scrollbar(
                 thumbVisibility: true,
                 child: ListView(
-                  controller: ScrollController(),
+                  controller: _scrollController,
                   padding: EdgeInsets.zero,
                   children: [
                     // Domains section

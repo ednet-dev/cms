@@ -5,9 +5,10 @@ import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_sel
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_state.dart';
 import 'package:ednet_one/presentation/state/navigation_helper.dart';
+import 'package:ednet_one/presentation/widgets/layout/semantic_layout_requirements.dart';
 
 /// A component for selecting concepts in the application
-class ConceptSelector extends StatelessWidget {
+class ConceptSelector extends StatefulWidget {
   /// Optional callback when a concept is selected
   final Function(Concept)? onConceptSelected;
 
@@ -26,6 +27,19 @@ class ConceptSelector extends StatelessWidget {
   });
 
   @override
+  State<ConceptSelector> createState() => _ConceptSelectorState();
+}
+
+class _ConceptSelectorState extends State<ConceptSelector> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ConceptSelectionBloc, ConceptSelectionState>(
       builder: (context, conceptState) {
@@ -34,81 +48,114 @@ class ConceptSelector extends StatelessWidget {
         if (availableConcepts.isEmpty) {
           return Center(
             child: Text(
-              emptyMessage,
+              widget.emptyMessage,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           );
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(title, style: Theme.of(context).textTheme.titleLarge),
-            ),
-
-            // Search box (optional)
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
+        return SemanticLayoutContainer(
+          conceptType: 'Concept',
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
-              child: _SearchBox(
-                onSearch: (query) {
-                  // Actually implement the search functionality
-                  if (query.trim().isEmpty) {
-                    // If query is empty, reset to show all concepts
-                    context.read<ConceptSelectionBloc>().add(
-                      UpdateConceptsForModelEvent(conceptState.model!),
-                    );
-                  } else {
-                    // Filter concepts based on the query
-                    final filteredConcepts = Concepts();
-                    for (var concept in conceptState.availableConcepts) {
-                      if (concept.code.toLowerCase().contains(
-                        query.toLowerCase(),
-                      )) {
-                        filteredConcepts.add(concept);
+
+              // Search box (optional)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
+                child: _SearchBox(
+                  onSearch: (query) {
+                    // Actually implement the search functionality
+                    if (query.trim().isEmpty) {
+                      // If query is empty, reset to show all concepts
+                      context.read<ConceptSelectionBloc>().add(
+                        UpdateConceptsForModelEvent(conceptState.model!),
+                      );
+                    } else {
+                      // Filter concepts based on the query
+                      final filteredConcepts = Concepts();
+                      for (var concept in conceptState.availableConcepts) {
+                        if (concept.code.toLowerCase().contains(
+                          query.toLowerCase(),
+                        )) {
+                          filteredConcepts.add(concept);
+                        }
                       }
+
+                      // Update the state with filtered concepts
+                      context
+                          .read<ConceptSelectionBloc>()
+                          .updateConceptsDirectly(filteredConcepts);
                     }
-
-                    // Update the state with filtered concepts
-                    context.read<ConceptSelectionBloc>().updateConceptsDirectly(
-                      filteredConcepts,
-                    );
-                  }
-                },
+                  },
+                ),
               ),
-            ),
 
-            // Concepts list
-            Expanded(
-              child: ListView.builder(
-                controller: ScrollController(),
-                itemCount: availableConcepts.length,
-                itemBuilder: (context, index) {
-                  final concept = availableConcepts.elementAt(index);
-                  final isSelected = concept == conceptState.selectedConcept;
+              // Concepts list with fixed height and scrollbar
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Safely calculate list height, ensuring it's always positive
+                  final headersHeight =
+                      120.0; // Combined height of header and search
+                  final availableHeight = constraints.maxHeight;
+                  final listHeight =
+                      (availableHeight > headersHeight)
+                          ? availableHeight - headersHeight
+                          : 200.0; // Default safe height if calculation would be negative
 
-                  return _ConceptListItem(
-                    concept: concept,
-                    isSelected: isSelected,
-                    onTap: () {
-                      // Use the centralized navigation helper
-                      NavigationHelper.navigateToConcept(context, concept);
+                  return SizedBox(
+                    height: listHeight.clamp(
+                      100.0,
+                      250.0,
+                    ), // Constrain between 100 and 250
+                    child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        itemCount: availableConcepts.length,
+                        itemBuilder: (context, index) {
+                          final concept = availableConcepts.elementAt(index);
+                          final isSelected =
+                              concept == conceptState.selectedConcept;
 
-                      // Call optional callback
-                      if (onConceptSelected != null) {
-                        onConceptSelected!(concept);
-                      }
-                    },
+                          return _ConceptListItem(
+                            concept: concept,
+                            isSelected: isSelected,
+                            onTap: () {
+                              // Use the centralized navigation helper
+                              NavigationHelper.navigateToConcept(
+                                context,
+                                concept,
+                              );
+
+                              // Call optional callback
+                              if (widget.onConceptSelected != null) {
+                                widget.onConceptSelected!(concept);
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

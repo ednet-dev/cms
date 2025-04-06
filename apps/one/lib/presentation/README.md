@@ -179,4 +179,181 @@ After completing the current migration, planned improvements include:
 2. Improved accessibility features
 3. Advanced visualization capabilities for domain models
 4. Integration with ednet_core for more direct domain model interaction
-5. Comprehensive component showcase and documentation 
+5. Comprehensive component showcase and documentation
+
+# EDNet One Presentation Architecture
+
+## The "Holy Trinity" Architecture
+
+The EDNet One presentation layer is built on a flexible, domain-driven architecture we call the "Holy Trinity." This architecture cleanly separates three core concerns:
+
+1. **Layout Strategy** - How UI components are sized and positioned
+2. **Theme Strategy** - How UI components are visually styled
+3. **Domain Model** - The underlying business concepts
+
+By separating these concerns while maintaining semantic connections between them, we enable:
+
+- Different visual presentations of the same domain model
+- Layout adaptations for different screen sizes and contexts
+- Consistent styling across the application
+- User customization of layout and theme
+- Strong semantic connection to the domain
+
+## Key Components
+
+### 1. Layout Strategy
+
+Layout strategies are responsible for determining how UI components are sized, positioned and organized based on semantic concepts from the domain model.
+
+- `LayoutStrategy` - Abstract interface for all layout strategies
+- `CompactLayoutStrategy` - Implementation optimized for small screens and dense layouts
+- `DetailedLayoutStrategy` - Implementation optimized for larger screens with more detailed information
+- `LayoutProvider` - Provider that manages active layout strategy
+
+**Example Usage:**
+
+```dart
+// Get layout constraints for a specific concept
+final constraints = layoutProvider.activeStrategy
+    .getConstraintsForConcept('User', parentConstraints);
+
+// Build a container for a specific concept
+final container = layoutProvider.activeStrategy.buildConceptContainer(
+  context: context,
+  conceptType: 'User',
+  child: userProfileWidget,
+);
+
+// Use the SemanticConceptContainer widget
+SemanticConceptContainer(
+  conceptType: 'User',
+  child: UserProfileWidget(),
+)
+```
+
+### 2. Theme Strategy
+
+Theme strategies are responsible for determining how UI components are visually styled based on semantic concepts from the domain model.
+
+- `ThemeStrategy` - Abstract interface for all theme strategies
+- `ThemeProvider` - Provider that manages active theme strategy
+
+**Example Usage:**
+
+```dart
+// Get color for a specific concept
+final color = themeProvider.activeStrategy
+    .getColorForConcept('Error');
+
+// Get text style for a specific concept
+final textStyle = themeProvider.activeStrategy
+    .getTextStyleForConcept('User', textRole: 'title');
+
+// Use the extension methods
+final errorColor = context.conceptColor('Error');
+final titleStyle = context.conceptTextStyle('User', role: 'title');
+```
+
+### 3. Domain Model Integration
+
+The domain model is connected to the UI through semantic concept identifiers. This maintains a clear separation between the domain model and its presentation while preserving semantic meaning.
+
+**Example:**
+
+```dart
+// A User concept from the domain model is represented visually
+SemanticConceptContainer(
+  conceptType: 'User',
+  child: Column(
+    children: [
+      Text(
+        user.name,
+        style: context.conceptTextStyle('User', role: 'name'),
+      ),
+      Text(
+        user.email,
+        style: context.conceptTextStyle('User', role: 'email'),
+      ),
+    ],
+  ),
+)
+```
+
+## Extending the Architecture
+
+### Creating a Custom Layout Strategy
+
+To create a custom layout strategy:
+
+1. Create a new class that implements `LayoutStrategy`
+2. Implement all required methods
+3. Register it with the `LayoutProvider`
+
+```dart
+class MyCustomLayoutStrategy extends LayoutStrategy {
+  @override
+  String get id => 'my_custom';
+  
+  @override
+  String get name => 'My Custom Layout';
+  
+  @override
+  String get category => 'custom';
+  
+  // Implement the remaining methods...
+}
+
+// Register it
+layoutProvider.registerStrategy(MyCustomLayoutStrategy());
+```
+
+### Creating a Custom Theme Strategy
+
+To create a custom theme strategy:
+
+1. Create a new class that implements `ThemeStrategy`
+2. Implement all required methods
+3. Register it with the `ThemeProvider`
+
+```dart
+class MyCustomThemeStrategy extends ThemeStrategy {
+  @override
+  String get id => 'my_custom';
+  
+  @override
+  String get name => 'My Custom Theme';
+  
+  @override
+  String get category => 'custom';
+  
+  // Implement the remaining methods...
+}
+
+// Register it
+themeProvider.registerStrategy(MyCustomThemeStrategy());
+```
+
+## Benefits for Junior Developers
+
+This architecture provides several benefits for junior developers:
+
+1. **Clear Separation of Concerns** - You can focus on one aspect (layout, theme, or domain) at a time
+2. **Consistent Patterns** - The same patterns are used throughout the codebase
+3. **Semantic Connection** - UI components maintain their connection to domain concepts
+4. **Extensibility** - New layout or theme strategies can be added without changing existing code
+5. **Reusability** - Layout and theme strategies can be reused across the application
+
+## Best Practices
+
+1. **Always use semantic concept containers** - Wrap your widgets in `SemanticConceptContainer` to ensure proper layout
+2. **Use the extension methods** - The extension methods (`conceptColor`, `conceptTextStyle`) make it easy to apply consistent styling
+3. **Don't hardcode layout constraints** - Let the layout strategy determine constraints based on semantic concepts
+4. **Don't hardcode colors or styles** - Let the theme strategy determine colors and styles based on semantic concepts
+5. **Keep layout and theme concerns separate** - Don't mix layout and theme concerns in the same component
+
+## Further Reading
+
+- [Domain-Driven Design](https://domainlanguage.com/ddd/)
+- [Flutter Layout Principles](https://flutter.dev/docs/development/ui/layout)
+- [Flutter Theme System](https://flutter.dev/docs/cookbook/design/themes)
+- [Provider Package](https://pub.dev/packages/provider) 

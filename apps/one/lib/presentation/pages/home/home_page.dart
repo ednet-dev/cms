@@ -34,6 +34,9 @@ import '../../widgets/canvas/meta_domain_canvas.dart';
 // Importing domain_selector directly
 import 'domain_selector.dart';
 
+// Import the new semantic layout requirements
+import 'package:ednet_one/presentation/widgets/layout/semantic_layout_requirements.dart';
+
 /// Main application page for EDNet One
 ///
 /// This page serves as the primary entry point for the application interface.
@@ -436,9 +439,11 @@ class HomePageState extends State<HomePage> {
                           // Main layout with improved accessibility and spacing
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               // Top section with improved selector spacing
                               Container(
+                                height: 80,
                                 decoration: BoxDecoration(
                                   color: colorScheme.surface,
                                   border: Border(
@@ -451,13 +456,11 @@ class HomePageState extends State<HomePage> {
                                 ),
                                 padding: EdgeInsets.symmetric(
                                   horizontal: isSmallScreen ? 12.0 : 16.0,
-                                  vertical: 12.0,
+                                  vertical: 8.0,
                                 ),
-                                child: Wrap(
+                                child: SemanticFlowLayout(
                                   spacing: 16.0,
-                                  runSpacing: 16.0,
-                                  alignment: WrapAlignment.start,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  runSpacing: 8.0,
                                   children: [
                                     // Domain selector with improved focus management
                                     Semantics(
