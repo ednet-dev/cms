@@ -1,4 +1,3 @@
-import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
 /// Represents an entity to be rendered on the canvas.

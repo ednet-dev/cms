@@ -13,11 +13,11 @@ class BreadcrumbSeparator extends StatelessWidget {
 
   /// Constructor for BreadcrumbSeparator
   const BreadcrumbSeparator({
-    Key? key,
+    super.key,
     this.icon = Icons.chevron_right,
     this.color,
     this.size = 16,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

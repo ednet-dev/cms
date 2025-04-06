@@ -2,11 +2,9 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
-import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_one/presentation/state/navigation_helper.dart';
+import 'package:ednet_one/presentation/widgets/layout/model_pin_manager_dialog.dart';
 
 /// A component for selecting models in the application
 class ModelSelector extends StatelessWidget {
@@ -45,10 +43,28 @@ class ModelSelector extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+            // Header with Pin Manager button
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(title, style: Theme.of(context).textTheme.titleLarge),
+                  if (modelState.selectedModel != null)
+                    IconButton(
+                      icon: const Icon(Icons.push_pin_outlined),
+                      tooltip: 'Manage Pinned Items',
+                      onPressed: () {
+                        ModelPinManagerDialog.show(
+                          context,
+                          modelState.selectedModel!.code,
+                          title:
+                              'Pinned Items for ${modelState.selectedModel!.code}',
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
 
             // Models list

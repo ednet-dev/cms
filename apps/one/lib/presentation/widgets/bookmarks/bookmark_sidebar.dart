@@ -16,10 +16,10 @@ class BookmarkSidebar extends StatefulWidget {
 
   /// Constructor for BookmarkSidebar
   const BookmarkSidebar({
-    Key? key,
+    super.key,
     this.initiallyCollapsed = false,
     this.onBookmarkSelected,
-  }) : super(key: key);
+  });
 
   @override
   State<BookmarkSidebar> createState() => _BookmarkSidebarState();
@@ -99,7 +99,7 @@ class _BookmarkSidebarState extends State<BookmarkSidebar> {
         if (_isCollapsed) {
           return Container(
             width: 50,
-            color: colorScheme.surfaceVariant.withOpacity(0.5),
+            color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
             child: Column(
               children: [
                 // Expand button
@@ -144,13 +144,13 @@ class _BookmarkSidebarState extends State<BookmarkSidebar> {
         // Full expanded sidebar
         return Container(
           width: 300,
-          color: colorScheme.surfaceVariant.withOpacity(0.5),
+          color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
           child: Column(
             children: [
               // Header with search and collapse button
               Container(
                 padding: const EdgeInsets.all(16.0),
-                color: colorScheme.surfaceVariant,
+                color: colorScheme.surfaceContainerHighest,
                 child: Row(
                   children: [
                     Icon(Icons.bookmarks, color: colorScheme.primary),
@@ -363,7 +363,7 @@ class _BookmarkSidebarState extends State<BookmarkSidebar> {
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  backgroundColor: WidgetStateProperty.all(Colors.red),
                 ),
                 child: const Text('Delete'),
               ),

@@ -63,7 +63,7 @@ class BreadcrumbSegment {
       type: BreadcrumbSegmentType.concept,
       concept: concept,
       model: concept.model,
-      domain: concept.model?.domain,
+      domain: concept.model.domain,
       id: concept.id.toString(),
     );
   }
@@ -83,7 +83,7 @@ class BreadcrumbSegment {
       entity: entity,
       concept: concept,
       model: concept?.model,
-      domain: concept?.model?.domain,
+      domain: concept?.model.domain,
       id: entity.id?.toString(),
     );
   }

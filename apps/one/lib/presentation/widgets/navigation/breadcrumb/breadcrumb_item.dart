@@ -19,13 +19,13 @@ class BreadcrumbItem extends StatelessWidget {
 
   /// Constructor for BreadcrumbItem
   const BreadcrumbItem({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
     this.isActive = false,
     this.showBookmarkButton = false,
     this.onBookmark,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

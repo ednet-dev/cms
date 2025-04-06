@@ -1,5 +1,4 @@
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/presentation/widgets/entity/entity_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
     as header;
@@ -13,6 +12,9 @@ import 'model_detail_page.dart';
 /// This page displays all models within a selected domain and allows
 /// navigation to model detail pages.
 class DomainDetailPage extends StatelessWidget {
+  /// Route name for this page
+  static const String routeName = '/domain-detail';
+
   final Domain domain;
   final List<String> path;
   final void Function(Model model) onModelSelected;

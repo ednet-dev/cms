@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme_constants.dart' hide ThemeTextStyles;
-import '../text_styles.dart';
 import 'theme_component.dart';
 
 /// Cheerful theme component with vibrant colors optimized for Material 3
@@ -135,12 +134,12 @@ class CheerfulThemeComponent implements ThemeComponent {
         brightness == Brightness.light
             ? SystemUiOverlayStyle.dark.copyWith(
               statusBarColor: Colors.transparent,
-              systemNavigationBarColor: colorScheme.background,
+              systemNavigationBarColor: colorScheme.surface,
               systemNavigationBarIconBrightness: Brightness.dark,
             )
             : SystemUiOverlayStyle.light.copyWith(
               statusBarColor: Colors.transparent,
-              systemNavigationBarColor: colorScheme.background,
+              systemNavigationBarColor: colorScheme.surface,
               systemNavigationBarIconBrightness: Brightness.light,
             );
 
@@ -193,7 +192,7 @@ class CheerfulThemeComponent implements ThemeComponent {
           ),
         ),
       ),
-      scaffoldBackgroundColor: colorScheme.background,
+      scaffoldBackgroundColor: colorScheme.surface,
       dialogTheme: DialogTheme(
         backgroundColor: colorScheme.surface,
         elevation: 3,
@@ -302,36 +301,36 @@ class CheerfulThemeComponent implements ThemeComponent {
         unselectedLabelStyle: textTheme.titleSmall,
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.disabled)) {
+        thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
             return colorScheme.onSurface.withOpacity(0.38);
           }
-          if (states.contains(MaterialState.selected)) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
           return colorScheme.outline;
         }),
-        trackColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.disabled)) {
+        trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
             return colorScheme.onSurface.withOpacity(0.12);
           }
-          if (states.contains(MaterialState.selected)) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primaryContainer;
           }
           return colorScheme.surfaceContainerHighest;
         }),
       ),
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.disabled)) {
+        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
             return colorScheme.onSurface.withOpacity(0.38);
           }
-          if (states.contains(MaterialState.selected)) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
           return Colors.transparent;
         }),
-        checkColor: MaterialStateProperty.all(colorScheme.onPrimary),
+        checkColor: WidgetStateProperty.all(colorScheme.onPrimary),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         side: BorderSide(color: colorScheme.outline, width: 1.5),
       ),

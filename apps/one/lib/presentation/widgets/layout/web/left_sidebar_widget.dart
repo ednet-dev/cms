@@ -6,14 +6,14 @@ class LeftSidebarWidget extends StatelessWidget {
   final Concepts entries;
   final void Function(Concept concept) onConceptSelected;
 
-  LeftSidebarWidget({
+  const LeftSidebarWidget({super.key, 
     required this.entries,
     required this.onConceptSelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 200,
       child: ListView.builder(
         itemCount: entries.length,

@@ -9,8 +9,7 @@ class BookmarkFilterButton extends StatelessWidget {
   /// Optional callback when filters are applied
   final Function(List<Bookmark>)? onFiltersApplied;
 
-  const BookmarkFilterButton({Key? key, this.onFiltersApplied})
-    : super(key: key);
+  const BookmarkFilterButton({super.key, this.onFiltersApplied});
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +35,7 @@ class BookmarkFilterDialog extends StatefulWidget {
   /// Optional callback when filters are applied
   final Function(List<Bookmark>)? onFiltersApplied;
 
-  const BookmarkFilterDialog({Key? key, this.onFiltersApplied})
-    : super(key: key);
+  const BookmarkFilterDialog({super.key, this.onFiltersApplied});
 
   @override
   State<BookmarkFilterDialog> createState() => _BookmarkFilterDialogState();

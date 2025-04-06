@@ -32,14 +32,10 @@ class DomainService {
   Concepts getConceptsForModel(Model model) {
     Concepts concepts = Concepts();
     var entryConcepts = model.getOrderedEntryConcepts();
-    if (entryConcepts != null) {
-      for (var concept in entryConcepts) {
-        if (concept is Concept) {
-          concepts.add(concept);
+    for (var concept in entryConcepts) {
+      concepts.add(concept);
         }
-      }
-    }
-    return concepts;
+      return concepts;
   }
 
   /// Get entities for a concept in a model
@@ -49,11 +45,9 @@ class DomainService {
       model.codeFirstLetterLower,
     );
 
-    if (domainModel != null) {
-      var modelEntries = domainModel.getModelEntries(model.code);
-      return modelEntries?.getEntry(concept.code);
-    }
-
+    var modelEntries = domainModel.getModelEntries(model.code);
+    return modelEntries?.getEntry(concept.code);
+  
     return null;
   }
 

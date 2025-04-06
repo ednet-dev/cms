@@ -7,7 +7,7 @@ class BookmarksPage extends StatelessWidget {
   /// The route name for this page
   static const String routeName = '/bookmarks';
 
-  const BookmarksPage({Key? key}) : super(key: key);
+  const BookmarksPage({super.key});
 
   @override
   Widget build(BuildContext context) {

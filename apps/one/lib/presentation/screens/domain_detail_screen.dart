@@ -6,7 +6,12 @@ import 'package:ednet_one/presentation/widgets/layout/web/header_widget.dart'
 import '../widgets/domain/models_widget.dart';
 import '../widgets/layout/web/header_widget.dart';
 import '../pages/model_detail_page.dart';
+import '../pages/domain_detail_page.dart';
 
+/// @deprecated Use DomainDetailPage instead
+/// This class is being phased out as part of the screens to pages migration.
+/// It will be removed in a future release.
+@Deprecated('Use DomainDetailPage instead')
 class DomainDetailScreen extends StatelessWidget {
   final Domain domain;
   final List<String> path;
@@ -18,6 +23,15 @@ class DomainDetailScreen extends StatelessWidget {
     required this.onModelSelected,
   }) : path = ['Home', domain.code];
 
+  @override
+  Widget build(BuildContext context) {
+    // Use DomainDetailPage instead, keeping the same interface for backward compatibility
+    return DomainDetailPage(domain: domain, onModelSelected: onModelSelected);
+  }
+}
+
+// Old implementation kept for reference - will be removed in future
+/*
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,4 +72,4 @@ class DomainDetailScreen extends StatelessWidget {
       ),
     );
   }
-}
+*/

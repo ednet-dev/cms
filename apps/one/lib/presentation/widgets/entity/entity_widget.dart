@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'entity_actions.dart';
-import 'entity_attributes.dart';
 import 'entity_header.dart';
-import 'entity_relationships.dart';
 import 'relationship_navigator.dart';
 
 /// A utility class for extracting entity titles from an Entity
@@ -172,9 +170,6 @@ class EntityWidget extends StatelessWidget {
     try {
       // Access concept to verify it exists
       final concept = entity.concept;
-      if (concept == null) {
-        return _buildErrorDisplay(context, "Entity has no concept defined");
-      }
     } catch (e) {
       return _buildErrorDisplay(
         context,

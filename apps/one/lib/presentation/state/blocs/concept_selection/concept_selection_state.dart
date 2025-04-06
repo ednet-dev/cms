@@ -51,6 +51,7 @@ class ConceptSelectionState extends ednet.ValueObject {
   }
 
   /// Creates a copy of this state with the given fields replaced
+  @override
   ConceptSelectionState copyWith({
     ednet.Concept? selectedConcept,
     ednet.Concepts? availableConcepts,

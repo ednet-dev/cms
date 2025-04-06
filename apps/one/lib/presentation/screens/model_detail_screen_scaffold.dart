@@ -9,8 +9,12 @@ import '../widgets/layout/web/header_widget.dart';
 import '../widgets/entity/entity_widget.dart';
 import '../widgets/entity/entities_widget.dart';
 import '../widgets/bookmarks/bookmark_manager.dart';
-import '../widgets/bookmarks/bookmark_model.dart';
+import '../pages/model_detail_page.dart';
 
+/// @deprecated Use ModelDetailPage instead
+/// This class is being phased out as part of the screens to pages migration.
+/// It will be removed in a future release.
+@Deprecated('Use ModelDetailPage instead')
 class ModelDetailScreenScaffold extends StatelessWidget {
   final Domain domain;
   final Model model;
@@ -25,6 +29,20 @@ class ModelDetailScreenScaffold extends StatelessWidget {
     required this.onEntitySelected,
   });
 
+  @override
+  Widget build(BuildContext context) {
+    // Use ModelDetailPage instead, keeping the same interface for backward compatibility
+    return ModelDetailPage(
+      domain: domain,
+      model: model,
+      path: path.length > 1 ? path.sublist(0, path.length - 2) : path,
+      onEntitySelected: onEntitySelected,
+    );
+  }
+}
+
+// Old implementation kept for reference - will be removed in future
+/*
   @override
   Widget build(BuildContext context) {
     final bookmarkManager = Provider.of<BookmarkManager>(
@@ -76,4 +94,4 @@ class ModelDetailScreenScaffold extends StatelessWidget {
       ),
     );
   }
-}
+*/

@@ -9,18 +9,28 @@ import '../widgets/layout/web/header_widget.dart';
 import '../widgets/entity/entity_widget.dart';
 import '../widgets/entity/entities_widget.dart';
 import '../widgets/bookmarks/bookmark_manager.dart';
-import '../widgets/bookmarks/bookmark_model.dart';
 
 /// Model detail page displaying concepts from a specific model
 ///
 /// This page shows the detailed view of a model, including all its concepts,
 /// and allows navigation to entity details.
 class ModelDetailPage extends StatelessWidget {
+  /// Route name for this page
+  static const String routeName = '/model-detail';
+
+  /// The domain containing the model
   final Domain domain;
+
+  /// The model to display details for
   final Model model;
+
+  /// Navigation path
   final List<String> path;
+
+  /// Callback for when an entity is selected
   final void Function(Entity entity) onEntitySelected;
 
+  /// Creates a model detail page
   const ModelDetailPage({
     super.key,
     required this.domain,

@@ -6,9 +6,10 @@ import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_model.dart';
 import 'package:ednet_one/presentation/widgets/navigation/breadcrumb/breadcrumb_item.dart';
 import 'package:ednet_one/presentation/widgets/navigation/breadcrumb/breadcrumb_separator.dart';
 import 'package:ednet_one/presentation/widgets/navigation/breadcrumb/breadcrumb_path.dart';
+import 'dart:async';
 
 /// A navigable breadcrumb trail for the application
-class BreadcrumbWidget extends StatelessWidget {
+class BreadcrumbWidget extends StatefulWidget {
   /// The current domain (if any)
   final Domain? domain;
 
@@ -51,24 +52,79 @@ class BreadcrumbWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    // Use provided segments or create path from domain/model/concept/entity
-    List<BreadcrumbSegment> breadcrumbPath;
+  State<BreadcrumbWidget> createState() => _BreadcrumbWidgetState();
+}
+
+class _BreadcrumbWidgetState extends State<BreadcrumbWidget> {
+  final ScrollController _scrollController = ScrollController();
+  List<BreadcrumbSegment> _breadcrumbPath = [];
+  bool _isInitialized = false;
+  bool _isUpdating = false;
+  Timer? _updateDebouncer;
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleUpdate();
+  }
+
+  @override
+  void didUpdateWidget(BreadcrumbWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_isUpdating && _shouldUpdatePath(oldWidget)) {
+      _scheduleUpdate();
+    }
+  }
+
+  @override
+  void dispose() {
+    _updateDebouncer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  bool _shouldUpdatePath(BreadcrumbWidget oldWidget) {
+    return oldWidget.domain != widget.domain ||
+        oldWidget.model != widget.model ||
+        oldWidget.concept != widget.concept ||
+        oldWidget.entity != widget.entity ||
+        oldWidget.segments != widget.segments ||
+        oldWidget.entityLabel != widget.entityLabel;
+  }
+
+  void _scheduleUpdate() {
+    _updateDebouncer?.cancel();
+    _updateDebouncer = Timer(const Duration(milliseconds: 50), () {
+      if (mounted) {
+        _isUpdating = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _updateBreadcrumbPath();
+            _isUpdating = false;
+          }
+        });
+      }
+    });
+  }
+
+  void _updateBreadcrumbPath() {
+    if (!mounted) return;
 
     try {
-      breadcrumbPath =
-          segments ??
+      final newPath =
+          widget.segments ??
           BreadcrumbSegment.createPath(
-            domain: domain,
-            model: model,
-            concept: concept,
-            entity: entity,
-            entityLabel: entityLabel ?? _getEntityLabel(entity),
+            domain: widget.domain,
+            model: widget.model,
+            concept: widget.concept,
+            entity: widget.entity,
+            entityLabel: widget.entityLabel ?? _getEntityLabel(widget.entity),
           );
 
-      // Validate each segment to ensure it has proper references
-      breadcrumbPath =
-          breadcrumbPath.where((segment) {
+      if (!mounted) return;
+
+      final validatedPath =
+          newPath.where((segment) {
             switch (segment.type) {
               case BreadcrumbSegmentType.model:
                 return segment.model?.domain != null;
@@ -80,63 +136,123 @@ class BreadcrumbWidget extends StatelessWidget {
                 return true;
             }
           }).toList();
+
+      setState(() {
+        _breadcrumbPath = validatedPath;
+        _isInitialized = true;
+      });
     } catch (e) {
-      debugPrint('Error creating breadcrumb path: $e');
-      breadcrumbPath = [];
+      debugPrint('Error updating breadcrumb path: $e');
+      if (!mounted) return;
+      setState(() {
+        _breadcrumbPath = [];
+        _isInitialized = true;
+      });
     }
+  }
 
-    if (breadcrumbPath.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          constraints: BoxConstraints(
-            maxWidth: constraints.maxWidth,
-            minHeight: 48.0,
+  @override
+  Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return SizedBox(
+        height: 48.0,
+        child: Center(
+          child: Container(
+            width: double.infinity,
+            height: 48.0,
+            color: Theme.of(context).scaffoldBackgroundColor,
           ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (int i = 0; i < breadcrumbPath.length; i++) ...[
-                  if (i > 0) const BreadcrumbSeparator(),
-                  _buildBreadcrumbItem(
-                    context,
-                    breadcrumbPath[i],
-                    i == breadcrumbPath.length - 1,
-                  ),
-                ],
-              ],
+        ),
+      );
+    }
+
+    if (_breadcrumbPath.isEmpty) {
+      return SizedBox(
+        height: 48.0,
+        child: Center(
+          child: Container(
+            width: double.infinity,
+            height: 48.0,
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+        ),
+      );
+    }
+
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            height: 48.0,
+            constraints: BoxConstraints(
+              maxWidth: constraints.maxWidth,
+              minHeight: 48.0,
             ),
-          ),
-        );
-      },
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                scrollbars: false,
+                physics: const NeverScrollableScrollPhysics(),
+                dragDevices: const {},
+              ),
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                physics: const ClampingScrollPhysics(),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.basic,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        for (int i = 0; i < _breadcrumbPath.length; i++) ...[
+                          if (i > 0) const BreadcrumbSeparator(),
+                          _buildBreadcrumbItem(
+                            context,
+                            _breadcrumbPath[i],
+                            i == _breadcrumbPath.length - 1,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
-  /// Build an individual breadcrumb item
   Widget _buildBreadcrumbItem(
     BuildContext context,
     BreadcrumbSegment segment,
     bool isLast,
   ) {
-    return BreadcrumbItem(
-      label: segment.label,
-      isActive: isLast,
-      showBookmarkButton: isLast,
-      onTap: () {
-        if (onSegmentTapped != null) {
-          onSegmentTapped!(segment);
-        } else {
-          _handleNavigation(context, segment);
-        }
-      },
-      onBookmark:
-          isLast ? () => _bookmarkCurrentLocation(context, segment) : null,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: BreadcrumbItem(
+        label: segment.label,
+        isActive: isLast,
+        showBookmarkButton: isLast && widget.bookmarkManager != null,
+        onTap: () {
+          if (!_isUpdating) {
+            if (widget.onSegmentTapped != null) {
+              widget.onSegmentTapped!(segment);
+            } else {
+              _handleNavigation(context, segment);
+            }
+          }
+        },
+        onBookmark:
+            isLast && widget.bookmarkManager != null
+                ? () => _bookmarkCurrentLocation(context, segment)
+                : null,
+      ),
     );
   }
 
@@ -183,19 +299,19 @@ class BreadcrumbWidget extends StatelessWidget {
     BreadcrumbSegment segment,
   ) {
     // Use the getter to get the full path string
-    final path = breadcrumbPath;
+    final path = _breadcrumbPath.map((s) => s.label).join(' > ');
     final bookmark = Bookmark(
       title: '${segment.label} (${segment.type.name})',
       url: path,
       category: BookmarkCategory.general,
     );
 
-    if (bookmarkManager != null) {
-      bookmarkManager!.addBookmark(bookmark);
+    if (widget.bookmarkManager != null) {
+      widget.bookmarkManager!.addBookmark(bookmark);
     }
 
-    if (onBookmarkCreated != null) {
-      onBookmarkCreated!(bookmark);
+    if (widget.onBookmarkCreated != null) {
+      widget.onBookmarkCreated!(bookmark);
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -244,16 +360,7 @@ class BreadcrumbWidget extends StatelessWidget {
 
   /// Generate a URL-like path string for the current location
   String get breadcrumbPath {
-    final pathSegments =
-        segments ??
-        BreadcrumbSegment.createPath(
-          domain: domain,
-          model: model,
-          concept: concept,
-          entity: entity,
-          entityLabel: entityLabel ?? _getEntityLabel(entity),
-        );
-
+    final pathSegments = _breadcrumbPath;
     return pathSegments.map((s) => s.label).join(' > ');
   }
 }

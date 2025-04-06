@@ -27,7 +27,7 @@ class BookmarkCategorySection extends StatefulWidget {
 
   /// Constructor for BookmarkCategorySection
   const BookmarkCategorySection({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
     required this.bookmarks,
@@ -35,7 +35,7 @@ class BookmarkCategorySection extends StatefulWidget {
     required this.onBookmarkEdit,
     required this.onBookmarkDelete,
     required this.onBookmarkFavoriteToggle,
-  }) : super(key: key);
+  });
 
   @override
   State<BookmarkCategorySection> createState() =>

@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_state.dart';
 import 'package:ednet_one/presentation/theme/theme_components/custom_colors.dart';
-import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
-import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_one/presentation/state/navigation_helper.dart';
 
 /// Component for the application's main navigation drawer

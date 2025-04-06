@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ednet_core/ednet_core.dart';
 
 /// Widget for displaying entries in a sidebar
 ///
@@ -20,7 +19,7 @@ class SidebarEntriesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 200,
       child: ListView.builder(
         itemCount: entries.length,

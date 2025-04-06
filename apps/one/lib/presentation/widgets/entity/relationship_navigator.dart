@@ -525,7 +525,7 @@ class _RelationshipNavigatorState extends State<RelationshipNavigator> {
               ),
           ],
         );
-      }).toList(),
+      }),
     ];
   }
 

@@ -63,7 +63,6 @@ class _EntitiesWidgetState extends State<EntitiesWidget> {
 
       try {
         final concept = entity.concept;
-        if (concept == null) continue;
 
         final attrs = concept.attributes;
 

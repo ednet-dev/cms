@@ -19,6 +19,7 @@ class DomainSelectionState extends ValueObject {
       DomainSelectionState(selectedDomain: null, allDomains: Domains());
 
   /// Creates a copy of this state with the given fields replaced
+  @override
   DomainSelectionState copyWith({Domain? selectedDomain, Domains? allDomains}) {
     return DomainSelectionState(
       selectedDomain: selectedDomain ?? this.selectedDomain,

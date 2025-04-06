@@ -4,7 +4,6 @@ import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
 import '../layout/graph/components/node.dart';
-import '../layout/graph/components/position_component.dart';
 import '../layout/graph/components/system.dart';
 import '../layout/graph/decorators/u_x_decorator.dart';
 import '../layout/graph/layout/layout_algorithm.dart';

@@ -5,7 +5,7 @@ class DomainsWidget extends StatelessWidget {
   final Domains domains;
   final void Function(Domain domain)? onDomainSelected;
 
-  DomainsWidget({required this.domains, this.onDomainSelected});
+  const DomainsWidget({super.key, required this.domains, this.onDomainSelected});
 
   @override
   Widget build(BuildContext context) {

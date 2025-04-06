@@ -7,7 +7,7 @@ class BookmarkDialog extends StatefulWidget {
   final Bookmark? bookmark;
 
   /// Constructor for BookmarkDialog
-  const BookmarkDialog({Key? key, this.bookmark}) : super(key: key);
+  const BookmarkDialog({super.key, this.bookmark});
 
   @override
   State<BookmarkDialog> createState() => _BookmarkDialogState();

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../layout/graph/components/node.dart';
 import '../../layout/graph/components/position_component.dart';
-import '../../layout/graph/components/system.dart';
 
 /// A painter specifically responsible for painting entity nodes in the canvas.
 ///

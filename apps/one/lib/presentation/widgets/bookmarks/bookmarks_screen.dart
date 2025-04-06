@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'bookmark_model.dart';
 import 'bookmark_manager.dart';
-import 'bookmark_category_section.dart';
 import 'bookmark_dialog.dart';
 import 'bookmark_filter.dart';
 
 /// A full screen for browsing and managing bookmarks
 class BookmarksScreen extends StatefulWidget {
   /// Constructor for BookmarksScreen
-  const BookmarksScreen({Key? key}) : super(key: key);
+  const BookmarksScreen({super.key});
 
   @override
   State<BookmarksScreen> createState() => _BookmarksScreenState();
@@ -457,7 +456,7 @@ class _BookmarksScreenState extends State<BookmarksScreen>
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  backgroundColor: WidgetStateProperty.all(Colors.red),
                 ),
                 child: const Text('Delete'),
               ),

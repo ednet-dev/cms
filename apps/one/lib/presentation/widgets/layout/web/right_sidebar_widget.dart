@@ -5,14 +5,14 @@ class RightSidebarWidget extends StatelessWidget {
   final Models models;
   final void Function(Model model) onModelSelected;
 
-  RightSidebarWidget({
+  const RightSidebarWidget({super.key, 
     required this.models,
     required this.onModelSelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 200,
       child: ListView.builder(
         itemCount: models.length,

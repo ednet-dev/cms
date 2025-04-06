@@ -49,13 +49,11 @@ class ConceptSelectionBloc
         // First try to get ordered entry concepts
         try {
           var orderedConcepts = model.getOrderedEntryConcepts();
-          if (orderedConcepts != null && orderedConcepts.isNotEmpty) {
+          if (orderedConcepts.isNotEmpty) {
             entryConcepts = ednet.Concepts();
             for (var concept in orderedConcepts) {
-              if (concept is ednet.Concept) {
-                entryConcepts.add(concept);
-              }
-            }
+              entryConcepts.add(concept);
+                        }
           }
         } catch (e) {
           debugPrint('Error getting ordered entry concepts: $e');
@@ -160,12 +158,10 @@ class ConceptSelectionBloc
             );
             entities = modelEntries.getEntry(concept.code);
             debugPrint(
-              '🔍 Found ${entities?.length ?? 0} entities for concept: ${concept.code}',
+              '🔍 Found ${entities.length ?? 0} entities for concept: ${concept.code}',
             );
-            if (entities != null) {
-              debugPrint('🔍 First entity: ${entities.first.oid}');
-            }
-          } catch (e) {
+            debugPrint('🔍 First entity: ${entities.first.oid}');
+                    } catch (e) {
             debugPrint(
               '❌ Error getting entities for concept ${concept.code}: $e',
             );
@@ -205,10 +201,6 @@ class ConceptSelectionBloc
     RefreshConceptEvent event,
     Emitter<ConceptSelectionState> emit,
   ) {
-    if (event.concept == null) return;
-
-    // This is a refresh event for an already selected concept
-    // We need to fetch its entities again
     try {
       debugPrint('Refreshing entities for concept: ${event.concept.code}');
 
@@ -219,16 +211,14 @@ class ConceptSelectionBloc
 
         // If your concept has a related model, you might need to find it
         final model = event.concept.model;
-        if (model != null) {
-          debugPrint(
-            'Found model: ${model.code} for concept: ${event.concept.code}',
-          );
+        debugPrint(
+          'Found model: ${model.code} for concept: ${event.concept.code}',
+        );
 
-          // Simply force a selection of the same concept again
-          // This should trigger the normal entity loading process
-          _onSelectConcept(SelectConceptEvent(event.concept), emit);
-        }
-      }
+        // Simply force a selection of the same concept again
+        // This should trigger the normal entity loading process
+        _onSelectConcept(SelectConceptEvent(event.concept), emit);
+            }
     } catch (e, stack) {
       debugPrint('Error refreshing entities: $e');
       debugPrint('Stack trace: $stack');

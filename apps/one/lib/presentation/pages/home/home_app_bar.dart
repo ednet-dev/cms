@@ -6,6 +6,9 @@ import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_event.dart';
 import 'package:ednet_one/presentation/state/blocs/theme_bloc/theme_state.dart';
 import 'package:ednet_one/presentation/theme/theme.dart';
 import 'package:ednet_one/presentation/theme/theme_constants.dart';
+import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
+import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
+import 'package:ednet_one/presentation/widgets/layout/user_layout_settings.dart';
 
 /// Component for the application's main app bar with navigation and actions
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -53,6 +56,13 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             icon: const Icon(Icons.bookmarks),
             onPressed: () => _navigateToBookmarks(context),
           ),
+        ),
+
+        // User Layout Settings button
+        BlocBuilder<ModelSelectionBloc, ModelSelectionState>(
+          builder:
+              (context, state) =>
+                  UserLayoutSettings(modelCode: state.selectedModel?.code),
         ),
 
         // Theme selector dropdown

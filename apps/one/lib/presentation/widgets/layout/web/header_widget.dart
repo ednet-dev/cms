@@ -35,7 +35,7 @@ class HeaderWidget extends StatelessWidget {
 
   /// Constructor for HeaderWidget
   const HeaderWidget({
-    Key? key,
+    super.key,
     this.filters = const [],
     required this.onAddFilter,
     required this.onBookmark,
@@ -43,7 +43,7 @@ class HeaderWidget extends StatelessWidget {
     this.onBookmarkCreated,
     this.path,
     this.onPathSegmentTapped,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,7 @@ class HeaderWidget extends StatelessWidget {
                               color: colorScheme.onSurfaceVariant,
                             ),
                           ),
-                          backgroundColor: colorScheme.surfaceVariant,
+                          backgroundColor: colorScheme.surfaceContainerHighest,
                           onDeleted: () {
                             // Handle filter removal
                           },

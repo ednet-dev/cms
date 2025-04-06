@@ -70,7 +70,7 @@ class DomainModelEditorCanvas extends StatefulWidget {
   final ednet.Domain domain;
   final ednet.Model model;
 
-  DomainModelEditorCanvas({required this.domain, required this.model});
+  const DomainModelEditorCanvas({super.key, required this.domain, required this.model});
 
   @override
   _DomainModelEditorCanvasState createState() =>
@@ -79,7 +79,7 @@ class DomainModelEditorCanvas extends StatefulWidget {
 
 class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
   late DomainModelGraph graph;
-  TransformationController _transformationController =
+  final TransformationController _transformationController =
       TransformationController();
   bool _isAddingConcept = false;
   DomainGraphNode? _selectedNode;
@@ -287,8 +287,8 @@ class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
           bottom: 16,
           child: FloatingActionButton(
             onPressed: _addConcept,
-            child: Icon(Icons.add),
             tooltip: 'Add Concept',
+            child: Icon(Icons.add),
           ),
         ),
       ],

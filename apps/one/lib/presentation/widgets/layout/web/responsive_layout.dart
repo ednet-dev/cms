@@ -6,11 +6,11 @@ class ResponsiveLayout extends StatelessWidget {
   final Widget smallScreen;
 
   const ResponsiveLayout({
-    Key? key,
+    super.key,
     required this.largeScreen,
     this.mediumScreen,
     required this.smallScreen,
-  }) : super(key: key);
+  });
 
   static int tabletBreakpoint = 768;
   static int desktopBreakpoint = 1440;

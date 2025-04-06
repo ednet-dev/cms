@@ -26,7 +26,7 @@ class BookmarkItem extends StatelessWidget {
 
   /// Constructor for BookmarkItem
   const BookmarkItem({
-    Key? key,
+    super.key,
     required this.bookmark,
     this.onPressed,
     this.onEdit,
@@ -34,7 +34,7 @@ class BookmarkItem extends StatelessWidget {
     this.onToggleFavorite,
     this.isFavorite = false,
     this.showActions = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class BookmarkItem extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: colorScheme.surfaceVariant.withOpacity(0.3),
+      color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
       margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: InkWell(
         onTap: onPressed,

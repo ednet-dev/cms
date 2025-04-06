@@ -65,7 +65,7 @@ class FilterButton extends StatelessWidget {
                     minHeight: 16,
                   ),
                   child: Text(
-                    activeFilter!.activeCriteria.length.toString(),
+                    activeFilter.activeCriteria.length.toString(),
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onError,
                       fontSize: 10,

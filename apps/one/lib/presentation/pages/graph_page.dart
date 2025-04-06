@@ -9,6 +9,8 @@ import '../../generated/one_application.dart';
 /// This page provides a visual representation of domains, models, and their concepts
 /// using an interactive graph view that allows zooming and panning.
 class GraphPage extends StatelessWidget {
+  const GraphPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +23,7 @@ class GraphPage extends StatelessWidget {
 class GraphWidget extends StatelessWidget {
   final Graph graph = Graph();
 
-  GraphWidget() {
+  GraphWidget({super.key}) {
     OneApplication app = OneApplication();
     _buildGraph(app.groupedDomains);
   }

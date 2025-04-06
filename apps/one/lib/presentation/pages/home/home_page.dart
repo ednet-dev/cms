@@ -28,7 +28,6 @@ import 'model_selector.dart';
 // Layout components
 import '../../widgets/layout/graph/algorithms/master_detail_layout_algorithm.dart';
 import '../../widgets/layout/web/footer_widget.dart';
-import '../../widgets/layout/web/header_widget.dart';
 import '../../widgets/layout/web/main_content_widget.dart';
 import '../../widgets/canvas/meta_domain_canvas.dart';
 

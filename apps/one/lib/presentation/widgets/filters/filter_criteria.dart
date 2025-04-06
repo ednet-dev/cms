@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 /// Operator types for filter conditions
 enum FilterOperator {

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'bookmark_model.dart';

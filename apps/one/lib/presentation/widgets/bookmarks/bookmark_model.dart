@@ -49,8 +49,8 @@ class Bookmark {
     this.model,
     this.concept,
     this.entity,
-  }) : this.id = id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-       this.createdAt = createdAt ?? DateTime.now();
+  }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+       createdAt = createdAt ?? DateTime.now();
 
   /// Create a copy of this bookmark with specified attributes changed
   Bookmark copyWith({
@@ -61,17 +61,17 @@ class Bookmark {
     String? description,
   }) {
     return Bookmark(
-      id: this.id,
+      id: id,
       title: title ?? this.title,
       url: url ?? this.url,
       category: category ?? this.category,
-      createdAt: this.createdAt,
+      createdAt: createdAt,
       icon: icon ?? this.icon,
       description: description ?? this.description,
-      domain: this.domain,
-      model: this.model,
-      concept: this.concept,
-      entity: this.entity,
+      domain: domain,
+      model: model,
+      concept: concept,
+      entity: entity,
     );
   }
 

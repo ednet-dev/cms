@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'filter_criteria.dart';
 
 /// A saved filter configuration that can be applied quickly

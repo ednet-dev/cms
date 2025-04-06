@@ -17,7 +17,6 @@ import 'presentation/navigation/navigation_service.dart';
 import 'presentation/pages/bookmarks_page.dart';
 import 'presentation/pages/home/home_page.dart';
 import 'presentation/state/blocs/theme_bloc/theme_bloc.dart';
-import 'presentation/state/blocs/theme_bloc/theme_state.dart';
 import 'presentation/theme/theme_service.dart';
 import 'presentation/state/providers/domain_service.dart';
 
