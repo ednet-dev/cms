@@ -5,9 +5,14 @@ import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_sel
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_state.dart';
 import 'package:ednet_one/presentation/state/navigation_helper.dart';
-import 'package:ednet_one/presentation/widgets/layout/semantic_layout_requirements.dart';
+import 'package:ednet_one/presentation/widgets/semantic_concept_container.dart';
+import 'package:ednet_one/presentation/theme/providers/theme_provider.dart';
+import 'package:ednet_one/presentation/theme/extensions/theme_spacing.dart';
 
 /// A component for selecting concepts in the application
+///
+/// Follows the Holy Trinity architecture by using semantic concept containers
+/// and applying theme styling based on concept semantics.
 class ConceptSelector extends StatefulWidget {
   /// Optional callback when a concept is selected
   final Function(Concept)? onConceptSelected;
@@ -46,118 +51,201 @@ class _ConceptSelectorState extends State<ConceptSelector> {
         final availableConcepts = conceptState.availableConcepts;
 
         if (availableConcepts.isEmpty) {
-          return Center(
+          return SemanticConceptContainer(
+            conceptType: 'ConceptSelectorEmpty',
             child: Text(
               widget.emptyMessage,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: context.conceptTextStyle('Concept', role: 'empty'),
             ),
           );
         }
 
-        return SemanticLayoutContainer(
-          conceptType: 'Concept',
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+        // Use LayoutBuilder to make responsive decisions
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            // Determine if we should use a compact layout
+            final bool useCompactLayout = constraints.maxWidth < 600;
+
+            return SemanticConceptContainer(
+              conceptType: 'ConceptSelector',
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header with title
+                  _buildHeader(context),
+
+                  // Search box
+                  _buildSearchBox(context, conceptState),
+
+                  // Choose between compact dropdown or full list view
+                  useCompactLayout
+                      ? _buildCompactSelector(context, conceptState)
+                      : _buildConceptList(context, conceptState, constraints),
+                ],
               ),
-
-              // Search box (optional)
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: _SearchBox(
-                  onSearch: (query) {
-                    // Actually implement the search functionality
-                    if (query.trim().isEmpty) {
-                      // If query is empty, reset to show all concepts
-                      context.read<ConceptSelectionBloc>().add(
-                        UpdateConceptsForModelEvent(conceptState.model!),
-                      );
-                    } else {
-                      // Filter concepts based on the query
-                      final filteredConcepts = Concepts();
-                      for (var concept in conceptState.availableConcepts) {
-                        if (concept.code.toLowerCase().contains(
-                          query.toLowerCase(),
-                        )) {
-                          filteredConcepts.add(concept);
-                        }
-                      }
-
-                      // Update the state with filtered concepts
-                      context
-                          .read<ConceptSelectionBloc>()
-                          .updateConceptsDirectly(filteredConcepts);
-                    }
-                  },
-                ),
-              ),
-
-              // Concepts list with fixed height and scrollbar
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  // Safely calculate list height, ensuring it's always positive
-                  final headersHeight =
-                      120.0; // Combined height of header and search
-                  final availableHeight = constraints.maxHeight;
-                  final listHeight =
-                      (availableHeight > headersHeight)
-                          ? availableHeight - headersHeight
-                          : 200.0; // Default safe height if calculation would be negative
-
-                  return SizedBox(
-                    height: listHeight.clamp(
-                      100.0,
-                      250.0,
-                    ), // Constrain between 100 and 250
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        itemCount: availableConcepts.length,
-                        itemBuilder: (context, index) {
-                          final concept = availableConcepts.elementAt(index);
-                          final isSelected =
-                              concept == conceptState.selectedConcept;
-
-                          return _ConceptListItem(
-                            concept: concept,
-                            isSelected: isSelected,
-                            onTap: () {
-                              // Use the centralized navigation helper
-                              NavigationHelper.navigateToConcept(
-                                context,
-                                concept,
-                              );
-
-                              // Call optional callback
-                              if (widget.onConceptSelected != null) {
-                                widget.onConceptSelected!(concept);
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
+    );
+  }
+
+  /// Build the header section with title
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(context.spacingS),
+      child: Text(
+        widget.title,
+        style: context.conceptTextStyle('ConceptSelector', role: 'title'),
+      ),
+    );
+  }
+
+  /// Build the search box
+  Widget _buildSearchBox(
+    BuildContext context,
+    ConceptSelectionState conceptState,
+  ) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: context.spacingS,
+        vertical: context.spacingXs,
+      ),
+      child: _SearchBox(
+        onSearch: (query) {
+          if (query.trim().isEmpty) {
+            // If query is empty, reset to show all concepts
+            context.read<ConceptSelectionBloc>().add(
+              UpdateConceptsForModelEvent(conceptState.model!),
+            );
+          } else {
+            // Filter concepts based on the query
+            final filteredConcepts = Concepts();
+            for (var concept in conceptState.availableConcepts) {
+              if (concept.code.toLowerCase().contains(query.toLowerCase())) {
+                filteredConcepts.add(concept);
+              }
+            }
+
+            // Update the state with filtered concepts
+            context.read<ConceptSelectionBloc>().updateConceptsDirectly(
+              filteredConcepts,
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  /// Build a compact dropdown selector for narrow layouts
+  Widget _buildCompactSelector(
+    BuildContext context,
+    ConceptSelectionState conceptState,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(context.spacingXs),
+      margin: EdgeInsets.symmetric(horizontal: context.spacingM),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: context.conceptColor('Concept', role: 'border'),
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: DropdownButton<Concept>(
+        value:
+            conceptState.selectedConcept ??
+            conceptState.availableConcepts.first,
+        underline: const SizedBox.shrink(),
+        icon: Icon(
+          Icons.arrow_drop_down,
+          color: context.conceptColor('Concept'),
+        ),
+        isExpanded: true,
+        onChanged: (Concept? newValue) {
+          if (newValue != null) {
+            NavigationHelper.navigateToConcept(context, newValue);
+
+            if (widget.onConceptSelected != null) {
+              widget.onConceptSelected!(newValue);
+            }
+          }
+        },
+        items:
+            conceptState.availableConcepts.map((Concept concept) {
+              return DropdownMenuItem<Concept>(
+                value: concept,
+                child: Row(
+                  children: [
+                    Icon(
+                      concept.entry ? Icons.star : Icons.category,
+                      size: 16,
+                      color:
+                          concept.entry
+                              ? Colors.amber
+                              : context.conceptColor('Concept', role: 'icon'),
+                    ),
+                    SizedBox(width: context.spacingXs),
+                    Expanded(
+                      child: Text(
+                        concept.code,
+                        style: context.conceptTextStyle(
+                          'Concept',
+                          role: 'title',
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+      ),
+    );
+  }
+
+  /// Build a scrollable list of concepts for wider layouts
+  Widget _buildConceptList(
+    BuildContext context,
+    ConceptSelectionState conceptState,
+    BoxConstraints constraints,
+  ) {
+    // Calculate appropriate list height
+    final headersHeight = 100.0; // Combined height of header and search
+    final availableHeight = constraints.maxHeight;
+    final listHeight =
+        availableHeight > headersHeight
+            ? availableHeight - headersHeight
+            : 200.0;
+
+    return Container(
+      height: listHeight.clamp(100.0, 250.0),
+      padding: EdgeInsets.symmetric(horizontal: context.spacingS),
+      child: SemanticConceptContainer(
+        conceptType: 'ConceptList',
+        scrollable: true,
+        scrollController: _scrollController,
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: conceptState.availableConcepts.length,
+          itemBuilder: (context, index) {
+            final concept = conceptState.availableConcepts.elementAt(index);
+            final isSelected = concept == conceptState.selectedConcept;
+
+            return _ConceptListItem(
+              concept: concept,
+              isSelected: isSelected,
+              onTap: () {
+                NavigationHelper.navigateToConcept(context, concept);
+
+                if (widget.onConceptSelected != null) {
+                  widget.onConceptSelected!(concept);
+                }
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -178,44 +266,49 @@ class _ConceptListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEntryPoint = concept.entry;
 
-    return ListTile(
-      title: Text(
-        concept.code,
-        style: TextStyle(
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+    return SemanticConceptContainer(
+      conceptType: 'Concept',
+      child: ListTile(
+        title: Text(
+          concept.code,
+          style: context.conceptTextStyle(
+            'Concept',
+            role: isSelected ? 'selected' : 'default',
+          ),
         ),
-      ),
-      subtitle: Text(
-        isEntryPoint
-            ? 'Entry Point'
-            : concept.parents.isNotEmpty
-            ? 'Parents: ${concept.parents.map((p) => p.code).join(", ")}'
-            : 'No parents',
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      selected: isSelected,
-      selectedTileColor: Theme.of(
-        context,
-      ).colorScheme.primaryContainer.withValues(alpha: 51),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      onTap: onTap,
-      leading: Icon(
-        isEntryPoint ? Icons.star : Icons.category,
-        color:
+        subtitle: Text(
+          isEntryPoint
+              ? 'Entry Point'
+              : concept.parents.isNotEmpty
+              ? 'Parents: ${concept.parents.map((p) => p.code).join(", ")}'
+              : 'No parents',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: context.conceptTextStyle('Concept', role: 'description'),
+        ),
+        selected: isSelected,
+        selectedTileColor: context
+            .conceptColor('Concept', role: 'selectedBackground')
+            .withValues(alpha: 51),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        onTap: onTap,
+        leading: Icon(
+          isEntryPoint ? Icons.star : Icons.category,
+          color:
+              isSelected
+                  ? context.conceptColor('Concept', role: 'selected')
+                  : isEntryPoint
+                  ? Colors.amber
+                  : context.conceptColor('Concept', role: 'icon'),
+        ),
+        trailing:
             isSelected
-                ? Theme.of(context).colorScheme.primary
-                : isEntryPoint
-                ? Colors.amber
-                : Theme.of(context).colorScheme.onSurfaceVariant,
+                ? Icon(
+                  Icons.check_circle,
+                  color: context.conceptColor('Concept', role: 'selected'),
+                )
+                : null,
       ),
-      trailing:
-          isSelected
-              ? Icon(
-                Icons.check_circle,
-                color: Theme.of(context).colorScheme.primary,
-              )
-              : null,
     );
   }
 }
@@ -241,21 +334,29 @@ class _SearchBoxState extends State<_SearchBox> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: InputDecoration(
-        hintText: 'Search concepts...',
-        prefixIcon: const Icon(Icons.search),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
+    return SemanticConceptContainer(
+      conceptType: 'ConceptSearch',
+      child: TextField(
+        controller: _controller,
+        decoration: InputDecoration(
+          hintText: 'Search concepts...',
+          prefixIcon: Icon(
+            Icons.search,
+            color: context.conceptColor('ConceptSearch', role: 'icon'),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(
+              color: context.conceptColor('ConceptSearch', role: 'border'),
+            ),
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: context.spacingXs),
+          isDense: true,
+          filled: true,
+          fillColor: context.conceptColor('ConceptSearch', role: 'background'),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-        isDense: true,
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.surface,
+        onChanged: widget.onSearch,
       ),
-      onChanged: widget.onSearch,
     );
   }
 }

@@ -19,3 +19,6 @@ class SelectModelEvent extends ModelSelectionEvent {
 
   SelectModelEvent(this.model);
 }
+
+/// Event to clear the model selection
+class ClearModelSelectionEvent extends ModelSelectionEvent {}

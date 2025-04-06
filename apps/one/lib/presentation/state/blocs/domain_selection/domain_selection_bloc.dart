@@ -17,6 +17,8 @@ class DomainSelectionBloc
     on<InitializeDomainSelectionEvent>(_onInitialize);
     on<LoadDomainsEvent>(_onLoadDomains);
     on<SelectDomainEvent>(_onSelectDomain);
+    on<RefreshDomainsEvent>(_onRefreshDomains);
+    on<ClearDomainSelectionEvent>(_onClearDomainSelection);
   }
 
   /// Handle initialization event
@@ -99,6 +101,48 @@ class DomainSelectionBloc
         availableDomains: domains,
         selectedDomain: state.selectedDomain,
         selectedModels: state.selectedModels,
+      ),
+    );
+  }
+
+  /// Handle domain refresh event
+  void _onRefreshDomains(
+    RefreshDomainsEvent event,
+    Emitter<DomainSelectionState> emit,
+  ) {
+    try {
+      // Re-fetch grouped domains from the application
+      final domains = app.groupedDomains;
+
+      // Keep the current selection if it still exists in the refreshed domains
+      final selectedDomain = state.selectedDomain;
+      final domainStillExists =
+          selectedDomain != null &&
+          domains.any((domain) => domain.code == selectedDomain.code);
+
+      emit(
+        DomainSelectionState(
+          selectedDomain: domainStillExists ? selectedDomain : null,
+          availableDomains: domains,
+          selectedModels: domainStillExists ? state.selectedModels : null,
+        ),
+      );
+    } catch (e) {
+      // Log the error in a production app
+      emit(state);
+    }
+  }
+
+  /// Handle clearing the domain selection
+  void _onClearDomainSelection(
+    ClearDomainSelectionEvent event,
+    Emitter<DomainSelectionState> emit,
+  ) {
+    emit(
+      DomainSelectionState(
+        selectedDomain: null,
+        availableDomains: state.availableDomains,
+        selectedModels: null,
       ),
     );
   }

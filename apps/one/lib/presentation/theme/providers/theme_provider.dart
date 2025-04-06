@@ -103,6 +103,11 @@ class ThemeProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  /// Alias for toggleThemeMode for more intuitive naming in UI
+  Future<void> toggleTheme() async {
+    await toggleThemeMode();
+  }
 }
 
 /// Extension methods for accessing ThemeProvider from BuildContext

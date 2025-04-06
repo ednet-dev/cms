@@ -28,6 +28,39 @@ class AppRoutes {
 class NavigationService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+  /// The current moduleId being displayed
+  String? _currentModuleId;
+
+  /// Function that will be called when module navigation is requested
+  Function(String moduleId)? _moduleNavigationHandler;
+
+  /// Get the current module ID
+  String? get currentModuleId => _currentModuleId;
+
+  /// Set module navigation handler - called by the AppShell during initialization
+  void setModuleNavigationHandler(Function(String moduleId) handler) {
+    _moduleNavigationHandler = handler;
+  }
+
+  /// Update the current module ID - called by the AppShell when module changes
+  void updateCurrentModuleId(String moduleId) {
+    _currentModuleId = moduleId;
+  }
+
+  /// Navigate to a specific module
+  void navigateToModule(String moduleId) {
+    if (_moduleNavigationHandler != null) {
+      developer.log('Navigating to module: $moduleId', name: 'Navigation');
+      _moduleNavigationHandler!(moduleId);
+    } else {
+      developer.log(
+        'Module navigation handler not set',
+        name: 'Navigation',
+        error: true,
+      );
+    }
+  }
+
   /// Navigate to a named route
   Future<dynamic> navigateTo(
     String routeName, {

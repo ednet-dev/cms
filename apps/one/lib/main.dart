@@ -14,19 +14,12 @@ import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_sel
 import 'package:ednet_core/ednet_core.dart';
 
 import 'presentation/di/bloc_providers.dart' as bloc_providers;
+import 'presentation/layouts/app_shell.dart';
+import 'presentation/modules/module_registry.dart';
 import 'presentation/navigation/navigation_service.dart';
-import 'presentation/pages/bookmarks_page.dart';
-import 'presentation/pages/home/home_page.dart';
 import 'presentation/state/blocs/theme_bloc/theme_bloc.dart';
 import 'presentation/theme/theme_service.dart';
 import 'presentation/state/providers/domain_service.dart';
-import 'presentation/pages/model_detail_page.dart';
-import 'presentation/pages/domain_detail_page.dart';
-import 'presentation/pages/graph_page.dart';
-import 'presentation/pages/domains_page.dart';
-import 'presentation/pages/concepts_page.dart';
-import 'presentation/pages/models_page.dart';
-import 'presentation/pages/entity_detail_page.dart';
 import 'presentation/layouts/providers/layout_provider.dart';
 import 'presentation/theme/providers/theme_provider.dart';
 
@@ -35,6 +28,7 @@ final oneApplication = OneApplication();
 final navigationService = NavigationService();
 final themeService = ThemeService();
 final domainService = DomainService(oneApplication);
+final moduleRegistry = AppModuleRegistry();
 
 // Bloc factories
 DomainSelectionBloc createDomainSelectionBloc() =>
@@ -69,6 +63,10 @@ void main() async {
     );
     debugPrint('Available domains: ${oneApplication.domains.length}');
     debugPrint('Grouped domains: ${oneApplication.groupedDomains.length}');
+
+    // Register modules
+    moduleRegistry.registerModules(oneApplication);
+    debugPrint('Registered ${moduleRegistry.modules.length} modules');
 
     // Force domain selection
     debugPrint('Manually triggering domain selection chain');
@@ -168,16 +166,6 @@ void _forceDomainSelection() {
         ),
       );
     }
-
-    // After initialization is complete, ensure the graph page is accessible
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint('🔍 Setting up direct graph page access for testing');
-
-      // Add a floating action button to the main app to directly access graph page
-      // This can be done in the main app's state or through a global key
-      // For now, we'll just ensure the navigationService can access it
-      navigationService.setDebugGraphAccess();
-    });
   } catch (e, stack) {
     debugPrint('❌ Error in _forceDomainSelection: $e');
     debugPrint('Stack trace: $stack');
@@ -270,81 +258,15 @@ class MyAppState extends State<MyApp> {
         (themeBloc) => themeBloc.state.themeData,
       ),
       navigatorKey: navigationService.navigatorKey,
-      home: HomePage(title: 'EDNet One'),
-      routes: {
-        BookmarksPage.routeName: (context) => const BookmarksPage(),
-        // Simple route for GraphPage as it doesn't require special parameters
-        GraphPage.routeName: (context) => const GraphPage(),
-        // Add DomainsPage route with empty domains as a placeholder
-        // The actual domains will be passed when navigating programmatically
-        DomainsPage.routeName:
-            (context) => DomainsPage(
-              domains: oneApplication.groupedDomains,
-              onDomainSelected: (domain) {
-                Navigator.of(
-                  context,
-                ).pushNamed(DomainDetailPage.routeName, arguments: domain);
-              },
-            ),
-        // ConceptsPage route requires model and domain context - handled in onGenerateRoute
-      },
-      // Use onGenerateRoute for routes that need parameters
-      onGenerateRoute: (settings) {
-        if (settings.name == ModelDetailPage.routeName ||
-            settings.name == DomainDetailPage.routeName) {
-          // These routes require parameters and should be created
-          // using Navigator.push with MaterialPageRoute instead
-          return null;
-        }
-
-        // Handle ConceptsPage routing with parameters
-        if (settings.name == ConceptsPage.routeName) {
-          // Extract the arguments as a Map
-          final args = settings.arguments as Map<String, dynamic>;
-          return MaterialPageRoute(
-            builder:
-                (context) => ConceptsPage(
-                  concepts: args['concepts'] as Concepts,
-                  domainName: args['domainName'] as String,
-                  modelName: args['modelName'] as String,
-                  onConceptSelected:
-                      args['onConceptSelected'] as void Function(Concept)?,
-                ),
-          );
-        }
-
-        // Handle ModelsPage routing with parameters
-        if (settings.name == ModelsPage.routeName) {
-          // Extract the arguments as a Map
-          final args = settings.arguments as Map<String, dynamic>;
-          return MaterialPageRoute(
-            builder:
-                (context) => ModelsPage(
-                  models: args['models'] as Models,
-                  domainName: args['domainName'] as String,
-                  onModelSelected:
-                      args['onModelSelected'] as void Function(Model)?,
-                ),
-          );
-        }
-
-        // Handle EntityDetailPage routing with parameters
-        if (settings.name == EntityDetailPage.routeName) {
-          // Extract the arguments as a Map
-          final args = settings.arguments as Map<String, dynamic>;
-          return MaterialPageRoute(
-            builder:
-                (context) => EntityDetailPage(
-                  entities: args['entities'] as Entities,
-                  domainName: args['domainName'] as String,
-                  modelName: args['modelName'] as String,
-                  conceptName: args['conceptName'] as String,
-                ),
-          );
-        }
-
-        return null;
-      },
+      home: AppShell(
+        title: 'EDNet One',
+        modules: moduleRegistry.modules,
+        navigationService: navigationService,
+        initialModuleId:
+            moduleRegistry.modules.isNotEmpty
+                ? moduleRegistry.modules.first.id
+                : null,
+      ),
     );
   }
 }
@@ -366,7 +288,9 @@ class AppBlocProviders {
           create: (_) => ThemeProvider(themeService),
         ),
         // Add the domain model provider
-        Provider<IOneApplication>.value(value: oneApplication),
+        Provider<OneApplication>.value(value: oneApplication),
+        // Add the navigation service
+        Provider<NavigationService>.value(value: navigationService),
       ],
       child: wrappedWithBlocs,
     );
