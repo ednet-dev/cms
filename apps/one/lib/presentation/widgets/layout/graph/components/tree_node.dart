@@ -8,7 +8,5 @@ class TreeNode {
   int height;
   List<TreeNode> children;
 
-  TreeNode(this.key, this.position)
-      : height = 1,
-        children = [];
+  TreeNode(this.key, this.position) : height = 1, children = [];
 }

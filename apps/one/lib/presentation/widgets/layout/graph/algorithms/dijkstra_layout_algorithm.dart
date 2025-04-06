@@ -17,20 +17,26 @@ class DijkstraLayoutAlgorithm extends LayoutAlgorithm {
       for (var model in domain.models) {
         final modelPosition = Offset(size.width * 0.25, size.height * 0.25);
         positions[model.code] = modelPosition;
-        graph[domain.code]![model.code] =
-            _distance(positions[domain.code]!, modelPosition);
+        graph[domain.code]![model.code] = _distance(
+          positions[domain.code]!,
+          modelPosition,
+        );
 
         for (var entity in model.concepts) {
           final entityPosition = Offset(size.width * 0.75, size.height * 0.75);
           positions[entity.code] = entityPosition;
-          graph[model.code]![entity.code] =
-              _distance(modelPosition, entityPosition);
+          graph[model.code]![entity.code] = _distance(
+            modelPosition,
+            entityPosition,
+          );
 
           for (var child in entity.children) {
             final childPosition = Offset(size.width * 0.5, size.height * 0.5);
             positions[child.code] = childPosition;
-            graph[entity.code]![child.code] =
-                _distance(entityPosition, childPosition);
+            graph[entity.code]![child.code] = _distance(
+              entityPosition,
+              childPosition,
+            );
           }
         }
       }
@@ -44,8 +50,11 @@ class DijkstraLayoutAlgorithm extends LayoutAlgorithm {
     return (a - b).distance;
   }
 
-  Map<String, Offset> _dijkstra(Map<String, Map<String, double>> graph,
-      String start, Map<String, Offset> positions) {
+  Map<String, Offset> _dijkstra(
+    Map<String, Map<String, double>> graph,
+    String start,
+    Map<String, Offset> positions,
+  ) {
     final distances = <String, double>{};
     final previous = <String, String?>{};
     final pq = SplayTreeMap<double, List<String>>();

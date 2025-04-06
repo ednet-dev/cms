@@ -101,7 +101,10 @@ class AdaptiveAttributeDisplay extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: color.withValues(alpha: 255.0 * 0.3), width: 1.5),
+        side: BorderSide(
+          color: color.withValues(alpha: 255.0 * 0.3),
+          width: 1.5,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -404,7 +407,9 @@ class AdaptiveAttributeDisplay extends StatelessWidget {
           style: TextStyle(
             letterSpacing: 2,
             fontFamily: 'monospace',
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
           ),
         ),
       ],

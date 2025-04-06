@@ -70,7 +70,11 @@ class DomainModelEditorCanvas extends StatefulWidget {
   final ednet.Domain domain;
   final ednet.Model model;
 
-  const DomainModelEditorCanvas({super.key, required this.domain, required this.model});
+  const DomainModelEditorCanvas({
+    super.key,
+    required this.domain,
+    required this.model,
+  });
 
   @override
   _DomainModelEditorCanvasState createState() =>
@@ -230,25 +234,6 @@ class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
     return graph.toYamlDSL();
   }
 
-  void _showDSL() {
-    final dsl = _exportDSL();
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text('DSL Export'),
-          content: SelectableText(dsl),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -285,10 +270,37 @@ class _DomainModelEditorCanvasState extends State<DomainModelEditorCanvas> {
         Positioned(
           right: 16,
           bottom: 16,
-          child: FloatingActionButton(
-            onPressed: _addConcept,
-            tooltip: 'Add Concept',
-            child: Icon(Icons.add),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  final dsl = _exportDSL();
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          title: Text('Domain Model DSL'),
+                          content: SelectableText(dsl),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Close'),
+                            ),
+                          ],
+                        ),
+                  );
+                },
+                tooltip: 'Export DSL',
+                child: Icon(Icons.code),
+              ),
+              SizedBox(height: 8),
+              FloatingActionButton(
+                onPressed: _addConcept,
+                tooltip: 'Add Concept',
+                child: Icon(Icons.add),
+              ),
+            ],
           ),
         ),
       ],

@@ -54,10 +54,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
     _currentAlgorithm = widget.layoutAlgorithm;
     _system = System();
     _animationManager = AnimationManager();
-    _gameLoop = GameLoop(
-      system: _system,
-      animationManager: _animationManager,
-    );
+    _gameLoop = GameLoop(system: _system, animationManager: _animationManager);
     _gameLoop.start();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -109,8 +106,10 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Size canvasSize = renderBox.size;
 
-    final layoutPositions =
-        _currentAlgorithm.calculateLayout(widget.domains, canvasSize);
+    final layoutPositions = _currentAlgorithm.calculateLayout(
+      widget.domains,
+      canvasSize,
+    );
     final double minX = layoutPositions.values
         .map((offset) => offset.dx)
         .reduce((a, b) => a < b ? a : b);
@@ -138,9 +137,10 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
     final double offsetY =
         (canvasSize.height - graphHeight * scale) / 2 - minY * scale;
 
-    _transformationController.value = Matrix4.identity()
-      ..translate(offsetX, offsetY)
-      ..scale(scale);
+    _transformationController.value =
+        Matrix4.identity()
+          ..translate(offsetX, offsetY)
+          ..scale(scale);
 
     setState(() {
       _zoomLevel = scale;
@@ -155,19 +155,23 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
 
   void _handleTap(TapUpDetails details) {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final tapPosition = _transformationController
-        .toScene(renderBox.globalToLocal(details.globalPosition));
+    final tapPosition = _transformationController.toScene(
+      renderBox.globalToLocal(details.globalPosition),
+    );
 
-    final layoutPositions =
-        _currentAlgorithm.calculateLayout(widget.domains, renderBox.size);
+    final layoutPositions = _currentAlgorithm.calculateLayout(
+      widget.domains,
+      renderBox.size,
+    );
 
     const double margin = 10.0; // Adjust the margin size as needed
 
     for (var entry in layoutPositions.entries) {
       final nodeRect = Rect.fromCenter(
-          center: entry.value,
-          width: 100 + margin * 2,
-          height: 50 + margin * 2);
+        center: entry.value,
+        width: 100 + margin * 2,
+        height: 50 + margin * 2,
+      );
       if (nodeRect.contains(tapPosition)) {
         _onNodeTap(entry.key);
         break;
@@ -187,8 +191,10 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
                 LayoutAlgorithmIcon(
                   icon: Icons.auto_fix_high,
                   name: 'Force Directed',
-                  onTap: () =>
-                      _changeLayoutAlgorithm(ForceDirectedLayoutAlgorithm()),
+                  onTap:
+                      () => _changeLayoutAlgorithm(
+                        ForceDirectedLayoutAlgorithm(),
+                      ),
                   isActive: _currentAlgorithm is ForceDirectedLayoutAlgorithm,
                 ),
                 LayoutAlgorithmIcon(
@@ -200,22 +206,25 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
                 LayoutAlgorithmIcon(
                   icon: Icons.circle,
                   name: 'Circular',
-                  onTap: () =>
-                      _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
+                  onTap:
+                      () => _changeLayoutAlgorithm(CircularLayoutAlgorithm()),
                   isActive: _currentAlgorithm is CircularLayoutAlgorithm,
                 ),
                 LayoutAlgorithmIcon(
                   icon: Icons.format_indent_increase,
                   name: 'Master Detail',
-                  onTap: () =>
-                      _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
+                  onTap:
+                      () =>
+                          _changeLayoutAlgorithm(MasterDetailLayoutAlgorithm()),
                   isActive: _currentAlgorithm is MasterDetailLayoutAlgorithm,
                 ),
                 LayoutAlgorithmIcon(
                   icon: Icons.account_tree,
                   name: 'Ranked Tree',
-                  onTap: () =>
-                      _changeLayoutAlgorithm(RankedEmbeddingLayoutAlgorithm()),
+                  onTap:
+                      () => _changeLayoutAlgorithm(
+                        RankedEmbeddingLayoutAlgorithm(),
+                      ),
                   isActive: _currentAlgorithm is RankedEmbeddingLayoutAlgorithm,
                 ),
               ],
@@ -231,8 +240,10 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
                     setState(() {
                       _transformationController.value =
                           _transformationController.value
-                            ..translate(details.focalPointDelta.dx,
-                                details.focalPointDelta.dy)
+                            ..translate(
+                              details.focalPointDelta.dx,
+                              details.focalPointDelta.dy,
+                            )
                             ..scale(details.scale);
                     });
                   },
@@ -280,8 +291,10 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
                 onPressed: _centerAndZoom,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                child:
-                    const Icon(Icons.center_focus_strong, color: Colors.white),
+                child: const Icon(
+                  Icons.center_focus_strong,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: 16.0),
               Container(

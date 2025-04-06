@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'dart:ui';
 
 /// Represents a rectangle in 2D space that can contain packed items.

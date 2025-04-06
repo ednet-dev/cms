@@ -34,8 +34,8 @@ class DomainService {
     var entryConcepts = model.getOrderedEntryConcepts();
     for (var concept in entryConcepts) {
       concepts.add(concept);
-        }
-      return concepts;
+    }
+    return concepts;
   }
 
   /// Get entities for a concept in a model
@@ -47,8 +47,6 @@ class DomainService {
 
     var modelEntries = domainModel.getModelEntries(model.code);
     return modelEntries?.getEntry(concept.code);
-  
-    return null;
   }
 
   /// Generate DSL for a domain model

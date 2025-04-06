@@ -1,5 +1,1 @@
-enum NodeType {
-  domain,
-  model,
-  entity,
-}
+enum NodeType { domain, model, entity }

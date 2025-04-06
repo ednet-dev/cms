@@ -3,13 +3,12 @@ import 'dart:math';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 
+import 'painters/entity_painter.dart';
+import 'painters/relation_painter.dart';
+import '../layout/graph/layout/layout_algorithm.dart';
 import '../layout/graph/components/node.dart';
 import '../layout/graph/components/system.dart';
 import '../layout/graph/decorators/u_x_decorator.dart';
-import '../layout/graph/layout/layout_algorithm.dart';
-import 'painters/entity_painter.dart';
-import 'painters/grid_painter.dart';
-import 'painters/relation_painter.dart';
 
 /// A custom painter for rendering domain models on a canvas.
 ///
@@ -28,7 +27,6 @@ class MetaDomainPainter extends CustomPainter {
   // Specialized painters
   late final EntityPainter _entityPainter;
   late final RelationPainter _relationPainter;
-  late final GridPainter _gridPainter;
 
   MetaDomainPainter({
     required this.domains,
@@ -46,8 +44,6 @@ class MetaDomainPainter extends CustomPainter {
     );
 
     _relationPainter = RelationPainter(context: context);
-
-    _gridPainter = GridPainter();
   }
 
   @override

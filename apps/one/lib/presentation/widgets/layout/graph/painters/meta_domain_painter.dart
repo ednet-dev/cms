@@ -81,14 +81,20 @@ class MetaDomainPainter extends CustomPainter {
   double _getChildLevel(Property child, double currentLevel) {
     double maxLevel = currentLevel;
     if (child is Child) {
-      maxLevel = max(maxLevel,
-          _getConceptLevel(child.destinationConcept, currentLevel + 1));
+      maxLevel = max(
+        maxLevel,
+        _getConceptLevel(child.destinationConcept, currentLevel + 1),
+      );
     }
     return maxLevel;
   }
 
-  void _createDomainNodes(Domain domain, Map<String, Offset> positions,
-      int level, double maxLevel) {
+  void _createDomainNodes(
+    Domain domain,
+    Map<String, Offset> positions,
+    int level,
+    double maxLevel,
+  ) {
     final domainPosition = positions[domain.code];
     if (domainPosition == null) return;
 
@@ -106,20 +112,30 @@ class MetaDomainPainter extends CustomPainter {
 
       // Add line from domain to model
       system.addNode(
-          _createLineNode(domainPosition, modelPosition, 'has', 'belongs to'));
+        _createLineNode(domainPosition, modelPosition, 'has', 'belongs to'),
+      );
 
       for (var concept in model.concepts) {
         final conceptPosition = positions[concept.code];
         if (conceptPosition == null) continue;
 
         Color conceptColor = _getColorForDomain(domain, level + 2, maxLevel);
-        Node conceptNode =
-            _createNode(conceptPosition, conceptColor, concept.code);
+        Node conceptNode = _createNode(
+          conceptPosition,
+          conceptColor,
+          concept.code,
+        );
         system.addNode(conceptNode);
 
         // Add line from model to concept
-        system.addNode(_createLineNode(
-            modelPosition, conceptPosition, 'contains', 'is part of'));
+        system.addNode(
+          _createLineNode(
+            modelPosition,
+            conceptPosition,
+            'contains',
+            'is part of',
+          ),
+        );
 
         for (var child in concept.children) {
           final childPosition = positions[child.code];
@@ -130,16 +146,28 @@ class MetaDomainPainter extends CustomPainter {
           system.addNode(childNode);
 
           // Add line from concept to child
-          system.addNode(_createLineNode(conceptPosition, childPosition,
-              child.code, (child as Neighbor).sourceConcept.code));
+          system.addNode(
+            _createLineNode(
+              conceptPosition,
+              childPosition,
+              child.code,
+              (child as Neighbor).sourceConcept.code,
+            ),
+          );
         }
 
         // Add parent-child relationships within the concept
         for (var parent in concept.parents) {
           final parentPosition = positions[parent.code];
           if (parentPosition != null) {
-            system.addNode(_createLineNode(parentPosition, conceptPosition,
-                parent.code, parent.sourceConcept.code));
+            system.addNode(
+              _createLineNode(
+                parentPosition,
+                conceptPosition,
+                parent.code,
+                parent.sourceConcept.code,
+              ),
+            );
           }
         }
       }
@@ -147,34 +175,45 @@ class MetaDomainPainter extends CustomPainter {
   }
 
   Node _createLineNode(
-      Offset start, Offset end, String fromToName, String toFromName) {
+    Offset start,
+    Offset end,
+    String fromToName,
+    String toFromName,
+  ) {
     Node node = Node();
-    node.addComponent(LineComponent(
-      start: start,
-      end: end,
-      fromToName: fromToName,
-      toFromName: toFromName,
-      fromTextStyle: Theme.of(context).textTheme.labelSmall!,
-      toTextStyle: Theme.of(context).textTheme.labelSmall!,
-    ));
+    node.addComponent(
+      LineComponent(
+        start: start,
+        end: end,
+        fromToName: fromToName,
+        toFromName: toFromName,
+        fromTextStyle: Theme.of(context).textTheme.labelSmall!,
+        toTextStyle: Theme.of(context).textTheme.labelSmall!,
+      ),
+    );
     return node;
   }
 
   Node _createNode(Offset position, Color color, String label) {
     bool isSelected = label == selectedNode;
     Node node = Node();
-    node.addComponent(RenderComponent(
-      Paint()..color = color,
-      Rect.fromCenter(center: position, width: 100, height: 50),
-      glow: isSelected ? 10.0 : 0.0,
-    ));
-    node.addComponent(TextComponent(
-      text: label,
-      position: position,
-      style:
-          Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
-      backgroundColor: Colors.black.withValues(alpha: 255.0 * 0.5),
-    ));
+    node.addComponent(
+      RenderComponent(
+        Paint()..color = color,
+        Rect.fromCenter(center: position, width: 100, height: 50),
+        glow: isSelected ? 10.0 : 0.0,
+      ),
+    );
+    node.addComponent(
+      TextComponent(
+        text: label,
+        position: position,
+        style: Theme.of(
+          context,
+        ).textTheme.labelLarge!.copyWith(color: Colors.white),
+        backgroundColor: Colors.black.withValues(alpha: 255.0 * 0.5),
+      ),
+    );
     return node;
   }
 

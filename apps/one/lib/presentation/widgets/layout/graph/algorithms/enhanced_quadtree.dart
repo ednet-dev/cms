@@ -104,11 +104,7 @@ class EnhancedQuadtree<T> {
     // Early return if this node has no children
     if (!divided) return;
 
-    // Determine which quadrant the query point is in to check it first
-    // This optimization helps find a good match early
-    final centerX = bounds.left + bounds.width / 2;
-    final centerY = bounds.top + bounds.height / 2;
-
+    // Calculate distances to each quadrant
     final northwestDist = _minDistToRect(queryPoint, northwest!.bounds);
     final northeastDist = _minDistToRect(queryPoint, northeast!.bounds);
     final southwestDist = _minDistToRect(queryPoint, southwest!.bounds);

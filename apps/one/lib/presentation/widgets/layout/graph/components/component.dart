@@ -43,10 +43,7 @@ class _DraggableArtefactState extends State<DraggableArtefact> {
       height: 100,
       color: Colors.blue,
       child: Center(
-        child: Text(
-          artefact.label,
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text(artefact.label, style: TextStyle(color: Colors.white)),
       ),
     );
   }

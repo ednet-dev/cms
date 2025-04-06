@@ -15,9 +15,10 @@ class LayoutBloc extends Bloc<LayoutEvent, LayoutState> {
   }
 
   void _onToggleLayout(ToggleLayoutEvent event, Emitter<LayoutState> emit) {
-    final newLayoutType = state.layoutType == LayoutType.defaultLayout
-        ? LayoutType.alternativeLayout
-        : LayoutType.defaultLayout;
+    final newLayoutType =
+        state.layoutType == LayoutType.defaultLayout
+            ? LayoutType.alternativeLayout
+            : LayoutType.defaultLayout;
     emit(state.copyWith(layoutType: newLayoutType));
   }
 }

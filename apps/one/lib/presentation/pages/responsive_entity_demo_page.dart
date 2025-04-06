@@ -31,57 +31,62 @@ class _ResponsiveEntityDemoPageState extends State<ResponsiveEntityDemoPage> {
       appBar: AppBar(
         title: Text('${widget.entity.concept.code} Details'),
         actions: [
-          // Screen size override controls
-          IconButton(
-            icon: Icon(
-              _useOverride ? Icons.screen_lock_rotation : Icons.screen_rotation,
-            ),
-            onPressed: () {
-              setState(() {
-                _useOverride = !_useOverride;
-              });
-            },
-            tooltip: _useOverride ? 'Using size override' : 'Using actual size',
-          ),
-          if (_useOverride)
-            PopupMenuButton<ScreenSizeCategory>(
-              tooltip: 'Override screen size',
-              icon: Icon(_getIconForScreenSize(_overrideScreenSize)),
-              onSelected: (ScreenSizeCategory category) {
+          if (screenCategory.index >= ScreenSizeCategory.tablet.index) ...[
+            // Screen size override controls
+            IconButton(
+              icon: Icon(
+                _useOverride
+                    ? Icons.screen_lock_rotation
+                    : Icons.screen_rotation,
+              ),
+              onPressed: () {
                 setState(() {
-                  _overrideScreenSize = category;
+                  _useOverride = !_useOverride;
                 });
               },
-              itemBuilder: (BuildContext context) {
-                return [
-                  _buildScreenSizeMenuItem(
-                    ScreenSizeCategory.mobile,
-                    'Mobile (<600px)',
-                    Icons.smartphone,
-                  ),
-                  _buildScreenSizeMenuItem(
-                    ScreenSizeCategory.tablet,
-                    'Tablet (600-1024px)',
-                    Icons.tablet,
-                  ),
-                  _buildScreenSizeMenuItem(
-                    ScreenSizeCategory.desktop,
-                    'Desktop (1024-1920px)',
-                    Icons.desktop_windows,
-                  ),
-                  _buildScreenSizeMenuItem(
-                    ScreenSizeCategory.largeDesktop,
-                    'Large Desktop (1920-3840px)',
-                    Icons.desktop_mac,
-                  ),
-                  _buildScreenSizeMenuItem(
-                    ScreenSizeCategory.ultraWide,
-                    'Ultra Wide (3840px+)',
-                    Icons.tv,
-                  ),
-                ];
-              },
+              tooltip:
+                  _useOverride ? 'Using size override' : 'Using actual size',
             ),
+            if (_useOverride)
+              PopupMenuButton<ScreenSizeCategory>(
+                tooltip: 'Override screen size',
+                icon: Icon(_getIconForScreenSize(_overrideScreenSize)),
+                onSelected: (ScreenSizeCategory category) {
+                  setState(() {
+                    _overrideScreenSize = category;
+                  });
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    _buildScreenSizeMenuItem(
+                      ScreenSizeCategory.mobile,
+                      'Mobile (<600px)',
+                      Icons.smartphone,
+                    ),
+                    _buildScreenSizeMenuItem(
+                      ScreenSizeCategory.tablet,
+                      'Tablet (600-1024px)',
+                      Icons.tablet,
+                    ),
+                    _buildScreenSizeMenuItem(
+                      ScreenSizeCategory.desktop,
+                      'Desktop (1024-1920px)',
+                      Icons.desktop_windows,
+                    ),
+                    _buildScreenSizeMenuItem(
+                      ScreenSizeCategory.largeDesktop,
+                      'Large Desktop (1920-3840px)',
+                      Icons.desktop_mac,
+                    ),
+                    _buildScreenSizeMenuItem(
+                      ScreenSizeCategory.ultraWide,
+                      'Ultra Wide (3840px+)',
+                      Icons.tv,
+                    ),
+                  ];
+                },
+              ),
+          ],
         ],
       ),
       body: Column(
@@ -89,7 +94,9 @@ class _ResponsiveEntityDemoPageState extends State<ResponsiveEntityDemoPage> {
           // Current screen size indicator
           if (_useOverride)
             Container(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 255.0 * 0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 255.0 * 0.1),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
               child: Row(
                 children: [

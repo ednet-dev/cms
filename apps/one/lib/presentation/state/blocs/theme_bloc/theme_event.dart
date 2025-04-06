@@ -1,4 +1,3 @@
-
 /// Base class for all theme events
 abstract class ThemeEvent {}
 

@@ -40,9 +40,10 @@ class _LayoutAlgorithmIconState extends State<LayoutAlgorithmIcon> {
                   Icon(
                     widget.icon,
                     size: 17,
-                    color: widget.isActive || _isHovering
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.secondary,
+                    color:
+                        widget.isActive || _isHovering
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.secondary,
                   ),
                   SizedBox(height: 4.0), // Add spacing between icon and text
                 ],

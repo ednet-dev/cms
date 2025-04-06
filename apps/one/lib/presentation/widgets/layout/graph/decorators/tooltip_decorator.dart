@@ -18,4 +18,10 @@ class TooltipDecorator implements UXDecorator {
     textPainter.layout();
     textPainter.paint(canvas, position + Offset(0, -50 / scale));
   }
+
+  @override
+  void render(Canvas canvas, Size size) {
+    // No-op: TooltipDecorator only applies to specific points
+    // and doesn't need canvas-wide rendering
+  }
 }

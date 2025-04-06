@@ -1,4 +1,3 @@
-
 /// Operator types for filter conditions
 enum FilterOperator {
   equals,

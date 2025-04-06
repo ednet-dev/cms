@@ -17,20 +17,35 @@ class MSTLayoutAlgorithm extends LayoutAlgorithm {
       for (var model in domain.models) {
         final modelPosition = Offset(size.width * 0.25, size.height * 0.25);
         positions[model.code] = modelPosition;
-        edges.add(Edge(
-            domain.code, model.code, _distance(domainPosition, modelPosition)));
+        edges.add(
+          Edge(
+            domain.code,
+            model.code,
+            _distance(domainPosition, modelPosition),
+          ),
+        );
 
         for (var entity in model.concepts) {
           final entityPosition = Offset(size.width * 0.75, size.height * 0.75);
           positions[entity.code] = entityPosition;
-          edges.add(Edge(model.code, entity.code,
-              _distance(modelPosition, entityPosition)));
+          edges.add(
+            Edge(
+              model.code,
+              entity.code,
+              _distance(modelPosition, entityPosition),
+            ),
+          );
 
           for (var child in entity.children) {
             final childPosition = Offset(size.width * 0.5, size.height * 0.5);
             positions[child.code] = childPosition;
-            edges.add(Edge(entity.code, child.code,
-                _distance(entityPosition, childPosition)));
+            edges.add(
+              Edge(
+                entity.code,
+                child.code,
+                _distance(entityPosition, childPosition),
+              ),
+            );
           }
         }
       }
@@ -45,7 +60,9 @@ class MSTLayoutAlgorithm extends LayoutAlgorithm {
   }
 
   Map<String, Offset> _kruskalMST(
-      List<Edge> edges, Map<String, Offset> positions) {
+    List<Edge> edges,
+    Map<String, Offset> positions,
+  ) {
     edges.sort((a, b) => a.weight.compareTo(b.weight));
     final parent = <String, String>{};
     final rank = <String, int>{};

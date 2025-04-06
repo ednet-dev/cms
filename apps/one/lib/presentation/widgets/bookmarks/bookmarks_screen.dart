@@ -64,7 +64,6 @@ class _BookmarksScreenState extends State<BookmarksScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final bookmarkManager = Provider.of<BookmarkManager>(context);
 
     return Scaffold(

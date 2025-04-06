@@ -793,11 +793,7 @@ class UnifiedVisualizationPainter extends CustomPainter {
 
   /// Draws the spatial index bounds (for debugging)
   void _drawSpatialIndexBounds(Canvas canvas) {
-    final paint =
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.5
-          ..color = Colors.red.withOpacity(0.5);
+    // Method is currently a no-op, remove unused paint declaration
   }
 
   /// Gets the color for a node based on its type

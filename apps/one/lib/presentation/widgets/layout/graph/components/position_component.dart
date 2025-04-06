@@ -74,9 +74,10 @@ class RenderComponent extends Component {
   @override
   void render(Canvas canvas) {
     if (glow > 0.0) {
-      final glowPaint = Paint()
-        ..color = paint.color.withValues(alpha: 255.0 * 0.5)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, glow);
+      final glowPaint =
+          Paint()
+            ..color = paint.color.withValues(alpha: 255.0 * 0.5)
+            ..maskFilter = MaskFilter.blur(BlurStyle.normal, glow);
       canvas.drawRect(rect.inflate(glow), glowPaint);
     }
     canvas.drawRect(rect, paint);
@@ -102,9 +103,10 @@ class LineComponent extends Component {
     required this.fromTextStyle,
     required this.toTextStyle,
     this.margin = 100.0,
-  }) : paint = Paint()
-          ..color = color
-          ..strokeWidth = 1;
+  }) : paint =
+           Paint()
+             ..color = color
+             ..strokeWidth = 1;
 
   @override
   void update(double dt) {}
@@ -123,13 +125,16 @@ class LineComponent extends Component {
     _drawText(canvas, toFromName, end, toTextStyle, direction + pi, margin);
   }
 
-  void _drawText(Canvas canvas, String text, Offset position, TextStyle style,
-      double direction, double offset) {
+  void _drawText(
+    Canvas canvas,
+    String text,
+    Offset position,
+    TextStyle style,
+    double direction,
+    double offset,
+  ) {
     final textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: style,
-      ),
+      text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
     );
 
@@ -143,9 +148,12 @@ class LineComponent extends Component {
     final adjustedPosition = position + Offset(dx, dy);
 
     textPainter.paint(
-        canvas,
-        Offset(adjustedPosition.dx - textPainter.width / 2,
-            adjustedPosition.dy - textPainter.height / 2));
+      canvas,
+      Offset(
+        adjustedPosition.dx - textPainter.width / 2,
+        adjustedPosition.dy - textPainter.height / 2,
+      ),
+    );
   }
 }
 
@@ -188,8 +196,11 @@ class TextComponent extends Component {
 
     canvas.drawRect(backgroundRect, paint);
     textPainter.paint(
-        canvas,
-        Offset(position.dx - textPainter.width / 2,
-            position.dy - textPainter.height / 2));
+      canvas,
+      Offset(
+        position.dx - textPainter.width / 2,
+        position.dy - textPainter.height / 2,
+      ),
+    );
   }
 }

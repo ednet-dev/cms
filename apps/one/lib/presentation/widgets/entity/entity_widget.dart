@@ -168,8 +168,8 @@ class EntityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
-      // Access concept to verify it exists
-      final concept = entity.concept;
+      // Verify that we can access the concept (will throw if not accessible)
+      entity.concept;
     } catch (e) {
       return _buildErrorDisplay(
         context,
@@ -218,7 +218,10 @@ class EntityWidget extends StatelessWidget {
           elevation: 2, // Slightly more elevation for better depth perception
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: statusColor.withValues(alpha: 255.0 * 0.6), width: 1.5),
+            side: BorderSide(
+              color: statusColor.withValues(alpha: 255.0 * 0.6),
+              width: 1.5,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,7 +417,9 @@ class EntityWidget extends StatelessWidget {
                           color: colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: colorScheme.secondary.withValues(alpha: 255.0 * 0.3),
+                            color: colorScheme.secondary.withValues(
+                              alpha: 255.0 * 0.3,
+                            ),
                             width: 1,
                           ),
                         ),
@@ -439,7 +444,9 @@ class EntityWidget extends StatelessWidget {
                     color: colorScheme.surfaceContainerHighest,
                     border: Border(
                       top: BorderSide(
-                        color: colorScheme.outlineVariant.withValues(alpha: 255.0 * 0.3),
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: 255.0 * 0.3,
+                        ),
                         width: 1,
                       ),
                     ),
@@ -490,7 +497,9 @@ class EntityWidget extends StatelessWidget {
               text: date,
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
               ),
             ),
           ],
@@ -535,7 +544,10 @@ class EntityWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 255.0 * 0.3), width: 1),
+        border: Border.all(
+          color: color.withValues(alpha: 255.0 * 0.3),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -590,7 +602,10 @@ class EntityWidget extends StatelessWidget {
         color: colorScheme.surfaceContainerLow,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: accentColor.withValues(alpha: 255.0 * 0.2), width: 0.5),
+          side: BorderSide(
+            color: accentColor.withValues(alpha: 255.0 * 0.2),
+            width: 0.5,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -649,7 +664,9 @@ class EntityWidget extends StatelessWidget {
           style: TextStyle(
             letterSpacing: 2,
             fontFamily: 'monospace',
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.6),
           ),
         ),
       ],
@@ -780,7 +797,9 @@ class EntityWidget extends StatelessWidget {
             Text(
               "This may be caused by data model changes or initialization issues.",
               style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onErrorContainer.withValues(alpha: 255.0 * 0.8),
+                color: colorScheme.onErrorContainer.withValues(
+                  alpha: 255.0 * 0.8,
+                ),
               ),
               textAlign: TextAlign.center,
             ),

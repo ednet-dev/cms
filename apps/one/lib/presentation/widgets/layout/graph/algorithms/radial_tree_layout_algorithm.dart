@@ -26,8 +26,16 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
     double currentAngle = 0.0;
 
     for (var domain in domains) {
-      _calculatePositionsForDomain(domain.code, domain, centerX, centerY, 0,
-          currentAngle, angleStep, positions);
+      _calculatePositionsForDomain(
+        domain.code,
+        domain,
+        centerX,
+        centerY,
+        0,
+        currentAngle,
+        angleStep,
+        positions,
+      );
       currentAngle += angleStep;
     }
 
@@ -35,14 +43,15 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
   }
 
   void _calculatePositionsForDomain(
-      String nodeId,
-      Domain domain,
-      double centerX,
-      double centerY,
-      int level,
-      double angle,
-      double angleStep,
-      Map<String, Offset> positions) {
+    String nodeId,
+    Domain domain,
+    double centerX,
+    double centerY,
+    int level,
+    double angle,
+    double angleStep,
+    Map<String, Offset> positions,
+  ) {
     double radius = level * levelGap;
     double x = centerX + radius * cos(angle);
     double y = centerY + radius * sin(angle);
@@ -54,21 +63,30 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
         angle - (childAngleStep * (domain.models.length - 1)) / 2;
 
     for (var model in domain.models) {
-      _calculatePositionsForModel(model.code, model, x, y, level + 1,
-          currentChildAngle, childAngleStep, positions);
+      _calculatePositionsForModel(
+        model.code,
+        model,
+        x,
+        y,
+        level + 1,
+        currentChildAngle,
+        childAngleStep,
+        positions,
+      );
       currentChildAngle += childAngleStep;
     }
   }
 
   void _calculatePositionsForModel(
-      String modelId,
-      Model model,
-      double centerX,
-      double centerY,
-      int level,
-      double angle,
-      double angleStep,
-      Map<String, Offset> positions) {
+    String modelId,
+    Model model,
+    double centerX,
+    double centerY,
+    int level,
+    double angle,
+    double angleStep,
+    Map<String, Offset> positions,
+  ) {
     double radius = level * levelGap;
     double x = centerX + radius * cos(angle);
     double y = centerY + radius * sin(angle);
@@ -80,22 +98,32 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
         angle - (childAngleStep * (model.concepts.length - 1)) / 2;
 
     for (var entity in model.concepts) {
-      _calculatePositionsForEntity(entity.code, model, entity, x, y, level + 1,
-          currentChildAngle, childAngleStep, positions);
+      _calculatePositionsForEntity(
+        entity.code,
+        model,
+        entity,
+        x,
+        y,
+        level + 1,
+        currentChildAngle,
+        childAngleStep,
+        positions,
+      );
       currentChildAngle += childAngleStep;
     }
   }
 
   void _calculatePositionsForEntity(
-      String entityId,
-      Model model,
-      Entity entity,
-      double centerX,
-      double centerY,
-      int level,
-      double angle,
-      double angleStep,
-      Map<String, Offset> positions) {
+    String entityId,
+    Model model,
+    Entity entity,
+    double centerX,
+    double centerY,
+    int level,
+    double angle,
+    double angleStep,
+    Map<String, Offset> positions,
+  ) {
     double radius = level * levelGap;
     double x = centerX + radius * cos(angle);
     double y = centerY + radius * sin(angle);
@@ -110,8 +138,16 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
         angle - (childAngleStep * (safeEntity.concept.children.length - 1)) / 2;
 
     for (var child in safeEntity.concept.children) {
-      _calculatePositionsForConceptChild(child.code, child as Child, x, y,
-          level + 1, currentChildAngle, childAngleStep, positions);
+      _calculatePositionsForConceptChild(
+        child.code,
+        child as Child,
+        x,
+        y,
+        level + 1,
+        currentChildAngle,
+        childAngleStep,
+        positions,
+      );
       currentChildAngle += childAngleStep;
     }
     // } catch (e) {
@@ -129,14 +165,15 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
   }
 
   void _calculatePositionsForConceptChild(
-      String childId,
-      Child child,
-      double centerX,
-      double centerY,
-      int level,
-      double angle,
-      double angleStep,
-      Map<String, Offset> positions) {
+    String childId,
+    Child child,
+    double centerX,
+    double centerY,
+    int level,
+    double angle,
+    double angleStep,
+    Map<String, Offset> positions,
+  ) {
     double radius = level * levelGap;
     double x = centerX + radius * cos(angle);
     double y = centerY + radius * sin(angle);
@@ -145,12 +182,21 @@ class RadialTreeLayoutAlgorithm extends LayoutAlgorithm {
 
     double childAngleStep =
         angleStep / max(child.destinationConcept.children.length, 1);
-    double currentChildAngle = angle -
+    double currentChildAngle =
+        angle -
         (childAngleStep * (child.destinationConcept.children.length - 1)) / 2;
 
     for (var grandChild in child.destinationConcept.children) {
-      _calculatePositionsForConceptChild(grandChild.code, grandChild as Child,
-          x, y, level + 1, currentChildAngle, childAngleStep, positions);
+      _calculatePositionsForConceptChild(
+        grandChild.code,
+        grandChild as Child,
+        x,
+        y,
+        level + 1,
+        currentChildAngle,
+        childAngleStep,
+        positions,
+      );
       currentChildAngle += childAngleStep;
     }
   }
