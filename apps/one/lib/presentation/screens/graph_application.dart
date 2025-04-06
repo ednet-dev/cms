@@ -3,25 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:graphview/GraphView.dart';
 
 import '../../generated/one_application.dart';
+import '../pages/graph_page.dart';
 
 void main() {
   // runApp(GraphApp());
 }
 
+/// @deprecated Use GraphPage instead
+/// This class is being phased out as part of the screens to pages migration.
+/// It will be removed in a future release.
+@Deprecated('Use GraphPage instead')
 class GraphApp extends StatelessWidget {
   const GraphApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text('Graph Visualization')),
-        body: GraphWidget(),
-      ),
-    );
+    // Use GraphPage instead, keeping the same interface for backward compatibility
+    return MaterialApp(home: const GraphPage());
   }
 }
 
+/// @deprecated Use GraphWidget from GraphPage instead
+/// This class is being phased out as part of the screens to pages migration.
+/// It will be removed in a future release.
+@Deprecated('Use GraphWidget from GraphPage instead')
 class GraphWidget extends StatelessWidget {
   final Graph graph = Graph();
 
@@ -51,6 +56,7 @@ class GraphWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Use original implementation for now - will be replaced with GraphPage component in future
     final BuchheimWalkerConfiguration builder =
         BuchheimWalkerConfiguration()
           ..siblingSeparation = (100)

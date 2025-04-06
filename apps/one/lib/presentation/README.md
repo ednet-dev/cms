@@ -43,6 +43,22 @@ For detailed information, see:
 - [MIGRATION-PLAN.md](./MIGRATION-PLAN.md) - Outlines the screen to page migration
 - [PRESENTATION-REFACTORING-LONGTERM-MEMORY](../PRESENTATION-REFACTORING-LONGTERM-MEMORY) - Comprehensive refactoring plan
 
+## Current Migration Status
+
+The presentation layer is undergoing a migration from screens (legacy container components) to pages (modern container components). Here's the current status:
+
+### Completed Migrations:
+- ModelDetailScreenScaffold → ModelDetailPage
+- DomainDetailScreen → DomainDetailPage
+- GraphApp (in graph_application.dart) → GraphPage
+
+### In Progress:
+- Migrating HomePage from screens to pages
+- Adding support for named routes
+- Implementing enhanced breadcrumb navigation
+
+For detailed information on the migration progress and plan, see [MIGRATION-PLAN.md](./MIGRATION-PLAN.md).
+
 ## Key Components
 
 ### Pages

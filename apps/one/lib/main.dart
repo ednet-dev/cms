@@ -11,6 +11,7 @@ import 'package:ednet_one/presentation/state/blocs/model_selection/model_selecti
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
+import 'package:ednet_core/ednet_core.dart';
 
 import 'presentation/di/bloc_providers.dart';
 import 'presentation/navigation/navigation_service.dart';
@@ -19,6 +20,9 @@ import 'presentation/pages/home/home_page.dart';
 import 'presentation/state/blocs/theme_bloc/theme_bloc.dart';
 import 'presentation/theme/theme_service.dart';
 import 'presentation/state/providers/domain_service.dart';
+import 'presentation/pages/model_detail_page.dart';
+import 'presentation/pages/domain_detail_page.dart';
+import 'presentation/pages/graph_page.dart';
 
 // Application singletons
 final oneApplication = OneApplication();
@@ -254,7 +258,21 @@ class MyAppState extends State<MyApp> {
       ),
       navigatorKey: navigationService.navigatorKey,
       home: HomePage(title: 'EDNet One'),
-      routes: {BookmarksPage.routeName: (context) => const BookmarksPage()},
+      routes: {
+        BookmarksPage.routeName: (context) => const BookmarksPage(),
+        // Simple route for GraphPage as it doesn't require special parameters
+        GraphPage.routeName: (context) => const GraphPage(),
+      },
+      // Use onGenerateRoute for routes that need parameters
+      onGenerateRoute: (settings) {
+        if (settings.name == ModelDetailPage.routeName ||
+            settings.name == DomainDetailPage.routeName) {
+          // These routes require parameters and should be created
+          // using Navigator.push with MaterialPageRoute instead
+          return null;
+        }
+        return null;
+      },
     );
   }
 }

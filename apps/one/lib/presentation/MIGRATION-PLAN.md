@@ -76,12 +76,14 @@ For each component being migrated, follow this pattern:
 ### Completed Migrations
 - ModelDetailScreenScaffold → ModelDetailPage
 - DomainDetailScreen → DomainDetailPage
+- GraphApp (in graph_application.dart) → GraphPage
 
 ### Implementation Notes
 1. Added deprecation notices to the original screen files
 2. Updated both screens to redirect to their page counterparts
 3. Kept the old implementation as commented code for reference
 4. Added proper documentation to the page components
+5. Enhanced GraphPage with consistent navigation and styling
 
 ### Build Issues
 During testing, we encountered build errors unrelated to our migration:
@@ -90,20 +92,20 @@ During testing, we encountered build errors unrelated to our migration:
 - Our specific migrated files pass the analyzer check with only unused import warnings
 
 ### Next Steps
-1. Continue with migration of graph_application.dart → graph_page.dart
+1. Continue with migration of home_page.dart (screens) → home_page.dart (pages)
 2. Address unused imports in the migrated files
-3. Add support for named routes for the newly migrated pages
+3. Add support for named routes for the newly migrated pages in main.dart
 4. Update any other references to the deprecated screens
 
 ## Migration Progress Tracking
 
-| Component                 | Original Location                         | New Location                  | Status        | Issues                                                  |
-| ------------------------- | ----------------------------------------- | ----------------------------- | ------------- | ------------------------------------------------------- |
-| ModelPage                 | pages/model_page.dart                     | (Fixed in place)              | ✅ Done        | Missing imports                                         |
-| HomePage                  | screens/home_page.dart                    | pages/home/home_page.dart     | 🔄 In progress | Multiple references                                     |
-| ModelDetailScreenScaffold | screens/model_detail_screen_scaffold.dart | pages/model_detail_page.dart  | ✅ Done        | Added deprecation notice, redirects to ModelDetailPage  |
-| DomainDetailScreen        | screens/domain_detail_screen.dart         | pages/domain_detail_page.dart | ✅ Done        | Added deprecation notice, redirects to DomainDetailPage |
-| GraphApplication          | screens/graph_application.dart            | pages/graph_page.dart         | 📝 Planned     | -                                                       |
+| Component                 | Original Location                         | New Location                  | Status        | Issues                                                               |
+| ------------------------- | ----------------------------------------- | ----------------------------- | ------------- | -------------------------------------------------------------------- |
+| ModelPage                 | pages/model_page.dart                     | (Fixed in place)              | ✅ Done        | Missing imports                                                      |
+| HomePage                  | screens/home_page.dart                    | pages/home/home_page.dart     | 🔄 In progress | Multiple references                                                  |
+| ModelDetailScreenScaffold | screens/model_detail_screen_scaffold.dart | pages/model_detail_page.dart  | ✅ Done        | Added deprecation notice, redirects to ModelDetailPage               |
+| DomainDetailScreen        | screens/domain_detail_screen.dart         | pages/domain_detail_page.dart | ✅ Done        | Added deprecation notice, redirects to DomainDetailPage              |
+| GraphApp                  | screens/graph_application.dart            | pages/graph_page.dart         | ✅ Done        | Added deprecation notice, enhanced GraphPage with consistent styling |
 
 ## Development Guidelines During Migration
 
