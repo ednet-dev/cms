@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../layouts/providers/layout_provider.dart';
+import '../theme/extensions/theme_spacing.dart';
 
 /// A container that applies semantic layout constraints based on concept type
 ///
@@ -42,6 +43,15 @@ class SemanticConceptContainer extends StatelessWidget {
   /// ScrollController for the scrollable content
   final ScrollController? scrollController;
 
+  /// Optional padding to override the default for this concept
+  final EdgeInsetsGeometry? padding;
+
+  /// Whether to apply the default semantic padding for this concept type
+  final bool applySemanticPadding;
+
+  /// Optional margin to apply around the container
+  final EdgeInsetsGeometry? margin;
+
   /// Constructor for SemanticConceptContainer
   const SemanticConceptContainer({
     super.key,
@@ -51,6 +61,9 @@ class SemanticConceptContainer extends StatelessWidget {
     this.fillHeight = false,
     this.scrollable = false,
     this.scrollController,
+    this.padding,
+    this.applySemanticPadding = false,
+    this.margin,
   });
 
   @override
@@ -67,11 +80,50 @@ class SemanticConceptContainer extends StatelessWidget {
       fillHeight: fillHeight,
     );
 
-    // Wrap with scroll container if needed
+    // Apply semantic padding if specified
+    if (applySemanticPadding) {
+      final double spacing = context.semanticSpacing(conceptType);
+      container = Padding(padding: EdgeInsets.all(spacing), child: container);
+    }
+
+    // Apply custom padding if specified (overrides semantic padding)
+    if (padding != null) {
+      container = Padding(padding: padding!, child: container);
+    }
+
+    // Apply margin if specified
+    if (margin != null) {
+      container = Padding(padding: margin!, child: container);
+    }
+
+    // Handle scrolling more intelligently
     if (scrollable) {
-      return SingleChildScrollView(
-        controller: scrollController,
-        child: container,
+      // Check if we're already in a ScrollView by looking for ScrollController in ancestry
+      final existingController =
+          scrollController ?? PrimaryScrollController.maybeOf(context);
+
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          // If height is constrained, use scrolling container
+          if (constraints.maxHeight.isFinite) {
+            return Scrollbar(
+              controller: existingController,
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                controller: existingController,
+                // Only use primary if:
+                // 1. We don't have an explicit controller AND
+                // 2. We're not already within a scroll view
+                primary: scrollController == null && existingController == null,
+                child: container,
+              ),
+            );
+          } else {
+            // If constraints allow unlimited height, just return the container
+            // to avoid nested scrolling issues
+            return container;
+          }
+        },
       );
     }
 
