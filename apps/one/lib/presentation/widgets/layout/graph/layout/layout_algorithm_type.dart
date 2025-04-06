@@ -1,6 +1,1 @@
-enum LayoutAlgorithmType {
-  forceDirected,
-  grid,
-  circular,
-  masterDetail,
-}
+enum LayoutAlgorithmType { forceDirected, grid, circular, masterDetail }

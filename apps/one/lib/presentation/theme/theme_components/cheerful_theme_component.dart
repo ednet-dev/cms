@@ -284,7 +284,9 @@ class CheerfulThemeComponent implements ThemeComponent {
       ),
       listTileTheme: ListTileThemeData(
         tileColor: colorScheme.surface,
-        selectedTileColor: colorScheme.primaryContainer.withValues(alpha: 255.0 * 0.3),
+        selectedTileColor: colorScheme.primaryContainer.withValues(
+          alpha: 255.0 * 0.3,
+        ),
         iconColor: colorScheme.primary,
         textColor: colorScheme.onSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

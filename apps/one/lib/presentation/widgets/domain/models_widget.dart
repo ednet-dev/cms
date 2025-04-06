@@ -87,7 +87,9 @@ class ModelsWidget extends StatelessWidget {
                           ? '${model.concepts.length} concepts'
                           : null,
                   infoIcon: Icons.topic_outlined,
-                  iconBackgroundColor: colorScheme.modelColor.withValues(alpha: 255.0 * 0.2),
+                  iconBackgroundColor: colorScheme.modelColor.withValues(
+                    alpha: 255.0 * 0.2,
+                  ),
                   iconColor: colorScheme.modelColor,
                 ),
               );

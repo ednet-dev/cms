@@ -18,15 +18,18 @@ class GameLoop {
 
   void start() {
     _timer = Timer.periodic(
-        Duration(milliseconds: (updateInterval * 1000).round()), _update);
+      Duration(milliseconds: (updateInterval * 1000).round()),
+      _update,
+    );
   }
 
   void _update(Timer timer) {
     double dt = updateInterval;
     animationManager.update(dt);
     system.update(dt);
-    system
-        .render(Canvas(PictureRecorder())); // Replace with your rendering logic
+    system.render(
+      Canvas(PictureRecorder()),
+    ); // Replace with your rendering logic
   }
 
   void stop() {

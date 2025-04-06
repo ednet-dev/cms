@@ -208,7 +208,8 @@ class _ResponsiveBreadcrumbWidgetState
     } else {
       // Otherwise show first and last with dropdown for the rest
       return Material(
-        color: theme.scaffoldBackgroundColor,
+        color: colorScheme.surface,
+        elevation: 1,
         child: SizedBox(
           height: 48.0,
           child: Padding(
@@ -223,7 +224,18 @@ class _ResponsiveBreadcrumbWidgetState
                 ),
 
                 // Dropdown for middle items
-                _buildBreadcrumbDropdown(context),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: colorScheme.outlineVariant.withValues(
+                        alpha: 255.0 * 0.5,
+                      ),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: _buildBreadcrumbDropdown(context),
+                ),
 
                 // Last item
                 _buildSingleBreadcrumbItem(context, _breadcrumbPath.last, true),

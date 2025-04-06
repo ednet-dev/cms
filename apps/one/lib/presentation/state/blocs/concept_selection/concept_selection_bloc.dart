@@ -54,7 +54,7 @@ class ConceptSelectionBloc
             entryConcepts = ednet.Concepts();
             for (var concept in orderedConcepts) {
               entryConcepts.add(concept);
-                        }
+            }
           }
         } catch (e) {
           debugPrint('Error getting ordered entry concepts: $e');
@@ -144,7 +144,7 @@ class ConceptSelectionBloc
           model.codeFirstLetterLower,
         );
 
-        debugPrint('🔍 Got domain model: ${domainModel != null}');
+        debugPrint('🔍 Got domain model: ${domainModel.runtimeType}');
         debugPrint('🔍 Domain model type: ${domainModel.runtimeType}');
 
         var modelEntries = domainModel.getModelEntries(concept.model.code);
@@ -159,10 +159,10 @@ class ConceptSelectionBloc
             );
             entities = modelEntries.getEntry(concept.code);
             debugPrint(
-              '🔍 Found ${entities.length ?? 0} entities for concept: ${concept.code}',
+              '🔍 Found ${entities.length} entities for concept: ${concept.code}',
             );
             debugPrint('🔍 First entity: ${entities.first.oid}');
-                    } catch (e) {
+          } catch (e) {
             debugPrint(
               '❌ Error getting entities for concept ${concept.code}: $e',
             );
@@ -219,7 +219,7 @@ class ConceptSelectionBloc
         // Simply force a selection of the same concept again
         // This should trigger the normal entity loading process
         _onSelectConcept(SelectConceptEvent(event.concept), emit);
-            }
+      }
     } catch (e, stack) {
       debugPrint('Error refreshing entities: $e');
       debugPrint('Stack trace: $stack');

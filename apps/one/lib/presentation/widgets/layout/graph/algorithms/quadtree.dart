@@ -38,13 +38,17 @@ class Quadtree {
     final centerY = bounds.top + halfHeight;
 
     northwest = Quadtree(
-        bounds: Rect.fromLTWH(bounds.left, bounds.top, halfWidth, halfHeight));
+      bounds: Rect.fromLTWH(bounds.left, bounds.top, halfWidth, halfHeight),
+    );
     northeast = Quadtree(
-        bounds: Rect.fromLTWH(centerX, bounds.top, halfWidth, halfHeight));
+      bounds: Rect.fromLTWH(centerX, bounds.top, halfWidth, halfHeight),
+    );
     southwest = Quadtree(
-        bounds: Rect.fromLTWH(bounds.left, centerY, halfWidth, halfHeight));
+      bounds: Rect.fromLTWH(bounds.left, centerY, halfWidth, halfHeight),
+    );
     southeast = Quadtree(
-        bounds: Rect.fromLTWH(centerX, centerY, halfWidth, halfHeight));
+      bounds: Rect.fromLTWH(centerX, centerY, halfWidth, halfHeight),
+    );
 
     divided = true;
   }

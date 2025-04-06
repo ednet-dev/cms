@@ -174,11 +174,23 @@ class _LayoutCustomizationTutorialState
         // Welcome - show responsive layout demo
         return _buildResponsiveLayoutDemo(context);
       case 1:
-        // Priorities - show priority levels
-        return _buildPriorityLevelsDemo(context);
+        // Priorities - show priority levels with theme
+        return Padding(
+          padding: EdgeInsets.all(
+            screenCategory == ScreenSizeCategory.mobile ? 8.0 : 16.0,
+          ),
+          child: _buildPriorityLevelsDemo(context),
+        );
       case 2:
-        // Pinning - show pin demo
-        return _buildPinningDemo(context);
+        // Pinning - show pin demo with theme
+        return Theme(
+          data: theme.copyWith(
+            colorScheme: theme.colorScheme.copyWith(
+              surface: theme.colorScheme.surface.withOpacity(0.9),
+            ),
+          ),
+          child: _buildPinningDemo(context),
+        );
       case 3:
         // Managing pins - show pin manager
         return _buildPinManagerDemo(context);

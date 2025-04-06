@@ -43,8 +43,6 @@ class _BookmarkDialogState extends State<BookmarkDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final isEditMode = widget.bookmark != null;
 
     return AlertDialog(

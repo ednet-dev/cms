@@ -558,7 +558,9 @@ class ResponsiveEntityContainer extends StatelessWidget {
               text: date,
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
               ),
             ),
           ],

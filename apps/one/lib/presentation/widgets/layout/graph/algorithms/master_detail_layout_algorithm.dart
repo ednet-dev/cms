@@ -29,13 +29,17 @@ class MasterDetailLayoutAlgorithm extends LayoutAlgorithm {
 
         for (var entity in model.concepts) {
           currentY += nodeHeight + levelGap;
-          positions[entity.code] =
-              Offset(currentX + nodeWidth + levelGap, currentY);
+          positions[entity.code] = Offset(
+            currentX + nodeWidth + levelGap,
+            currentY,
+          );
 
           for (var child in entity.children) {
             currentY += nodeHeight + levelGap;
-            positions[child.code] =
-                Offset(currentX + 2 * (nodeWidth + levelGap), currentY);
+            positions[child.code] = Offset(
+              currentX + 2 * (nodeWidth + levelGap),
+              currentY,
+            );
           }
         }
       }

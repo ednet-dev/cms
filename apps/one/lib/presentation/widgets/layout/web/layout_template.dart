@@ -29,20 +29,17 @@ class LayoutTemplate extends StatelessWidget {
   Widget _buildLargeScreenLayout() {
     return Column(
       children: [
-        if (header != null) header!, // Remove _buildScrollableHeader
+        if (header != null) header!,
         Expanded(
           child: Row(
             children: [
               if (leftSidebar != null) Expanded(flex: 2, child: leftSidebar!),
-              // Remove _buildScrollableSidebar
               Expanded(flex: 6, child: mainContent),
-              // Remove _buildScrollableContent
               if (rightSidebar != null) Expanded(flex: 2, child: rightSidebar!),
-              // Remove _buildScrollableSidebar
             ],
           ),
         ),
-        if (footer != null) footer!, // Remove _buildScrollableFooter
+        if (footer != null) footer!,
       ],
     );
   }
@@ -51,44 +48,11 @@ class LayoutTemplate extends StatelessWidget {
     return Column(
       children: [
         if (header != null) header!,
-        // Remove _buildScrollableHeader
         if (leftSidebar != null) leftSidebar!,
-        // Remove _buildScrollableSidebar
         Expanded(child: mainContent),
-        // Remove _buildScrollableContent
         if (rightSidebar != null) rightSidebar!,
-        // Remove _buildScrollableSidebar
         if (footer != null) footer!,
-        // Remove _buildScrollableFooter
       ],
-    );
-  }
-
-  Widget _buildScrollableHeader() {
-    return ConstrainedBox(
-      constraints: BoxConstraints(minWidth: double.infinity),
-      child: header,
-    );
-  }
-
-  Widget _buildScrollableFooter() {
-    return ConstrainedBox(
-      constraints: BoxConstraints(minWidth: double.infinity),
-      child: footer,
-    );
-  }
-
-  Widget _buildScrollableContent() {
-    return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: double.infinity),
-      child: mainContent,
-    );
-  }
-
-  Widget _buildScrollableSidebar(Widget sidebar) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: double.infinity),
-      child: sidebar,
     );
   }
 }

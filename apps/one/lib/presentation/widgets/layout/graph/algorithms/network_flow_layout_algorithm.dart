@@ -18,27 +18,37 @@ class NetworkFlowLayoutAlgorithm extends LayoutAlgorithm {
       for (var model in domain.models) {
         final modelPosition = Offset(size.width * 0.25, size.height * 0.25);
         positions[model.code] = modelPosition;
-        graph[domain.code]![model.code] =
-            _distance(positions[domain.code]!, modelPosition);
+        graph[domain.code]![model.code] = _distance(
+          positions[domain.code]!,
+          modelPosition,
+        );
 
         for (var entity in model.concepts) {
           final entityPosition = Offset(size.width * 0.75, size.height * 0.75);
           positions[entity.code] = entityPosition;
-          graph[model.code]![entity.code] =
-              _distance(modelPosition, entityPosition);
+          graph[model.code]![entity.code] = _distance(
+            modelPosition,
+            entityPosition,
+          );
 
           for (var child in entity.children) {
             final childPosition = Offset(size.width * 0.5, size.height * 0.5);
             positions[child.code] = childPosition;
-            graph[entity.code]![child.code] =
-                _distance(entityPosition, childPosition);
+            graph[entity.code]![child.code] = _distance(
+              entityPosition,
+              childPosition,
+            );
           }
         }
       }
     }
 
     final maxFlow = _edmondsKarp(graph, domains.first.code, domains.last.code);
-    // You can use the maxFlow result to adjust positions if needed
+    // TODO: Implement position adjustment based on maxFlow value
+    // The maxFlow value can be used to:
+    // 1. Scale the distances between nodes
+    // 2. Adjust node positions to minimize edge crossings
+    // 3. Optimize the overall layout based on flow capacity
 
     return positions;
   }
@@ -48,7 +58,10 @@ class NetworkFlowLayoutAlgorithm extends LayoutAlgorithm {
   }
 
   double _edmondsKarp(
-      Map<String, Map<String, double>> graph, String source, String sink) {
+    Map<String, Map<String, double>> graph,
+    String source,
+    String sink,
+  ) {
     final residualGraph = <String, Map<String, double>>{};
     for (var u in graph.keys) {
       residualGraph[u] = {};

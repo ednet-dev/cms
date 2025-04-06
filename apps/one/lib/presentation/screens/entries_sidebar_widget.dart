@@ -4,9 +4,7 @@ import 'package:ednet_core/ednet_core.dart';
 class EntriesSidebarWidget extends StatelessWidget {
   final Entities entries;
 
-  const EntriesSidebarWidget({super.key, 
-    required this.entries,
-  });
+  const EntriesSidebarWidget({super.key, required this.entries});
 
   @override
   Widget build(BuildContext context) {

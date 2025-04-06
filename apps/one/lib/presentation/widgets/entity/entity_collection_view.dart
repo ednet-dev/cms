@@ -135,20 +135,26 @@ class _EntityCollectionViewState extends State<EntityCollectionView> {
           Icon(
             Icons.inbox_outlined,
             size: 64,
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 255.0 * 0.5),
+            color: Theme.of(
+              context,
+            ).colorScheme.outline.withValues(alpha: 255.0 * 0.5),
           ),
           const SizedBox(height: 16),
           Text(
             'No entities available',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'There are no items to display in this collection',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.5),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.5),
             ),
           ),
         ],
@@ -417,7 +423,9 @@ class _EntityCollectionViewState extends State<EntityCollectionView> {
             '$name: ',
             style: TextStyle(
               fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 255.0 * 0.7),
             ),
           ),
           Expanded(

@@ -99,6 +99,7 @@ class _UserLayoutSettingsState extends State<UserLayoutSettings> {
                 'Layout Settings',
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: colorScheme.primary,
                 ),
               ),
             ),
@@ -112,7 +113,10 @@ class _UserLayoutSettingsState extends State<UserLayoutSettings> {
                 builder:
                     (context, setState) => SwitchListTile.adaptive(
                       title: const Text('Edit Mode'),
-                      subtitle: const Text('Enable users to customize layout'),
+                      subtitle: Text(
+                        'Enable users to customize layout',
+                        style: TextStyle(color: colorScheme.onSurfaceVariant),
+                      ),
                       value: _editModeEnabled,
                       onChanged: (value) {
                         setState(() => _editModeEnabled = value);

@@ -68,11 +68,8 @@ class DomainBloc extends Bloc<local.DomainEvent, DomainState> {
       selectedModel = domain.models.first;
       selectedEntries =
           selectedModel.concepts.isNotEmpty ? selectedModel.concepts : null;
-      domainModelGraph = DomainModelGraph(
-        domain: domain,
-        model: selectedModel,
-      );
-        }
+      domainModelGraph = DomainModelGraph(domain: domain, model: selectedModel);
+    }
 
     emit(
       state.copyWith(

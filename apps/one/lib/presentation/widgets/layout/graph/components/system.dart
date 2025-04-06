@@ -12,8 +12,9 @@ class System {
 
   void render(Canvas canvas) {
     for (var node in nodes) {
-      for (var component in node.components
-          .where((component) => component is! TextComponent)) {
+      for (var component in node.components.where(
+        (component) => component is! TextComponent,
+      )) {
         component.render(canvas);
       }
     }

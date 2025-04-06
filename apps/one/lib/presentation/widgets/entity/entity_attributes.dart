@@ -1,7 +1,6 @@
 import 'package:ednet_core/ednet_core.dart' as ednet;
 import 'package:flutter/material.dart';
 
-
 /// Component for rendering the attributes section of an entity
 class EntityAttributes extends StatelessWidget {
   /// The entity whose attributes will be displayed

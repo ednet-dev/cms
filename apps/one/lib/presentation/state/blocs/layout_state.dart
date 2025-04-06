@@ -7,8 +7,10 @@ class LayoutState {
   final Entity? selectedEntity;
   final LayoutType layoutType;
 
-  LayoutState(
-      {this.selectedEntity, this.layoutType = LayoutType.defaultLayout});
+  LayoutState({
+    this.selectedEntity,
+    this.layoutType = LayoutType.defaultLayout,
+  });
 
   LayoutState copyWith({Entity? selectedEntity, LayoutType? layoutType}) {
     return LayoutState(

@@ -29,8 +29,13 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
       final rootY = domainSize.height / 2 + verticalGap;
       final root = TreeNode(domain.code, Offset(rootX, rootY));
       positions[domain.code] = root.position;
-      _calculateModelPositions(root, domain.models, currentX,
-          currentX + domainSize.width, positions);
+      _calculateModelPositions(
+        root,
+        domain.models,
+        currentX,
+        currentX + domainSize.width,
+        positions,
+      );
       currentX += domainSize.width + horizontalGap;
     }
 
@@ -68,8 +73,9 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
     double totalHeight = 0.0;
 
     for (var child in concept.children) {
-      final childSize =
-          _calculateConceptSize((child as Child).destinationConcept);
+      final childSize = _calculateConceptSize(
+        (child as Child).destinationConcept,
+      );
       maxWidth = max(maxWidth, childSize.width);
       totalHeight += childSize.height + verticalGap;
     }
@@ -82,8 +88,13 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
     return Size(maxWidth, totalHeight);
   }
 
-  void _calculateModelPositions(TreeNode parent, Models models, double xMin,
-      double xMax, Map<String, Offset> positions) {
+  void _calculateModelPositions(
+    TreeNode parent,
+    Models models,
+    double xMin,
+    double xMax,
+    Map<String, Offset> positions,
+  ) {
     if (models.isEmpty) return;
 
     final y = parent.position.dy + verticalGap;
@@ -95,13 +106,23 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
       final childNode = TreeNode(model.code, Offset(x, y));
       parent.children.add(childNode);
       positions[childNode.key] = childNode.position;
-      _calculateConceptPositions(childNode, model.concepts, xMin + i * width,
-          xMin + (i + 1) * width, positions);
+      _calculateConceptPositions(
+        childNode,
+        model.concepts,
+        xMin + i * width,
+        xMin + (i + 1) * width,
+        positions,
+      );
     }
   }
 
-  void _calculateConceptPositions(TreeNode parent, Concepts concepts,
-      double xMin, double xMax, Map<String, Offset> positions) {
+  void _calculateConceptPositions(
+    TreeNode parent,
+    Concepts concepts,
+    double xMin,
+    double xMax,
+    Map<String, Offset> positions,
+  ) {
     if (concepts.isEmpty) return;
 
     final y = parent.position.dy + verticalGap;
@@ -113,15 +134,30 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
       final childNode = TreeNode(concept.code, Offset(x, y));
       parent.children.add(childNode);
       positions[childNode.key] = childNode.position;
-      _calculateConceptChildrenPositions(childNode, concept.children,
-          xMin + i * width, xMin + (i + 1) * width, positions);
-      _calculateAttributePositions(childNode, concept.attributes,
-          xMin + i * width, xMin + (i + 1) * width, positions);
+      _calculateConceptChildrenPositions(
+        childNode,
+        concept.children,
+        xMin + i * width,
+        xMin + (i + 1) * width,
+        positions,
+      );
+      _calculateAttributePositions(
+        childNode,
+        concept.attributes,
+        xMin + i * width,
+        xMin + (i + 1) * width,
+        positions,
+      );
     }
   }
 
-  void _calculateConceptChildrenPositions(TreeNode parent, Children children,
-      double xMin, double xMax, Map<String, Offset> positions) {
+  void _calculateConceptChildrenPositions(
+    TreeNode parent,
+    Children children,
+    double xMin,
+    double xMax,
+    Map<String, Offset> positions,
+  ) {
     if (children.isEmpty) return;
 
     final y = parent.position.dy + verticalGap;
@@ -137,17 +173,23 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
       // If the child can navigate, calculate the positions of its children
       if (child is Child && child.navigate) {
         _calculateConceptChildrenPositions(
-            childNode,
-            child.destinationConcept.children,
-            xMin + i * width,
-            xMin + (i + 1) * width,
-            positions);
+          childNode,
+          child.destinationConcept.children,
+          xMin + i * width,
+          xMin + (i + 1) * width,
+          positions,
+        );
       }
     }
   }
 
-  void _calculateAttributePositions(TreeNode parent, Attributes attributes,
-      double xMin, double xMax, Map<String, Offset> positions) {
+  void _calculateAttributePositions(
+    TreeNode parent,
+    Attributes attributes,
+    double xMin,
+    double xMax,
+    Map<String, Offset> positions,
+  ) {
     if (attributes.isEmpty) return;
 
     final y = parent.position.dy + verticalGap;
