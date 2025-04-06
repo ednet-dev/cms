@@ -132,3 +132,4 @@ pubspec.lock
 
 # macOS specific Flutter generated files
 **/macos/Flutter/GeneratedPluginRegistrant.swift
+.vscode/settings.json
