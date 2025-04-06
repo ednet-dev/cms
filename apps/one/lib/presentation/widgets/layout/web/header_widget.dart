@@ -7,7 +7,8 @@ import 'package:ednet_one/presentation/state/blocs/model_selection/model_selecti
 import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_state.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
 import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_state.dart';
-import 'package:ednet_one/presentation/widgets/entity/bookmark_manager.dart';
+import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_manager.dart';
+import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_model.dart';
 import 'package:ednet_one/presentation/widgets/navigation/breadcrumb/breadcrumb_widget.dart';
 
 /// Widget for the application header area

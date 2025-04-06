@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_one/presentation/state/navigation_helper.dart';
-import 'package:ednet_one/presentation/widgets/entity/bookmark_manager.dart';
+import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_manager.dart';
+import 'package:ednet_one/presentation/widgets/bookmarks/bookmark_model.dart';
 import 'package:ednet_one/presentation/widgets/navigation/breadcrumb/breadcrumb_item.dart';
 import 'package:ednet_one/presentation/widgets/navigation/breadcrumb/breadcrumb_separator.dart';
 import 'package:ednet_one/presentation/widgets/navigation/breadcrumb/breadcrumb_path.dart';
@@ -145,6 +146,7 @@ class BreadcrumbWidget extends StatelessWidget {
     final bookmark = Bookmark(
       title: '${segment.label} (${segment.type.name})',
       url: path,
+      category: BookmarkCategory.general,
     );
 
     if (bookmarkManager != null) {
