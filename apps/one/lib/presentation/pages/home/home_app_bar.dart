@@ -12,6 +12,7 @@ import 'package:ednet_one/presentation/widgets/layout/user_layout_settings.dart'
 import 'package:ednet_one/presentation/widgets/semantic_concept_container.dart';
 import 'package:ednet_one/presentation/theme/providers/theme_provider.dart';
 import 'package:ednet_one/presentation/theme/extensions/theme_spacing.dart';
+import 'package:ednet_one/presentation/pages/workspace/immersive_workspace_page.dart';
 
 /// Component for the application's main app bar with navigation and actions
 ///
