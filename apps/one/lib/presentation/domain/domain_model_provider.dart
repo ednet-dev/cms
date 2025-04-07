@@ -161,3 +161,97 @@ extension DomainModelContextExtension on BuildContext {
     return domainModelProvider.getConceptTypeForDomain(domain);
   }
 }
+
+/// Provider for domain model state
+class DomainModelProvider extends ChangeNotifier {
+  /// Reference to the application instance
+  final OneApplication _application;
+
+  /// Currently selected domain
+  Domain? _selectedDomain;
+
+  /// Currently selected model
+  Model? _selectedModel;
+
+  /// Currently selected concept
+  Concept? _selectedConcept;
+
+  /// Constructor
+  DomainModelProvider(this._application) {
+    // Default selection if domains exist
+    if (_application.domains.isNotEmpty) {
+      _selectedDomain = _application.domains.first;
+
+      if (_selectedDomain!.models.isNotEmpty) {
+        _selectedModel = _selectedDomain!.models.first;
+
+        if (_selectedModel!.concepts.isNotEmpty) {
+          _selectedConcept = _selectedModel!.concepts.first;
+        }
+      }
+    }
+  }
+
+  /// Get all domains
+  List<Domain> get domains => _application.domains;
+
+  /// Get the currently selected domain
+  Domain? get selectedDomain => _selectedDomain;
+
+  /// Get all models for the selected domain
+  List<Model> get models => _selectedDomain?.models.toList() ?? [];
+
+  /// Get the currently selected model
+  Model? get selectedModel => _selectedModel;
+
+  /// Get all concepts for the selected model
+  List<Concept> get concepts => _selectedModel?.concepts.toList() ?? [];
+
+  /// Get the currently selected concept
+  Concept? get selectedConcept => _selectedConcept;
+
+  /// Select a domain
+  void selectDomain(Domain domain) {
+    _selectedDomain = domain;
+
+    // Reset model and concept selections
+    if (domain.models.isNotEmpty) {
+      _selectedModel = domain.models.first;
+
+      if (_selectedModel!.concepts.isNotEmpty) {
+        _selectedConcept = _selectedModel!.concepts.first;
+      } else {
+        _selectedConcept = null;
+      }
+    } else {
+      _selectedModel = null;
+      _selectedConcept = null;
+    }
+
+    notifyListeners();
+  }
+
+  /// Select a model
+  void selectModel(Model model) {
+    if (_selectedDomain == null) return;
+
+    _selectedModel = model;
+
+    // Reset concept selection
+    if (model.concepts.isNotEmpty) {
+      _selectedConcept = model.concepts.first;
+    } else {
+      _selectedConcept = null;
+    }
+
+    notifyListeners();
+  }
+
+  /// Select a concept
+  void selectConcept(Concept concept) {
+    if (_selectedModel == null) return;
+
+    _selectedConcept = concept;
+    notifyListeners();
+  }
+}

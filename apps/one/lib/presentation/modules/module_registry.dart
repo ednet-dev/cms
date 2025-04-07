@@ -7,6 +7,7 @@ import 'package:ednet_core/ednet_core.dart';
 import '../pages/domain_modeler/domain_model_editor.dart';
 import '../pages/model_instance/model_instance_page.dart';
 import '../pages/domain_modeler/live_preview_editor.dart';
+import '../pages/project_management/project_management_page.dart';
 
 /// A singleton registry for all application modules
 class AppModuleRegistry {
@@ -40,6 +41,9 @@ class AppModuleRegistry {
 
     // Live Preview Editor module
     _registry.registerModule(LivePreviewEditorModule());
+
+    // Project Management module
+    _registry.registerModule(ProjectManagementModule());
 
     _initialized = true;
   }
@@ -145,6 +149,43 @@ class LivePreviewEditorModule extends AppModule {
         tooltip: 'Refresh Preview',
         onPressed: () {
           // This would be handled by the LivePreviewEditor itself
+        },
+      ),
+    ];
+  }
+}
+
+/// Module for the Project Management
+class ProjectManagementModule extends AppModule {
+  @override
+  String get id => 'project-management';
+
+  @override
+  String get name => 'Project Management';
+
+  @override
+  IconData get icon => Icons.business;
+
+  @override
+  Widget buildModuleContent(BuildContext context) {
+    return const ProjectManagementPage();
+  }
+
+  @override
+  List<Widget> buildAppBarActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.add),
+        tooltip: 'Create New Project',
+        onPressed: () {
+          // This would be handled by the ProjectManagementPage
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.refresh),
+        tooltip: 'Refresh',
+        onPressed: () {
+          // This would be handled by the ProjectManagementPage
         },
       ),
     ];

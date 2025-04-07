@@ -1,192 +1,223 @@
+import 'dart:convert';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/generated/one_application.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'entity_repository.dart';
 
-/// Implementation of EntityRepository using OneApplication
-class EntityRepositoryImpl implements EntityRepository {
-  final OneApplication _app;
+/// Implementation of [SerializableRepository] using in-memory storage
+class InMemoryRepository<T extends Entity<dynamic>>
+    implements SerializableRepository<T> {
+  /// The concept code
+  @override
+  final String conceptCode;
 
-  /// Constructor requiring the OneApplication instance
-  EntityRepositoryImpl(this._app);
+  /// In-memory storage for entities
+  final Map<dynamic, T> _entities = {};
+
+  /// Constructor
+  InMemoryRepository(this.conceptCode);
 
   @override
-  Future<List<Entity<dynamic>>> getEntities(
-    Domain domain,
-    Model model,
-    Concept concept,
-  ) async {
-    try {
-      // Get the domain model
-      final domainModel = _getDomainModel(domain, model);
-
-      if (concept.entry) {
-        // If the concept is an entry point, we can get entities directly
-        final entities = domainModel.entities(concept.code);
-        return entities.toList();
-      } else {
-        // For non-entry concepts, we need a different approach
-        // This is likely domain-specific and might require a custom solution
-        throw UnimplementedError(
-          'Getting entities for non-entry concepts is not implemented',
-        );
-      }
-    } catch (e) {
-      print('Error getting entities: $e');
-      return [];
-    }
+  Future<T?> findById(dynamic id) async {
+    return _entities[id];
   }
 
   @override
-  Future<Entity<dynamic>?> getEntity(
-    Domain domain,
-    Model model,
-    Concept concept,
-    int oid,
-  ) async {
+  Future<Iterable<T>> findAll() async {
+    return _entities.values;
+  }
+
+  @override
+  Future<bool> save(T entity) async {
+    _entities[entity.oid] = entity;
+    return true;
+  }
+
+  @override
+  Future<bool> saveAll(Iterable<T> entities) async {
+    for (final entity in entities) {
+      _entities[entity.oid] = entity;
+    }
+    return true;
+  }
+
+  @override
+  Future<bool> remove(T entity) {
+    return removeById(entity.oid);
+  }
+
+  @override
+  Future<bool> removeById(dynamic id) async {
+    _entities.remove(id);
+    return true;
+  }
+
+  @override
+  Future<bool> clear() async {
+    _entities.clear();
+    return true;
+  }
+
+  @override
+  Map<String, dynamic> serialize(T entity) {
+    // This would be implemented for each specific entity type
+    return {'id': entity.oid};
+  }
+
+  @override
+  T deserialize(Map<String, dynamic> data) {
+    // This would be implemented for each specific entity type
+    throw UnimplementedError('Deserialize must be implemented by subclasses');
+  }
+}
+
+/// Implementation of [SerializableRepository] using SharedPreferences
+class EntityRepositoryImpl<T extends Entity<dynamic>>
+    implements SerializableRepository<T> {
+  /// SharedPreferences instance
+  final SharedPreferences _prefs;
+
+  /// The concept code
+  @override
+  final String conceptCode;
+
+  /// Domain code
+  final String _domainCode;
+
+  /// Model code
+  final String _modelCode;
+
+  /// Function to deserialize entity
+  final T Function(Map<String, dynamic>) _deserializer;
+
+  /// Function to serialize entity
+  final Map<String, dynamic> Function(T) _serializer;
+
+  /// Constructor
+  EntityRepositoryImpl(
+    this._prefs,
+    this.conceptCode,
+    this._domainCode,
+    this._modelCode,
+    this._deserializer,
+    this._serializer,
+  );
+
+  /// Get the key prefix for all entities of this type
+  String get _keyPrefix => 'ednet_${_domainCode}_${_modelCode}_$conceptCode';
+
+  /// Get the key for a specific entity
+  String _getEntityKey(dynamic id) => '${_keyPrefix}_$id';
+
+  /// Get the key for the index of all entity IDs
+  String get _indexKey => '${_keyPrefix}_index';
+
+  @override
+  Future<T?> findById(dynamic id) async {
+    final key = _getEntityKey(id);
+    final data = _prefs.getString(key);
+    if (data == null) return null;
+
     try {
-      // Get the domain model
-      final domainModel = _getDomainModel(domain, model);
-
-      if (concept.entry) {
-        // Get all entities for this concept
-        final entities = domainModel.entities(concept.code);
-
-        // Find the entity with matching OID
-        return entities.firstWhere((entity) => entity.oid == oid);
-      } else {
-        throw UnimplementedError(
-          'Getting entity for non-entry concepts is not implemented',
-        );
-      }
+      final entityMap = jsonDecode(data) as Map<String, dynamic>;
+      return deserialize(entityMap);
     } catch (e) {
-      print('Error getting entity: $e');
+      print('Error deserializing entity: $e');
       return null;
     }
   }
 
   @override
-  Future<Entity<dynamic>> createEntity(
-    Domain domain,
-    Model model,
-    Concept concept,
-    Map<String, dynamic> attributeValues,
-  ) async {
-    try {
-      // Get the domain model
-      final domainModel = _getDomainModel(domain, model);
+  Future<Iterable<T>> findAll() async {
+    final index = _getIndex();
+    final List<T> result = [];
 
-      if (!concept.entry) {
-        throw ArgumentError('Cannot create entity for non-entry concept');
+    for (final id in index) {
+      final entity = await findById(id);
+      if (entity != null) {
+        result.add(entity);
       }
-
-      // Create a new entity through the domain model
-      final entity = domainModel.newEntity(concept.code);
-
-      // Set attribute values
-      for (final entry in attributeValues.entries) {
-        entity.setAttribute(entry.key, entry.value);
-      }
-
-      // Save the entity
-      domainModel.save();
-
-      return entity;
-    } catch (e) {
-      print('Error creating entity: $e');
-      rethrow;
     }
+
+    return result;
   }
 
   @override
-  Future<Entity<dynamic>> updateEntity(
-    Domain domain,
-    Model model,
-    Concept concept,
-    int oid,
-    Map<String, dynamic> attributeValues,
-  ) async {
-    try {
-      // Get the entity
-      final entity = await getEntity(domain, model, concept, oid);
-      if (entity == null) {
-        throw Exception('Entity not found');
-      }
+  Future<bool> save(T entity) async {
+    final key = _getEntityKey(entity.oid);
+    final data = serialize(entity);
+    final json = jsonEncode(data);
 
-      // Update attribute values
-      for (final entry in attributeValues.entries) {
-        entity.setAttribute(entry.key, entry.value);
-      }
-
-      // Save changes
-      final domainModel = _getDomainModel(domain, model);
-      domainModel.save();
-
-      return entity;
-    } catch (e) {
-      print('Error updating entity: $e');
-      rethrow;
+    // Add to the index
+    final List<String> index = _getIndex();
+    final idString = entity.oid.toString();
+    if (!index.contains(idString)) {
+      index.add(idString);
+      await _prefs.setStringList(_indexKey, index);
     }
+
+    // Save the entity
+    return await _prefs.setString(key, json);
   }
 
   @override
-  Future<bool> deleteEntity(
-    Domain domain,
-    Model model,
-    Concept concept,
-    int oid,
-  ) async {
-    try {
-      // Get the domain model
-      final domainModel = _getDomainModel(domain, model);
-
-      if (!concept.entry) {
-        throw ArgumentError('Cannot delete entity for non-entry concept');
-      }
-
-      // Get all entities for this concept
-      final entities = domainModel.entities(concept.code);
-
-      // Find the entity with matching OID
-      final entity = entities.firstWhere((entity) => entity.oid == oid);
-
-      // Remove the entity
-      // Note: Implementation depends on the actual API of ednet_core
-      // This is a simplified example
-      domainModel.removeEntity(concept.code, entity);
-
-      // Save changes
-      domainModel.save();
-
-      return true;
-    } catch (e) {
-      print('Error deleting entity: $e');
-      return false;
+  Future<bool> saveAll(Iterable<T> entities) async {
+    bool success = true;
+    for (final entity in entities) {
+      final result = await save(entity);
+      success = success && result;
     }
+    return success;
   }
 
-  /// Helper method to get the domain model
-  dynamic _getDomainModel(Domain domain, Model model) {
-    try {
-      // Access the domain directly from app's groupedDomains
-      final targetDomain = _app.groupedDomains.firstWhere(
-        (d) => d.code == domain.code,
-        orElse: () => throw Exception('Domain not found: ${domain.code}'),
-      );
+  @override
+  Future<bool> remove(T entity) {
+    return removeById(entity.oid);
+  }
 
-      // Find the model within this domain
-      final domainModel = targetDomain.models.firstWhere(
-        (m) => m.code == model.code,
-        orElse:
-            () =>
-                throw Exception(
-                  'Model not found: ${model.code} in domain ${domain.code}',
-                ),
-      );
+  @override
+  Future<bool> removeById(dynamic id) async {
+    final key = _getEntityKey(id);
+    final List<String> index = _getIndex();
+    final idString = id.toString();
 
-      return domainModel;
-    } catch (e) {
-      print('Error getting domain model for ${domain.code}_${model.code}: $e');
-      rethrow;
+    // Remove from index
+    if (index.contains(idString)) {
+      index.remove(idString);
+      await _prefs.setStringList(_indexKey, index);
     }
+
+    // Remove the entity
+    return await _prefs.remove(key);
+  }
+
+  @override
+  Future<bool> clear() async {
+    final index = _getIndex();
+    bool success = true;
+
+    // Remove all entity entries
+    for (final id in index) {
+      final result = await _prefs.remove(_getEntityKey(id));
+      success = success && result;
+    }
+
+    // Clear the index
+    final indexResult = await _prefs.remove(_indexKey);
+    return success && indexResult;
+  }
+
+  @override
+  Map<String, dynamic> serialize(T entity) {
+    return _serializer(entity);
+  }
+
+  @override
+  T deserialize(Map<String, dynamic> data) {
+    return _deserializer(data);
+  }
+
+  /// Get the index of all entity IDs
+  List<String> _getIndex() {
+    return _prefs.getStringList(_indexKey) ?? [];
   }
 }

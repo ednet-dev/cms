@@ -1,44 +1,53 @@
 import 'package:ednet_core/ednet_core.dart';
 
-/// Repository interface for performing CRUD operations on entities
-abstract class EntityRepository {
-  /// Get all entities for a specified concept
-  Future<List<Entity<dynamic>>> getEntities(
-    Domain domain,
-    Model model,
-    Concept concept,
-  );
+/// Repository interface for entity operations
+abstract class EntityRepository<T extends Entity<dynamic>> {
+  /// Find an entity by its ID
+  Future<T?> findById(dynamic id);
 
-  /// Get a specific entity by OID
-  Future<Entity<dynamic>?> getEntity(
-    Domain domain,
-    Model model,
-    Concept concept,
-    int oid,
-  );
+  /// Find all entities
+  Future<Iterable<T>> findAll();
 
-  /// Create a new entity with the provided attribute values
-  Future<Entity<dynamic>> createEntity(
-    Domain domain,
-    Model model,
-    Concept concept,
-    Map<String, dynamic> attributeValues,
-  );
+  /// Save an entity
+  Future<bool> save(T entity);
 
-  /// Update an entity with new attribute values
-  Future<Entity<dynamic>> updateEntity(
-    Domain domain,
-    Model model,
-    Concept concept,
-    int oid,
-    Map<String, dynamic> attributeValues,
-  );
+  /// Save multiple entities
+  Future<bool> saveAll(Iterable<T> entities);
 
-  /// Delete an entity
-  Future<bool> deleteEntity(
-    Domain domain,
-    Model model,
-    Concept concept,
-    int oid,
-  );
+  /// Remove an entity
+  Future<bool> remove(T entity);
+
+  /// Remove an entity by its ID
+  Future<bool> removeById(dynamic id);
+
+  /// Remove all entities
+  Future<bool> clear();
+}
+
+/// Repository interface with serialization capabilities
+abstract class SerializableRepository<T extends Entity<dynamic>>
+    extends EntityRepository<T> {
+  /// Get the concept code for this repository
+  String get conceptCode;
+
+  /// Serialize an entity to a map
+  Map<String, dynamic> serialize(T entity);
+
+  /// Deserialize a map to an entity
+  T deserialize(Map<String, dynamic> data);
+}
+
+/// Repository for domain models
+abstract class DomainModelRepository {
+  /// Save a domain model with the given ID
+  Future<bool> saveDomainModel(dynamic domainModel, String domainModelId);
+
+  /// Load a domain model with the given ID
+  Future<dynamic> loadDomainModel(String domainModelId);
+
+  /// Check if a domain model exists
+  Future<bool> domainModelExists(String domainModelId);
+
+  /// Clear a domain model
+  Future<bool> clearDomainModel(String domainModelId);
 }

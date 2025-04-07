@@ -1,465 +1,246 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:ednet_core/ednet_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ednet_one/generated/one_application.dart';
-import 'package:ednet_one/domain/services/persistence_service.dart';
-
-/// Service for managing domain model instances with external service configurations
-class ModelInstanceService {
-  /// The application instance
-  final OneApplication _app;
-
-  /// Persistence service for saving/loading configurations
-  final PersistenceService _persistenceService;
-
-  /// Map of instance configurations by unique ID
-  final Map<String, ModelInstanceConfig> _instanceConfigs = {};
-
-  /// Constructor
-  ModelInstanceService(this._app, this._persistenceService);
-
-  /// Get all registered instance configurations
-  List<ModelInstanceConfig> get allConfigurations =>
-      _instanceConfigs.values.toList();
-
-  /// Get configurations for a specific domain and model
-  List<ModelInstanceConfig> getConfigurationsFor(Domain domain, Model model) {
-    return _instanceConfigs.values
-        .where(
-          (config) =>
-              config.domainCode == domain.code &&
-              config.modelCode == model.code,
-        )
-        .toList();
-  }
-
-  /// Create a new instance configuration
-  Future<ModelInstanceConfig> createInstanceConfig({
-    required String name,
-    required Domain domain,
-    required Model model,
-    required ServiceType serviceType,
-    required Map<String, String> parameters,
-  }) async {
-    final id =
-        'instance_${domain.code}_${model.code}_${DateTime.now().millisecondsSinceEpoch}';
-
-    final config = ModelInstanceConfig(
-      id: id,
-      name: name,
-      domainCode: domain.code,
-      modelCode: model.code,
-      serviceType: serviceType,
-      parameters: parameters,
-      createdAt: DateTime.now(),
-      lastRunAt: null,
-    );
-
-    _instanceConfigs[id] = config;
-    await _saveConfigurations();
-
-    return config;
-  }
-
-  /// Update an existing instance configuration
-  Future<ModelInstanceConfig?> updateInstanceConfig({
-    required String id,
-    String? name,
-    ServiceType? serviceType,
-    Map<String, String>? parameters,
-  }) async {
-    final config = _instanceConfigs[id];
-    if (config == null) return null;
-
-    final updatedConfig = config.copyWith(
-      name: name ?? config.name,
-      serviceType: serviceType ?? config.serviceType,
-      parameters: parameters ?? config.parameters,
-    );
-
-    _instanceConfigs[id] = updatedConfig;
-    await _saveConfigurations();
-
-    return updatedConfig;
-  }
-
-  /// Delete an instance configuration
-  Future<bool> deleteInstanceConfig(String id) async {
-    final removed = _instanceConfigs.remove(id);
-    if (removed != null) {
-      await _saveConfigurations();
-      return true;
-    }
-    return false;
-  }
-
-  /// Run an instance with its configuration
-  Future<ModelInstanceResult> runInstance(String id) async {
-    final config = _instanceConfigs[id];
-    if (config == null) {
-      return ModelInstanceResult(
-        success: false,
-        message: 'Instance configuration not found',
-        data: null,
-      );
-    }
-
-    try {
-      // Get domain and model
-      final domain = _app.groupedDomains.singleWhereCode(config.domainCode);
-      if (domain == null) {
-        return ModelInstanceResult(
-          success: false,
-          message: 'Domain not found: ${config.domainCode}',
-          data: null,
-        );
-      }
-
-      final model = domain.models.singleWhereCode(config.modelCode);
-      if (model == null) {
-        return ModelInstanceResult(
-          success: false,
-          message: 'Model not found: ${config.modelCode}',
-          data: null,
-        );
-      }
-
-      // Get appropriate repository based on service type
-      final repository = _getRepositoryForService(
-        config.serviceType,
-        config.parameters,
-      );
-      if (repository == null) {
-        return ModelInstanceResult(
-          success: false,
-          message:
-              'Repository not available for service: ${config.serviceType.name}',
-          data: null,
-        );
-      }
-
-      // Run the model with the repository
-      final result = await repository.execute(domain, model);
-
-      // Update last run time
-      _instanceConfigs[id] = config.copyWith(lastRunAt: DateTime.now());
-      await _saveConfigurations();
-
-      return result;
-    } catch (e) {
-      return ModelInstanceResult(
-        success: false,
-        message: 'Error running instance: $e',
-        data: null,
-      );
-    }
-  }
-
-  /// Load all configurations from persistent storage
-  Future<void> loadConfigurations() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final configsJson = prefs.getString('ednet_model_instance_configs');
-
-      if (configsJson != null) {
-        final List<dynamic> configsList = jsonDecode(configsJson);
-
-        _instanceConfigs.clear();
-        for (final configMap in configsList) {
-          final config = ModelInstanceConfig.fromJson(configMap);
-          _instanceConfigs[config.id] = config;
-        }
-      }
-    } catch (e) {
-      debugPrint('Error loading model instance configurations: $e');
-    }
-  }
-
-  /// Save all configurations to persistent storage
-  Future<bool> _saveConfigurations() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-
-      final configsList =
-          _instanceConfigs.values.map((config) => config.toJson()).toList();
-      final configsJson = jsonEncode(configsList);
-
-      return await prefs.setString('ednet_model_instance_configs', configsJson);
-    } catch (e) {
-      debugPrint('Error saving model instance configurations: $e');
-      return false;
-    }
-  }
-
-  /// Get the appropriate repository for a service type
-  ExternalServiceRepository? _getRepositoryForService(
-    ServiceType serviceType,
-    Map<String, String> parameters,
-  ) {
-    switch (serviceType) {
-      case ServiceType.twitter:
-        return TwitterRepository(parameters);
-      case ServiceType.facebook:
-        return FacebookRepository(parameters);
-      case ServiceType.instagram:
-        return InstagramRepository(parameters);
-      case ServiceType.youtube:
-        return YouTubeRepository(parameters);
-      case ServiceType.custom:
-        if (parameters.containsKey('repoType')) {
-          final repoType = parameters['repoType'];
-          if (repoType == 'openapi') {
-            return OpenApiRepository(parameters);
-          } else if (repoType == 'drift') {
-            return DriftRepository(parameters);
-          }
-        }
-        return null;
-    }
-  }
-}
-
-/// External service types supported by the model instance service
-enum ServiceType { twitter, facebook, instagram, youtube, custom }
+import 'package:flutter/foundation.dart';
+import 'persistence_service.dart';
 
 /// Configuration for a model instance
+/// TODO: use ednet_core for modeling
 class ModelInstanceConfig {
   /// Unique identifier for this configuration
   final String id;
 
-  /// Display name for the configuration
+  /// Display name of the configuration
   final String name;
 
-  /// Domain code this instance is for
+  /// Description of what this configuration does
+  final String description;
+
+  /// Domain to use
   final String domainCode;
 
-  /// Model code this instance is for
+  /// Model to use
   final String modelCode;
 
-  /// Type of external service
-  final ServiceType serviceType;
+  /// External data source type (API, file, etc.)
+  final String sourceType;
 
-  /// Configuration parameters for the service (API keys, URLs, etc.)
-  final Map<String, String> parameters;
+  /// URL or path to the data source
+  final String sourceLocation;
 
-  /// When this configuration was created
-  final DateTime createdAt;
+  /// Authentication if needed
+  final Map<String, String> authentication;
 
-  /// When this configuration was last run
-  final DateTime? lastRunAt;
+  /// Field mappings from external data to model
+  final List<FieldMapping> mappings;
 
   /// Constructor
-  const ModelInstanceConfig({
+  ModelInstanceConfig({
     required this.id,
     required this.name,
+    required this.description,
     required this.domainCode,
     required this.modelCode,
-    required this.serviceType,
-    required this.parameters,
-    required this.createdAt,
-    this.lastRunAt,
+    required this.sourceType,
+    required this.sourceLocation,
+    this.authentication = const {},
+    this.mappings = const [],
   });
 
-  /// Create a copy with some fields replaced
-  ModelInstanceConfig copyWith({
-    String? name,
-    ServiceType? serviceType,
-    Map<String, String>? parameters,
-    DateTime? lastRunAt,
-  }) {
+  /// Create a configuration from JSON
+  factory ModelInstanceConfig.fromJson(Map<String, dynamic> json) {
     return ModelInstanceConfig(
-      id: id,
-      name: name ?? this.name,
-      domainCode: domainCode,
-      modelCode: modelCode,
-      serviceType: serviceType ?? this.serviceType,
-      parameters: parameters ?? this.parameters,
-      createdAt: createdAt,
-      lastRunAt: lastRunAt ?? this.lastRunAt,
+      id: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String,
+      domainCode: json['domainCode'] as String,
+      modelCode: json['modelCode'] as String,
+      sourceType: json['sourceType'] as String,
+      sourceLocation: json['sourceLocation'] as String,
+      authentication: Map<String, String>.from(json['authentication'] as Map),
+      mappings:
+          (json['mappings'] as List)
+              .map((m) => FieldMapping.fromJson(m as Map<String, dynamic>))
+              .toList(),
     );
   }
 
-  /// Convert to JSON map
+  /// Convert configuration to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'description': description,
       'domainCode': domainCode,
       'modelCode': modelCode,
-      'serviceType': serviceType.index,
-      'parameters': parameters,
-      'createdAt': createdAt.toIso8601String(),
-      'lastRunAt': lastRunAt?.toIso8601String(),
+      'sourceType': sourceType,
+      'sourceLocation': sourceLocation,
+      'authentication': authentication,
+      'mappings': mappings.map((m) => m.toJson()).toList(),
     };
   }
+}
 
-  /// Create from JSON map
-  factory ModelInstanceConfig.fromJson(Map<String, dynamic> json) {
-    return ModelInstanceConfig(
-      id: json['id'],
-      name: json['name'],
-      domainCode: json['domainCode'],
-      modelCode: json['modelCode'],
-      serviceType: ServiceType.values[json['serviceType']],
-      parameters: Map<String, String>.from(json['parameters']),
-      createdAt: DateTime.parse(json['createdAt']),
-      lastRunAt:
-          json['lastRunAt'] != null ? DateTime.parse(json['lastRunAt']) : null,
+/// Field mapping between external data source and domain model
+class FieldMapping {
+  /// Field name in the source data
+  final String sourceField;
+
+  /// Field name in the target model
+  final String targetField;
+
+  /// Optional transformation to apply
+  final String? transformation;
+
+  /// Constructor
+  const FieldMapping({
+    required this.sourceField,
+    required this.targetField,
+    this.transformation,
+  });
+
+  /// Create from JSON
+  factory FieldMapping.fromJson(Map<String, dynamic> json) {
+    return FieldMapping(
+      sourceField: json['sourceField'] as String,
+      targetField: json['targetField'] as String,
+      transformation: json['transformation'] as String?,
     );
+  }
+
+  /// Convert to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'sourceField': sourceField,
+      'targetField': targetField,
+      'transformation': transformation,
+    };
   }
 }
 
-/// Result of running a model instance
+/// Result of executing a model instance
 class ModelInstanceResult {
-  /// Whether the instance run was successful
+  /// Whether the operation was successful
   final bool success;
 
-  /// Message from the instance run
-  final String message;
-
-  /// Data returned from the instance run
+  /// Data returned from the operation
   final dynamic data;
 
-  /// Constructor
-  const ModelInstanceResult({
-    required this.success,
-    required this.message,
-    required this.data,
-  });
-}
-
-/// Abstract base class for all external service repositories
-abstract class ExternalServiceRepository {
-  /// Configuration parameters
-  final Map<String, String> parameters;
+  /// Error message if unsuccessful
+  final String? error;
 
   /// Constructor
-  ExternalServiceRepository(this.parameters);
+  const ModelInstanceResult({required this.success, this.data, this.error});
 
-  /// Execute a query against the external service
-  Future<ModelInstanceResult> execute(Domain domain, Model model);
-}
+  /// Create a success result
+  factory ModelInstanceResult.success(dynamic data) {
+    return ModelInstanceResult(success: true, data: data);
+  }
 
-/// Repository for Twitter API
-class TwitterRepository extends ExternalServiceRepository {
-  TwitterRepository(super.parameters);
+  /// Create an error result
+  factory ModelInstanceResult.error(String errorMessage) {
+    return ModelInstanceResult(success: false, error: errorMessage);
+  }
 
-  @override
-  Future<ModelInstanceResult> execute(Domain domain, Model model) async {
-    // Implementation would use Twitter API client
-    // For now, return a placeholder result
-    return ModelInstanceResult(
-      success: true,
-      message: 'Connected to Twitter API successfully',
-      data: {
-        'tweets': [
-          {
-            'id': '123456',
-            'text': 'Hello from Twitter!',
-            'user': {'name': 'EDNet Demo', 'handle': '@ednetdemo'},
-          },
-        ],
-      },
-    );
+  /// Convert to JSON
+  Map<String, dynamic> toJson() {
+    return {'success': success, 'data': data, 'error': error};
   }
 }
 
-/// Repository for Facebook API
-class FacebookRepository extends ExternalServiceRepository {
-  FacebookRepository(super.parameters);
+/// Service for managing model instances
+class ModelInstanceService {
+  /// Reference to the persistence service
+  final PersistenceService _persistenceService;
 
-  @override
-  Future<ModelInstanceResult> execute(Domain domain, Model model) async {
-    // Implementation would use Facebook API client
-    return ModelInstanceResult(
-      success: true,
-      message: 'Connected to Facebook API successfully',
-      data: {
-        'posts': [
-          {
-            'id': '123456',
-            'message': 'Hello from Facebook!',
-            'author': {'name': 'EDNet Demo', 'id': '987654321'},
-          },
-        ],
-      },
-    );
+  /// Storage of available configurations
+  final List<ModelInstanceConfig> _configurations = [];
+
+  /// Constructor
+  ModelInstanceService(this._persistenceService);
+
+  /// Get all available configurations
+  List<ModelInstanceConfig> get allConfigurations => _configurations;
+
+  /// Load all configurations from storage
+  Future<bool> loadConfigurations() async {
+    try {
+      final configsJson = await _persistenceService.loadConfiguration(
+        'model_instances',
+      );
+      if (configsJson == null) return false;
+
+      final List<dynamic> configsData = jsonDecode(configsJson);
+
+      _configurations.clear();
+      for (final configData in configsData) {
+        _configurations.add(
+          ModelInstanceConfig.fromJson(configData as Map<String, dynamic>),
+        );
+      }
+
+      return true;
+    } catch (e) {
+      debugPrint('Error loading configurations: $e');
+      return false;
+    }
   }
-}
 
-/// Repository for Instagram API
-class InstagramRepository extends ExternalServiceRepository {
-  InstagramRepository(super.parameters);
+  /// Save all configurations to storage
+  Future<bool> saveConfigurations() async {
+    try {
+      final configsData = _configurations.map((c) => c.toJson()).toList();
+      final configsJson = jsonEncode(configsData);
 
-  @override
-  Future<ModelInstanceResult> execute(Domain domain, Model model) async {
-    // Implementation would use Instagram API client
-    return ModelInstanceResult(
-      success: true,
-      message: 'Connected to Instagram API successfully',
-      data: {
-        'posts': [
-          {
-            'id': '123456',
-            'caption': 'Hello from Instagram!',
-            'user': {'username': 'ednetdemo', 'full_name': 'EDNet Demo'},
-          },
-        ],
-      },
-    );
+      return await _persistenceService.saveConfiguration(
+        'model_instances',
+        configsJson,
+      );
+    } catch (e) {
+      debugPrint('Error saving configurations: $e');
+      return false;
+    }
   }
-}
 
-/// Repository for YouTube API
-class YouTubeRepository extends ExternalServiceRepository {
-  YouTubeRepository(super.parameters);
-
-  @override
-  Future<ModelInstanceResult> execute(Domain domain, Model model) async {
-    // Implementation would use YouTube API client
-    return ModelInstanceResult(
-      success: true,
-      message: 'Connected to YouTube API successfully',
-      data: {
-        'videos': [
-          {
-            'id': '123456',
-            'title': 'Hello from YouTube!',
-            'channel': {'name': 'EDNet Demo', 'id': 'UC12345'},
-          },
-        ],
-      },
-    );
+  /// Add a new configuration
+  Future<bool> addConfiguration(ModelInstanceConfig config) async {
+    _configurations.add(config);
+    return await saveConfigurations();
   }
-}
 
-/// Repository for OpenAPI services
-class OpenApiRepository extends ExternalServiceRepository {
-  OpenApiRepository(super.parameters);
+  /// Update an existing configuration
+  Future<bool> updateConfiguration(ModelInstanceConfig config) async {
+    final index = _configurations.indexWhere((c) => c.id == config.id);
+    if (index < 0) return false;
 
-  @override
-  Future<ModelInstanceResult> execute(Domain domain, Model model) async {
-    // Implementation would use OpenAPI client generated from schema
-    return ModelInstanceResult(
-      success: true,
-      message: 'Connected to OpenAPI service successfully',
-      data: {'message': 'OpenAPI integration placeholder'},
-    );
+    _configurations[index] = config;
+    return await saveConfigurations();
   }
-}
 
-/// Repository for Drift (SQLite) database
-class DriftRepository extends ExternalServiceRepository {
-  DriftRepository(super.parameters);
+  /// Delete a configuration
+  Future<bool> deleteConfiguration(String configId) async {
+    final removed = _configurations.removeWhere((c) => c.id == configId);
+    if (removed) {
+      return await saveConfigurations();
+    }
+    return false;
+  }
 
-  @override
-  Future<ModelInstanceResult> execute(Domain domain, Model model) async {
-    // Implementation would use Drift database
-    return ModelInstanceResult(
-      success: true,
-      message: 'Connected to Drift database successfully',
-      data: {'message': 'Drift integration placeholder'},
-    );
+  /// Execute a model instance with the given configuration
+  Future<ModelInstanceResult> executeModelInstance(String configId) async {
+    try {
+      final config = _configurations.firstWhere(
+        (c) => c.id == configId,
+        orElse: () => throw Exception('Configuration not found'),
+      );
+
+      // This would normally fetch data from the source
+      // For now, we'll return a mock result
+      return ModelInstanceResult.success({
+        'status': 'success',
+        'message': 'Model instance executed successfully',
+        'config': config.toJson(),
+      });
+    } catch (e) {
+      return ModelInstanceResult.error(e.toString());
+    }
   }
 }

@@ -21,6 +21,43 @@ import 'package:ednet_one/generated/settings/application/lib/settings_applicatio
     as ssan;
 // IMPORTS PLACEHOLDER
 
+/// OneApplication class representing the entire application
+class OneApplication {
+  /// All domains in the application
+  final List<Domain> _domains = [];
+
+  /// Get a list of all domains
+  List<Domain> get domains => _domains;
+
+  /// Constructor
+  OneApplication();
+
+  /// Add a domain to the application
+  void addDomain(Domain domain) {
+    _domains.add(domain);
+  }
+
+  /// Create a simple domain
+  Domain createDomain(String code) {
+    // Create a new domain
+    final domain = Domain(code);
+
+    // Add it to the list
+    _domains.add(domain);
+
+    return domain;
+  }
+
+  /// Find a domain by its code
+  Domain? findDomain(String code) {
+    try {
+      return _domains.firstWhere((d) => d.code == code);
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
 class OneApplication implements IOneApplication {
   final Domains _domains = Domains();
   final Domains _groupedDomains = Domains();
