@@ -36,10 +36,7 @@ void main() {
 
       logger = _MockLogger();
 
-      commandRunner = ApdfCommandRunner(
-        logger: logger,
-        pubUpdater: pubUpdater,
-      );
+      commandRunner = ApdfCommandRunner(logger: logger, pubUpdater: pubUpdater);
     });
 
     test('shows update message when newer version exists', () async {
@@ -52,19 +49,16 @@ void main() {
       verify(() => logger.info(updatePrompt)).called(1);
     });
 
-    test(
-      'Does not show update message when the shell calls the '
-      'completion command',
-      () async {
-        when(
-          () => pubUpdater.getLatestVersion(any()),
-        ).thenAnswer((_) async => latestVersion);
+    test('Does not show update message when the shell calls the '
+        'completion command', () async {
+      when(
+        () => pubUpdater.getLatestVersion(any()),
+      ).thenAnswer((_) async => latestVersion);
 
-        final result = await commandRunner.run(['completion']);
-        expect(result, equals(ExitCode.success.code));
-        verifyNever(() => logger.info(updatePrompt));
-      },
-    );
+      final result = await commandRunner.run(['completion']);
+      expect(result, equals(ExitCode.success.code));
+      verifyNever(() => logger.info(updatePrompt));
+    });
 
     test('does not show update message when using update command', () async {
       when(
@@ -87,8 +81,8 @@ void main() {
 
       final progress = _MockProgress();
       final progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
+      when(() => progress.complete(any())).thenAnswer((asa) {
+        final message = asa.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
       when(() => logger.progress(any())).thenReturn(progress);
@@ -98,12 +92,14 @@ void main() {
       verifyNever(() => logger.info(updatePrompt));
     });
 
-    test('can be instantiated without an explicit analytics/logger instance',
-        () {
-      final commandRunner = ApdfCommandRunner();
-      expect(commandRunner, isNotNull);
-      expect(commandRunner, isA<CompletionCommandRunner<int>>());
-    });
+    test(
+      'can be instantiated without an explicit analytics/logger instance',
+      () {
+        final commandRunner = ApdfCommandRunner();
+        expect(commandRunner, isNotNull);
+        expect(commandRunner, isA<CompletionCommandRunner<int>>());
+      },
+    );
 
     test('handles FormatException', () async {
       const exception = FormatException('oops!');
