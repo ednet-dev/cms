@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:test/test.dart';
 import 'package:ednet_core/ednet_core.dart';
 

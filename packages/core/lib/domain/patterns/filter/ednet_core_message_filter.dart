@@ -16,7 +16,6 @@ class FilterEntity extends Entity<FilterEntity> {
   /// Gets the filter status
   String? get status => getAttribute('status');
 
-  @override
   bool get isEmpty => false;
 
   /// Creates a new instance of FilterEntity
