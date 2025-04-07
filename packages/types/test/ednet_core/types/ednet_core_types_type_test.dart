@@ -28,7 +28,7 @@ void testEDNetCoreTypesTypes(
       typesModel.clear();
       expect(typesModel.isEmpty, isTrue);
       expect(types.isEmpty, isTrue);
-      expect(types.exceptions..isEmpty, isTrue);
+      expect(types.exceptions.isEmpty, isTrue);
     });
 
     test('From model to JSON', () {
@@ -51,17 +51,17 @@ void testEDNetCoreTypesTypes(
     });
 
     test('From model entry to JSON', () {
-      var json = typesModel.fromEntryToJson('Type');
+      var json = typesModel.fromEntryToJson('CoreType');
       expect(json, isNotNull);
 
       print(json);
-      //typesModel.displayEntryJson("Type");
+      //typesModel.displayEntryJson("CoreType");
       //typesModel.displayJson();
       //typesModel.display();
     });
 
     test('From JSON to model entry', () {
-      var json = typesModel.fromEntryToJson('Type');
+      var json = typesModel.fromEntryToJson('CoreType');
       types.clear();
       expect(types.isEmpty, isTrue);
       typesModel.fromJsonToEntry(json);
