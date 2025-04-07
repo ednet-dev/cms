@@ -8,6 +8,34 @@ abstract class EntityRepository<T extends Entity<dynamic>> {
   /// Find all entities
   Future<Iterable<T>> findAll();
 
+  /// Get entities for domain, model, concept
+  Future<List<T>> getEntities(Domain domain, Model model, Concept concept);
+
+  /// Create a new entity
+  Future<T> createEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    Map<String, dynamic> attributeValues,
+  );
+
+  /// Update an existing entity
+  Future<T> updateEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    dynamic oid,
+    Map<String, dynamic> attributeValues,
+  );
+
+  /// Delete an entity
+  Future<bool> deleteEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    dynamic oid,
+  );
+
   /// Save an entity
   Future<bool> save(T entity);
 

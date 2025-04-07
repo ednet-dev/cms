@@ -1,121 +1,68 @@
-import 'package:ednet_one/generated/one_application.dart';
-import '../layouts/app_module.dart';
-import 'domain_explorer/domain_explorer_module.dart';
-import 'model_manager/model_manager_module.dart';
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
-import '../pages/domain_modeler/domain_model_editor.dart';
-import '../pages/model_instance/model_instance_page.dart';
+import 'package:ednet_one/generated/one_application.dart';
+import 'package:ednet_one/presentation/pages/project_management/project_management_page.dart';
+import 'package:provider/provider.dart';
 import '../pages/domain_modeler/live_preview_editor.dart';
-import '../pages/project_management/project_management_page.dart';
+import '../theme/providers/theme_provider.dart';
 
-/// A singleton registry for all application modules
+import 'domain_explorer/domain_explorer_module.dart';
+import 'model_manager/model_manager_module.dart';
+
+/// Registry for application modules
 class AppModuleRegistry {
-  static final AppModuleRegistry _instance = AppModuleRegistry._internal();
+  final List<AppModule> _modules = [];
 
-  factory AppModuleRegistry() => _instance;
+  /// Register a module
+  void registerModule(AppModule module) {
+    _modules.add(module);
+  }
 
-  AppModuleRegistry._internal();
-
-  final ModuleRegistry _registry = ModuleRegistry();
-  bool _initialized = false;
-
-  /// Register all modules with the application
+  /// Register default modules
   void registerModules(OneApplication app) {
-    if (_initialized) return;
+    // Register project management module
+    registerModule(ProjectManagementModule());
 
-    // Register all modules
-    _registry.registerModule(DomainExplorerModule(app));
-    _registry.registerModule(ModelManagerModule(app));
+    // Register live preview editor module
+    registerModule(LivePreviewEditorModule());
 
-    // TODO: Implement and register other modules:
-    // - EntityWorkspaceModule
-    // - GraphVisualizerModule
-    // - SettingsModule
+    // These modules need to be updated or removed later
+    // registerModule(DomainExplorerModule(app));
+    // registerModule(ModelManagerModule(app));
+  }
 
-    // Domain Modeler module
-    _registry.registerModule(DomainModelEditorModule());
-
-    // Model Instance Manager module
-    _registry.registerModule(ModelInstanceModule());
-
-    // Live Preview Editor module
-    _registry.registerModule(LivePreviewEditorModule());
-
-    // Project Management module
-    _registry.registerModule(ProjectManagementModule());
-
-    _initialized = true;
+  /// Get module by ID
+  AppModule? getModule(String id) {
+    try {
+      return _modules.firstWhere((module) => module.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Get all registered modules
-  List<AppModule> get modules => _registry.modules;
-
-  /// Get a specific module by ID
-  AppModule? getModule(String moduleId) => _registry.findModule(moduleId);
-
-  /// Get all registered routes
-  Map<String, ModuleRoute> get routes => _registry.routes;
+  List<AppModule> get modules => _modules;
 }
 
-/// Module for the Domain Model Editor
-class DomainModelEditorModule extends AppModule {
-  @override
-  String get id => 'domain-modeler';
+/// Base class for application modules
+abstract class AppModule {
+  /// Unique ID for this module
+  String get id;
 
-  @override
-  String get name => 'Domain Modeler';
+  /// Display name for this module
+  String get name;
 
-  @override
-  IconData get icon => Icons.edit_note;
+  /// Icon data for this module
+  IconData get icon;
 
-  @override
-  Widget buildModuleContent(BuildContext context) {
-    return const DomainModelEditor();
-  }
+  /// Build the main content for this module
+  Widget buildModuleContent(BuildContext context);
 
-  @override
-  List<Widget> buildAppBarActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.save),
-        tooltip: 'Save Domain Model',
-        onPressed: () {
-          // This would be handled by the DomainModelEditor itself
-        },
-      ),
-    ];
-  }
-}
+  /// Build any app bar actions for this module
+  List<Widget> buildAppBarActions(BuildContext context) => [];
 
-/// Module for the Model Instance Manager
-class ModelInstanceModule extends AppModule {
-  @override
-  String get id => 'model-instance';
-
-  @override
-  String get name => 'Model Instances';
-
-  @override
-  IconData get icon => Icons.play_circle_outline;
-
-  @override
-  Widget buildModuleContent(BuildContext context) {
-    return const ModelInstancePage();
-  }
-
-  @override
-  List<Widget> buildAppBarActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.add),
-        tooltip: 'Create New Instance',
-        onPressed: () {
-          // This would be handled by the ModelInstancePage
-        },
-      ),
-    ];
-  }
+  /// Build any floating action buttons for this module
+  Widget? buildFloatingActionButton(BuildContext context) => null;
 }
 
 /// Module for the Live Preview Editor
