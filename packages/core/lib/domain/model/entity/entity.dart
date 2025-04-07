@@ -875,6 +875,10 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         // Convert DateTime to millisecondsSinceEpoch for JSON serialization
         if (value is DateTime) {
           attributeMap[attribute.code] = value.millisecondsSinceEpoch;
+        }
+        // Convert Uri to string for JSON serialization
+        else if (value is Uri) {
+          attributeMap[attribute.code] = value.toString();
         } else {
           attributeMap[attribute.code] = value;
         }

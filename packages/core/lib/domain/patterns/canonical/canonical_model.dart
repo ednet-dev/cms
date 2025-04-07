@@ -13,7 +13,8 @@ part of ednet_core;
 /// * Technological sovereignty by avoiding vendor lock-in
 ///
 /// This is the base interface that defines the core operations for a canonical model.
-abstract class CanonicalModelBase<T> {
+abstract class CanonicalModelBase<T extends Entity<T>>
+    extends Entity<CanonicalModelBase> {
   /// Converts application-specific data to the canonical format
   ///
   /// This method takes any application-specific data type and converts it
@@ -375,8 +376,7 @@ class ModelValidator {
 
 /// A concrete implementation of the CanonicalModelBase interface that
 /// can be used to adapt domain entities to a standard canonical format.
-class EntityCanonicalModel<E extends Entity<E>>
-    implements CanonicalModelBase<E> {
+class EntityCanonicalModel<E extends Entity<E>> extends CanonicalModelBase<E> {
   /// The concept defining the structure of entities for this model
   final Concept concept;
 

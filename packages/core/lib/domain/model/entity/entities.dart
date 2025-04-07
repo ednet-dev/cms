@@ -710,20 +710,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           var attributeUpdate = a.update;
           a.update = true;
 
-          // Validate increment sequence
+          // Calculate the next sequence value
           int expectedValue = incrementAttribute + a.increment!;
-          int providedValue = entity.getAttribute(a.code) as int? ?? 0;
 
-          if (providedValue != expectedValue) {
-            const category = 'increment';
-            final message =
-                '${entity.concept.code}.${a.code} attribute increment sequence is invalid. Expected: $expectedValue, Got: $providedValue';
-            final exception = ValidationException(category, message);
-            exceptions.add(exception);
-            result = false;
-          } else {
-            entity.setAttribute(a.code, expectedValue);
-          }
+          // Set the value directly rather than checking first
+          entity.setAttribute(a.code, expectedValue);
 
           a.update = attributeUpdate;
         } else {
