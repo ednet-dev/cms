@@ -1,38 +1,37 @@
 name: ednet_one
-description: "Integration app, EDNet Core domain model multi-platform interpreter featuring a Master-Detail layout navigation and management if instance and a Graph visualization of domain model"
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.0.0
+description: EDNet One - A one-stop solution for domain-driven design
+version: 0.0.1+1
+publish_to: "none"
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
-  flutter: ">=3.29.0"
+  sdk: ">=2.18.6 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  bloc: ^8.1.4
-  flutter_bloc: ^8.1.6
-  app_links: ^6.3.2
-  graphview: ^1.2.0
-  flame: ^1.22.0
-  flutter_svg:
-  flame_svg: ^1.11.3
-  expressions: ^0.2.5+2
-  path_provider: ^2.1.5
-  ednet_core: ^1.0.0
-  ednet_cms: ^1.0.0
-  shared_preferences: ^2.5.3
-  intl: ^0.20.2
-  provider: ^6.1.4
+  ednet_core:
+    path: ../../packages/core
+  charts_flutter: ^0.12.0
+  cupertino_icons: ^1.0.2
+  flutter_bloc: ^8.1.1
+  flutter_slidable: ^2.0.0
+  google_fonts: ^3.0.1
+  http: ^0.13.5
+  intl: ^0.17.0
+  json_annotation: ^4.8.0
+  provider: ^6.0.5
+  shared_preferences: ^2.0.15
+  uuid: ^3.0.7
+  path: ^1.8.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-  build_runner: ^2.4.13
-  build_config: ^1.1.1
+  flutter_lints: ^2.0.0
+  build_runner: ^2.3.3
+  json_serializable: ^6.6.0
+
 flutter:
   uses-material-design: true
-dependency_overrides:
-  test_api: ^0.7.4
+  assets:
+    - assets/
