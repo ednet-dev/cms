@@ -121,15 +121,21 @@ Future<void> initializeApplication() async {
 
 /// Create a test domain for development
 void _createTestDomain() {
+  // Using the createDomain method that exists in OneApplication
   final domain = oneApplication.createDomain('TestDomain');
   domain.description = 'This is a test domain';
 
-  final model = domain.createModel('TestModel');
+  // Create a Model using constructor with domain
+  final model = Model(domain, 'TestModel');
   model.description = 'Test model for development';
+  domain.models.add(model);
 
-  final personConcept = model.createConcept('Person');
+  // Create a Concept using constructor with model
+  final personConcept = Concept(model, 'Person');
   personConcept.description = 'Represents a person';
+  model.concepts.add(personConcept);
 
+  // Create attributes
   _createAttribute(personConcept, 'firstName', 'First name', domain);
   _createAttribute(personConcept, 'lastName', 'Last name', domain);
   _createAttribute(personConcept, 'age', 'Age in years', domain, 'int');
@@ -145,8 +151,9 @@ void _createAttribute(
   String type = 'String',
 ]) {
   final attribute = Attribute(concept, code);
-  attribute.description = description;
+  // We'll skip setting description if it's not available
   attribute.type = domain.getType(type);
+  concept.attributes.add(attribute);
 }
 
 /// MyApp widget
@@ -202,7 +209,7 @@ class AppBlocProviders {
         ChangeNotifierProvider<LayoutProvider>(create: (_) => LayoutProvider()),
         // Add the ThemeProvider
         ChangeNotifierProvider<ThemeProvider>(
-          create: (_) => ThemeProvider(themeService),
+          create: (_) => ThemeProvider(),
         ),
         // Add the domain model provider
         Provider<OneApplication>.value(value: oneApplication),

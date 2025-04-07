@@ -1,22 +1,12 @@
 import 'package:ednet_core/ednet_core.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
-
-// Add imports for the Graph page
-import '../pages/graph_page.dart';
-import '../pages/domain_modeler/domain_model_editor.dart';
-import '../pages/model_instance/model_instance_page.dart';
+import 'package:ednet_one/presentation/pages/project_management/project_management_page.dart';
 
 /// Routes available in the application
 class AppRoutes {
   static const home = '/';
-  static const domain = '/domain/:id';
-  static const model = '/domain/:domainId/model/:modelId';
-  static const concept = '/domain/:domainId/model/:modelId/concept/:conceptId';
-  static const graph = '/graph';
-  static const settings = '/settings';
-  static const domainModelEditor = '/domain-model-editor';
-  static const modelInstance = '/model-instance';
+  static const projectManagement = '/project-management';
 
   /// Convert a route pattern to a concrete path
   static String mapToPath(String route, Map<String, String> params) {
@@ -89,88 +79,20 @@ class NavigationService {
     );
   }
 
-  /// Navigate to a domain details page
-  Future<dynamic> navigateToDomain(Domain domain) {
-    return navigateTo(
-      AppRoutes.mapToPath(AppRoutes.domain, {'id': domain.code}),
-      arguments: {'domain': domain},
-    );
-  }
-
-  /// Navigate to a model details page
-  Future<dynamic> navigateToModel(Domain domain, Model model) {
-    return navigateTo(
-      AppRoutes.mapToPath(AppRoutes.model, {
-        'domainId': domain.code,
-        'modelId': model.code,
-      }),
-      arguments: {'domain': domain, 'model': model},
-    );
-  }
-
-  /// Navigate to a concept details page
-  Future<dynamic> navigateToConcept(
-    Domain domain,
-    Model model,
-    Concept concept,
-  ) {
-    return navigateTo(
-      AppRoutes.mapToPath(AppRoutes.concept, {
-        'domainId': domain.code,
-        'modelId': model.code,
-        'conceptId': concept.code,
-      }),
-      arguments: {'domain': domain, 'model': model, 'concept': concept},
-    );
-  }
-
-  /// Navigate to graph view
-  Future<dynamic> navigateToGraph() {
-    developer.log('Navigating to Graph Visualization', name: 'Navigation');
+  /// Navigate to project management
+  Future<dynamic> navigateToProjectManagement() {
+    developer.log('Navigating to Project Management', name: 'Navigation');
     try {
-      return navigatorKey.currentState!.pushNamed(GraphPage.routeName);
+      return navigatorKey.currentState!
+          .pushNamed(ProjectManagementPage.routeName);
     } catch (e, stack) {
       developer.log(
-        'Error navigating to graph: $e\n$stack',
+        'Error navigating to project management: $e\n$stack',
         name: 'Navigation',
       );
       // Fallback to creating a new route if the named route fails
       return navigatorKey.currentState!.push(
-        MaterialPageRoute(builder: (context) => const GraphPage()),
-      );
-    }
-  }
-
-  /// Navigate to the domain model editor
-  Future<dynamic> navigateToDomainModelEditor() {
-    developer.log('Navigating to Domain Model Editor', name: 'Navigation');
-    try {
-      return navigatorKey.currentState!.pushNamed(DomainModelEditor.routeName);
-    } catch (e, stack) {
-      developer.log(
-        'Error navigating to domain model editor: $e\n$stack',
-        name: 'Navigation',
-      );
-      // Fallback to creating a new route if the named route fails
-      return navigatorKey.currentState!.push(
-        MaterialPageRoute(builder: (context) => const DomainModelEditor()),
-      );
-    }
-  }
-
-  /// Navigate to the model instance manager
-  Future<dynamic> navigateToModelInstance() {
-    developer.log('Navigating to Model Instance Manager', name: 'Navigation');
-    try {
-      return navigatorKey.currentState!.pushNamed(ModelInstancePage.routeName);
-    } catch (e, stack) {
-      developer.log(
-        'Error navigating to model instance manager: $e\n$stack',
-        name: 'Navigation',
-      );
-      // Fallback to creating a new route if the named route fails
-      return navigatorKey.currentState!.push(
-        MaterialPageRoute(builder: (context) => const ModelInstancePage()),
+        MaterialPageRoute(builder: (context) => const ProjectManagementPage()),
       );
     }
   }

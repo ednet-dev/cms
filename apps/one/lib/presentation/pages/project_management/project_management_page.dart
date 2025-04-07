@@ -131,16 +131,14 @@ class _ProjectManagementPageState extends State<ProjectManagementPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Provider.of<ThemeProvider>(context).conceptIcon('Project'),
+              Icons.folder_outlined,
               size: 64,
               color: Colors.grey,
             ),
             SizedBox(height: context.spacingM),
             Text(
               'No projects yet',
-              style: Provider.of<ThemeProvider>(
-                context,
-              ).conceptTextStyle('Project', role: 'title'),
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             SizedBox(height: context.spacingS),
             ElevatedButton.icon(
@@ -175,23 +173,16 @@ class _ProjectManagementPageState extends State<ProjectManagementPage>
                           children: [
                             Text(
                               project.name,
-                              style: Provider.of<ThemeProvider>(
-                                context,
-                              ).conceptTextStyle('Project', role: 'title'),
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                             Text(
                               project.description,
-                              style: Provider.of<ThemeProvider>(
-                                context,
-                              ).conceptTextStyle(
-                                'Project',
-                                role: 'description',
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
                       ),
-                      _buildStatusChip(project.status),
+                      _buildStatusChip(project.status.toString()),
                     ],
                   ),
                   SizedBox(height: context.spacingM),
@@ -256,34 +247,164 @@ class _ProjectManagementPageState extends State<ProjectManagementPage>
   }
 
   Widget _buildStatusChip(String status) {
-    // Implementation of _buildStatusChip method
+    Color chipColor;
+    IconData icon;
+
+    switch (status) {
+      case 'ProjectStatus.development':
+        chipColor = Colors.blue;
+        icon = Icons.code;
+        break;
+      case 'ProjectStatus.testing':
+        chipColor = Colors.orange;
+        icon = Icons.bug_report;
+        break;
+      case 'ProjectStatus.production':
+        chipColor = Colors.green;
+        icon = Icons.check_circle;
+        break;
+      case 'ProjectStatus.archived':
+        chipColor = Colors.grey;
+        icon = Icons.archive;
+        break;
+      default:
+        chipColor = Colors.blue;
+        icon = Icons.help_outline;
+    }
+
+    return Chip(
+      avatar: Icon(icon, color: Colors.white, size: 16),
+      label: Text(
+        status.split('.').last,
+        style: const TextStyle(color: Colors.white),
+      ),
+      backgroundColor: chipColor,
+    );
   }
 
   Widget _buildDeploymentsTab() {
-    // Implementation of _buildDeploymentsTab method
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.rocket_launch,
+            size: 64,
+            color: Colors.grey,
+          ),
+          SizedBox(height: context.spacingM),
+          Text(
+            'No deployments yet',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          SizedBox(height: context.spacingS),
+          Text(
+            'Select a project and click "Deploy" to create a new deployment',
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
 
   void _showCreateProjectDialog() {
-    // Implementation of _showCreateProjectDialog method
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Create New Project'),
+        content: const Text('Project creation form would appear here'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showProjectDetails(Project project) {
-    // Implementation of _showProjectDetails method
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(project.name),
+        content: Text('Project details would appear here'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showDeployDialog(Project project) {
-    // Implementation of _showDeployDialog method
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Deploy ${project.name}'),
+        content: const Text('Deployment options would appear here'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Deploy'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showEditProjectDialog(Project project) {
-    // Implementation of _showEditProjectDialog method
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Edit ${project.name}'),
+        content: const Text('Project edit form would appear here'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _confirmDeleteProject(Project project) {
-    // Implementation of _confirmDeleteProject method
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Project'),
+        content: Text('Are you sure you want to delete ${project.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 
   String _formatDate(DateTime date) {
-    // Implementation of _formatDate method
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

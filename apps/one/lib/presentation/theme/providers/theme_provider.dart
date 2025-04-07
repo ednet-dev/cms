@@ -11,17 +11,17 @@ class ThemeProvider extends ChangeNotifier {
 
   /// Light theme data
   ThemeData get lightTheme => ThemeData(
-    primarySwatch: Colors.blue,
-    brightness: Brightness.light,
-    visualDensity: VisualDensity.adaptivePlatformDensity,
-  );
+        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      );
 
   /// Dark theme data
   ThemeData get darkTheme => ThemeData(
-    primarySwatch: Colors.blue,
-    brightness: Brightness.dark,
-    visualDensity: VisualDensity.adaptivePlatformDensity,
-  );
+        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      );
 
   /// Set the theme mode
   void setThemeMode(ThemeMode mode) {
@@ -41,10 +41,9 @@ class ThemeProvider extends ChangeNotifier {
 
   /// Get color for a concept
   Color conceptColor(String conceptType) {
-    final colorScheme =
-        _themeMode == ThemeMode.dark
-            ? darkTheme.colorScheme
-            : lightTheme.colorScheme;
+    final colorScheme = _themeMode == ThemeMode.dark
+        ? darkTheme.colorScheme
+        : lightTheme.colorScheme;
 
     switch (conceptType) {
       case 'Entity':
@@ -73,6 +72,38 @@ class ThemeProvider extends ChangeNotifier {
         return colorScheme.error;
       default:
         return colorScheme.outline;
+    }
+  }
+
+  /// Get icon for a concept
+  IconData conceptIcon(String conceptType) {
+    switch (conceptType) {
+      case 'Project':
+        return Icons.folder_special;
+      case 'Task':
+        return Icons.task_alt;
+      case 'Person':
+        return Icons.person;
+      case 'Team':
+        return Icons.group;
+      case 'Resource':
+        return Icons.inventory;
+      case 'Milestone':
+        return Icons.flag;
+      case 'Budget':
+        return Icons.attach_money;
+      case 'Initiative':
+        return Icons.lightbulb_outline;
+      case 'Time':
+        return Icons.schedule;
+      case 'Domain':
+        return Icons.language;
+      case 'Model':
+        return Icons.apps;
+      case 'Concept':
+        return Icons.bubble_chart;
+      default:
+        return Icons.category;
     }
   }
 

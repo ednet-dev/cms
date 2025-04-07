@@ -58,6 +58,76 @@ class InMemoryRepository<T extends Entity<dynamic>>
   }
 
   @override
+  Future<List<T>> getEntities(
+      Domain domain, Model model, Concept concept) async {
+    // In-memory repository doesn't filter by domain/model/concept
+    // since it's already instantiated for a specific concept
+    return _entities.values.toList();
+  }
+
+  @override
+  Future<T> createEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    Map<String, dynamic> attributeValues,
+  ) async {
+    // Create a new entity using the concept
+    final entity = concept.newEntity() as T;
+
+    // Set attribute values
+    for (final entry in attributeValues.entries) {
+      try {
+        entity.setAttribute(entry.key, entry.value);
+      } catch (e) {
+        print('Error setting attribute ${entry.key}: $e');
+      }
+    }
+
+    // Save the entity
+    await save(entity);
+    return entity;
+  }
+
+  @override
+  Future<T> updateEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    dynamic oid,
+    Map<String, dynamic> attributeValues,
+  ) async {
+    // Find the entity
+    final entity = await findById(oid);
+    if (entity == null) {
+      throw Exception('Entity not found: $oid');
+    }
+
+    // Update attributes
+    for (final entry in attributeValues.entries) {
+      try {
+        entity.setAttribute(entry.key, entry.value);
+      } catch (e) {
+        print('Error updating attribute ${entry.key}: $e');
+      }
+    }
+
+    // Save the entity
+    await save(entity);
+    return entity;
+  }
+
+  @override
+  Future<bool> deleteEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    dynamic oid,
+  ) async {
+    return await removeById(oid);
+  }
+
+  @override
   Map<String, dynamic> serialize(T entity) {
     // This would be implemented for each specific entity type
     return {'id': entity.oid};
@@ -219,5 +289,75 @@ class EntityRepositoryImpl<T extends Entity<dynamic>>
   /// Get the index of all entity IDs
   List<String> _getIndex() {
     return _prefs.getStringList(_indexKey) ?? [];
+  }
+
+  @override
+  Future<List<T>> getEntities(
+      Domain domain, Model model, Concept concept) async {
+    // For this implementation, we filter by the concept code that was provided in the constructor
+    // Since each repository is tied to a specific concept
+    return (await findAll()).toList();
+  }
+
+  @override
+  Future<T> createEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    Map<String, dynamic> attributeValues,
+  ) async {
+    // Create a new entity using the concept
+    final entity = concept.newEntity() as T;
+
+    // Set attribute values
+    for (final entry in attributeValues.entries) {
+      try {
+        entity.setAttribute(entry.key, entry.value);
+      } catch (e) {
+        print('Error setting attribute ${entry.key}: $e');
+      }
+    }
+
+    // Save the entity
+    await save(entity);
+    return entity;
+  }
+
+  @override
+  Future<T> updateEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    dynamic oid,
+    Map<String, dynamic> attributeValues,
+  ) async {
+    // Find the entity
+    final entity = await findById(oid);
+    if (entity == null) {
+      throw Exception('Entity not found: $oid');
+    }
+
+    // Update attributes
+    for (final entry in attributeValues.entries) {
+      try {
+        entity.setAttribute(entry.key, entry.value);
+      } catch (e) {
+        print('Error updating attribute ${entry.key}: $e');
+      }
+    }
+
+    // Save the entity
+    await save(entity);
+    return entity;
+  }
+
+  @override
+  Future<bool> deleteEntity(
+    Domain domain,
+    Model model,
+    Concept concept,
+    dynamic oid,
+  ) async {
+    return await removeById(oid);
   }
 }
