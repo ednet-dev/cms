@@ -1,0 +1,25 @@
+name: ednet_core_flutter
+description: Flutter extensions and widgets for EDNet Core
+version: 0.1.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ednet_core:
+    path: ../core
+  expressions: ^0.2.5
+  meta: ^1.9.1
+  yaml: ^3.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
