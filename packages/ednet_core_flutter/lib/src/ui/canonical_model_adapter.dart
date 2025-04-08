@@ -278,14 +278,17 @@ class UXCanonicalModel {
     // Get the adapter for the entity
     final adapter = UXAdapterRegistry().getAdapterByConceptCode(
       entity,
-      entity.concept.code,
+      disclosureLevel: disclosureLevel,
     );
 
     // Build form representation
-    final fieldDescriptors = adapter.getFieldDescriptors(
+    // Check if the adapter supports field descriptors - otherwise use an empty list
+    final fieldDescriptors = _getFieldDescriptorsFromAdapter(
+      adapter,
       disclosureLevel: disclosureLevel,
     );
-    final initialData = adapter.getInitialFormData();
+    // Check if the adapter supports initial form data - otherwise use an empty map
+    final initialData = _getInitialFormDataFromAdapter(adapter);
 
     // Create canonical model
     return UXCanonicalModel(
@@ -360,6 +363,49 @@ class UXCanonicalModel {
     return {
       'display': {'label': entity.code, 'type': entity.concept.code},
     };
+  }
+
+  /// Get field descriptors from an adapter safely
+  static List<UXFieldDescriptor> _getFieldDescriptorsFromAdapter(
+    UXAdapter adapter, {
+    DisclosureLevel? disclosureLevel,
+  }) {
+    try {
+      // Try to call the method using reflection
+      // This is a fallback mechanism since not all adapters implement this method
+      final instance = adapter;
+      final method = (instance as dynamic).getFieldDescriptors;
+
+      if (method != null) {
+        return method(disclosureLevel: disclosureLevel)
+            as List<UXFieldDescriptor>;
+      }
+    } catch (_) {
+      // Method doesn't exist or failed, return empty list
+    }
+
+    // Default empty list if the method doesn't exist
+    return [];
+  }
+
+  /// Get initial form data from an adapter safely
+  static Map<String, dynamic> _getInitialFormDataFromAdapter(
+      UXAdapter adapter) {
+    try {
+      // Try to call the method using reflection
+      // This is a fallback mechanism since not all adapters implement this method
+      final instance = adapter;
+      final method = (instance as dynamic).getInitialFormData;
+
+      if (method != null) {
+        return method() as Map<String, dynamic>;
+      }
+    } catch (_) {
+      // Method doesn't exist or failed, return empty map
+    }
+
+    // Default empty map if the method doesn't exist
+    return {};
   }
 }
 

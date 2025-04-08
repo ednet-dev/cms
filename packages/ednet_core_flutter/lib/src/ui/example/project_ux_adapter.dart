@@ -59,7 +59,8 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
 
   @override
   Widget buildListItem(BuildContext context,
-      {DisclosureLevel disclosureLevel = DisclosureLevel.minimal}) {
+      {DisclosureLevel? disclosureLevel}) {
+    final level = disclosureLevel ?? DisclosureLevel.minimal;
     final status = _getProjectStatus();
     final statusColor = _getStatusColor();
 
@@ -72,11 +73,11 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
                     status == 'completed' ? Icons.check : Icons.schedule,
                     color: Colors.white)),
             title: Text(entity.name),
-            subtitle: disclosureLevel.isAtLeast(DisclosureLevel.basic)
+            subtitle: level.isAtLeast(DisclosureLevel.basic)
                 ? Text(entity.description,
                     maxLines: 1, overflow: TextOverflow.ellipsis)
                 : null,
-            trailing: disclosureLevel.isAtLeast(DisclosureLevel.intermediate)
+            trailing: level.isAtLeast(DisclosureLevel.intermediate)
                 ? entity.dueDate != null
                     ? Chip(
                         label: Text(
@@ -88,17 +89,17 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
   }
 
   @override
-  Widget buildForm(BuildContext context,
-      {DisclosureLevel disclosureLevel = DisclosureLevel.basic}) {
+  Widget buildForm(BuildContext context, {DisclosureLevel? disclosureLevel}) {
+    final level = disclosureLevel ?? DisclosureLevel.basic;
     // Get field descriptors with our custom fields
-    final fields = getFieldDescriptors(disclosureLevel: disclosureLevel);
+    final fields = getFieldDescriptors(disclosureLevel: level);
 
     // Use default form builder with our custom fields
     return DefaultFormBuilder<ProjectEntity>(
         entity: entity,
         fields: fields,
         initialData: getInitialFormData(),
-        disclosureLevel: disclosureLevel,
+        disclosureLevel: level,
         onLevelChanged: (newLevel) {
           // Return a new form with the new disclosure level
           return buildForm(context, disclosureLevel: newLevel);
@@ -108,7 +109,8 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
 
   @override
   Widget buildDetailView(BuildContext context,
-      {DisclosureLevel disclosureLevel = DisclosureLevel.intermediate}) {
+      {DisclosureLevel? disclosureLevel}) {
+    final level = disclosureLevel ?? DisclosureLevel.intermediate;
     final status = _getProjectStatus();
     final statusColor = _getStatusColor();
 
@@ -158,7 +160,7 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
           ],
 
           // Show more actions with higher disclosure levels
-          if (disclosureLevel.isAtLeast(DisclosureLevel.advanced)) ...[
+          if (level.isAtLeast(DisclosureLevel.advanced)) ...[
             const Divider(),
             Text('Actions', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8.0),
@@ -175,7 +177,7 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
                   onPressed: () {
                     // Toggle completion status
                   }),
-              if (disclosureLevel.isAtLeast(DisclosureLevel.complete))
+              if (level.isAtLeast(DisclosureLevel.complete))
                 ElevatedButton.icon(
                     icon: const Icon(Icons.delete),
                     label: const Text('Delete'),
@@ -189,14 +191,42 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
 
           // Disclosure control for progressive disclosure
           const SizedBox(height: 16.0),
-          buildDisclosureControl(context, disclosureLevel,
+          _buildDisclosureControl(context, level,
               (newLevel) => buildDetailView(context, disclosureLevel: newLevel))
         ]));
   }
 
+  /// Build a disclosure level control
+  Widget _buildDisclosureControl(BuildContext context,
+      DisclosureLevel currentLevel, Function(DisclosureLevel) onLevelChanged) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text('Detail level:'),
+        const SizedBox(width: 8),
+        DropdownButton<DisclosureLevel>(
+          value: currentLevel,
+          onChanged: (value) {
+            if (value != null) {
+              onLevelChanged(value);
+            }
+          },
+          items: DisclosureLevel.values
+              .where((level) => level != DisclosureLevel.debug)
+              .map((level) => DropdownMenuItem(
+                    value: level,
+                    child: Text(level.toString().split('.').last),
+                  ))
+              .toList(),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget buildVisualization(BuildContext context,
-      {DisclosureLevel disclosureLevel = DisclosureLevel.intermediate}) {
+      {DisclosureLevel? disclosureLevel}) {
+    final level = disclosureLevel ?? DisclosureLevel.intermediate;
     final status = _getProjectStatus();
     final statusColor = _getStatusColor();
 
@@ -222,7 +252,7 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
                             fontWeight: FontWeight.bold, fontSize: 16)))
               ]),
 
-              if (disclosureLevel.isAtLeast(DisclosureLevel.intermediate)) ...[
+              if (level.isAtLeast(DisclosureLevel.intermediate)) ...[
                 const SizedBox(height: 8),
                 if (entity.description.isNotEmpty)
                   Text(entity.description,
@@ -243,9 +273,10 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
             ])));
   }
 
-  @override
+  /// Get field descriptors with appropriate disclosure level
   List<UXFieldDescriptor> getFieldDescriptors(
-      {DisclosureLevel disclosureLevel = DisclosureLevel.basic}) {
+      {DisclosureLevel? disclosureLevel = DisclosureLevel.basic}) {
+    final level = disclosureLevel ?? DisclosureLevel.basic;
     // Define all possible fields
     final allFields = [
       // Name field - always visible (basic)
@@ -292,10 +323,10 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
     ];
 
     // Filter fields based on disclosure level
-    return filterFieldsByDisclosure(allFields, disclosureLevel);
+    return filterFieldsByDisclosure(allFields, level);
   }
 
-  @override
+  /// Get initial form data from entity attributes
   Map<String, dynamic> getInitialFormData() {
     // Get initial form data from entity attributes
     return {
@@ -322,6 +353,15 @@ class ProjectUXAdapter extends ProgressiveUXAdapter<ProjectEntity> {
       print('Error submitting form: $e');
       return false;
     }
+  }
+
+  @override
+  bool validateForm() {
+    // Basic validation - check if required fields are present
+    if (entity.name.isEmpty) {
+      return false;
+    }
+    return true;
   }
 }
 

@@ -7,6 +7,7 @@ part of ednet_core_flutter;
 /// needs or permissions.
 enum DisclosureLevel {
   /// Minimal information, suitable for a first glance or summary view
+  /// TODO: DO PoC for IoT use cases and workflows, interpret ednet_core domain model on some minimal displays optimal for Raspberry Pi and similar devices. All behavoral elements shall be accessible on this disposal level via for it appropriate ux patterns and their overrides and specializations. E.g. controling room temperature.
   minimal,
 
   /// Basic information that most users would need for common tasks

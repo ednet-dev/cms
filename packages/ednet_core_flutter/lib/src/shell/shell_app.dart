@@ -50,6 +50,9 @@ class ShellApp {
   /// The current user's role
   String _currentUserRole = 'default';
 
+  /// The navigation service for this shell
+  late final ShellNavigationService _navigationService;
+
   /// Constructor
   ShellApp({required this.domain, ShellConfiguration? configuration})
       : configuration = configuration ?? ShellConfiguration() {
@@ -58,6 +61,10 @@ class ShellApp {
 
   /// Initialize the shell's core components
   void _initializeShell() {
+    // Initialize the navigation service
+    _navigationService = ShellNavigationService(domain: domain, shellApp: this);
+    _navigationService.initialize();
+
     // Register default adapters for core entity types
     _registerDefaultAdapters();
 
@@ -141,6 +148,9 @@ class ShellApp {
   /// Get the adapter registry
   UXAdapterRegistry get adapterRegistry => _adapterRegistry;
 
+  /// Get the navigation service
+  ShellNavigationService get navigationService => _navigationService;
+
   /// Get an entity by concept and ID
   Entity? getEntity(String conceptCode, String id) {
     // Find the concept in the domain
@@ -218,6 +228,30 @@ class ShellApp {
     return Text('Domain Visualization for ${domain.code}');
   }
 
+  /// Build breadcrumb navigation for the current location
+  Widget buildBreadcrumbNavigation(
+    BuildContext context, {
+    DisclosureLevel? disclosureLevel,
+    BreadcrumbStyle? style,
+  }) {
+    // Get breadcrumb items from the navigation service
+    final items = _navigationService.breadcrumbService.items;
+
+    // If no items, don't show anything
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Return a breadcrumb component with current items
+    return Breadcrumb(
+      items: items,
+      onItemTap: (item) => _navigationService.breadcrumbService
+          .navigateToDestination(item.destination),
+      style: style,
+      disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+    );
+  }
+
   /// Get a specific model by code
   Model? getModel(String modelCode) {
     for (final model in domain.models) {
@@ -231,6 +265,39 @@ class ShellApp {
   /// Check if this shell has a specific feature
   bool hasFeature(String featureKey) {
     return configuration.features.contains(featureKey);
+  }
+
+  /// Navigate to a specific path
+  void navigateTo(String path,
+      {Map<String, dynamic>? parameters, String? label, IconData? icon}) {
+    _navigationService.navigateTo(path,
+        parameters: parameters, label: label, icon: icon);
+  }
+
+  /// Navigate to a specific entity
+  void navigateToEntity(Entity entity,
+      {Map<String, dynamic>? parameters, IconData? icon}) {
+    _navigationService.navigateToEntity(entity,
+        parameters: parameters, icon: icon);
+  }
+
+  /// Navigate to a specific model
+  void navigateToModel(Model model,
+      {Map<String, dynamic>? parameters, IconData? icon}) {
+    _navigationService.navigateToModel(model,
+        parameters: parameters, icon: icon);
+  }
+
+  /// Navigate to a specific concept
+  void navigateToConcept(Concept concept,
+      {Map<String, dynamic>? parameters, IconData? icon}) {
+    _navigationService.navigateToConcept(concept,
+        parameters: parameters, icon: icon);
+  }
+
+  /// Navigate back to the previous location
+  bool navigateBack() {
+    return _navigationService.navigateBack();
   }
 }
 
@@ -317,6 +384,43 @@ class DomainNavigator extends StatefulWidget {
 
 class _DomainNavigatorState extends State<DomainNavigator> {
   int _selectedIndex = 0;
+  String _currentPath = '/';
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen for navigation changes
+    widget.shellApp.navigationService.addListener(_onNavigationChanged);
+  }
+
+  @override
+  void dispose() {
+    // Remove the navigation listener
+    widget.shellApp.navigationService.removeListener(_onNavigationChanged);
+    super.dispose();
+  }
+
+  void _onNavigationChanged(String path) {
+    setState(() {
+      _currentPath = path;
+
+      // Update the selected index if the path points to a model
+      if (path.startsWith('/domain/')) {
+        final segments = path.split('/').where((s) => s.isNotEmpty).toList();
+        if (segments.length >= 2) {
+          final modelCode = segments[1];
+          final models = widget.shellApp.domain.models.toList();
+
+          for (int i = 0; i < models.length; i++) {
+            if (models[i].code == modelCode) {
+              _selectedIndex = i;
+              break;
+            }
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +430,16 @@ class _DomainNavigatorState extends State<DomainNavigator> {
 
     // Create a navigation drawer for the domain
     return Scaffold(
-      appBar: AppBar(title: Text('EDNet Shell: ${domain.code}')),
+      appBar: AppBar(
+        title: Text('EDNet Shell: ${domain.code}'),
+        // Back button that uses the navigation service
+        leading: widget.shellApp.navigationService.isInHistory(_currentPath)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => widget.shellApp.navigateBack(),
+              )
+            : null,
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -348,6 +461,8 @@ class _DomainNavigatorState extends State<DomainNavigator> {
                   setState(() {
                     _selectedIndex = index;
                   });
+                  // Navigate to the selected model using the navigation service
+                  widget.shellApp.navigateToModel(model);
                   Navigator.pop(context);
                 },
               );
@@ -355,9 +470,25 @@ class _DomainNavigatorState extends State<DomainNavigator> {
           ],
         ),
       ),
-      body: models.isNotEmpty
-          ? _buildModelView(models[_selectedIndex])
-          : const Center(child: Text('No models available')),
+      body: Column(
+        children: [
+          // Show breadcrumb navigation at the top
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: widget.shellApp.buildBreadcrumbNavigation(
+              context,
+              disclosureLevel: widget.shellApp.currentDisclosureLevel,
+            ),
+          ),
+
+          // Content area
+          Expanded(
+            child: models.isNotEmpty
+                ? _buildModelView(models[_selectedIndex])
+                : const Center(child: Text('No models available')),
+          ),
+        ],
+      ),
     );
   }
 
@@ -385,7 +516,10 @@ class _DomainNavigatorState extends State<DomainNavigator> {
                 title: Text(concept.code),
                 subtitle: Text('Attributes: ${concept.attributes.length}'),
                 onTap: () {
-                  // Navigate to concept details
+                  // Navigate to concept using the navigation service
+                  widget.shellApp.navigateToConcept(concept);
+
+                  // Navigate to concept details screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -478,6 +612,15 @@ class _ConceptExplorerState extends State<ConceptExplorer> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Show breadcrumb navigation at the top
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: widget.shellApp.buildBreadcrumbNavigation(
+              context,
+              disclosureLevel: _disclosureLevel,
+            ),
+          ),
+
           // Concept header with details
           _buildConceptHeader(),
 

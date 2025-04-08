@@ -77,3 +77,7 @@ We need to integrate with:
 4. Address linter errors in the existing code
 5. Test integration with the existing project structure
 6. Refine documentation 
+
+## Next Steps
+
+We have to extract application service abbstraction as api coine between domain model aggreagtes and higher order user stories they build asid eof defult CRUD implementation we anyways provide. So IApplication service manages behavioral aspects and is used by the shell app for discovery. Rudimentary 
