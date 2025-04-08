@@ -3,10 +3,14 @@ library ednet_core_flutter;
 import 'dart:async';
 import 'dart:math';
 import 'dart:io';
+import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:yaml/yaml.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Core components
 part 'src/ui/disclosure_level.dart';
@@ -47,3 +51,18 @@ part 'src/ui/canonical_model_adapter.dart';
 
 // UI module
 part 'src/ui/ui_module.dart';
+
+// Theme components
+part 'src/ui/theme/theme_constants.dart';
+part 'src/ui/theme/theme.dart';
+part 'src/ui/theme/theme_service.dart';
+part 'src/ui/theme/components/theme_component.dart';
+part 'src/ui/theme/components/cheerful_theme_component.dart';
+part 'src/ui/theme/components/cli_theme_component.dart';
+part 'src/ui/theme/components/custom_colors.dart';
+
+// Theme extensions
+part 'src/ui/theme/extensions/theme_extensions.dart';
+part 'src/ui/theme/extensions/theme_spacing.dart';
+part 'src/ui/theme/extensions/disclosure_level_theme_extension.dart';
+part 'src/ui/theme/extensions/semantic_colors_extension.dart';
