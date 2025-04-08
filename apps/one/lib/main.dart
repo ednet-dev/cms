@@ -1,39 +1,26 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ednet_one/generated/one_application.dart';
-import 'package:ednet_one/presentation/state/blocs/domain_block.dart';
-import 'package:ednet_one/presentation/state/blocs/domain_event.dart'
-    as domain_bloc_events;
-import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/domain_selection/domain_selection_event.dart';
-import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/model_selection/model_selection_event.dart';
-import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_bloc.dart';
-import 'package:ednet_one/presentation/state/blocs/concept_selection/concept_selection_event.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'domain/repositories/entity_repository.dart';
-import 'domain/repositories/entity_repository_impl.dart';
-import 'domain/services/persistence_service.dart';
-import 'domain/services/model_instance_service.dart';
-import 'domain/services/project_service.dart';
-import 'domain/services/deployment_service.dart';
-
-import 'presentation/di/bloc_providers.dart' as bloc_providers;
-import 'presentation/layouts/app_shell.dart';
-import 'presentation/modules/module_registry.dart';
-import 'presentation/navigation/navigation_service.dart';
-import 'presentation/state/blocs/theme_bloc/theme_bloc.dart';
-import 'presentation/theme/theme_service.dart';
-import 'presentation/state/providers/domain_service.dart';
-import 'presentation/layouts/providers/layout_provider.dart';
-import 'presentation/theme/providers/theme_provider.dart';
-import 'presentation/app.dart';
-import 'presentation/domain/domain_model_provider.dart';
-import 'presentation/state/blocs/entity/entity_bloc.dart';
+import 'package:ednet_one/generated/one_application.dart';
+import 'package:ednet_one/domain/services/persistence_service.dart';
+import 'package:ednet_one/domain/services/project_service.dart';
+import 'package:ednet_one/domain/services/deployment_service.dart';
+import 'package:ednet_one/presentation/theme/providers/theme_provider.dart';
+import 'package:ednet_one/presentation/providers/project_provider.dart';
+import 'package:ednet_one/domain/entities/project_entity.dart';
+import 'package:ednet_one/presentation/pages/project_management/project_management_page.dart';
+import 'package:ednet_one/presentation/navigation/navigation_service.dart';
+import 'package:ednet_one/presentation/theme/theme_service.dart';
+import 'package:ednet_one/domain/services/model_instance_service.dart';
+import 'package:ednet_one/presentation/state/providers/domain_service.dart';
+import 'package:ednet_one/presentation/modules/module_registry.dart';
+import 'package:ednet_one/presentation/di/bloc_providers.dart'
+    as bloc_providers;
+import 'package:ednet_one/presentation/layouts/providers/layout_provider.dart';
+import 'package:ednet_one/presentation/domain/domain_model_provider.dart';
 
 /// Global instance of the OneApplication
 late OneApplication oneApplication;
@@ -79,6 +66,7 @@ Future<void> initializeApplication() async {
   try {
     // Create OneApplication instance
     oneApplication = OneApplication();
+    await oneApplication.initializeApplication();
 
     // Initialize services
     navigationService = NavigationService();
@@ -121,25 +109,34 @@ Future<void> initializeApplication() async {
 
 /// Create a test domain for development
 void _createTestDomain() {
-  // Using the createDomain method that exists in OneApplication
-  final domain = oneApplication.createDomain('TestDomain');
-  domain.description = 'This is a test domain';
+  try {
+    // Using the createDomain method that exists in OneApplication
+    final domain = oneApplication.createDomain('TestDomain');
+    domain.description = 'This is a test domain';
 
-  // Create a Model using constructor with domain
-  final model = Model(domain, 'TestModel');
-  model.description = 'Test model for development';
-  domain.models.add(model);
+    // Create a Model using constructor with domain
+    final model = Model(domain, 'TestModel');
+    model.description = 'Test model for development';
+    domain.models.add(model);
 
-  // Create a Concept using constructor with model
-  final personConcept = Concept(model, 'Person');
-  personConcept.description = 'Represents a person';
-  model.concepts.add(personConcept);
+    // Create a Concept using constructor with model
+    final personConcept = Concept(model, 'Person');
+    personConcept.description = 'Represents a person';
+    model.concepts.add(personConcept);
 
-  // Create attributes
-  _createAttribute(personConcept, 'firstName', 'First name', domain);
-  _createAttribute(personConcept, 'lastName', 'Last name', domain);
-  _createAttribute(personConcept, 'age', 'Age in years', domain, 'int');
-  _createAttribute(personConcept, 'email', 'Email address', domain, 'Email');
+    // Create attributes
+    _createAttribute(personConcept, 'firstName', 'First name', domain);
+    _createAttribute(personConcept, 'lastName', 'Last name', domain);
+    _createAttribute(personConcept, 'age', 'Age in years', domain, 'int');
+    _createAttribute(personConcept, 'email', 'Email address', domain, 'Email');
+
+    // Log success
+    debugPrint('Created test domain with model and concept');
+    debugPrint('Model concepts count: ${model.concepts.length}');
+    debugPrint('Person attributes count: ${personConcept.attributes.length}');
+  } catch (e) {
+    debugPrint('Error creating test domain: $e');
+  }
 }
 
 /// Helper to create an attribute
@@ -151,7 +148,7 @@ void _createAttribute(
   String type = 'String',
 ]) {
   final attribute = Attribute(concept, code);
-  // We'll skip setting description if it's not available
+  // We won't set description as it's not available in the Attribute class
   attribute.type = domain.getType(type);
   concept.attributes.add(attribute);
 }
@@ -182,15 +179,23 @@ class MyAppState extends State<MyApp> {
           create: (_) => DomainModelProvider(oneApplication),
         ),
 
-        // Provide entity bloc for the first domain's first model (for examples)
-        if (oneApplication.domains.isNotEmpty &&
-            oneApplication.domains.first.models.isNotEmpty)
-          BlocProvider(
-            create: (_) =>
-                EntityBloc(repository: InMemoryRepository('example')),
-          ),
+        // Provide project provider
+        ChangeNotifierProvider(
+          create: (_) => ProjectProvider(projectService, oneApplication),
+        ),
       ],
-      child: const App(),
+      child: MaterialApp(
+        title: 'EDNet One',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: const ProjectManagementPage(),
+        routes: {
+          ProjectManagementPage.routeName: (context) =>
+              const ProjectManagementPage(),
+        },
+      ),
     );
   }
 }

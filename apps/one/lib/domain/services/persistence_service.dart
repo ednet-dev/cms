@@ -95,13 +95,17 @@ class PersistenceService {
     Domain domain,
     Model model,
   ) async {
-    final repository = await getRepository<T>(
-      concept: concept,
-      domain: domain,
-      model: model,
-    );
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = _getEntityKey(concept, entity.oid);
+      final data = _serializeEntity(entity);
+      final jsonString = jsonEncode(data);
 
-    return repository.save(entity);
+      return await prefs.setString(key, jsonString);
+    } catch (e) {
+      print('Error saving entity: $e');
+      return false;
+    }
   }
 
   /// Save a configuration object to shared preferences
@@ -158,12 +162,23 @@ class PersistenceService {
 
       // Add attributes
       for (final attribute in concept.attributes) {
-        conceptData['attributes'].add({
+        final attrData = <String, dynamic>{
           'code': attribute.code,
-          'description': attribute.description,
           'type': attribute.type?.code,
           'required': attribute.required,
-        });
+        };
+
+        // Only add description if it's a legitimate property
+        try {
+          if (attribute is Property &&
+              (attribute as dynamic).description != null) {
+            attrData['description'] = (attribute as dynamic).description;
+          }
+        } catch (e) {
+          // Skip description if not available
+        }
+
+        conceptData['attributes'].add(attrData);
       }
 
       modelData['concepts'].add(conceptData);
@@ -192,9 +207,32 @@ class PersistenceService {
     }
   }
 
+  /// Get entity key for storage
+  String _getEntityKey(Concept concept, dynamic id) {
+    return 'ednet_entity_${concept.code}_$id';
+  }
+
+  /// Serialize an entity to JSON
+  Map<String, dynamic> _serializeEntity<T extends Entity<dynamic>>(T entity) {
+    final data = <String, dynamic>{
+      'oid': entity.oid,
+    };
+
+    // Get all attributes
+    for (final attr in entity.concept.attributes) {
+      try {
+        data[attr.code] = entity.getAttribute(attr.code);
+      } catch (e) {
+        // Skip attributes that can't be accessed
+      }
+    }
+
+    return data;
+  }
+
   /// Create entity auto-save scheduler that periodically saves all domain models
   static Future<void> setupAutoSave(
-    OneApplication app, {
+    IOneApplication app, {
     Duration interval = const Duration(minutes: 5),
   }) async {
     final service = PersistenceService(app);
