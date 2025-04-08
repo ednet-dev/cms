@@ -32,7 +32,16 @@ part of ednet_core_flutter;
 /// ```
 class ShellApp {
   /// The domain model being interpreted
-  final Domain domain;
+  Domain get domain {
+    if (_domainManager != null) {
+      // If multi-domain, return the current domain
+      return _domainManager!.currentDomain;
+    }
+    return _domain;
+  }
+
+  /// The original domain passed to the constructor
+  final Domain _domain;
 
   /// Registry for UI component adapters
   final UXAdapterRegistry _adapterRegistry = UXAdapterRegistry();
@@ -53,16 +62,30 @@ class ShellApp {
   /// The navigation service for this shell
   late final ShellNavigationService _navigationService;
 
+  /// The domain manager for multi-domain support
+  _DomainManager? _domainManager;
+
   /// Constructor
-  ShellApp({required this.domain, ShellConfiguration? configuration})
-      : configuration = configuration ?? ShellConfiguration() {
+  ShellApp({
+    required Domain domain,
+    ShellConfiguration? configuration,
+    Domains? domains,
+    int initialDomainIndex = 0,
+  })  : _domain = domain,
+        configuration = configuration ?? ShellConfiguration() {
     _initializeShell();
+
+    // Initialize multi-domain support if domains are provided
+    if (domains != null) {
+      initializeWithDomains(domains, initialDomainIndex: initialDomainIndex);
+    }
   }
 
   /// Initialize the shell's core components
   void _initializeShell() {
     // Initialize the navigation service
-    _navigationService = ShellNavigationService(domain: domain, shellApp: this);
+    _navigationService =
+        ShellNavigationService(domain: _domain, shellApp: this);
     _navigationService.initialize();
 
     // Register default adapters for core entity types
@@ -365,7 +388,9 @@ class _ShellAppRunnerState extends State<ShellAppRunner> {
       theme: widget.theme ??
           widget.shellApp.configuration.theme ??
           ThemeData.light(),
-      home: DomainNavigator(shellApp: widget.shellApp),
+      home: widget.shellApp.isMultiDomain
+          ? MultiDomainNavigator(shellApp: widget.shellApp)
+          : DomainNavigator(shellApp: widget.shellApp),
     );
   }
 }
