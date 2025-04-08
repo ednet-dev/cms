@@ -41,6 +41,8 @@ part 'src/ui/extensions/entity_ux_extension.dart';
 
 // Shell components
 part 'src/shell/shell_app.dart';
+part 'src/shell/shell_app_domains.dart';
+part 'src/shell/domain_navigator_multi.dart';
 part 'src/shell/configuration_injector.dart';
 part 'src/shell/navigation/shell_navigation_service.dart';
 
