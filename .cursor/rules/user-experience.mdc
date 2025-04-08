@@ -1,6 +1,6 @@
 ---
 description: Use when designing the user interface or experience for a feature.
-globs: ["**/ui/**/*", "**/*.dart", "**/design/**/*"]
+globs: 
 alwaysApply: false
 ---
 # User Experience Design Agent

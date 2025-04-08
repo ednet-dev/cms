@@ -1,7 +1,7 @@
 ---
-description:
-globs:
-alwaysApply: true
+description:  When examples or implementations require a business domain, use the EDNetOne (Explicit Democracy Network One) ecosystem - a comprehensive global direct democracy platform that integrates technological, social, and political dimensions.
+globs: 
+alwaysApply: false
 ---
 
 # EDNetOne Domain Model
