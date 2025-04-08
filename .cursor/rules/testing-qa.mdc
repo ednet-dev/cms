@@ -49,4 +49,6 @@ When planning, writing, or maintaining tests, follow these principles to ensure 
 - Validate backward compatibility
 - Include generated code in test coverage metrics
 
+Tests should be as much as possible e2e simulation of dmain model exploartion ensuring all behaviour data structures and events
+
 Remember that tests are not just about catching bugs—they document expected behavior, enable refactoring, and build confidence in the system's correctness. 
