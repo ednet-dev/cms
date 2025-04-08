@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   ednet_core:
     path: ../../packages/core
+  ednet_core_flutter:
+    path: ../../packages/ednet_core_flutter
   charts_flutter: ^0.12.0
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.1.1

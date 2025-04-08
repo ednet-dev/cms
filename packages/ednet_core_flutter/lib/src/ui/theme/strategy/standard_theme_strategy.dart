@@ -87,10 +87,7 @@ class StandardThemeStrategy implements ThemeStrategy {
 
     // Apply the extension to the theme
     return baseTheme.copyWith(
-      extensions: <ThemeExtension<dynamic>>[
-        disclosureLevelExtension,
-        ...baseTheme.extensions.values,
-      ],
+      extensions: [disclosureLevelExtension],
     );
   }
 
@@ -106,10 +103,7 @@ class StandardThemeStrategy implements ThemeStrategy {
 
     // Apply the extension to the theme
     return baseTheme.copyWith(
-      extensions: <ThemeExtension<dynamic>>[
-        semanticColorsExtension,
-        ...baseTheme.extensions.values,
-      ],
+      extensions: [semanticColorsExtension],
     );
   }
 

@@ -132,3 +132,11 @@ part 'src/ui/components/bookmarks/bookmark_sidebar.dart';
 part 'src/ui/components/filters/filter_model.dart';
 part 'src/ui/components/filters/filter_service.dart';
 part 'src/ui/components/filters/filter_button.dart';
+
+// Layout components
+part 'src/ui/components/layout/responsive_semantic_wrapper.dart';
+part 'src/ui/components/layout/semantic_layout_requirements.dart';
+part 'src/ui/components/layout/semantic_pinning_service.dart';
+
+// Samples
+part 'src/ui/components/samples/holy_trinity_sample.dart';

@@ -1,0 +1,71 @@
+# Split-Screen Domain Model Editor & Instance Navigator
+
+## Current State (2023-06-16)
+
+We've implemented:
+- LivePreviewEditor with split-screen layout
+- Domain model editor on the left side (concepts, attributes)
+- Basic field mappings for data visualization
+- Simple preview on the right side for Twitter/Facebook feeds
+- Project management system for deployments
+
+## Requirements for Full Feature Implementation
+
+The desired functionality is a split-screen interface where:
+1. Left side: Complete conceptual editable representation of the domain model
+2. Right side: Navigable instance of that domain model with:
+   - Master-detail pattern navigation
+   - Breadcrumb navigation for entity relationships
+   - Default CRUD operations
+   - Filters for collections/lists
+
+## Implementation Plan
+
+### Phase 1: Enhance Domain Model Editor (Left Side)
+- [x] Basic concept and attribute editing
+- [ ] Relationship editing (parent-child, associations)
+- [ ] Validation rules
+- [ ] Type system enhancements
+- [ ] Visual relationship indicators
+
+### Phase 2: Implement Instance Navigator (Right Side)
+- [ ] Replace static preview with dynamic instance navigator
+- [ ] Master-detail UI pattern for navigating relationships
+- [ ] Breadcrumb component for tracking navigation path
+- [ ] Context-aware toolbar showing available actions
+
+### Phase 3: CRUD Operations
+- [ ] Create interface for each concept
+- [ ] Read/Display detailed view
+- [ ] Update operations
+- [ ] Delete with confirmation
+- [ ] Relationship management
+
+### Phase 4: Navigation & Filtering
+- [ ] Filter implementation for collections
+- [ ] Sorting capabilities
+- [ ] Pagination for large datasets
+- [ ] Search functionality across concepts
+- [ ] Saved filters/views
+
+## Integration Points
+
+- Leverage ednet_core's rich domain model capabilities
+- Use the IPast interface for edit history/undo functionality
+- Integrate with deployment system for publishing changes
+- Connect with persistence service for data storage
+
+## Technical Debt & Known Issues
+
+- LivePreviewEditor has compatibility issues with AttributeType constructor
+- Need to finalize field mapping transformation approach
+- Navigation state management needs to be designed
+- Persistence strategy for both the model and instances
+
+## Next Steps
+
+1. Implement relationship editing in the domain model editor
+2. Replace the static preview with a dynamic instance navigator
+3. Implement master-detail pattern for the instance view
+4. Add breadcrumb navigation tracking the relationship path
+5. Develop the basic CRUD operations interface 
