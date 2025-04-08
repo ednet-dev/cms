@@ -56,10 +56,9 @@ class ModelInstanceConfig {
       sourceType: json['sourceType'] as String,
       sourceLocation: json['sourceLocation'] as String,
       authentication: Map<String, String>.from(json['authentication'] as Map),
-      mappings:
-          (json['mappings'] as List)
-              .map((m) => FieldMapping.fromJson(m as Map<String, dynamic>))
-              .toList(),
+      mappings: (json['mappings'] as List)
+          .map((m) => FieldMapping.fromJson(m as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -217,7 +216,10 @@ class ModelInstanceService {
 
   /// Delete a configuration
   Future<bool> deleteConfiguration(String configId) async {
-    final removed = _configurations.removeWhere((c) => c.id == configId);
+    final initialCount = _configurations.length;
+    _configurations.removeWhere((c) => c.id == configId);
+    final removed = initialCount > _configurations.length;
+
     if (removed) {
       return await saveConfigurations();
     }
