@@ -1,150 +1,143 @@
 part of ednet_core_flutter;
 
-/// Base interface for UX adapters that transform domain entities into UI components
+/// Interface for adapting domain entities to UI representations
+/// @deprecated Use LayoutAdapter instead
+@deprecated
 abstract class UXAdapter {
-  /// The entity being adapted
-  Entity get entity;
+  /// Build a form for creating or editing an entity
+  Widget buildForm(BuildContext context, {DisclosureLevel? disclosureLevel});
 
-  /// Build a form for editing the entity
-  Widget buildForm(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  });
+  /// Build a list item representation of an entity
+  Widget buildListItem(BuildContext context,
+      {DisclosureLevel? disclosureLevel});
 
-  /// Build a list item representing the entity in a list
-  Widget buildListItem(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.minimal,
-  });
+  /// Build a detailed view of an entity
+  Widget buildDetailView(BuildContext context,
+      {DisclosureLevel? disclosureLevel});
 
-  /// Build a detailed view of the entity
-  Widget buildDetailView(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  });
+  /// Build a visualization of an entity or relationships
+  Widget buildVisualization(BuildContext context,
+      {DisclosureLevel? disclosureLevel});
 
-  /// Build a visualization of the entity
-  Widget buildVisualization(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  });
+  /// Validate the current form state
+  bool validateForm();
 
-  /// Get field descriptors for building a form
-  List<UXFieldDescriptor> getFieldDescriptors({
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  });
+  /// Submit form data and return success or failure
+  Future<bool> submitForm(Map<String, dynamic> formData);
 
-  /// Get initial data for a form
-  Map<String, dynamic> getInitialFormData();
+  /// Get the entity code
+  String getEntityCode();
 
-  /// Submit form data and update the entity
-  Future<bool> submitForm(Map<String, dynamic> formData) async {
-    // Default implementation - override in subclasses
-    return true;
-  }
+  /// Get the entity concept code
+  String getConceptCode();
 
-  /// Get entity metadata for UI customization
-  Map<String, dynamic> getMetadata() => {
-        'entityType': entity.concept.code,
-        'entityId': entity.id?.toString(),
-      };
+  /// Get list of entity attributes to display
+  List<String> getAttributesToDisplay({DisclosureLevel? disclosureLevel});
+
+  /// Get list of entity relationships to display
+  List<String> getRelationshipsToDisplay({DisclosureLevel? disclosureLevel});
+
+  /// Get icon to represent this entity
+  IconData getEntityIcon();
+
+  /// Get color to represent this entity
+  Color getEntityColor(BuildContext context);
+
+  /// Get display name for the entity (may differ from code)
+  String getDisplayName();
+
+  /// Get description of the entity
+  String getDescription();
+
+  /// Get metadata about the entity (createdAt, updatedAt, etc)
+  Map<String, dynamic> getMetadata();
 }
 
 /// Factory for creating UX adapters for specific entity types
+/// @deprecated Use LayoutAdapter instead
+@deprecated
 abstract class UXAdapterFactory<T extends Entity<T>> {
-  /// Create an adapter for the given entity
+  /// Create a UX adapter for a given entity
   UXAdapter create(T entity);
 }
 
-/// A registry for UI adapters
+/// Registry of UX adapters for different entity types
+/// @deprecated Use LayoutAdapter instead
+@deprecated
 class UXAdapterRegistry {
-  // Singleton instance
   static final UXAdapterRegistry _instance = UXAdapterRegistry._internal();
 
-  // Private constructor
+  // Private constructor for singleton
   UXAdapterRegistry._internal();
 
-  // Factory constructor
+  // Factory constructor to return the singleton instance
   factory UXAdapterRegistry() => _instance;
 
-  // Maps entity types to adapter factories
+  // Map of entity type to UX adapter factory
   final Map<Type, UXAdapterFactory> _adapterFactories = {};
 
-  // Maps entity types and disclosure levels to specialized adapters
+  // Map of entity type to disclosure level-specific UX adapter factories
   final Map<Type, Map<DisclosureLevel, UXAdapterFactory>>
-      _disclosureLevelAdapters = {};
+      _disclosureAdapterFactories = {};
 
-  // Maps concept codes to adapter factories
+  // Map of concept code to UX adapter factory
   final Map<String, UXAdapterFactory> _conceptAdapterFactories = {};
 
-  // Maps concept codes and disclosure levels to specialized adapters
+  // Map of concept code to disclosure level-specific UX adapter factories
   final Map<String, Map<DisclosureLevel, UXAdapterFactory>>
-      _conceptDisclosureLevelAdapters = {};
+      _disclosureConceptAdapterFactories = {};
 
-  /// Register an adapter factory for an entity type
+  /// Register a UX adapter factory for an entity type
   void register<T extends Entity<T>>(UXAdapterFactory<T> factory) {
     _adapterFactories[T] = factory;
   }
 
-  /// Register an adapter dynamically using the Type object
-  /// This is used when we don't know the concrete type at compile time
+  /// Register a dynamic UX adapter factory for an entity type
   void registerDynamic(Type entityType, UXAdapterFactory factory) {
     _adapterFactories[entityType] = factory;
   }
 
-  /// Register an adapter factory for a specific disclosure level
+  /// Register a disclosure level-specific UX adapter factory for an entity type
   void registerWithDisclosure<T extends Entity<T>>(
     UXAdapterFactory<T> factory,
     DisclosureLevel level,
   ) {
-    _disclosureLevelAdapters
-        .putIfAbsent(T, () => {})
-        .putIfAbsent(level, () => factory);
+    _disclosureAdapterFactories.putIfAbsent(T, () => {});
+    _disclosureAdapterFactories[T]![level] = factory;
   }
 
-  /// Register an adapter factory for a concept code
+  /// Register a UX adapter factory for a concept code
   void registerByConceptCode(
     String conceptCode,
     UXAdapterFactory factory, {
-    DisclosureLevel? disclosureLevel,
+    DisclosureLevel? level,
   }) {
-    if (disclosureLevel != null) {
-      _conceptDisclosureLevelAdapters
-          .putIfAbsent(conceptCode, () => {})
-          .putIfAbsent(disclosureLevel, () => factory);
+    if (level != null) {
+      _disclosureConceptAdapterFactories.putIfAbsent(conceptCode, () => {});
+      _disclosureConceptAdapterFactories[conceptCode]![level] = factory;
     } else {
       _conceptAdapterFactories[conceptCode] = factory;
     }
   }
 
-  /// Get an adapter based on concept code
+  /// Get a UX adapter for an entity based on its concept code
   UXAdapter getAdapterByConceptCode(
-    Entity entity,
-    String conceptCode, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
+    Entity entity, {
+    DisclosureLevel? disclosureLevel,
   }) {
+    String conceptCode = entity.concept.code;
     UXAdapterFactory? factory;
 
-    // Try to find a disclosure-level specific adapter for this concept
-    if (_conceptDisclosureLevelAdapters.containsKey(conceptCode)) {
-      final levelAdapters = _conceptDisclosureLevelAdapters[conceptCode]!;
-
-      // Find the highest appropriate disclosure level
-      DisclosureLevel? selectedLevel;
-      for (final level in levelAdapters.keys) {
-        if (level.index <= disclosureLevel.index &&
-            (selectedLevel == null || level.index > selectedLevel.index)) {
-          selectedLevel = level;
-        }
-      }
-
-      // If we found a suitable adapter, use it
-      if (selectedLevel != null) {
-        factory = levelAdapters[selectedLevel];
-      }
+    // Check for disclosure level-specific factory for this concept code
+    if (disclosureLevel != null &&
+        _disclosureConceptAdapterFactories.containsKey(conceptCode) &&
+        _disclosureConceptAdapterFactories[conceptCode]!
+            .containsKey(disclosureLevel)) {
+      factory =
+          _disclosureConceptAdapterFactories[conceptCode]![disclosureLevel];
     }
 
-    // Try general concept adapter if no disclosure-level specific one was found
+    // If not found, try the default factory for this concept code
     if (factory == null && _conceptAdapterFactories.containsKey(conceptCode)) {
       factory = _conceptAdapterFactories[conceptCode];
     }
@@ -154,426 +147,603 @@ class UXAdapterRegistry {
       return factory.create(entity);
     }
 
-    // Fall back to using entity type-based adapter
-    final entityType = entity.runtimeType;
-
-    // Check for a disclosure-level specific adapter
-    if (_disclosureLevelAdapters.containsKey(entityType)) {
-      final levelAdapters = _disclosureLevelAdapters[entityType]!;
-
-      // Find the highest appropriate disclosure level
-      DisclosureLevel? selectedLevel;
-      for (final level in levelAdapters.keys) {
-        if (level.index <= disclosureLevel.index &&
-            (selectedLevel == null || level.index > selectedLevel.index)) {
-          selectedLevel = level;
-        }
-      }
-
-      // If we found a suitable adapter, use it
-      if (selectedLevel != null) {
-        final factory = levelAdapters[selectedLevel]!;
-        return factory.create(entity);
+    // Try each entry in the registry until we find a matching type
+    for (var type in _adapterFactories.keys) {
+      if (entity.runtimeType == type) {
+        factory = _adapterFactories[type];
+        break;
       }
     }
 
-    // Otherwise use the standard adapter
-    if (_adapterFactories.containsKey(entityType)) {
-      final factory = _adapterFactories[entityType]!;
+    // If found a matching type, use it
+    if (factory != null) {
       return factory.create(entity);
     }
 
-    // If no specific adapter is registered, use the non-generic base adapter
+    // Try to find a factory by matching the concept code pattern
+    for (var code in _conceptAdapterFactories.keys) {
+      if (conceptCode.contains(code)) {
+        factory = _conceptAdapterFactories[code];
+        break;
+      }
+    }
+
+    // If we found a matching pattern, use it
+    if (factory != null) {
+      return factory.create(entity);
+    }
+
+    // If we still haven't found a factory, use the default adapter
     return BaseDefaultUXAdapter(entity);
   }
 
-  /// Get an adapter for an entity, using the appropriate factory
+  /// Get a UX adapter for an entity by its type
   UXAdapter getAdapter<T extends Entity<T>>(
     T entity, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
+    DisclosureLevel? disclosureLevel,
   }) {
-    final entityType = entity.runtimeType;
-
-    // Check for a disclosure-level specific adapter
-    if (_disclosureLevelAdapters.containsKey(entityType)) {
-      final levelAdapters = _disclosureLevelAdapters[entityType]!;
-
-      // Find the highest appropriate disclosure level
-      DisclosureLevel? selectedLevel;
-      for (final level in levelAdapters.keys) {
-        if (level.index <= disclosureLevel.index &&
-            (selectedLevel == null || level.index > selectedLevel.index)) {
-          selectedLevel = level;
-        }
-      }
-
-      // If we found a suitable adapter, use it
-      if (selectedLevel != null) {
-        final factory = levelAdapters[selectedLevel]!;
-        return factory.create(entity);
-      }
+    // First try disclosure level-specific factory
+    if (disclosureLevel != null &&
+        _disclosureAdapterFactories.containsKey(T) &&
+        _disclosureAdapterFactories[T]!.containsKey(disclosureLevel)) {
+      return _disclosureAdapterFactories[T]![disclosureLevel]!.create(entity);
     }
 
-    // Otherwise use the standard adapter
-    if (_adapterFactories.containsKey(entityType)) {
-      final factory = _adapterFactories[entityType]!;
-      return factory.create(entity);
+    // Then try the basic factory
+    if (_adapterFactories.containsKey(T)) {
+      return _adapterFactories[T]!.create(entity);
     }
 
-    // If no specific adapter is registered, use the non-generic base adapter
-    return BaseDefaultUXAdapter(entity);
+    // Try by concept code
+    return getAdapterByConceptCode(
+      entity,
+      disclosureLevel: disclosureLevel,
+    );
   }
 
-  /// Check if a specific adapter is registered for an entity type
-  bool hasAdapter<T extends Entity<T>>() {
-    return _adapterFactories.containsKey(T) ||
-        _disclosureLevelAdapters.containsKey(T);
+  /// Check if there is a registered adapter for a given type
+  bool hasAdapterFor<T extends Entity<T>>() {
+    return _adapterFactories.containsKey(T);
   }
 
-  /// Clear all registered adapters
-  void clear() {
-    _adapterFactories.clear();
-    _disclosureLevelAdapters.clear();
-    _conceptAdapterFactories.clear();
-    _conceptDisclosureLevelAdapters.clear();
+  /// Check if there is a registered adapter for a given concept code
+  bool hasAdapterForConceptCode(String conceptCode) {
+    return _conceptAdapterFactories.containsKey(conceptCode);
+  }
+
+  /// Check if there is a registered disclosure level-specific adapter for a given type
+  bool hasDisclosureAdapterFor<T extends Entity<T>>(DisclosureLevel level) {
+    return _disclosureAdapterFactories.containsKey(T) &&
+        _disclosureAdapterFactories[T]!.containsKey(level);
+  }
+
+  /// Check if there is a registered disclosure level-specific adapter for a given concept code
+  bool hasDisclosureAdapterForConceptCode(
+      String conceptCode, DisclosureLevel level) {
+    return _disclosureConceptAdapterFactories.containsKey(conceptCode) &&
+        _disclosureConceptAdapterFactories[conceptCode]!.containsKey(level);
   }
 }
 
-/// A progressive adapter that supports disclosure levels
+/// Base class for implementing progressive disclosure in UX adapters
+/// @deprecated Use LayoutAdapter instead
+@deprecated
 abstract class ProgressiveUXAdapter<T extends Entity<T>> implements UXAdapter {
   /// The entity being adapted
-  @override
   final T entity;
 
   /// Constructor
   ProgressiveUXAdapter(this.entity);
 
-  /// Build a form with fields filtered by disclosure level
   @override
-  Widget buildForm(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  }) {
-    final filteredFields = filterFieldsByDisclosure(
-      getFieldDescriptors(disclosureLevel: disclosureLevel),
-      disclosureLevel,
-    );
+  List<String> getAttributesToDisplay({DisclosureLevel? disclosureLevel}) {
+    final level = disclosureLevel ?? DisclosureLevel.standard;
+    List<String> attributes = [];
 
-    return DefaultFormBuilder<T>(
-      entity: entity,
-      fields: filteredFields,
-      initialData: getInitialFormData(),
-      disclosureLevel: disclosureLevel,
-      onLevelChanged: (newLevel) {
-        return buildForm(context, disclosureLevel: newLevel);
-      },
-    );
-  }
+    // Get all attributes
+    for (var attr in entity.concept.attributes.whereType<Attribute>()) {
+      bool include = false;
 
-  /// Build a detailed view with progressive disclosure
-  @override
-  Widget buildDetailView(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  }) {
-    // Default implementation - can be overridden
-    final filteredFields = filterFieldsByDisclosure(
-      getFieldDescriptors(disclosureLevel: disclosureLevel),
-      disclosureLevel,
-    );
+      // Apply progressive disclosure logic
+      switch (level) {
+        case DisclosureLevel.minimal:
+          // Only include the most essential attributes for minimal display
+          include = attr.identifier || attr.essential;
+          break;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              entity.toString(),
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const Divider(),
-            ...filteredFields.map((field) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      child: Text(
-                        field.displayName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        _formatFieldValue(
-                          entity.getAttribute(field.fieldName),
-                          field.fieldType,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ],
-        ),
-      ),
-    );
-  }
+        case DisclosureLevel.basic:
+          // Basic includes identifiers, essential attributes, and required attributes
+          include = attr.identifier || attr.essential || attr.required;
+          break;
 
-  /// Build a visualization (default implementation)
-  @override
-  Widget buildVisualization(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  }) {
-    // Default implementation - can be overridden
-    return Card(
-      child: ListTile(
-        title: Text(entity.toString()),
-        subtitle: Text(entity.concept.code),
-      ),
-    );
-  }
+        case DisclosureLevel.standard:
+          // Standard includes most attributes except sensitivity or derived
+          include = !attr.sensitive && !attr.derive;
+          break;
 
-  /// Format a field value for display
-  String _formatFieldValue(Object? value, UXFieldType fieldType) {
-    if (value == null) return '';
+        case DisclosureLevel.intermediate:
+          // Intermediate includes everything except sensitive
+          include = !attr.sensitive;
+          break;
 
-    switch (fieldType) {
-      case UXFieldType.date:
-        if (value is DateTime) {
-          return '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
-        }
-        return value.toString();
-      case UXFieldType.checkbox:
-        return value is bool && value ? 'Yes' : 'No';
-      default:
-        return value.toString();
-    }
-  }
+        case DisclosureLevel.advanced:
+        case DisclosureLevel.detailed:
+        case DisclosureLevel.complete:
+          // Advanced, detailed and complete include everything
+          include = true;
+          break;
 
-  /// Filters fields based on the current disclosure level
-  List<UXFieldDescriptor> filterFieldsByDisclosure(
-    List<UXFieldDescriptor> allFields,
-    DisclosureLevel level,
-  ) {
-    return allFields.where((field) {
-      // Get the minimum level required to show this field
-      final minLevel = field.metadata['disclosureLevel'] as DisclosureLevel? ??
-          DisclosureLevel.basic;
+        case DisclosureLevel.debug:
+          // Debug includes absolutely everything plus adds more
+          include = true;
+          break;
+      }
 
-      // Show the field if the current level is at least the minimum required level
-      return level.isAtLeast(minLevel);
-    }).toList();
-  }
-
-  /// Create a disclosure control that allows users to see more/less
-  Widget buildDisclosureControl(
-    BuildContext context,
-    DisclosureLevel currentLevel,
-    Function(DisclosureLevel) onLevelChanged,
-  ) {
-    // Get previous and next levels without using extension methods
-    DisclosureLevel? previousLevel;
-    DisclosureLevel? nextLevel;
-
-    switch (currentLevel) {
-      case DisclosureLevel.minimal:
-        previousLevel = null;
-        nextLevel = DisclosureLevel.basic;
-        break;
-      case DisclosureLevel.basic:
-        previousLevel = DisclosureLevel.minimal;
-        nextLevel = DisclosureLevel.intermediate;
-        break;
-      case DisclosureLevel.intermediate:
-        previousLevel = DisclosureLevel.basic;
-        nextLevel = DisclosureLevel.advanced;
-        break;
-      case DisclosureLevel.advanced:
-        previousLevel = DisclosureLevel.intermediate;
-        nextLevel = DisclosureLevel.complete;
-        break;
-      case DisclosureLevel.complete:
-        previousLevel = DisclosureLevel.advanced;
-        nextLevel = null;
-        break;
-      case DisclosureLevel.standard:
-        // TODO: Handle this case.
-        throw UnimplementedError();
-      case DisclosureLevel.detailed:
-        // TODO: Handle this case.
-        throw UnimplementedError();
-      case DisclosureLevel.debug:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+      if (include) {
+        attributes.add(attr.code);
+      }
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        if (previousLevel != null)
-          TextButton.icon(
-            icon: const Icon(Icons.remove_circle_outline),
-            label: const Text('Show less'),
-            onPressed: () => onLevelChanged(previousLevel!),
-          ),
-        if (nextLevel != null)
-          TextButton.icon(
-            icon: const Icon(Icons.add_circle_outline),
-            label: const Text('Show more'),
-            onPressed: () => onLevelChanged(nextLevel!),
-          ),
-      ],
-    );
+    return attributes;
   }
 
   @override
-  Future<bool> submitForm(Map<String, dynamic> formData) async {
-    // Default implementation - override in subclasses
-    return true;
+  List<String> getRelationshipsToDisplay({DisclosureLevel? disclosureLevel}) {
+    final level = disclosureLevel ?? DisclosureLevel.standard;
+    List<String> relationships = [];
+
+    // Process parent relationships
+    for (var parent in entity.concept.parents.whereType<Parent>()) {
+      bool include = false;
+
+      // Apply progressive disclosure logic
+      switch (level) {
+        case DisclosureLevel.minimal:
+          // Only show internal/identifying parents in minimal view
+          include = parent.internal || parent.identifier;
+          break;
+
+        case DisclosureLevel.basic:
+          // Basic adds required parents
+          include = parent.internal || parent.identifier || parent.required;
+          break;
+
+        case DisclosureLevel.standard:
+          // Standard shows most non-sensitive relationships
+          include = !parent.sensitive;
+          break;
+
+        case DisclosureLevel.intermediate:
+        case DisclosureLevel.advanced:
+        case DisclosureLevel.detailed:
+        case DisclosureLevel.complete:
+          // More detailed levels show all relationships
+          include = true;
+          break;
+
+        case DisclosureLevel.debug:
+          // Debug includes everything
+          include = true;
+          break;
+      }
+
+      if (include) {
+        relationships.add(parent.code);
+      }
+    }
+
+    // Process child relationships
+    for (var child in entity.concept.children.whereType<Child>()) {
+      bool include = false;
+
+      // Apply progressive disclosure logic
+      switch (level) {
+        case DisclosureLevel.minimal:
+          // Only show internal children in minimal view
+          include = child.internal;
+          break;
+
+        case DisclosureLevel.basic:
+          // Basic shows internal and a few more important children
+          include = child.internal || child.essential;
+          break;
+
+        case DisclosureLevel.standard:
+          // Standard shows non-sensitive children
+          include = !child.sensitive;
+          break;
+
+        case DisclosureLevel.intermediate:
+        case DisclosureLevel.advanced:
+        case DisclosureLevel.detailed:
+        case DisclosureLevel.complete:
+          // More detailed levels show all children
+          include = true;
+          break;
+
+        case DisclosureLevel.debug:
+          // Debug includes everything
+          include = true;
+          break;
+      }
+
+      if (include) {
+        relationships.add(child.code);
+      }
+    }
+
+    return relationships;
   }
 
   @override
-  Map<String, dynamic> getMetadata() => {
-        'entityType': entity.concept.code,
-        'entityId': entity.id?.toString(),
-      };
+  String getEntityCode() {
+    return entity.code;
+  }
+
+  @override
+  String getConceptCode() {
+    return entity.concept.code;
+  }
+
+  @override
+  IconData getEntityIcon() {
+    // Default icon based on entity type
+    if (entity is Domain) {
+      return Icons.cloud;
+    } else if (entity is Model) {
+      return Icons.data_object;
+    } else if (entity is Concept) {
+      return Icons.schema;
+    } else if (entity is Property) {
+      if (entity is Parent || entity is Child) {
+        return Icons.link;
+      } else {
+        return Icons.text_fields;
+      }
+    }
+    // Default icon
+    return Icons.widgets;
+  }
+
+  @override
+  Color getEntityColor(BuildContext context) {
+    // Default colors based on entity type
+    if (entity is Domain) {
+      return Colors.blue;
+    } else if (entity is Model) {
+      return Colors.green;
+    } else if (entity is Concept) {
+      return Colors.orange;
+    } else if (entity is Property) {
+      if (entity is Parent || entity is Child) {
+        return Colors.purple;
+      } else {
+        return Colors.red;
+      }
+    }
+    // Default color
+    return Colors.grey;
+  }
+
+  @override
+  String getDisplayName() {
+    // Use the label if available, otherwise use code
+    if (entity is Concept) {
+      final concept = entity as Concept;
+      return concept.label ?? concept.code;
+    }
+    return entity.code;
+  }
+
+  @override
+  String getDescription() {
+    // Try to get description from the entity
+    try {
+      // Using dynamic access to support various entity types
+      final dynamic entityDynamic = entity;
+      if (entityDynamic.description != null) {
+        return entityDynamic.description;
+      }
+    } catch (_) {
+      // Ignore if the entity doesn't have a description
+    }
+    return '';
+  }
+
+  @override
+  Map<String, dynamic> getMetadata() {
+    final metadata = <String, dynamic>{};
+
+    // Basic entity metadata
+    metadata['oid'] = entity.oid.toString();
+    if (entity.whenAdded != null) {
+      metadata['whenAdded'] = entity.whenAdded;
+    }
+    if (entity.whenSet != null) {
+      metadata['whenSet'] = entity.whenSet;
+    }
+
+    return metadata;
+  }
 }
 
-/// Default adapter implementation for any entity type
+/// Default implementation of UXAdapter
+/// @deprecated Use LayoutAdapter instead
+@deprecated
 class DefaultUXAdapter<T extends Entity<T>> extends ProgressiveUXAdapter<T> {
   /// Constructor
   DefaultUXAdapter(T entity) : super(entity);
 
   @override
-  List<UXFieldDescriptor> getFieldDescriptors({
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  }) {
-    // Create field descriptors from entity attributes
-    final result = <UXFieldDescriptor>[];
+  Widget buildForm(BuildContext context, {DisclosureLevel? disclosureLevel}) {
+    final attrs = getAttributesToDisplay(disclosureLevel: disclosureLevel);
+    final relationships =
+        getRelationshipsToDisplay(disclosureLevel: disclosureLevel);
 
-    for (final attribute in entity.concept.attributes) {
-      // Determine field type
-      final fieldType = _determineFieldType(attribute.type?.code ?? 'String');
-
-      // Create disclosure level based on attribute properties
-      var attrLevel = DisclosureLevel.basic;
-      if (attribute.code.startsWith('__')) {
-        attrLevel = DisclosureLevel.complete;
-      } else if (attribute.code.startsWith('_')) {
-        attrLevel = DisclosureLevel.advanced;
-      } else if (!attribute.required) {
-        attrLevel = DisclosureLevel.intermediate;
-      } else {
-        attrLevel = DisclosureLevel.minimal;
-      }
-
-      // Only add if appropriate for this disclosure level
-      if (attrLevel.index <= disclosureLevel.index) {
-        result.add(
-          UXFieldDescriptor(
-            fieldName: attribute.code,
-            displayName: _formatDisplayName(attribute.code),
-            fieldType: fieldType,
-            required: attribute.required,
-            disclosureLevel: attrLevel,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Form title
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: Text(
+            '${getDisplayName()} Form',
+            style: Theme.of(context).textTheme.titleLarge,
           ),
-        );
-      }
-    }
+        ),
 
-    return result;
+        // Attributes section
+        if (attrs.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              'Attributes',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+          ...attrs.map((attr) => _buildFormField(context, attr)),
+          const SizedBox(height: 16),
+        ],
+
+        // Relationships section
+        if (relationships.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              'Relationships',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+          ...relationships.map((rel) => _buildRelationshipField(context, rel)),
+        ],
+      ],
+    );
   }
 
-  @override
-  Map<String, dynamic> getInitialFormData() {
-    // Create a map of attribute values
-    final result = <String, dynamic>{};
-
-    for (final attribute in entity.concept.attributes) {
-      final value = entity.getAttribute(attribute.code);
-      if (value != null) {
-        result[attribute.code] = value;
-      }
-    }
-
-    return result;
-  }
-
-  @override
-  Widget buildListItem(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.minimal,
-  }) {
-    // Default implementation of a list item
-    return Card(
-      child: ListTile(
-        title: Text(entity.toString()),
-        subtitle: disclosureLevel.index >= DisclosureLevel.basic.index
-            ? Text(entity.concept.code)
-            : null,
+  Widget _buildFormField(BuildContext context, String attributeCode) {
+    // Simplified form field for demo purposes
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: TextField(
+        decoration: InputDecoration(
+          labelText: attributeCode,
+          border: const OutlineInputBorder(),
+        ),
       ),
     );
   }
 
-  /// Determine field type from attribute type
-  UXFieldType _determineFieldType(String typeCode) {
-    switch (typeCode.toLowerCase()) {
-      case 'string':
-        return UXFieldType.text;
-      case 'text':
-      case 'longtext':
-        return UXFieldType.longText;
-      case 'int':
-      case 'double':
-      case 'num':
-      case 'number':
-        return UXFieldType.number;
-      case 'datetime':
-      case 'date':
-        return UXFieldType.date;
-      case 'boolean':
-      case 'bool':
-        return UXFieldType.checkbox;
-      default:
-        return UXFieldType.text;
-    }
+  Widget _buildRelationshipField(
+      BuildContext context, String relationshipCode) {
+    // Simplified relationship field for demo purposes
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: ListTile(
+        title: Text(relationshipCode),
+        trailing: const Icon(Icons.arrow_forward),
+        tileColor: Colors.grey.shade200,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      ),
+    );
   }
 
-  /// Format a field name for display
-  String _formatDisplayName(String code) {
-    // Add spaces before capital letters and capitalize first letter
-    final spaced = code
-        .replaceAllMapped(
-          RegExp(r'([A-Z])'),
-          (match) => ' ${match.group(0)}',
-        )
-        .trim();
+  @override
+  Widget buildListItem(BuildContext context,
+      {DisclosureLevel? disclosureLevel}) {
+    return Card(
+      child: ListTile(
+        leading: Icon(getEntityIcon(), color: getEntityColor(context)),
+        title: Text(getDisplayName()),
+        subtitle: Text(getDescription()),
+        trailing: const Icon(Icons.chevron_right),
+      ),
+    );
+  }
 
-    return spaced.substring(0, 1).toUpperCase() + spaced.substring(1);
+  @override
+  Widget buildDetailView(BuildContext context,
+      {DisclosureLevel? disclosureLevel}) {
+    final attrs = getAttributesToDisplay(disclosureLevel: disclosureLevel);
+    final relationships =
+        getRelationshipsToDisplay(disclosureLevel: disclosureLevel);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header with icon and title
+        Row(
+          children: [
+            Icon(getEntityIcon(), color: getEntityColor(context), size: 32),
+            const SizedBox(width: 16),
+            Text(
+              getDisplayName(),
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // Description
+        if (getDescription().isNotEmpty) ...[
+          Text(
+            getDescription(),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        // Attributes
+        if (attrs.isNotEmpty) ...[
+          Text(
+            'Attributes',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          ...attrs.map((attr) => _buildAttributeRow(context, attr)),
+          const SizedBox(height: 16),
+        ],
+
+        // Relationships
+        if (relationships.isNotEmpty) ...[
+          Text(
+            'Relationships',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          ...relationships.map((rel) => _buildRelationshipRow(context, rel)),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildAttributeRow(BuildContext context, String attributeCode) {
+    var value = entity.getAttribute(attributeCode)?.toString() ?? 'N/A';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              attributeCode,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: Text(value),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRelationshipRow(BuildContext context, String relationshipCode) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              relationshipCode,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+          const Icon(Icons.link, size: 16),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildVisualization(BuildContext context,
+      {DisclosureLevel? disclosureLevel}) {
+    // Simple placeholder visualization
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            getEntityIcon(),
+            color: getEntityColor(context),
+            size: 48,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            getDisplayName(),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          if (getDescription().isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              getDescription(),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool validateForm() {
+    // Default implementation just returns true
+    return true;
+  }
+
+  @override
+  Future<bool> submitForm(Map<String, dynamic> formData) async {
+    // Default implementation just returns success
+    return true;
   }
 }
 
-/// Non-generic base adapter that can be used to avoid type parameter inference issues
+/// Base implementation of UXAdapter for any entity
+/// @deprecated Use LayoutAdapter instead
+@deprecated
 class BaseDefaultUXAdapter implements UXAdapter {
   /// The entity being adapted
-  @override
   final Entity entity;
 
   /// Constructor
   BaseDefaultUXAdapter(this.entity);
 
   @override
-  Widget buildForm(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  }) {
-    // Basic form builder implementation
+  Widget buildForm(BuildContext context, {DisclosureLevel? disclosureLevel}) {
+    // Simple placeholder form
+    return Column(
+      children: [
+        Text('Form for ${entity.code}'),
+        const SizedBox(height: 16),
+        const TextField(
+          decoration: InputDecoration(
+            label: Text('Code'),
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget buildListItem(BuildContext context,
+      {DisclosureLevel? disclosureLevel}) {
+    return ListTile(
+      title: Text(entity.code),
+      subtitle: Text('Entity of type ${entity.concept.code}'),
+    );
+  }
+
+  @override
+  Widget buildDetailView(BuildContext context,
+      {DisclosureLevel? disclosureLevel}) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -581,38 +751,13 @@ class BaseDefaultUXAdapter implements UXAdapter {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Entity: ${entity.concept.code}',
+              entity.code,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
-            const Divider(),
-            const Text('This entity does not have a specialized adapter.'),
             const SizedBox(height: 8),
-            // Add basic attributes display
-            ...entity.concept.attributes
-                .where((attr) => !attr.code.startsWith('_'))
-                .map(
-                  (attr) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            attr.code,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            _formatValue(entity.getAttribute(attr.code)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-                .toList(),
+            Text('Type: ${entity.concept.code}'),
+            const SizedBox(height: 8),
+            Text('OID: ${entity.oid}'),
           ],
         ),
       ),
@@ -620,119 +765,88 @@ class BaseDefaultUXAdapter implements UXAdapter {
   }
 
   @override
-  Widget buildListItem(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.minimal,
-  }) {
+  Widget buildVisualization(BuildContext context,
+      {DisclosureLevel? disclosureLevel}) {
     return Card(
-      child: ListTile(
-        title: Text(entity.concept.code),
-        subtitle: Text('ID: ${entity.id}'),
+      child: SizedBox(
+        width: 100,
+        height: 100,
+        child: Center(
+          child: Text(entity.code),
+        ),
       ),
     );
   }
 
   @override
-  Widget buildDetailView(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  }) {
-    return buildForm(context, disclosureLevel: disclosureLevel);
-  }
-
-  @override
-  Widget buildVisualization(
-    BuildContext context, {
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  }) {
-    return Card(child: ListTile(title: Text(entity.concept.code)));
-  }
-
-  @override
-  List<UXFieldDescriptor> getFieldDescriptors({
-    DisclosureLevel disclosureLevel = DisclosureLevel.basic,
-  }) {
-    // Create basic field descriptors from entity attributes
-    return entity.concept.attributes
-        .where(
-          (attr) => !attr.code.startsWith('_'),
-        ) // Filter out private attributes
-        .map(
-          (attr) => UXFieldDescriptor(
-            fieldName: attr.code,
-            displayName: attr.code,
-            fieldType: _mapTypeToFieldType(attr.type?.code),
-            required: attr.required,
-          ),
-        )
-        .toList();
-  }
-
-  /// Map attribute type code to UXFieldType
-  UXFieldType _mapTypeToFieldType(String? typeCode) {
-    if (typeCode == null) return UXFieldType.text;
-
-    switch (typeCode.toLowerCase()) {
-      case 'number':
-      case 'integer':
-      case 'int':
-      case 'double':
-      case 'float':
-        return UXFieldType.number;
-      case 'boolean':
-      case 'bool':
-        return UXFieldType.checkbox;
-      case 'datetime':
-      case 'date':
-        return UXFieldType.date;
-      case 'text':
-      case 'longtext':
-        return UXFieldType.longText;
-      default:
-        return UXFieldType.text;
-    }
-  }
-
-  @override
-  Map<String, dynamic> getInitialFormData() {
-    // Create a map of all attribute values
-    final data = <String, dynamic>{};
-    for (final attr in entity.concept.attributes) {
-      final value = entity.getAttribute(attr.code);
-      if (value != null) {
-        data[attr.code] = value;
-      }
-    }
-    return data;
-  }
-
-  /// Format a value for display
-  String _formatValue(Object? value) {
-    if (value == null) return '';
-    if (value is DateTime) {
-      return '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
-    }
-    return value.toString();
-  }
-
-  @override
-  Future<bool> submitForm(Map<String, dynamic> formData) async {
-    // Basic implementation - update entity with form data
-    formData.forEach((key, value) {
-      entity.setAttribute(key, value);
-    });
+  bool validateForm() {
     return true;
   }
 
   @override
-  Map<String, dynamic> getMetadata() => {
-        'entityType': entity.concept.code,
-        'entityId': entity.id?.toString(),
-      };
+  Future<bool> submitForm(Map<String, dynamic> formData) async {
+    return true;
+  }
 
   @override
-  dynamic noSuchMethod(Invocation invocation) {
-    // Handle any method calls that are not explicitly implemented
-    return null;
+  String getEntityCode() {
+    return entity.code;
+  }
+
+  @override
+  String getConceptCode() {
+    return entity.concept.code;
+  }
+
+  @override
+  List<String> getAttributesToDisplay({DisclosureLevel? disclosureLevel}) {
+    return entity.concept.attributes
+        .whereType<Attribute>()
+        .map((a) => a.code)
+        .toList();
+  }
+
+  @override
+  List<String> getRelationshipsToDisplay({DisclosureLevel? disclosureLevel}) {
+    var relationships = <String>[];
+
+    // Add parents
+    relationships.addAll(
+        entity.concept.parents.whereType<Parent>().map((p) => p.code).toList());
+
+    // Add children
+    relationships.addAll(
+        entity.concept.children.whereType<Child>().map((c) => c.code).toList());
+
+    return relationships;
+  }
+
+  @override
+  IconData getEntityIcon() {
+    return Icons.widgets;
+  }
+
+  @override
+  Color getEntityColor(BuildContext context) {
+    return Colors.grey;
+  }
+
+  @override
+  String getDisplayName() {
+    return entity.code;
+  }
+
+  @override
+  String getDescription() {
+    return '';
+  }
+
+  @override
+  Map<String, dynamic> getMetadata() {
+    return {
+      'oid': entity.oid.toString(),
+      'whenAdded': entity.whenAdded?.toString() ?? 'N/A',
+      'whenSet': entity.whenSet?.toString() ?? 'N/A',
+    };
   }
 }

@@ -254,7 +254,10 @@ class DefaultEntityVisualizer {
 
             // Use adapter to visualize entity
             UXAdapterRegistry()
-                .getAdapterByConceptCode(entity, entity.concept.code)
+                .getAdapterByConceptCode(
+                  entity,
+                  disclosureLevel: disclosureLevel,
+                )
                 .buildVisualization(
                   context,
                   disclosureLevel: disclosureLevel,
@@ -309,7 +312,10 @@ class _AggregateVisualizer {
 
                 // Root entity visualization using adapter
                 UXAdapterRegistry()
-                    .getAdapterByConceptCode(root, root.concept.code)
+                    .getAdapterByConceptCode(
+                      root,
+                      disclosureLevel: disclosureLevel,
+                    )
                     .buildVisualization(
                       context,
                       disclosureLevel: disclosureLevel,
@@ -348,7 +354,10 @@ class _AggregateVisualizer {
 
                   // Child entity visualization using adapter
                   UXAdapterRegistry()
-                      .getAdapterByConceptCode(child, child.concept.code)
+                      .getAdapterByConceptCode(
+                        child,
+                        disclosureLevel: disclosureLevel,
+                      )
                       .buildVisualization(
                         context,
                         disclosureLevel: disclosureLevel,
