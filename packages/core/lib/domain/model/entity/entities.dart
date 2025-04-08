@@ -135,6 +135,16 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   @override
   E get single => _entityList.single;
 
+  /// Returns the entity at the given [index].
+  ///
+  /// This operator enables array-like access to entities:
+  /// ```dart
+  /// domain = domains[0];
+  /// model = domain.models[1];
+  /// concept = model.concepts[2];
+  /// ```
+  E operator [](int index) => _entityList[index];
+
   /// Returns true if any entity satisfies the predicate [f].
   @override
   bool any(bool Function(E entity) f) => _entityList.any(f);
