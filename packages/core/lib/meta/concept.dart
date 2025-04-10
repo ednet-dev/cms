@@ -22,6 +22,10 @@ class Concept extends Entity<Concept> {
   String? label;
   String? labels;
 
+  // Added for extended DSL support
+  String? _category;
+  Map<String, dynamic> metadata = {};
+
   Model model;
 
   Attributes attributes;
@@ -394,5 +398,12 @@ class Concept extends Entity<Concept> {
 
   isChild(String relationshipName) {
     return children.any((child) => child.code == relationshipName);
+  }
+
+  // Getter and setter for category
+  String? get category => _category;
+
+  set category(String? category) {
+    _category = category;
   }
 }

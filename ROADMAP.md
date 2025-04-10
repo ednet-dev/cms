@@ -26,6 +26,7 @@ We follow iterative refinement and enhancement of features, ensuring a robust an
 ### 0.2.0 Content Types - IN PROGRESS
 
 - **Goal**: Support various content types in an accessible way.
+  - [ ] Kanban style presentation of enumerable content types.
   - [ ] Implement image handling and display.
   - [ ] Implement video playback and management.
   - [ ] Implement audio playback and management.

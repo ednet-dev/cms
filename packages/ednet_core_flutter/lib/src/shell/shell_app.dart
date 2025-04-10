@@ -103,7 +103,6 @@ class ShellApp {
 
   /// Register default adapters for common entity types
   void _registerDefaultAdapters() {
-    // Default adapters are registered here
     // These provide baseline visualization for all entity types
     // Clients can override these with their own implementations
   }

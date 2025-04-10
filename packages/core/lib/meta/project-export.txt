@@ -1,0 +1,1409 @@
+PROJECT EXPORT
+
+PROJECT STRUCTURE:
+
+📄 attribute.dart
+📄 attributes.dart
+📄 children.dart
+📄 concept.dart
+📄 concepts.dart
+📄 domain.dart
+📄 domains.dart
+📄 models.dart
+📄 neighbor.dart
+📄 parent.dart
+📄 parents.dart
+📄 property.dart
+📄 README.md
+📄 types.dart
+
+FILES:
+
+=== README.md ===
+
+# **Concept Architecture in EDNet Core**
+
+## **Overview**
+
+The `Concept` class in EDNet Core serves as the schema definition layer for entities within the framework. Concepts define the **structure**, **relationships**, and **constraints** of entities, acting as blueprints for the underlying domain model. This document provides an in-depth look at the `Concept` class, its internal structures, interactions with other components, and examples illustrating its role in complex domain modeling.
+
+---
+
+## **Key Features**
+
+1. **Blueprint for Entities**
+   * Defines attributes, parent-child relationships, and metadata for entities.
+2. **Hierarchical Relationships**
+   * Supports both **internal** and **external** parent-child relationships.
+3. **Attribute Management**
+   * Manages attributes by category: identifiers, essential, required, and incremental.
+4. **Policy Awareness**
+   * Evaluates and enforces **policies** at the concept level.
+5. **Serialization and Graph Representation**
+   * Translates concept definitions into JSON and graph structures for persistence and analysis.
+
+---
+
+## **Internal Structure**
+
+### **Core Properties**
+
+* **Attributes**: Define the properties an entity can have.
+* **Parents/Children**: Specify relationships between entities.
+
+```dart
+Attributes attributes;
+Parents parents; // Destination parent neighbors
+Children children; // Destination child neighbors
+```
+
+* **Entry Flag**: Determines if this concept serves as an entry point in the domain.
+* dart
+
+bool entry = true;
+### **Dynamic Pluralization**
+
+Customizable pluralization for concept names:
+
+```dart
+String get codes {
+  _codes ??= plural(_code!);
+  return _codes!;
+}
+```
+### **Policy Enforcement**
+
+Concept-level policies enforce constraints and validations across attributes and relationships.
+
+---
+
+## **Integration with Model and Entity**
+
+### **Concepts in a Model**
+
+Concepts are part of a model, defining the entities and their interrelationships.
+
+```dart
+final model = Model(domain, 'Library');
+final concept = Concept(model, 'Book');
+concept.attributes.add(Attribute(concept, 'title'));
+concept.attributes.add(Attribute(concept, 'author'));
+```
+### **Entities Instantiated from Concepts**
+
+Entities inherit the schema defined in their associated concept:
+
+```dart
+final book = Entity();
+book.concept = concept;
+book.setAttribute('title', 'Clean Code');
+book.setAttribute('author', 'Robert C. Martin');
+```
+---
+
+## **Examples**
+
+### **1. Defining Attributes and Relationships**
+
+Attributes define properties, and relationships model parent-child hierarchies.
+
+```dart
+final concept = Concept(model, 'User');
+concept.attributes.add(Attribute(concept, 'username', required: true));
+concept.attributes.add(Attribute(concept, 'email', required: true));
+
+final addressConcept = Concept(model, 'Address');
+concept.children.add(Child(concept, addressConcept, 'addresses'));
+```
+---
+
+### **2. Managing Attribute Categories**
+
+Concepts categorize attributes for specialized use cases.
+
+#### **Identifier Attributes**
+
+```dart
+List<Attribute> get identifierAttributes => attributes
+  .where((attribute) => attribute.identifier)
+  .toList();
+```
+#### **Essential Attributes**
+
+```dart
+List<Attribute> get essentialAttributes => attributes
+  .where((attribute) => attribute.essential)
+  .toList();
+```
+#### Example:
+
+```dart
+final concept = Concept(model, 'Order');
+concept.attributes.add(Attribute(concept, 'orderId', identifier: true));
+concept.attributes.add(Attribute(concept, 'status', essential: true));
+
+final identifiers = concept.identifierAttributes;
+final essentials = concept.essentialAttributes;
+
+print(identifiers.map((attr) => attr.code)); // Output: [orderId]
+print(essentials.map((attr) => attr.code));  // Output: [status]
+```
+---
+
+### **3. Parent-Child Relationships**
+
+Establish hierarchical relationships using `Parent` and `Child`.
+
+#### Parent Example:
+
+```dart
+final parentConcept = Concept(model, 'Category');
+final childConcept = Concept(model, 'Product');
+
+parentConcept.children.add(Child(parentConcept, childConcept, 'products'));
+childConcept.parents.add(Parent(childConcept, parentConcept, 'category'));
+```
+#### Accessing Relationships:
+
+```dart
+final child = parentConcept.getDestinationChild('products');
+final parent = childConcept.getDestinationParent('category');
+
+print(child.code); // Output: products
+print(parent.code); // Output: category
+```
+---
+
+### **4. Reflexive and Twin Relationships**
+
+Concepts support **self-referencing** (reflexive) and **twin** relationships.
+
+#### Reflexive Example:
+
+```dart
+final concept = Concept(model, 'Employee');
+concept.children.add(Child(concept, concept, 'subordinates', reflexive: true));
+concept.parents.add(Parent(concept, concept, 'manager', reflexive: true));
+```
+#### Twin Example:
+
+```dart
+final concept1 = Concept(model, 'Person');
+final concept2 = Concept(model, 'Person');
+concept1.children.add(Child(concept1, concept2, 'siblings', twin: true));
+concept2.children.add(Child(concept2, concept1, 'siblings', twin: true));
+```
+---
+
+### **5. Entry Concept Paths**
+
+Access paths to the entry concept and child relationships.
+
+```dart
+final concept = Concept(model, 'Order');
+final itemConcept = Concept(model, 'OrderItem');
+concept.children.add(Child(concept, itemConcept, 'items'));
+
+print(itemConcept.entryConceptThisConceptInternalPath);
+// Output: OrderOrderItem
+```
+---
+
+## **Serialization and Graph Representation**
+
+### JSON Representation
+
+Serialize concept definitions for persistence or sharing.
+
+```dart
+final json = concept.toJson();
+print(json);
+// Output: {"code":"User","attributes":[...],"parents":[],"children":[]}
+```
+### Graph Representation
+
+Visualize concept relationships in a graph format.
+
+```dart
+final graph = concept.toGraph();
+print(graph);
+// Output: {"attributes":[...],"parents":[...],"children":[...]}
+```
+---
+
+## **Advanced Scenarios**
+
+### **Dynamic Model Loading**
+
+Concepts support dynamic loading into models at runtime.
+
+```dart
+final model = Model(domain, 'Library');
+final json = '{"code":"Book","attributes":[{"code":"title"}, {"code":"author"}]}';
+
+final concept = Concept.safeGetConcept(model, Entity());
+concept.fromJson(json);
+model.concepts.add(concept);
+```
+### **Validation and Policies**
+
+Evaluate policies across attributes and relationships.
+
+```dart
+final policyResult = concept.evaluatePolicies();
+if (!policyResult.success) {
+  throw PolicyViolationException(policyResult.violations);
+}
+```
+---
+
+## **Conclusion**
+
+The `Concept` class in EDNet Core defines the **foundation of domain modeling** by establishing the schema, constraints, and relationships for entities. It is an essential part of creating robust, flexible, and reusable domain models, enabling developers to address complex requirements while adhering to best practices in **domain-driven design** (DDD).
+
+For further exploration, visit the [EDNet Core Repository](https://github.com/ednet-dev).
+
+
+========================================
+
+=== attribute.dart ===
+
+part of ednet_core;
+
+class Attribute extends Property {
+  bool guid = false;
+  var init;
+  int? increment;
+  int? sequence;
+  bool _derive = false;
+  late int length;
+
+  AttributeType? _type;
+
+  Attribute(Concept sourceConcept, String attributeCode)
+      : super(sourceConcept, attributeCode) {
+    sourceConcept.attributes.add(this);
+    // default type is String
+    type = sourceConcept.model.domain.getType('String');
+  }
+
+  @override
+  set required(bool req) {
+    super.required = req;
+    if (req && !sourceConcept.hasId) {
+      essential = true;
+    }
+  }
+
+  set type(AttributeType? attributeType) {
+    _type = attributeType;
+    length = attributeType != null ? attributeType.length : 0;
+  }
+
+  get type => _type;
+
+  bool get derive => _derive;
+
+  set derive(bool derive) {
+    _derive = derive;
+    if (_derive) {
+      update = false;
+    }
+  }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['guid'] = guid;
+    graph['init'] = init;
+    graph['increment'] = increment;
+    graph['sequence'] = sequence;
+    graph['derive'] = derive;
+    graph['length'] = length;
+    graph['type'] = type?.toGraph();
+    return graph;
+  }
+}
+
+
+========================================
+
+=== attributes.dart ===
+
+part of ednet_core;
+
+class Attributes extends Entities<Property> {
+  @override
+  List<Attribute> toList({bool growable = true}) {
+    var attributeList = <Attribute>[];
+    for (var property in this.whereType<Attribute>()) {
+      attributeList.add(property);
+    }
+    return attributeList;
+  }
+}
+
+
+========================================
+
+=== children.dart ===
+
+part of ednet_core;
+
+class Children extends Entities<Property> {
+  int get externalCount {
+    int externalCount = 0;
+    for (var child in this) {
+      if ((child as Neighbor).external) externalCount++;
+    }
+    return externalCount;
+  }
+}
+
+class Child extends Neighbor {
+  bool navigate = true;
+
+  Child(Concept sourceConcept, Concept destinationConcept, String childCode)
+      : super(sourceConcept, destinationConcept, childCode) {
+    sourceConcept.children.add(this);
+    destinationConcept.sourceChildren.add(this);
+    minc = '0';
+    maxc = 'N';
+  }
+}
+
+
+========================================
+
+=== concept.dart ===
+
+part of ednet_core;
+
+class Concept extends Entity<Concept> {
+  bool entry = false;
+  bool abstract = false;
+
+  String min = '0';
+  String max = 'N';
+
+  bool updateOid = false;
+  bool updateCode = false;
+  bool updateWhen = false;
+  bool canAdd = true;
+  bool remove = true;
+  String description = 'I am Entity of Concept';
+
+  // to allow for a specific plural name, different from
+  // the plural name derivation in Entity
+  String? _codes; // code (in) plural
+  String? _codesFirstLetterLower;
+  String? _codesLowerUnderscore; // lower letters and underscore separator
+  String? label;
+  String? labels;
+
+  // Added for extended DSL support
+  String? _category;
+  Map<String, dynamic> metadata = {};
+
+  Model model;
+
+  Attributes attributes;
+  Parents parents; // destination parent neighbors
+  Children children; // destination child neighbors
+
+  Parents sourceParents;
+  Children sourceChildren;
+
+  Concept(this.model, String conceptCode)
+    : attributes = Attributes(),
+      parents = Parents(),
+      children = Children(),
+      sourceParents = Parents(),
+      sourceChildren = Children() {
+    code = conceptCode;
+    model.concepts.add(this);
+  }
+
+  @override
+  set code(String? code) {
+    super.code = code;
+    label ??= camelCaseSeparator(code!, ' ');
+    labels ??= camelCaseSeparator(codes, ' ');
+  }
+
+  @override
+  int get hashCode => _oid.hashCode;
+
+  /// Two concepts are equal if their oids are equal.
+  @override
+  bool equals(Concept concept) {
+    if (_oid.equals(concept.oid)) {
+      return true;
+    }
+    return false;
+  }
+
+  /// == see:
+  /// https://www.dartlang.org/docs/dart-up-and-running/contents/ch02.html#op-equality
+  ///
+  /// Evolution:
+  ///
+  /// If x===y, return true.
+  /// Otherwise, if either x or y is null, return false.
+  /// Otherwise, return the result of x.equals(y).
+  ///
+  /// The newest spec is:
+  /// a) if either x or y is null, do identical(x, y)
+  /// b) otherwise call operator ==
+  @override
+  bool operator ==(Object other) {
+    if (other is Concept?) {
+      Concept? concept = other as Concept?;
+      if (identical(this, concept!)) {
+        return true;
+      } else {
+        if ((concept as dynamic) == null) {
+          return false;
+        } else {
+          return equals(concept);
+        }
+      }
+    } else {
+      return false;
+    }
+  }
+
+  String get codes {
+    _codes ??= plural(_code!);
+    return _codes!;
+  }
+
+  set codes(String codes) {
+    _codes = codes;
+  }
+
+  String get codesFirstLetterLower {
+    _codesFirstLetterLower ??= firstLetterLower(codes);
+    return _codesFirstLetterLower!;
+  }
+
+  set codesFirstLetterLower(String codesFirstLetterLower) {
+    _codesFirstLetterLower = codesFirstLetterLower;
+  }
+
+  String get codesLowerUnderscore {
+    _codesLowerUnderscore ??= camelCaseLowerSeparator(codes, '_');
+    return _codesLowerUnderscore!;
+  }
+
+  set codesLowerUnderscore(String codesLowerUnderscore) {
+    _codesLowerUnderscore = codesLowerUnderscore;
+  }
+
+  @override
+  Attribute? getAttribute<Attribute>(String attributeCode) =>
+      attributes.singleWhereCode(attributeCode) as Attribute?;
+
+  Parent? getDestinationParent(String parentCode) =>
+      parents.singleWhereCode(parentCode) as Parent?;
+
+  Child? getDestinationChild(String childCode) =>
+      children.singleWhereCode(childCode) as Child?;
+
+  Parent? getSourceParent(String parentCode) =>
+      sourceParents.singleWhereCode(parentCode) as Parent?;
+
+  Child? getSourceChild(String childCode) =>
+      sourceChildren.singleWhereCode(childCode) as Child?;
+
+  List<Attribute> get requiredAttributes {
+    var requiredList = <Attribute>[];
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
+      if (attribute.required) {
+        requiredList.add(attribute);
+      }
+    }
+    return requiredList;
+  }
+
+  List<Attribute> get identifierAttributes {
+    var identifierList = <Attribute>[];
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
+      if (attribute.identifier) {
+        identifierList.add(attribute);
+      }
+    }
+    return identifierList;
+  }
+
+  List<Attribute> get nonIdentifierAttributes {
+    var nonIdentifierList = <Attribute>[];
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
+      if (!attribute.identifier) {
+        nonIdentifierList.add(attribute);
+      }
+    }
+    return nonIdentifierList;
+  }
+
+  List<Attribute> get incrementAttributes {
+    var incrementList = <Attribute>[];
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
+      if (attribute.increment != null) {
+        incrementList.add(attribute);
+      }
+    }
+    return incrementList;
+  }
+
+  List<Attribute> get nonIncrementAttributes =>
+      attributes
+          .whereType<Attribute>()
+          .where((a) => a.increment == null)
+          .toList();
+
+  List<Attribute> get essentialAttributes {
+    var essentialList = <Attribute>[];
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
+      if (attribute.essential) {
+        essentialList.add(attribute);
+      }
+    }
+    return essentialList;
+  }
+
+  List<Parent> get externalParents {
+    var externalList = <Parent>[];
+    for (Parent parent in parents.whereType<Parent>()) {
+      if (parent.external) {
+        externalList.add(parent);
+      }
+    }
+    return externalList;
+  }
+
+  List<Parent> get externalRequiredParents {
+    var externalRequiredList = <Parent>[];
+    for (Parent parent in parents.whereType<Parent>()) {
+      if (parent.external && parent.required) {
+        externalRequiredList.add(parent);
+      }
+    }
+    return externalRequiredList;
+  }
+
+  List<Child> get internalChildren {
+    var internalList = <Child>[];
+    for (Child child in children.whereType<Child>()) {
+      if (child.internal) {
+        internalList.add(child);
+      }
+    }
+    return internalList;
+  }
+
+  List<Property> get singleValueProperties {
+    var propertyList = <Property>[];
+    propertyList.addAll(attributes.toList());
+    propertyList.addAll(parents.toList());
+    return propertyList;
+  }
+
+  bool get hasTwinParent {
+    for (Parent parent in parents.whereType<Parent>()) {
+      if (parent.twin) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool get hasReflexiveParent {
+    for (Parent parent in parents.whereType<Parent>()) {
+      if (parent.reflexive) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool get hasTwinChild {
+    for (Child child in children.whereType<Child>()) {
+      if (child.twin) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool get hasReflexiveChild {
+    for (Child child in children.whereType<Child>()) {
+      if (child.reflexive) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool get hasId {
+    for (Property property in singleValueProperties) {
+      if (property.identifier) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool get hasAttributeId {
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
+      if (attribute.identifier) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool get hasParentId {
+    for (Parent parent in parents.whereType<Parent>()) {
+      if (parent.identifier) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @override
+  Id get id {
+    return Id(this);
+  }
+
+  bool isAttributeSensitive(String attributeCode) {
+    var a = attributes.singleWhereCode(attributeCode);
+    return a != null && a.sensitive ? true : false;
+  }
+
+  bool isParentSensitive(String parentCode) {
+    Parent? p = parents.singleWhereCode(parentCode) as Parent?;
+    return p != null && p.sensitive ? true : false;
+  }
+
+  bool isChildSensitive(String childCode) {
+    Child? c = children.singleWhereCode(childCode) as Child?;
+    return c != null && c.sensitive ? true : false;
+  }
+
+  bool isPropertySensitive(String propertyCode) {
+    return isAttributeSensitive(propertyCode) ||
+        isParentSensitive(propertyCode) ||
+        isChildSensitive(propertyCode);
+  }
+
+  Concept get entryConcept {
+    if (entry) {
+      return this;
+    } else {
+      for (Parent parent in parents.whereType<Parent>()) {
+        if (parent.internal) {
+          return parent.destinationConcept.entryConcept;
+        }
+      }
+      throw ParentException('No internal parent for the $code concept');
+    }
+  }
+
+  String? get entryConceptThisConceptInternalPath {
+    if (entry) {
+      return code;
+    } else {
+      for (Parent parent in parents.whereType<Parent>()) {
+        if (parent.internal) {
+          return '${parent.destinationConcept.entryConceptThisConceptInternalPath}'
+              '$code';
+        }
+      }
+      throw ParentException('No internal parent for the $code concept');
+    }
+  }
+
+  List<String> get childCodeInternalPaths {
+    var childList = <String>[];
+    for (Child child in children.whereType<Child>()) {
+      Concept sourceConcept = child.sourceConcept;
+      String? entryConceptSourceConceptInternalPath =
+          sourceConcept.entryConceptThisConceptInternalPath;
+      Concept destinationConcept = child.destinationConcept;
+      String childCodeInternalPath =
+          '$entryConceptSourceConceptInternalPath'
+          '_${child.code}_${destinationConcept.code}';
+      childList.add(childCodeInternalPath);
+      if (!child.reflexive) {
+        childList.addAll(child.destinationConcept.childCodeInternalPaths);
+      }
+    }
+    return childList;
+  }
+
+  static Concept safeGetConcept(
+    Model model,
+    Entity entity, {
+    Concept? defaultValue,
+  }) {
+    try {
+      return entity.concept;
+    } catch (EDNetException) {
+      return defaultValue ??
+          Concept(
+            model,
+            '*** concept is not set ***',
+          ); // return a default Concept object or null
+    }
+  }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['attributes'] =
+        attributes.toList().map((attribute) => attribute.toGraph()).toList();
+    graph['parents'] =
+        parents.toList().map((parent) => parent.toGraph()).toList();
+    graph['children'] =
+        children.toList().map((child) => child.toGraph()).toList();
+    return graph;
+  }
+
+  isParent(String relationshipName) {
+    return parents.any((parent) => parent.code == relationshipName);
+  }
+
+  isChild(String relationshipName) {
+    return children.any((child) => child.code == relationshipName);
+  }
+
+  // Getter and setter for category
+  String? get category => _category;
+
+  set category(String? category) {
+    _category = category;
+  }
+}
+
+
+========================================
+
+=== concepts.dart ===
+
+part of ednet_core;
+
+class Concepts extends Entities<Concept> {}
+
+
+========================================
+
+=== domain.dart ===
+
+part of ednet_core;
+
+class Domain extends Entity<Domain> {
+  String description;
+
+  late Domain domain;
+
+  Domains domains;
+  AttributeTypes types;
+  Models models;
+
+  Domain([String domainCode = 'Default'])
+      : domains = Domains(),
+        types = AttributeTypes(),
+        models = Models(),
+        description = 'please define description' {
+    super.code = domainCode;
+    if (domainCode == 'Default') {
+      description = 'Default domain to keep types and models.';
+    }
+
+    AttributeType(this, 'String');
+    AttributeType(this, 'num');
+    AttributeType(this, 'int');
+    AttributeType(this, 'double');
+    AttributeType(this, 'bool');
+    AttributeType(this, 'DateTime');
+    AttributeType(this, 'Uri');
+    AttributeType(this, 'Email');
+    AttributeType(this, 'Telephone');
+    AttributeType(this, 'Name');
+    AttributeType(this, 'Description');
+    AttributeType(this, 'Money');
+    AttributeType(this, 'dynamic');
+    AttributeType(this, 'Other');
+    assert(types.length == 14);
+  }
+
+  Domain? getDomain(String domainCode) => domains.singleWhereCode(domainCode);
+
+  Model? getModel(String modelCode) => models.singleWhereCode(modelCode);
+
+  AttributeType? getType(String typeCode) => types.singleWhereCode(typeCode);
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['description'] = description;
+    graph['types'] = types.toList().map((type) => type.toGraph()).toList();
+    graph['models'] = models.toList().map((model) => model.toGraph()).toList();
+    return graph;
+  }
+}
+
+extension DomainExtensionToGraph on Domain {
+  Map<String, dynamic> toGraph() {
+    return {
+      'code': code,
+      'description': description,
+      'domain': domain.code,
+      'domains': domains.toGraph(),
+      'types': types.toGraph(),
+      'models': models.toGraph(),
+    };
+  }
+}
+
+extension DomainExtensionToDomains on Domain {
+  Domains toDomains() {
+    final domains = Domains();
+    domains.add(this);
+    return domains;
+  }
+}
+
+extension DomainListExtension on List<Domain> {
+  Domains toDomains() {
+    final domains = Domains();
+    for (var d in this) {
+      domains.add(d);
+    }
+    return domains;
+  }
+}
+
+
+========================================
+
+=== domains.dart ===
+
+part of ednet_core;
+
+class Domains extends Entities<Domain> {
+  Domain? getDomain(String code) => singleWhereCode(code);
+}
+
+
+========================================
+
+=== models.dart ===
+
+part of ednet_core;
+
+class Models extends Entities<Model> {}
+
+class Model extends Entity<Model> {
+  String? author;
+  String? description;
+  late final PolicyRegistry policyRegistry;
+  late final PolicyEvaluator policyEvaluator;
+
+  Domain domain;
+
+  Concepts concepts = Concepts();
+
+  Model(this.domain, String modelCode) {
+    super.code = modelCode;
+    domain.models.add(this);
+
+    policyRegistry = PolicyRegistry();
+    policyEvaluator = PolicyEvaluator(policyRegistry);
+  }
+
+  List<Concept> get entryConcepts {
+    var selectedElements = concepts.toList().where((c) => c.entry);
+    var entryList = <Concept>[];
+    for (var concept in selectedElements) {
+      entryList.add(concept);
+    }
+    return entryList;
+  }
+
+  // for model init, order by external parent count (from low to high)
+  List<Concept> get orderedEntryConcepts {
+    var orderedEntryConceptsCount = 0;
+    var orderedEntryConcepts = <Concept>[];
+    for (var c = 0; c < 9; c++) {
+      var sameExternalCountConcepts = <Concept>[];
+      for (var concept in entryConcepts) {
+        if (concept.parents.externalCount == c) {
+          sameExternalCountConcepts.add(concept);
+        }
+      }
+      // order by external child count (from high to low)
+      var orderedSameExternalCountConcepts = <Concept>[];
+      for (var s = 8; s >= 0; s--) {
+        for (var concept in sameExternalCountConcepts) {
+          if (concept.children.externalCount == s) {
+            orderedSameExternalCountConcepts.add(concept);
+          }
+        }
+      }
+      assert(sameExternalCountConcepts.length ==
+          orderedSameExternalCountConcepts.length);
+      for (var concept in orderedSameExternalCountConcepts) {
+        orderedEntryConcepts.add(concept);
+        orderedEntryConceptsCount++;
+      }
+      if (orderedEntryConceptsCount == entryConcepts.length) {
+        return orderedEntryConcepts;
+      }
+    }
+    var msg = """
+      Not all entry concepts are ordered by external parent count (from low to high). 
+      There is an entry concept in your model that has more than 9 external neighbors.
+      Inform the EDNetCore authors to increase this restriction.
+    """;
+    throw ConceptException(msg);
+  }
+
+  int get entryConceptCount => entryConcepts.length;
+
+  int get orderedEntryConceptCount => orderedEntryConcepts.length;
+
+  Concept? getEntryConcept(String entryConceptCode) {
+    Concept? concept = concepts.singleWhereCode(entryConceptCode);
+
+    if (concept == null) {
+      throw EDNetException(
+          '  Concept getEntryConcept(String entryConceptCode)');
+    }
+    if (!(concept.entry)) {
+      throw ConceptException(
+          '$entryConceptCode concept is not entry. $entryConceptCode');
+    }
+    return concept;
+  }
+
+  int get conceptCount => concepts.length;
+
+  Concept? getConcept(String conceptCode) =>
+      concepts.singleWhereCode(conceptCode);
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['author'] = author;
+    graph['description'] = description;
+    graph['concepts'] =
+        concepts.toList().map((concept) => concept.toGraph()).toList();
+    return graph;
+  }
+
+  Concepts getEntryConcepts() {
+    var selectedElements = concepts.toList().where((c) => c.entry);
+    var entryList = Concepts();
+    for (var concept in selectedElements) {
+      entryList.add(concept);
+    }
+    return entryList;
+  }
+
+  Concepts getOrderedEntryConcepts() {
+    var orderedEntryConceptsAsConcepts = Concepts();
+    orderedEntryConcepts.map(orderedEntryConceptsAsConcepts.add);
+    return orderedEntryConceptsAsConcepts;
+  }
+
+  void registerPolicy(String key, IPolicy policy) {
+    policyRegistry.registerPolicy(key, policy);
+  }
+
+  void removePolicy(String key) {
+    policyRegistry.removePolicy(key);
+  }
+
+  @override
+  PolicyEvaluationResult evaluatePolicies({String? policyKey}) {
+    // gather all entity entries of model and evaluate them
+    // var entityEntries = Entities<Concept>();
+    // for (var concept in entryConcepts) {
+    //   (concept.nonIdentifierAttributes.toList()
+    //         ..addAll(concept.nonIdentifierAttributes.toList()))
+    //       .forEach((attribute) {
+    //     if (attribute is ReferenceAttribute) {
+    //       entityEntries.addAll(attribute.entities);
+    //     }
+    //   });
+    // }
+    // return policyEvaluator.evaluate(this, policyKey: policyKey);
+
+    return PolicyEvaluationResult(true, []);
+  }
+
+  bool validateEntity(Entity entity) {
+    var result = evaluateModelPolicies(entity);
+    return result.success;
+  }
+
+  void enforcePolicies(Entity entity) {
+    var result = evaluateModelPolicies(entity);
+    if (!result.success) {
+      throw PolicyViolationException(result.violations);
+    }
+  }
+
+  evaluateModelPolicies(Entity entity) {
+    return true;
+  }
+}
+
+
+========================================
+
+=== neighbor.dart ===
+
+part of ednet_core;
+
+abstract class Neighbor extends Property {
+  bool internal = true;
+  bool inheritance = false;
+  bool reflexive = false;
+  bool twin = false;
+  Neighbor? opposite;
+
+  // Added for extended DSL support
+  String _category = 'rel'; // Default category is 'rel'
+
+  // the source concept is inherited from Property
+  Concept destinationConcept;
+
+  Neighbor(Concept sourceConcept, this.destinationConcept, String neighborCode)
+    : super(sourceConcept, neighborCode) {}
+
+  // is external a reserved word?
+  bool get external => !internal;
+
+  // Getter and setter for category
+  String get category => _category;
+
+  set category(String category) {
+    _category = category;
+  }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['internal'] = internal;
+    graph['inheritance'] = inheritance;
+    graph['reflexive'] = reflexive;
+    graph['twin'] = twin;
+    graph['category'] = _category;
+    graph['destinationConcept'] = destinationConcept.code;
+
+    if (opposite != null) {
+      graph['opposite'] = opposite!.code;
+    }
+
+    return graph;
+  }
+}
+
+
+========================================
+
+=== parent.dart ===
+
+part of ednet_core;
+
+class Parent extends Neighbor {
+  bool absorb = true;
+
+  Parent(Concept sourceConcept, Concept destinationConcept, String parentCode)
+      : super(sourceConcept, destinationConcept, parentCode) {
+    sourceConcept.parents.add(this);
+    destinationConcept.sourceParents.add(this);
+    minc = '1';
+    maxc = '1';
+  }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['absorb'] = absorb;
+    return graph;
+  }
+}
+
+
+========================================
+
+=== parents.dart ===
+
+part of ednet_core;
+
+class Parents extends Entities<Property> {
+  int get externalCount {
+    int externalCount = 0;
+    for (var parent in this.whereType<Neighbor>()) {
+      if ((parent).external) externalCount++;
+    }
+    return externalCount;
+  }
+}
+
+
+========================================
+
+=== property.dart ===
+
+part of ednet_core;
+
+abstract class Property extends Entity<Property> {
+  String minc = '0';
+  String maxc = '1';
+  bool _id = false;
+  bool essential = false;
+  bool update = true;
+  bool sensitive = false;
+  String? label;
+  AttributeType? type;
+
+  Concept sourceConcept;
+
+  Property(this.sourceConcept, String propertyCode) {
+    code = propertyCode;
+  }
+
+  @override
+  set code(String? code) {
+    super.code = code;
+    label ??= camelCaseLowerSeparator(code!, ' ');
+  }
+
+  bool get maxMany => maxc != '0' && maxc != '1' ? true : false;
+
+  bool get identifier => _id;
+
+  set identifier(bool id) {
+    _id = id;
+    if (id) {
+      minc = '1';
+      maxc = '1';
+      essential = true;
+      update = false;
+    }
+  }
+
+  bool get required => minc == '1' ? true : false;
+
+  set required(bool req) {
+    req ? minc = '1' : minc = '0';
+  }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['minc'] = minc;
+    graph['maxc'] = maxc;
+    graph['essential'] = essential;
+    graph['update'] = update;
+    graph['sensitive'] = sensitive;
+    graph['label'] = label;
+    return graph;
+  }
+// get external;
+}
+
+
+========================================
+
+=== types.dart ===
+
+part of ednet_core;
+
+class AttributeTypes extends Entities<AttributeType> {}
+
+class AttributeType extends Entity<AttributeType> {
+  late String base;
+  late int length;
+
+  Domain domain;
+
+  AttributeType(this.domain, String typeCode) {
+    if (typeCode == 'String') {
+      base = typeCode;
+      length = 64;
+    } else if (typeCode == 'num') {
+      base = typeCode;
+      length = 8;
+    } else if (typeCode == 'int') {
+      base = typeCode;
+      length = 8;
+    } else if (typeCode == 'double') {
+      base = typeCode;
+      length = 8;
+    } else if (typeCode == 'bool') {
+      base = typeCode;
+      length = 8;
+    } else if (typeCode == 'DateTime') {
+      base = typeCode;
+      length = 16;
+    } else if (typeCode == 'Duration') {
+      base = typeCode;
+      length = 16;
+    } else if (typeCode == 'Uri') {
+      base = typeCode;
+      length = 80;
+    } else if (typeCode == 'Email') {
+      base = 'String';
+      length = 48;
+    } else if (typeCode == 'Telephone') {
+      base = 'String';
+      length = 16;
+    } else if (typeCode == 'PostalCode') {
+      base = 'String';
+      length = 16;
+    } else if (typeCode == 'ZipCode') {
+      base = 'String';
+      length = 16;
+    } else if (typeCode == 'Name') {
+      base = 'String';
+      length = 32;
+    } else if (typeCode == 'Description') {
+      base = 'String';
+      length = 256;
+    } else if (typeCode == 'Money') {
+      base = 'double';
+      length = 8;
+    } else if (typeCode == 'dynamic') {
+      base = typeCode;
+      length = 64;
+    } else if (typeCode == 'Other') {
+      base = 'dynamic';
+      length = 128;
+    } else {
+      base = typeCode;
+      length = 96;
+    }
+    code = typeCode;
+    domain.types.add(this);
+  }
+
+  bool isEmail(String email) {
+    var regexp = RegExp(r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b');
+    return regexp.hasMatch(email);
+  }
+
+  bool validate(String value) {
+    if (base == 'num') {
+      try {
+        num.parse(value);
+      } on FormatException {
+        return false;
+      }
+    } else if (base == 'int') {
+      try {
+        int.parse(value);
+      } on FormatException {
+        return false;
+      }
+    } else if (base == 'double') {
+      try {
+        double.parse(value);
+      } on FormatException {
+        return false;
+      }
+    } else if (base == 'bool') {
+      if (value != 'true' && value != 'false') {
+        return false;
+      }
+    } else if (base == 'DateTime') {
+      try {
+        DateTime.parse(value);
+      } on FormatException {
+        return false;
+      }
+    } else if (base == 'Duration') {
+      // validation?
+    } else if (base == 'Uri') {
+      var uri = Uri.parse(value);
+      if (uri.host == '') {
+        return false;
+      }
+    } else if (code == 'Email') {
+      return isEmail(value);
+    }
+    return true;
+  }
+
+  bool validateValue(dynamic value) {
+    if (value == null) {
+      return true;
+    }
+
+    if (base == 'num') {
+      return value is num;
+    } else if (base == 'int') {
+      return value is int;
+    } else if (base == 'double') {
+      return value is double;
+    } else if (base == 'bool') {
+      return value is bool;
+    } else if (base == 'DateTime') {
+      return value is DateTime;
+    } else if (base == 'Duration') {
+      return value is Duration;
+    } else if (base == 'Uri') {
+      return value is Uri;
+    } else if (code == 'Email') {
+      if (!(value is String)) {
+        return false;
+      }
+      return true;
+    } else if (base == 'String') {
+      if (!(value is String)) {
+        return false;
+      }
+      return true;
+    }
+    return true;
+  }
+
+  int compare(var value1, var value2) {
+    var compare = 0;
+    if (base == 'String') {
+      compare = value1.compareTo(value2);
+    } else if (base == 'num' || base == 'int' || base == 'double') {
+      compare = value1.compareTo(value2);
+    } else if (base == 'bool') {
+      compare = value1.toString().compareTo(value2.toString());
+    } else if (base == 'DateTime') {
+      compare = value1.compareTo(value2);
+    } else if (base == 'Duration') {
+      compare = value1.compareTo(value2);
+    } else if (base == 'Uri') {
+      compare = value1.toString().compareTo(value2.toString());
+    } else {
+      String msg = 'cannot compare then order on this type: $code type.';
+      throw OrderException(msg);
+    }
+    return compare;
+  }
+
+  @override
+  Map<String, dynamic> toGraph() {
+    final graph = super.toGraph();
+    graph['base'] = base;
+    graph['length'] = length;
+    return graph;
+  }
+}
+
+
+========================================
+

@@ -1,0 +1,72 @@
+context:
+  name: "Test"
+  description: "Test Domain"
+
+domain:
+  name: "TestDomain"
+  description: "Domain for testing relationship handling"
+
+model:
+  name: "TestModel"
+  description: "A model for testing relationships"
+
+concepts:
+  - name: "Inquiry"
+    description: "A request for offers from a buyer"
+    attributes:
+      - name: "id"
+        category: "guid"
+        type: "String"
+        essential: true
+      - name: "description"
+        type: "String"
+
+  - name: "ProviderCompany"
+    description: "A company that offers services"
+    attributes:
+      - name: "id"
+        category: "guid"
+        type: "String"
+        essential: true
+      - name: "name"
+        category: "identifier"
+        type: "String"
+        essential: true
+
+  - name: "Company"
+    description: "Base company type"
+    attributes:
+      - name: "id"
+        category: "guid"
+        type: "String"
+        essential: true
+      - name: "name"
+        category: "identifier"
+        type: "String"
+        essential: true
+
+relations:
+  # This is the relationship causing the issue - using the same entities twice
+  - from: "Inquiry"
+    to: "ProviderCompany"
+    fromToName: "assignedProviders"
+    fromToMin: "0"
+    fromToMax: "N"
+    toFromName: "assignedInquiries"
+    toFromMin: "0"
+    toFromMax: "N"
+    category: "association"
+
+  - from: "Inquiry"
+    to: "ProviderCompany"
+    fromToName: "providers"
+    fromToMin: "1"
+    fromToMax: "1"
+    toFromName: "inquiries"
+    toFromMin: "0"
+    toFromMax: "N"
+    category: "association"
+
+  - from: "ProviderCompany"
+    to: "Company"
+    category: "inheritance"

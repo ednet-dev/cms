@@ -3,6 +3,7 @@ part of ednet_core;
 Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
   Iterable jsonConcepts = [];
   Iterable relations = [];
+  Map? schemaExtensions;
 
   if (yaml == null || yaml.isEmpty) {
     if (json.trim() == '') {
@@ -11,24 +12,38 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
     var boardMap = jsonDecode(json);
     jsonConcepts = boardMap["concepts"];
     relations = boardMap["relations"];
+    schemaExtensions = boardMap["schemaExtensions"];
   } else {
     jsonConcepts = yaml["concepts"] as Iterable;
     if (yaml.containsKey("relations")) {
       relations = yaml["relations"] as Iterable;
     }
+    if (yaml.containsKey("schemaExtensions")) {
+      schemaExtensions = yaml["schemaExtensions"] as Map;
+    }
   }
 
   Model model = Model(domain, modelCode);
 
+  // Parse concepts
   for (var jsonConcept in jsonConcepts) {
     String? conceptCode = jsonConcept["name"];
-    assert(conceptCode != null,
-    'Concept code is missing for the jsonConcept. For ${domain
-        .code}.$modelCode');
+    assert(
+      conceptCode != null,
+      'Concept code is missing for the jsonConcept. For ${domain.code}.$modelCode',
+    );
     bool conceptEntry = jsonConcept["entry"] ?? false;
+    bool aggregateRoot = jsonConcept["aggregateRoot"] ?? false;
+
     Concept concept = Concept(model, conceptCode!);
     concept.entry = conceptEntry;
 
+    // Add aggregateRoot marker if present
+    if (aggregateRoot) {
+      concept.category = "AggregateRoot";
+    }
+
+    // Process attributes
     var items = jsonConcept["attributes"] ?? [];
     for (var item in items) {
       String attributeCode = item["name"];
@@ -68,8 +83,18 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
         }
       }
     }
+
+    // Process commands
+    processCommands(jsonConcept, concept);
+
+    // Process events
+    processEvents(jsonConcept, concept);
+
+    // Process policies
+    processPolicies(jsonConcept, concept);
   }
 
+  // Process relations
   for (var relation in relations) {
     String from = relation["from"];
     String to = relation["to"];
@@ -78,13 +103,13 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
     Concept? concept2 = model.concepts.singleWhereCode(to);
     if (concept1 == null) {
       throw ConceptException(
-          'Line concept is missing for the $from jsonConcept. For ${domain
-              .code}.$modelCode');
+        'Line concept is missing for the $from jsonConcept. For ${domain.code}.$modelCode',
+      );
     }
     if (concept2 == null) {
       throw ConceptException(
-          'Line concept is missing for the $to jsonConcept. For ${domain
-              .code}.$modelCode');
+        'Line concept is missing for the $to jsonConcept. For ${domain.code}.$modelCode',
+      );
     }
 
     String fromToName = relation["fromToName"];
@@ -159,6 +184,8 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
         neighbor12.reflexive = true;
       } else if (lineCategory == 'twin') {
         neighbor12.twin = true;
+      } else if (lineCategory == 'association') {
+        neighbor12.category = 'association';
       }
 
       neighbor21.internal = lineInternal;
@@ -168,6 +195,8 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
         neighbor21.reflexive = true;
       } else if (lineCategory == 'twin') {
         neighbor21.twin = true;
+      } else if (lineCategory == 'association') {
+        neighbor21.category = 'association';
       }
     } else if (d12Parent && d21Child) {
       neighbor12 = Parent(concept1, concept2, fromToName);
@@ -191,6 +220,8 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
         neighbor12.reflexive = true;
       } else if (lineCategory == 'twin') {
         neighbor12.twin = true;
+      } else if (lineCategory == 'association') {
+        neighbor12.category = 'association';
       }
 
       neighbor21.internal = lineInternal;
@@ -200,9 +231,101 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
         neighbor21.reflexive = true;
       } else if (lineCategory == 'twin') {
         neighbor21.twin = true;
+      } else if (lineCategory == 'association') {
+        neighbor21.category = 'association';
       }
     }
   }
 
   return model;
+}
+
+void processCommands(Map jsonConcept, Concept concept) {
+  var commands = jsonConcept["commands"] ?? [];
+  for (var command in commands) {
+    String commandName = command["name"];
+    String description = command["description"] ?? '';
+    String successEvent = command["successEvent"] ?? '';
+    String failureEvent = command["failureEvent"] ?? '';
+    List<String> roles = [];
+
+    if (command.containsKey("roles")) {
+      var rolesList = command["roles"] as List;
+      roles = rolesList.map((role) => role.toString()).toList();
+    }
+
+    // Add command metadata to the concept
+    if (!concept.metadata.containsKey('commands')) {
+      concept.metadata['commands'] = {};
+    }
+
+    concept.metadata['commands'][commandName] = {
+      'description': description,
+      'successEvent': successEvent,
+      'failureEvent': failureEvent,
+      'roles': roles,
+    };
+  }
+}
+
+void processEvents(Map jsonConcept, Concept concept) {
+  var events = jsonConcept["events"] ?? [];
+  for (var event in events) {
+    String eventName = event["name"];
+    String description = event["description"] ?? '';
+    List<String> triggers = [];
+
+    if (event.containsKey("triggers")) {
+      var triggersList = event["triggers"] as List;
+      triggers = triggersList.map((trigger) => trigger.toString()).toList();
+    }
+
+    // Add event metadata to the concept
+    if (!concept.metadata.containsKey('events')) {
+      concept.metadata['events'] = {};
+    }
+
+    concept.metadata['events'][eventName] = {
+      'description': description,
+      'triggers': triggers,
+    };
+  }
+}
+
+void processPolicies(Map jsonConcept, Concept concept) {
+  var policies = jsonConcept["policies"] ?? [];
+  for (var policy in policies) {
+    String policyName = policy["name"];
+    String description = policy["description"] ?? '';
+    String expression = policy["expression"] ?? '';
+    List<String> eventTriggers = [];
+    List<Map<String, String>> actions = [];
+
+    if (policy.containsKey("events")) {
+      var eventsList = policy["events"] as List;
+      eventTriggers = eventsList.map((event) => event.toString()).toList();
+    }
+
+    if (policy.containsKey("actions")) {
+      var actionsList = policy["actions"] as List;
+      for (var action in actionsList) {
+        actions.add({
+          'command': action["command"] ?? '',
+          'target': action["target"] ?? '',
+        });
+      }
+    }
+
+    // Add policy metadata to the concept
+    if (!concept.metadata.containsKey('policies')) {
+      concept.metadata['policies'] = {};
+    }
+
+    concept.metadata['policies'][policyName] = {
+      'description': description,
+      'expression': expression,
+      'events': eventTriggers,
+      'actions': actions,
+    };
+  }
 }
