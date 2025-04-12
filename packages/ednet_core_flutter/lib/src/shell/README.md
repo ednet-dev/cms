@@ -295,4 +295,98 @@ The architecture provides multiple customization points:
 5. **Performance**: Use lazy loading and virtualization for large datasets
 6. **Accessibility**: Ensure UI components are accessible to all users
 7. **Testing**: Test UI components with different disclosure levels
-8. **Documentation**: Document customization decisions and rationale 
+8. **Documentation**: Document customization decisions and rationale
+
+## Master-Detail Pattern with Constraint Validation
+
+The Shell now includes a master-detail navigation pattern that integrates with constraint validation, providing an optimal UX for navigating domain models.
+
+### Architecture
+
+The master-detail navigation pattern is structured as follows:
+
+1. **Domain Selection (Header)** - Select from available domains
+2. **Model Navigation (Left)** - Browse models within the selected domain
+3. **Concept/Aggregate Root Navigation (Middle-Left)** - Browse concepts within the selected model
+4. **Entity List (Middle-Right)** - View entities of the selected concept
+5. **Entity Details (Right)** - View and edit entity details with constraint validation
+
+As users navigate through relationships, the UI shifts left to keep focus on the current selection while maintaining context.
+
+### Key Components
+
+- **MasterDetailNavigator** - The main widget implementing the navigation pattern
+- **ConstraintValidatedForm** - Form component that validates based on domain model constraints
+- **BreadcrumbNavigation** - Tracks navigation history and provides an easy way to navigate back
+- **Navigation History** - Maintains context as users navigate the domain model
+
+### Using Master-Detail Navigation
+
+To use the master-detail navigation pattern in your app:
+
+```dart
+// Create a ShellApp with your domain model
+final shellApp = ShellApp(
+  domain: myDomain,
+  configuration: ShellConfiguration(
+    defaultDisclosureLevel: DisclosureLevel.intermediate,
+    features: {'constraint_validation', 'master_detail_navigation'},
+  ),
+);
+
+// Use the MasterDetailNavigator in your UI
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(title: Text('Domain Explorer')),
+    body: MasterDetailNavigator(
+      shellApp: shellApp,
+      initialModel: myModel, // Optional initial selection
+      showDomainSelector: true,
+      disclosureLevel: DisclosureLevel.intermediate,
+    ),
+  );
+}
+```
+
+### Constraint Validation
+
+The master-detail pattern automatically integrates with the constraint validation system:
+
+1. When an entity is selected, its attributes are displayed in a constraint-validated form
+2. Constraints from the domain model (min/max values, required fields, patterns, etc.) are enforced
+3. Visual indicators show constraints next to field labels
+4. Validation messages are displayed when constraints are violated
+
+The constraint validation is based on the TypeConstraintValidator implementation and provides real-time feedback as users interact with forms.
+
+### Example
+
+See `src/shell/example/shell_app_with_master_detail.dart` for a complete example of how to use the master-detail navigation pattern with constraint validation.
+
+## Usage Guidelines
+
+When implementing constraint validation in your own forms:
+
+1. **Define Constraints in Domain Model** - Ensure your domain model includes constraints on attributes
+2. **Use ConstraintValidatedForm** - Use this component for automatic constraint validation
+3. **Configure Disclosure Level** - Use an appropriate disclosure level for your user personas
+4. **Handle Form Submission** - Implement the onSubmit callback to handle form data
+
+For optimal UX:
+
+1. Use progressive disclosure to show more complex constraints to advanced users
+2. Provide clear error messages for constraint violations
+3. Use appropriate input types for different attribute types
+4. Validate on change for immediate feedback
+
+## Customization
+
+You can customize the master-detail navigation by:
+
+1. Registering custom adapters for specific entity types
+2. Configuring the disclosure level for different user roles
+3. Providing custom themes for the UI components
+4. Implementing custom entity visualization components
+
+See the ShellConfiguration class for more customization options. 

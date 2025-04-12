@@ -232,7 +232,6 @@ class RelationPainter {
 
     final textPainter = TextPainter(
       text: textSpan,
-      textDirection: TextDirection.ltr,
     );
 
     textPainter.layout();

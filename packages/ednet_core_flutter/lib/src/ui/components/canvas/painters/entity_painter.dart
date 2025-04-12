@@ -271,7 +271,6 @@ class EntityPainter {
 
     final textPainter = TextPainter(
       text: textSpan,
-      textDirection: TextDirection.ltr,
     );
 
     textPainter.layout();

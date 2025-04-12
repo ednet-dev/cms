@@ -5,7 +5,7 @@ extension ShellAppDomainExtension on ShellApp {
   /// Initializes the shell with multiple domains
   void initializeWithDomains(Domains domains, {int initialDomainIndex = 0}) {
     if (_domainManager == null) {
-      _domainManager = _DomainManager(
+      _domainManager = ShellDomainManager(
         domains: domains,
         initialDomainIndex: initialDomainIndex,
         shellApp: this,
@@ -14,31 +14,32 @@ extension ShellAppDomainExtension on ShellApp {
   }
 
   /// Access to the domain manager
-  _DomainManager? get domainManager => _domainManager;
+  ShellDomainManager? get domainManager =>
+      _domainManager as ShellDomainManager?;
 
   /// Switch to a different domain by index
   void switchToDomain(int domainIndex) {
-    _domainManager?.switchToDomain(domainIndex);
+    domainManager?.switchToDomain(domainIndex);
   }
 
   /// Switch to a different domain by code
   void switchToDomainByCode(String domainCode) {
-    _domainManager?.switchToDomainByCode(domainCode);
+    domainManager?.switchToDomainByCode(domainCode);
   }
 
   /// Get all available domains
-  Domains? get availableDomains => _domainManager?.domains;
+  Domains? get availableDomains => domainManager?.domains;
 
   /// Get the currently selected domain index
-  int get currentDomainIndex => _domainManager?.currentDomainIndex ?? 0;
+  int get currentDomainIndex => domainManager?.currentDomainIndex ?? 0;
 
   /// Check if this ShellApp manages multiple domains
   bool get isMultiDomain =>
-      _domainManager != null && _domainManager!.domains.length > 1;
+      domainManager != null && domainManager!.domains.length > 1;
 }
 
 /// Manages multiple domains for a ShellApp
-class _DomainManager {
+class ShellDomainManager {
   /// All available domains
   final Domains domains;
 
@@ -52,7 +53,7 @@ class _DomainManager {
   final List<void Function(Domain)> _domainChangeObservers = [];
 
   /// Constructor
-  _DomainManager({
+  ShellDomainManager({
     required this.domains,
     required int initialDomainIndex,
     required this.shellApp,

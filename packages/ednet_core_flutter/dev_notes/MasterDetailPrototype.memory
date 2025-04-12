@@ -1,0 +1,78 @@
+# Master-Detail Navigation Prototype for EDNet Core Flutter
+
+## Current Status: Prototype Implementation
+
+We've created a prototype implementation of a master-detail navigation pattern for the EDNet Core Flutter shell app. This implementation:
+
+1. Provides a hierarchical left-to-right navigation flow for domain models
+2. Integrates constraint validation for entity attributes
+3. Implements breadcrumb navigation for context awareness
+4. Shifts UI focus as users navigate deeper into relationships
+
+## Known Issues
+
+The current implementation has several issues that need to be addressed:
+
+1. **Type Mismatches**: The classes used in the prototype don't match the actual class definitions in the ednet_core library
+2. **Flutter Imports**: The code references Flutter widgets but doesn't properly import the Flutter packages
+3. **Relationship Navigation**: The implementation for navigating relations is incomplete
+4. **Testing Gaps**: No tests have been written for the new components
+
+## Implementation Plan
+
+To complete this feature, follow these steps:
+
+1. **Analyze Domain Classes**: Examine the actual class structure in ednet_core to match our implementation
+   - Understand the Domain, Model, Concept, and Entity class hierarchy
+   - Identify how relationships are represented between entities
+   - Check how AttributeType and constraints are implemented
+
+2. **Update MasterDetailNavigator**:
+   - Fix class references to match actual ednet_core classes
+   - Implement proper entity loading and relationship traversal
+   - Ensure constraint validation works with the actual AttributeType implementation
+
+3. **Create Integration Example**:
+   - Update the shell_app_with_master_detail.dart with correct class usage
+   - Create a small sample domain model for demonstration
+   - Implement proper data loading and state management
+
+4. **Add Tests**:
+   - Create unit tests for navigation logic
+   - Add widget tests for UI components
+   - Test constraint validation integration
+
+5. **Documentation**:
+   - Update documentation with real-world usage examples
+   - Document integration patterns with existing code
+   - Create user guide for implementing custom adapters
+
+## Integration with Existing Architecture
+
+The master-detail navigator should integrate with these existing components:
+
+1. **ShellApp**: The central coordinator that provides domain model access
+2. **ConstraintValidatedForm**: Form component that validates based on domain model constraints
+3. **LayoutAdapterRegistry**: Registry for custom entity visualizations
+4. **BreadcrumbService**: Service for tracking navigation history
+5. **DisclosureLevel**: System for progressive disclosure of UI elements
+
+## Design Decisions
+
+The following design decisions were made:
+
+1. **Hierarchical Navigation**: Left-to-right layout to show domain hierarchy (domains → models → concepts → entities)
+2. **Responsive Layout**: Columns resize based on content, with entity details taking most space
+3. **Contextual UI Shifting**: As users navigate relationships, the UI shifts to maintain focus
+4. **Tabbed Entity Details**: Entity attributes and relationships are shown in separate tabs
+5. **Breadcrumb Context**: Navigation history is maintained and visualized for easy traversal
+
+## Next Steps
+
+The next immediate steps are:
+
+1. Study the actual domain model implementation in ednet_core
+2. Update class references in MasterDetailNavigator
+3. Implement proper relationship traversal
+4. Connect to actual constraint validation system
+5. Create a working demo with sample data 

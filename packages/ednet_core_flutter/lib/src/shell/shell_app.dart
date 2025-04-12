@@ -1,6 +1,6 @@
 part of ednet_core_flutter;
 
-/// A domain interpreter shell that provides runtime interpretation of EDNet domain models
+/// A powerful domain interpreter shell that provides runtime interpretation of EDNet domain models
 /// with customizable UX representations.
 ///
 /// The [ShellApp] serves as the central hub connecting generated domain models with
@@ -43,8 +43,13 @@ class ShellApp {
   /// The original domain passed to the constructor
   final Domain _domain;
 
+  /// Persistence manager for entity operations that handles saving/loading
+  late final ShellPersistence _persistence;
+
   /// Registry for UI component adapters
-  final UXAdapterRegistry _adapterRegistry = UXAdapterRegistry();
+  // TODO: Migrate to LayoutAdapterRegistry when full layout adapter pattern is implemented.
+  // This is part of the Phase 2 implementation described in IMPLEMENTATION_PLAN.md
+  final LayoutAdapterRegistry _adapterRegistry = LayoutAdapterRegistry();
 
   /// Default disclosure levels by user role
   final Map<String, DisclosureLevel> _disclosureLevelsByRole = {
@@ -63,7 +68,10 @@ class ShellApp {
   late final ShellNavigationService _navigationService;
 
   /// The domain manager for multi-domain support
-  _DomainManager? _domainManager;
+  ShellDomainManager? _domainManager;
+
+  /// Check if this shell supports multiple domains
+  bool get isMultiDomain => _domainManager != null;
 
   /// Constructor
   ShellApp({
@@ -73,6 +81,9 @@ class ShellApp {
     int initialDomainIndex = 0,
   })  : _domain = domain,
         configuration = configuration ?? ShellConfiguration() {
+    // Initialize persistence with the domain
+    _persistence = ShellPersistence(domain);
+
     _initializeShell();
 
     // Initialize multi-domain support if domains are provided
@@ -103,8 +114,10 @@ class ShellApp {
 
   /// Register default adapters for common entity types
   void _registerDefaultAdapters() {
-    // These provide baseline visualization for all entity types
-    // Clients can override these with their own implementations
+    // Register default layout adapters for core entity types
+    _adapterRegistry.register<Domain>(DomainLayoutAdapter());
+    _adapterRegistry.register<Model>(ModelLayoutAdapter());
+    _adapterRegistry.register<Concept>(ConceptLayoutAdapter());
   }
 
   /// Set up messaging infrastructure
@@ -130,23 +143,22 @@ class ShellApp {
     // Register custom adapters if provided
     if (configuration.customAdapters.isNotEmpty) {
       for (final entry in configuration.customAdapters.entries) {
-        // Use dynamic registration since we don't know the exact entity type at compile time
-        _adapterRegistry.registerDynamic(entry.key, entry.value);
+        _adapterRegistry.registerType(entry.key, entry.value);
       }
     }
   }
 
   /// Register a custom adapter for an entity type
-  void registerAdapter<T extends Entity<T>>(UXAdapterFactory<T> factory) {
-    _adapterRegistry.register<T>(factory);
+  void registerAdapter<T extends Entity<T>>(LayoutAdapter<T> adapter) {
+    _adapterRegistry.register<T>(adapter);
   }
 
   /// Register a disclosure-specific adapter for an entity type
   void registerAdapterWithDisclosure<T extends Entity<T>>(
-    UXAdapterFactory<T> factory,
+    LayoutAdapter<T> adapter,
     DisclosureLevel level,
   ) {
-    _adapterRegistry.registerWithDisclosure<T>(factory, level);
+    _adapterRegistry.registerWithDisclosure<T>(adapter, level);
   }
 
   /// Configure the default disclosure level for a user role
@@ -168,7 +180,7 @@ class ShellApp {
   }
 
   /// Get the adapter registry
-  UXAdapterRegistry get adapterRegistry => _adapterRegistry;
+  LayoutAdapterRegistry get adapterRegistry => _adapterRegistry;
 
   /// Get the navigation service
   ShellNavigationService get navigationService => _navigationService;
@@ -206,12 +218,16 @@ class ShellApp {
   }) {
     // Get the appropriate adapter and build the form
     final adapter = _adapterRegistry.getAdapter<T>(
-      entity,
       disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
     );
 
+    if (adapter == null) {
+      return Text('No adapter found for ${entity.concept.code}');
+    }
+
     return adapter.buildForm(
       context,
+      entity,
       disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
     );
   }
@@ -223,18 +239,27 @@ class ShellApp {
     List<T> entities, {
     DisclosureLevel? disclosureLevel,
   }) {
+    final effectiveDisclosureLevel = disclosureLevel ?? currentDisclosureLevel;
+
     return ListView.builder(
       itemCount: entities.length,
       itemBuilder: (context, index) {
         final entity = entities[index];
         final adapter = _adapterRegistry.getAdapter<T>(
-          entity,
-          disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+          disclosureLevel: effectiveDisclosureLevel,
         );
+
+        if (adapter == null) {
+          return ListTile(
+            title: Text(entity.code),
+            subtitle: Text('No adapter found for ${entity.concept.code}'),
+          );
+        }
 
         return adapter.buildListItem(
           context,
-          disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+          entity,
+          disclosureLevel: effectiveDisclosureLevel,
         );
       },
     );
@@ -245,9 +270,11 @@ class ShellApp {
     BuildContext context, {
     DisclosureLevel? disclosureLevel,
   }) {
-    // Create a visualization of the domain model
-    // This would generate a diagram or interactive view of the domain
-    return Text('Domain Visualization for ${domain.code}');
+    // Create a visualization of the domain model using the semantic wrapper
+    return ResponsiveSemanticWrapper.basic(
+      artifactId: 'domain_visualization_${domain.code}',
+      child: Text('Domain Visualization for ${domain.code}'),
+    );
   }
 
   /// Build breadcrumb navigation for the current location
@@ -321,6 +348,16 @@ class ShellApp {
   bool navigateBack() {
     return _navigationService.navigateBack();
   }
+
+  /// Save an entity to the repository
+  Future<bool> saveEntity(String conceptCode, Map<String, dynamic> entityData) {
+    return _persistence.saveEntity(conceptCode, entityData);
+  }
+
+  /// Load entities from the repository
+  Future<List<Map<String, dynamic>>> loadEntities(String conceptCode) {
+    return _persistence.loadEntities(conceptCode);
+  }
 }
 
 /// Configuration for the Shell App
@@ -329,7 +366,7 @@ class ShellConfiguration {
   final DisclosureLevel? defaultDisclosureLevel;
 
   /// Custom adapters for entity types
-  final Map<Type, UXAdapterFactory> customAdapters;
+  final Map<Type, LayoutAdapter> customAdapters;
 
   /// Enabled features
   final Set<String> features;
@@ -340,7 +377,7 @@ class ShellConfiguration {
   /// Constructor
   ShellConfiguration({
     this.defaultDisclosureLevel,
-    Map<Type, UXAdapterFactory>? customAdapters,
+    Map<Type, LayoutAdapter>? customAdapters,
     Set<String>? features,
     this.theme,
   })  : customAdapters = customAdapters ?? {},
@@ -349,7 +386,7 @@ class ShellConfiguration {
   /// Create a copy with modified values
   ShellConfiguration copyWith({
     DisclosureLevel? defaultDisclosureLevel,
-    Map<Type, UXAdapterFactory>? customAdapters,
+    Map<Type, LayoutAdapter>? customAdapters,
     Set<String>? features,
     ThemeData? theme,
   }) {
@@ -455,7 +492,21 @@ class _DomainNavigatorState extends State<DomainNavigator> {
     // Create a navigation drawer for the domain
     return Scaffold(
       appBar: AppBar(
-        title: Text('EDNet Shell: ${domain.code}'),
+        title: Row(
+          children: [
+            Text('EDNet Shell: ${domain.code}'),
+            if (widget.shellApp.isMultiDomain) ...[
+              const SizedBox(width: 16),
+              DomainSelector(
+                shellApp: widget.shellApp,
+                style: const DomainSelectorStyle(
+                  selectorType: DomainSelectorType.dropdown,
+                  hideDropdownUnderline: true,
+                ),
+              ),
+            ],
+          ],
+        ),
         // Back button that uses the navigation service
         leading: widget.shellApp.navigationService.isInHistory(_currentPath)
             ? IconButton(
@@ -464,52 +515,42 @@ class _DomainNavigatorState extends State<DomainNavigator> {
               )
             : null,
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: Text(
-                'Domain: ${domain.code}',
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-            // Generate menu items for each model
-            ...List.generate(models.length, (index) {
-              final model = models[index];
-              return ListTile(
-                title: Text(model.code),
-                selected: _selectedIndex == index,
-                onTap: () {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                  // Navigate to the selected model using the navigation service
-                  widget.shellApp.navigateToModel(model);
-                  Navigator.pop(context);
-                },
-              );
-            }),
-          ],
-        ),
-      ),
-      body: Column(
+      body: Row(
         children: [
-          // Show breadcrumb navigation at the top
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: widget.shellApp.buildBreadcrumbNavigation(
-              context,
-              disclosureLevel: widget.shellApp.currentDisclosureLevel,
-            ),
+          // Domain Sidebar
+          DomainSidebar(
+            shellApp: widget.shellApp,
+            onItemSelected: (item) {
+              // Handle item selection if needed
+              if (item.type == NavigationItemType.model && item.model != null) {
+                setState(() {
+                  _selectedIndex = models.indexOf(item.model!);
+                });
+              }
+            },
           ),
 
-          // Content area
+          // Main content area
           Expanded(
-            child: models.isNotEmpty
-                ? _buildModelView(models[_selectedIndex])
-                : const Center(child: Text('No models available')),
+            child: Column(
+              children: [
+                // Show breadcrumb navigation at the top
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: widget.shellApp.buildBreadcrumbNavigation(
+                    context,
+                    disclosureLevel: widget.shellApp.currentDisclosureLevel,
+                  ),
+                ),
+
+                // Content area
+                Expanded(
+                  child: models.isNotEmpty
+                      ? _buildModelView(models[_selectedIndex])
+                      : const Center(child: Text('No models available')),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -583,14 +624,26 @@ class ConceptExplorer extends StatefulWidget {
 }
 
 class _ConceptExplorerState extends State<ConceptExplorer> {
+  // For generating IDs
+  int _idCounter = 1000;
+
   /// Current disclosure level
   DisclosureLevel _disclosureLevel = DisclosureLevel.basic;
+
+  /// Collection of entities for the current concept
+  List<dynamic> _entities = [];
+
+  /// Loading status
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     // Use the shell's current disclosure level as the initial value
     _disclosureLevel = widget.shellApp.currentDisclosureLevel;
+
+    // Load entities from domain if available
+    _loadEntities();
   }
 
   @override
@@ -598,187 +651,161 @@ class _ConceptExplorerState extends State<ConceptExplorer> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Concept: ${widget.concept.code}'),
-        actions: [
-          // Disclosure level selector
-          PopupMenuButton<DisclosureLevel>(
-            icon: const Icon(Icons.visibility),
-            tooltip: 'Change detail level',
-            onSelected: (level) {
-              setState(() {
-                _disclosureLevel = level;
-              });
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: DisclosureLevel.minimal,
-                child: Text('Minimal'),
-              ),
-              const PopupMenuItem(
-                value: DisclosureLevel.basic,
-                child: Text('Basic'),
-              ),
-              const PopupMenuItem(
-                value: DisclosureLevel.intermediate,
-                child: Text('Intermediate'),
-              ),
-              const PopupMenuItem(
-                value: DisclosureLevel.advanced,
-                child: Text('Advanced'),
-              ),
-              const PopupMenuItem(
-                value: DisclosureLevel.complete,
-                child: Text('Complete'),
-              ),
-            ],
-          ),
-        ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Show breadcrumb navigation at the top
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: widget.shellApp.buildBreadcrumbNavigation(
-              context,
-              disclosureLevel: _disclosureLevel,
-            ),
-          ),
-
-          // Concept header with details
-          _buildConceptHeader(),
-
-          // Entity list (placeholder - in a real app, would fetch entities)
-          Expanded(
-            child: Center(
-              child: Text(
-                'No entities available. In a real application, entities of this concept would be listed here.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ),
-          ),
-        ],
-      ),
-      // FAB to create a new entity
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Show dialog to create a new entity
-          _showCreateEntityDialog();
-        },
-        child: const Icon(Icons.add),
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _buildContent(),
     );
   }
 
-  /// Build the concept header
-  Widget _buildConceptHeader() {
-    return Card(
-      margin: const EdgeInsets.all(16.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.concept.code,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            if (widget.concept.description.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(widget.concept.description),
-              ),
-            const Divider(),
-            Text('Attributes:', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            // Show attributes based on disclosure level
-            ..._buildAttributeList(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Build the attribute list with progressive disclosure
-  List<Widget> _buildAttributeList() {
-    // Progressive disclosure of attributes
-    final attributes = widget.concept.attributes.toList();
-
-    // Filter attributes based on disclosure level
-    final visibleAttributes = attributes.where((attr) {
-      if (_disclosureLevel == DisclosureLevel.minimal) {
-        // Show only required attributes
-        return attr.required;
-      } else if (_disclosureLevel == DisclosureLevel.basic) {
-        // Show required and non-technical attributes
-        return attr.required || !attr.code.startsWith('_');
-      } else if (_disclosureLevel == DisclosureLevel.intermediate) {
-        // Show all except very technical attributes
-        return !attr.code.startsWith('__');
-      } else {
-        // Show all attributes
-        return true;
-      }
-    }).toList();
-
-    return visibleAttributes.map((attr) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                attr.code,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Text(attr.type?.code ?? 'Unknown'),
-            if (attr.required)
-              const Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Icon(Icons.star, size: 12, color: Colors.red),
-              ),
-          ],
-        ),
+  // Build content based on entities and state
+  Widget _buildContent() {
+    if (_entities.isEmpty) {
+      return Center(
+        child: Text('No ${widget.concept.code} entities found'),
       );
-    }).toList();
-  }
+    }
 
-  /// Show dialog to create a new entity
-  void _showCreateEntityDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Create ${widget.concept.code}'),
-          content: const Text(
-            'This would display a form to create a new entity. '
-            'In a real application, a dynamically generated form would appear here.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // Show success message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Created ${widget.concept.code} (simulated)'),
-                  ),
-                );
-              },
-              child: const Text('Create'),
-            ),
-          ],
+    return ListView.builder(
+      itemCount: _entities.length,
+      itemBuilder: (context, index) {
+        final entity = _entities[index];
+        return ListTile(
+          title: Text(entity['name'] ?? 'Unnamed Entity'),
+          subtitle: Text(entity['id'] ?? 'No ID'),
         );
       },
     );
   }
+
+  /// Load entities from the domain repository
+  Future<void> _loadEntities() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final conceptCode = widget.concept.code;
+      final entities = await widget.shellApp.loadEntities(conceptCode);
+
+      setState(() {
+        if (entities.isNotEmpty) {
+          _entities = entities;
+        }
+        _isLoading = false;
+      });
+    } catch (e) {
+      debugPrint('Error loading entities: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  /// Generate a unique ID for entities
+  String _generateId(String prefix) {
+    _idCounter++;
+    return '$prefix-$_idCounter';
+  }
+
+  /// Save entity form data from controllers to entity map
+  Future<void> _saveEntityForm(Map<String, dynamic> entity,
+      Map<String, TextEditingController> controllers) async {
+    // Update entity values from controllers
+    controllers.forEach((attributeName, controller) {
+      if (controller != null && controller.text.isNotEmpty) {
+        // Convert value to the appropriate type based on the original entity value type
+        final originalValue = entity[attributeName];
+        if (originalValue is int) {
+          entity[attributeName] = int.tryParse(controller.text) ?? 0;
+        } else if (originalValue is double) {
+          entity[attributeName] = double.tryParse(controller.text) ?? 0.0;
+        } else if (originalValue is bool) {
+          entity[attributeName] = controller.text.toLowerCase() == 'true' ||
+              controller.text.toLowerCase() == 'yes';
+        } else if (originalValue is DateTime) {
+          entity[attributeName] =
+              DateTime.tryParse(controller.text) ?? DateTime.now();
+        } else {
+          // String or other type
+          entity[attributeName] = controller.text;
+        }
+      }
+    });
+
+    // Try to save to domain repository
+    try {
+      final conceptCode = widget.concept.code;
+      final success = await widget.shellApp.saveEntity(conceptCode, entity);
+
+      if (success) {
+        // Refresh the entity list after save
+        await _loadEntities();
+
+        // Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('${widget.concept.code} saved successfully')),
+          );
+        }
+      } else {
+        // Show error message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to save ${widget.concept.code}')),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error saving entity: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+}
+
+/// Command for updating an entity
+class _EntityUpdateCommand {
+  final Map<String, dynamic> entity;
+
+  _EntityUpdateCommand(this.entity);
+
+  // Command execution method
+  bool doIt() {
+    // Command execution happens in the aggregate root
+    return true;
+  }
+
+  // Undo functionality if needed
+  bool undo() {
+    return false;
+  }
+
+  // Command can generate events
+  List<dynamic> getEvents() {
+    return [];
+  }
+}
+
+/// Global context to access shell app from anywhere
+class GlobalContext {
+  static GlobalContext? _instance;
+
+  /// Get the singleton instance
+  static GlobalContext? get instance => _instance;
+
+  /// Initialize the global context
+  static void initialize(ShellApp shellApp) {
+    _instance ??= GlobalContext._(shellApp);
+  }
+
+  /// The shell app instance
+  final ShellApp? shellApp;
+
+  /// Private constructor
+  GlobalContext._(this.shellApp);
 }

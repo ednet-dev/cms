@@ -332,4 +332,197 @@ class UXFieldBuilder {
 
     return spaced.substring(0, 1).toUpperCase() + spaced.substring(1);
   }
+
+  /// Builds a single field descriptor with validation rules from an attribute
+  static UXFieldDescriptor buildField(Attribute attribute) {
+    final validators = <UXFieldValidator>[];
+
+    // Required validation is always first
+    validators.add((value) {
+      if (attribute.required && (value == null || value.toString().isEmpty)) {
+        return 'This field is required';
+      }
+      return null;
+    });
+
+    final attributeType = attribute.type;
+    if (attributeType != null) {
+      // Add type-specific validators for form inputs
+      if (attributeType.base == 'String' ||
+          attributeType.code == 'Email' ||
+          attributeType.code == 'Uri') {
+        // String/Email/URI validation
+        validators.add((value) {
+          if (value == null || value.toString().isEmpty) {
+            return null; // Empty is handled by required validator
+          }
+
+          final stringValue = value.toString();
+          if (!attributeType.validateValue(stringValue)) {
+            // Get validation error message from the AttributeType itself
+            return attributeType.getValidationError() ?? 'Invalid value';
+          }
+          return null;
+        });
+      } else if (attributeType.base == 'int') {
+        // Integer type validation first
+        validators.add((value) {
+          if (value == null || value.toString().isEmpty) {
+            return null; // Empty is handled by required validator
+          }
+
+          final intValue = int.tryParse(value.toString());
+          if (intValue == null) {
+            return 'Must be a valid integer';
+          }
+          return null;
+        });
+
+        // Integer range validation
+        validators.add((value) {
+          if (value == null || value.toString().isEmpty) {
+            return null;
+          }
+
+          final intValue = int.tryParse(value.toString());
+          if (intValue != null) {
+            if (!attributeType.validateValue(intValue)) {
+              return attributeType.getValidationError() ?? 'Invalid value';
+            }
+          }
+          return null;
+        });
+      } else if (attributeType.base == 'double' ||
+          attributeType.base == 'num') {
+        // Numeric type validation first
+        validators.add((value) {
+          if (value == null || value.toString().isEmpty) {
+            return null; // Empty is handled by required validator
+          }
+
+          final numValue = num.tryParse(value.toString());
+          if (numValue == null) {
+            return 'Must be a valid number';
+          }
+          return null;
+        });
+
+        // Numeric range validation
+        validators.add((value) {
+          if (value == null || value.toString().isEmpty) {
+            return null;
+          }
+
+          final numValue = num.tryParse(value.toString());
+          if (numValue != null) {
+            if (!attributeType.validateValue(numValue)) {
+              return attributeType.getValidationError() ?? 'Invalid value';
+            }
+          }
+          return null;
+        });
+      } else if (attributeType.base == 'bool') {
+        // Boolean validation
+        validators.add((value) {
+          if (value == null || value.toString().isEmpty) {
+            return null; // Empty is handled by required validator
+          }
+
+          if (value is! bool &&
+              value.toString().toLowerCase() != 'true' &&
+              value.toString().toLowerCase() != 'false') {
+            return 'Must be a boolean value';
+          }
+          return null;
+        });
+      } else if (attributeType.base == 'DateTime') {
+        // DateTime validation
+        validators.add((value) {
+          if (value == null || value.toString().isEmpty) {
+            return null; // Empty is handled by required validator
+          }
+
+          try {
+            if (value is! DateTime) {
+              DateTime.parse(value.toString());
+            }
+          } catch (e) {
+            return 'Must be a valid date';
+          }
+          return null;
+        });
+      }
+    }
+
+    final UXFieldType fieldType = _determineFieldType(attribute);
+
+    return UXFieldDescriptor(
+      fieldName: attribute.code,
+      displayName: _formatDisplayName(attribute.code),
+      fieldType: fieldType,
+      required: attribute.required,
+      validators: validators,
+    );
+  }
+
+  /// Helper to safely get property values from dynamic types
+  static T? _getPropertyValue<T>(AttributeType type, String propertyName) {
+    try {
+      // Try to access directly
+      final value = (type as dynamic)[propertyName];
+      if (value is T) {
+        return value;
+      }
+    } catch (_) {
+      // Ignore
+    }
+    return null;
+  }
+
+  /// Determine the appropriate field type based on the attribute
+  static UXFieldType _determineFieldType(Attribute attribute) {
+    final typeCode = attribute.type?.code ?? 'String';
+
+    switch (typeCode) {
+      case 'bool':
+        return UXFieldType.checkbox;
+      case 'int':
+      case 'double':
+      case 'num':
+        return UXFieldType.number;
+      case 'DateTime':
+        return UXFieldType.date;
+      case 'Email':
+        return UXFieldType.text; // Email uses text field with validation
+      case 'Uri':
+        return UXFieldType.text; // URL uses text field with validation
+      default:
+        // For string types, determine if it should be longText
+        if (attribute.code.toLowerCase().contains('description') ||
+            attribute.code.toLowerCase().contains('notes') ||
+            attribute.code.toLowerCase().contains('comment') ||
+            (attribute.type?.length ?? 0) > 100) {
+          return UXFieldType.longText;
+        } else {
+          return UXFieldType.text;
+        }
+    }
+  }
+
+  /// Builds a complete form from a concept by creating field descriptors for all attributes
+  static List<UXFieldDescriptor> buildFormFromConcept(Concept concept) {
+    final attributes = concept.attributes;
+    final fields = <UXFieldDescriptor>[];
+
+    // Process each attribute in the concept
+    for (final property in attributes) {
+      if (property is Attribute) {
+        // Create field using the buildField method
+        final field = buildField(property);
+        fields.add(field);
+      }
+    }
+
+    return fields;
+  }
 }

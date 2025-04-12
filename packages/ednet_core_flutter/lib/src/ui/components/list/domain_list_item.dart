@@ -1,4 +1,4 @@
-part of 'package:ednet_core_flutter/ednet_core_flutter.dart';
+part of ednet_core_flutter;
 
 /// A domain-aware list item with semantic styling and progressive disclosure
 /// that integrates with the EDNet Shell Architecture to visualize domain entities in list contexts.

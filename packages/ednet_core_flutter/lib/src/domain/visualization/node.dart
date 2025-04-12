@@ -126,7 +126,6 @@ class VisualNode extends ValueObject {
 
     final textPainter = TextPainter(
       text: textSpan,
-      textDirection: TextDirection.ltr,
     );
 
     // Layout and paint text
@@ -282,7 +281,6 @@ class LineNode extends VisualNode {
 
     final textPainter = TextPainter(
       text: textSpan,
-      textDirection: TextDirection.ltr,
     );
 
     // Layout and paint text
@@ -305,7 +303,6 @@ class LineNode extends VisualNode {
 
       final inversePainter = TextPainter(
         text: inverseSpan,
-        textDirection: TextDirection.ltr,
       );
 
       inversePainter.layout();
