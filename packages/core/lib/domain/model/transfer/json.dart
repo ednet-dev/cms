@@ -78,6 +78,12 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
         AttributeType? type = domain.types.singleWhereCode(itemType);
         if (type != null) {
           attribute.type = type;
+
+          // Process constraints if they exist
+          if (item.containsKey("constraints")) {
+            Map constraints = item["constraints"];
+            applyConstraintsToType(type, constraints);
+          }
         } else {
           attribute.type = domain.getType('String');
         }
@@ -238,6 +244,84 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
   }
 
   return model;
+}
+
+/// Apply constraints defined in the YAML schema to an AttributeType
+void applyConstraintsToType(AttributeType type, Map constraints) {
+  if (type.base == 'int' || type.base == 'double' || type.base == 'num') {
+    // Numeric constraints
+    if (constraints.containsKey('min')) {
+      var minValue = constraints['min'];
+      if (minValue is num) {
+        type.setMinValue(minValue);
+      } else if (minValue is String) {
+        try {
+          type.setMinValue(num.parse(minValue));
+        } catch (e) {
+          print('Invalid minimum value: $minValue');
+        }
+      }
+    }
+
+    if (constraints.containsKey('max')) {
+      var maxValue = constraints['max'];
+      if (maxValue is num) {
+        type.setMaxValue(maxValue);
+      } else if (maxValue is String) {
+        try {
+          type.setMaxValue(num.parse(maxValue));
+        } catch (e) {
+          print('Invalid maximum value: $maxValue');
+        }
+      }
+    }
+  } else if (type.base == 'String') {
+    // String constraints
+    if (constraints.containsKey('minLength')) {
+      var minLength = constraints['minLength'];
+      if (minLength is int) {
+        type.setMinLength(minLength);
+      } else if (minLength is String) {
+        try {
+          type.setMinLength(int.parse(minLength));
+        } catch (e) {
+          print('Invalid minimum length: $minLength');
+        }
+      }
+    }
+
+    if (constraints.containsKey('maxLength')) {
+      var maxLength = constraints['maxLength'];
+      if (maxLength is int) {
+        // For string types, maxLength is set via the length property
+        type.length = maxLength;
+      } else if (maxLength is String) {
+        try {
+          type.length = int.parse(maxLength);
+        } catch (e) {
+          print('Invalid maximum length: $maxLength');
+        }
+      }
+    }
+
+    if (constraints.containsKey('pattern')) {
+      var pattern = constraints['pattern'];
+      if (pattern is String) {
+        type.setPattern(pattern);
+      }
+    }
+
+    // For specific string subtypes, apply additional validation
+    if (type.code == 'Email' && constraints.containsKey('email')) {
+      // Email validation is handled implicitly by the Email type
+      // But here we can add additional validation rules if needed
+    }
+
+    if (type.code == 'Uri' && constraints.containsKey('url')) {
+      // URI validation is handled implicitly by the Uri type
+      // But here we can add additional validation rules if needed
+    }
+  }
 }
 
 void processCommands(Map jsonConcept, Concept concept) {

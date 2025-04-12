@@ -36,6 +36,8 @@ part 'domain/core/random_id.dart';
 part 'domain/core/time.dart';
 part 'domain/core/type.dart';
 part 'domain/core/validation.dart';
+part 'domain/core/type_constraint_validator.dart';
+part 'domain/core/constraints/constraint.dart';
 
 // Core components
 part 'core_repository.dart';

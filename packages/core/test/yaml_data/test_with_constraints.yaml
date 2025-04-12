@@ -1,0 +1,81 @@
+domain: "project"
+model: "core"
+concepts:
+  - name: User
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: username
+        type: String
+        essential: true
+        sensitive: false
+        constraints:
+          minLength: 3
+          maxLength: 20
+          pattern: "^[a-zA-Z0-9_]+$"
+      - sequence: 2
+        category: attribute
+        name: email
+        type: Email
+        essential: true
+        sensitive: false
+        constraints:
+          email: true
+      - sequence: 3
+        category: attribute
+        name: age
+        type: int
+        essential: false
+        sensitive: false
+        constraints:
+          min: 18
+          max: 120
+      - sequence: 4
+        category: attribute
+        name: salary
+        type: double
+        essential: false
+        sensitive: true
+        constraints:
+          min: 0.0
+          max: 1000000.0
+
+  - name: Project
+    entry: true
+    attributes:
+      - sequence: 1
+        category: attribute
+        name: name
+        type: String
+        essential: true
+        sensitive: false
+        constraints:
+          minLength: 5
+      - sequence: 2
+        category: attribute
+        name: description
+        type: String
+        essential: false
+        sensitive: false
+        constraints:
+          maxLength: 500
+      - sequence: 3
+        category: attribute
+        name: website
+        type: Uri
+        essential: false
+        sensitive: false
+        constraints:
+          url: true
+
+relations:
+  - from: User
+    to: Project
+    fromToName: projects
+    fromToMin: "0"
+    fromToMax: "N"
+    toFromName: owner
+    toFromMin: "1"
+    toFromMax: "1"
+    internal: false
