@@ -93,7 +93,7 @@ class Reference {
     if (identical(this, other)) return true;
     if (other is! Reference) return false;
 
-    return parentOidString == (other as Reference).parentOidString &&
+    return parentOidString == (other).parentOidString &&
         parentConceptCode == other.parentConceptCode &&
         entryConceptCode == other.entryConceptCode;
   }

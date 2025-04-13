@@ -1,8 +1,6 @@
 import 'dart:math';
-import 'package:ednet_core/ednet_core.dart';
 import 'domain.dart';
 import 'entities.dart';
-import 'model.dart';
 
 /// Generator demografskih podataka za izbore u Srbiji
 /// Implementiran kao deo EDNet Core domenske infrastrukture

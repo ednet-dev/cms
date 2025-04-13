@@ -22,10 +22,8 @@ class FilterEntity extends Entity<FilterEntity> {
   @override
   FilterEntity newEntity() {
     var entity = FilterEntity();
-    if (concept != null) {
-      entity.concept = concept;
-    }
-    return entity;
+    entity.concept = concept;
+      return entity;
   }
 }
 

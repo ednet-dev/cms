@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:ednet_core/ednet_core.dart';
 import '../lib/serbian_election.dart';
 
 /// This demonstration shows how to use the AggregateRoot pattern to ensure

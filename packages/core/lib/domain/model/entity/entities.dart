@@ -157,7 +157,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       return false;
     }
 
-    E? element = _oidEntityMap[(entity as E).oid.timeStamp];
+    E? element = _oidEntityMap[(entity).oid.timeStamp];
     if (element == null) {
       return false;
     }
@@ -589,7 +589,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   List<Map<String, dynamic>> toJsonList() {
     List<Map<String, dynamic>> entityList = <Map<String, dynamic>>[];
     for (E entity in _entityList) {
-      entityList.add(entity.toJsonMap() as Map<String, dynamic>);
+      entityList.add(entity.toJsonMap());
     }
     return entityList;
   }
@@ -765,8 +765,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         // String length validation
         else if (a.type!.base == 'String' &&
             value is String &&
-            a.length != null &&
-            value.length > a.length!) {
+            value.length > a.length) {
           const category = 'length';
           final message =
               '${entity.concept.code}.${a.code} attribute value exceeds maximum length of ${a.length}.';

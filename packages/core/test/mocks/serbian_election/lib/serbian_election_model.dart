@@ -1,7 +1,6 @@
 library serbian_election_model;
 
 import 'package:ednet_core/ednet_core.dart';
-import 'serbian_election.dart';
 
 /// Model koji definiše srpski izborni sistem
 class SerbianElectionModel extends Model {

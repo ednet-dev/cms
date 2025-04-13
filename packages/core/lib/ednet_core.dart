@@ -3,12 +3,9 @@ library ednet_core;
 // Dart imports
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:expressions/expressions.dart';
-import 'package:meta/meta.dart';
-import 'package:yaml/yaml.dart';
 
 // Export existing model and domain components
 // export 'domain/model/entity/entity.dart'

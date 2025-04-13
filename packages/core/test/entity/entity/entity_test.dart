@@ -1,5 +1,4 @@
 import 'package:test/test.dart';
-import 'package:ednet_core/ednet_core.dart';
 import '../../mocks/ednet_democracy_domain.dart';
 
 void main() {

@@ -78,9 +78,7 @@ class PolicyEngine {
 
   /// Helper method to check if a policy supports event triggering
   bool _isEventTriggeredPolicy(Policy policy) {
-    return policy != null &&
-        policy is Policy &&
-        (policy as dynamic).shouldTriggerOnEvent != null &&
+    return (policy as dynamic).shouldTriggerOnEvent != null &&
         (policy as dynamic).executeActions != null &&
         (policy as dynamic).generateCommands != null;
   }

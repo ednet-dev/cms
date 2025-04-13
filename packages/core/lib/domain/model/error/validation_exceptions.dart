@@ -14,7 +14,7 @@ class ValidationExceptions implements IValidationExceptions {
   @override
   void add(IValidationExceptions exception) {
     if (exception is ValidationException) {
-      _exceptionList.add(exception as ValidationException);
+      _exceptionList.add(exception);
     }
   }
 

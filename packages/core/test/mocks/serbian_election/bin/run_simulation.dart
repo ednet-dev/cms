@@ -1,4 +1,3 @@
-import 'package:ednet_core/ednet_core.dart';
 import 'dart:math';
 import '../lib/serbian_election.dart';
 
