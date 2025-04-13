@@ -55,32 +55,39 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
 
   // Create a stream subscription for navigation changes
   StreamSubscription<String> _setupNavigationListener() {
-    // Create a stream controller
     final controller = StreamController<String>.broadcast();
 
-    // Add callback to navigation service
-    widget.shellApp.navigationService.addListener(() {
-      controller.add(widget.shellApp.navigationService.currentPath);
-    });
+    void listener() {
+      if (!controller.isClosed) {
+        controller.add(widget.shellApp.navigationService.currentPath);
+      }
+    }
 
-    // Subscribe to events
-    return controller.stream.listen(_onNavigationChanged);
+    widget.shellApp.navigationService.addListener(listener);
+
+    return controller.stream
+        .distinct() // Only process unique path changes
+        .listen(
+      _onNavigationChanged,
+      onError: (error) {
+        debugPrint('Navigation error: $error');
+      },
+      onDone: () {
+        widget.shellApp.navigationService.removeListener(listener);
+        if (!controller.isClosed) {
+          controller.close();
+        }
+      },
+    );
   }
 
   // Create a stream subscription for domain changes
   StreamSubscription<Domain>? _setupDomainChangeListener() {
     if (widget.shellApp.domainManager == null) return null;
 
-    // Create a stream controller
-    final controller = StreamController<Domain>.broadcast();
-
-    // Set up domain change observer
-    widget.shellApp.domainManager!.addDomainChangeObserver((domain) {
-      controller.add(domain);
-    });
-
-    // Subscribe to events
-    return controller.stream.listen(_onDomainChanged);
+    // Simply return the subscription directly
+    return widget.shellApp.domainManager!
+        .addDomainChangeObserver(_onDomainChanged);
   }
 
   void _onNavigationChanged(String path) {
@@ -94,7 +101,7 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
           final modelCode = segments[1];
           final models = widget.shellApp.domain.models.toList();
 
-          for (int i = 0; i < models.length; i++) {
+          for (var i = 0; i < models.length; i++) {
             if (models[i].code == modelCode) {
               _selectedModelIndex = i;
               break;
@@ -116,18 +123,23 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
   Widget build(BuildContext context) {
     final domain = widget.shellApp.domain;
     final models = domain.models.toList();
+    final sidebarMode = widget.shellApp.configuration.sidebarMode;
 
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            Text('EDNet Shell: ${domain.code}'),
+            const Text('EDNet Shell'),
             if (widget.shellApp.isMultiDomain) ...[
               const SizedBox(width: 16),
               DomainSelector(
                 shellApp: widget.shellApp,
+                style: widget.domainSelectorStyle ??
+                    const DomainSelectorStyle(
+                      selectorType: DomainSelectorType.dropdown,
+                      hideDropdownUnderline: true,
+                    ),
                 domainItemBuilder: widget.domainItemBuilder,
-                style: widget.domainSelectorStyle,
               ),
             ],
           ],
@@ -139,75 +151,100 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
               )
             : null,
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Domain: ${domain.code}',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  if (widget.shellApp.isMultiDomain) ...[
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Select Domain:',
-                      style: TextStyle(fontSize: 12, color: Colors.white70),
-                    ),
-                    const SizedBox(height: 4),
-                    SizedBox(
-                      height: 36,
-                      child: DomainSelector(
-                        shellApp: widget.shellApp,
-                        style: const DomainSelectorStyle(
-                          selectorType: DomainSelectorType.chips,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            // Generate menu items for each model
-            ...List.generate(models.length, (index) {
-              final model = models[index];
-              return ListTile(
-                title: Text(model.code),
-                selected: _selectedModelIndex == index,
-                onTap: () {
-                  setState(() {
-                    _selectedModelIndex = index;
-                  });
-                  // Navigate to the selected model
-                  widget.shellApp.navigateToModel(model);
-                  Navigator.pop(context);
-                },
-              );
-            }),
-          ],
-        ),
-      ),
-      body: Column(
+      drawer: _buildDrawer(context, domain),
+      body: Row(
         children: [
-          // Show breadcrumb navigation at the top
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: widget.shellApp.buildBreadcrumbNavigation(
-              context,
-              disclosureLevel: widget.shellApp.currentDisclosureLevel,
+          // Include sidebar based on configuration
+          if (sidebarMode == SidebarMode.classic ||
+              sidebarMode == SidebarMode.both)
+            SidebarContainer(
+              shellApp: widget.shellApp,
+              theme: Theme.of(context)
+                  .extension<DomainSidebarThemeExtension>()
+                  ?.sidebarTheme,
+              onArtifactSelected: (path) {
+                // Handle artifact selection
+                widget.shellApp.navigateTo(path);
+              },
+            ),
+
+          // Main content area
+          Expanded(
+            child: Column(
+              children: [
+                // Show breadcrumb navigation at the top
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: widget.shellApp.buildBreadcrumbNavigation(
+                    context,
+                    disclosureLevel: widget.shellApp.currentDisclosureLevel,
+                  ),
+                ),
+
+                // Content area
+                Expanded(
+                  child: models.isNotEmpty
+                      ? _buildModelView(models[_selectedModelIndex])
+                      : const Center(child: Text('No models available')),
+                ),
+              ],
             ),
           ),
+        ],
+      ),
+    );
+  }
 
-          // Content area
-          Expanded(
-            child: models.isNotEmpty
-                ? _buildModelView(models[_selectedModelIndex])
-                : const Center(child: Text('No models available')),
+  // Build drawer for navigation
+  Widget _buildDrawer(BuildContext context, Domain domain) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+            child: const Text(
+              'Domain Navigation',
+              style: TextStyle(color: Colors.white, fontSize: 24),
+            ),
           ),
+          // Generate menu items for each domain and its models
+          if (widget.shellApp.availableDomains != null)
+            ...widget.shellApp.availableDomains!.map((domain) {
+              final isCurrentDomain = domain == widget.shellApp.domain;
+              return ExpansionTile(
+                title: Text(domain.code),
+                initiallyExpanded: isCurrentDomain,
+                leading: Icon(
+                  Icons.domain,
+                  color:
+                      isCurrentDomain ? Theme.of(context).primaryColor : null,
+                ),
+                onExpansionChanged: (expanded) {
+                  if (expanded && !isCurrentDomain) {
+                    widget.shellApp.switchToDomainByCode(domain.code);
+                  }
+                },
+                children: domain.models.map((model) {
+                  final isSelected = isCurrentDomain &&
+                      domain.models.any((m) => m.code == model.code);
+                  return ListTile(
+                    title: Text(model.code),
+                    selected: isSelected,
+                    leading: const Icon(Icons.model_training),
+                    onTap: () {
+                      if (!isCurrentDomain) {
+                        widget.shellApp.switchToDomainByCode(domain.code);
+                      }
+                      widget.shellApp.navigateToModel(model);
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
+              );
+            }).toList(),
         ],
       ),
     );
@@ -215,7 +252,6 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
 
   /// Build a view for a specific model
   Widget _buildModelView(Model model) {
-    // Display the concepts in the model
     final concepts = model.concepts.toList();
 
     return Column(
@@ -236,26 +272,31 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
               return ListTile(
                 title: Text(concept.code),
                 subtitle: Text('Attributes: ${concept.attributes.length}'),
-                onTap: () {
-                  // Navigate to concept using the navigation service
-                  widget.shellApp.navigateToConcept(concept);
-
-                  // Navigate to concept details screen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ConceptExplorer(
-                        shellApp: widget.shellApp,
-                        concept: concept,
-                      ),
-                    ),
-                  );
-                },
+                onTap: () => _navigateToConcept(concept),
               );
             },
           ),
         ),
       ],
     );
+  }
+
+  /// Handle concept navigation with proper separation of concerns
+  void _navigateToConcept(Concept concept) {
+    // First update the domain navigation state (no await needed as the method returns void)
+    widget.shellApp.navigateToConcept(concept);
+
+    // Then handle UI navigation if the widget is still mounted
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ConceptExplorer(
+            shellApp: widget.shellApp,
+            concept: concept,
+          ),
+        ),
+      );
+    }
   }
 }

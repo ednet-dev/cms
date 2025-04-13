@@ -481,7 +481,7 @@ class ShellConfiguration {
     Map<Type, LayoutAdapter>? customAdapters,
     Set<String>? features,
     this.theme,
-    this.sidebarMode = SidebarMode.classic,
+    this.sidebarMode = SidebarMode.both,
   })  : customAdapters = customAdapters ?? {},
         features = features ?? <String>{};
 
@@ -535,14 +535,20 @@ class ShellAppRunner extends StatefulWidget {
 class _ShellAppRunnerState extends State<ShellAppRunner> {
   @override
   Widget build(BuildContext context) {
-    // Create a provider that gives access to the shell
-    return MaterialApp(
-      theme: widget.theme ??
-          widget.shellApp.configuration.theme ??
-          ThemeData.light(),
-      home: widget.shellApp.isMultiDomain
-          ? MultiDomainNavigator(shellApp: widget.shellApp)
-          : DomainNavigator(shellApp: widget.shellApp),
+    // Create a widget that gives access to the shell without additional MaterialApp
+    // This prevents nesting MaterialApp widgets when used in client apps
+    final effectiveTheme = widget.theme ??
+        widget.shellApp.configuration.theme ??
+        Theme.of(context);
+
+    final navigator = widget.shellApp.isMultiDomain
+        ? MultiDomainNavigator(shellApp: widget.shellApp)
+        : DomainNavigator(shellApp: widget.shellApp);
+
+    // Use Scaffold to ensure consistent layout with AppBar
+    return Theme(
+      data: effectiveTheme,
+      child: navigator,
     );
   }
 }
@@ -622,6 +628,7 @@ class _DomainNavigatorState extends State<DomainNavigator> {
     // Get the domain from the shell
     final domain = widget.shellApp.domain;
     final models = domain.models.toList();
+    final sidebarMode = widget.shellApp.configuration.sidebarMode;
 
     // Create a navigation drawer for the domain
     return Scaffold(
@@ -651,18 +658,19 @@ class _DomainNavigatorState extends State<DomainNavigator> {
       ),
       body: Row(
         children: [
-          // Domain Sidebar
-          DomainSidebar(
-            shellApp: widget.shellApp,
-            onItemSelected: (item) {
-              // Handle item selection if needed
-              if (item.type == NavigationItemType.model && item.model != null) {
-                setState(() {
-                  _selectedIndex = models.indexOf(item.model!);
-                });
-              }
-            },
-          ),
+          // Domain Sidebar - included by default based on configuration
+          if (sidebarMode == SidebarMode.classic ||
+              sidebarMode == SidebarMode.both)
+            SidebarContainer(
+              shellApp: widget.shellApp,
+              theme: Theme.of(context)
+                  .extension<DomainSidebarThemeExtension>()
+                  ?.sidebarTheme,
+              onArtifactSelected: (path) {
+                // Handle artifact selection
+                widget.shellApp.navigateTo(path);
+              },
+            ),
 
           // Main content area
           Expanded(

@@ -1,93 +1,113 @@
 part of ednet_core_flutter;
 
-/// A container component that manages both classic and tree-based sidebars
+/// A container for domain sidebars that supports toggling between classic and tree modes
 class SidebarContainer extends StatefulWidget {
-  /// The shell app instance providing domain and navigation context
+  /// The shell app to visualize
   final ShellApp shellApp;
 
-  /// Optional custom theme for the sidebar
+  /// Custom sidebar theme
   final DomainSidebarTheme? theme;
 
-  /// Callback when an artifact is selected
-  final Function(String path)? onArtifactSelected;
+  /// Callback when an artifact is selected from the tree view
+  final void Function(String)? onArtifactSelected;
 
+  /// Constructor
   const SidebarContainer({
-    super.key,
+    Key? key,
     required this.shellApp,
     this.theme,
     this.onArtifactSelected,
-  });
+  }) : super(key: key);
 
   @override
   State<SidebarContainer> createState() => _SidebarContainerState();
 }
 
 class _SidebarContainerState extends State<SidebarContainer> {
-  /// Current sidebar mode
-  late SidebarMode _currentMode;
+  /// Whether to show the tree view (true) or classic view (false)
+  bool _isTreeView = true;
 
   @override
   void initState() {
     super.initState();
-    _currentMode = widget.shellApp.configuration.sidebarMode == SidebarMode.both
-        ? SidebarMode.classic
-        : widget.shellApp.configuration.sidebarMode;
+
+    // Initialize tree view based on domain manager setting if available
+    if (widget.shellApp.domainManager != null) {
+      _isTreeView = widget.shellApp.domainManager!.isTreeMode;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final showToggle =
-        widget.shellApp.configuration.sidebarMode == SidebarMode.both;
+    // Support switching sidebar modes if configuration allows both
+    final sidebarMode = widget.shellApp.configuration.sidebarMode;
+    final showToggle = sidebarMode == SidebarMode.both;
 
     return Column(
       children: [
-        // Toggle button if both modes are enabled
+        // Show toggle only if both sidebar modes are enabled
         if (showToggle)
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Text(
+                  'Sidebar Mode',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
                 ToggleButtons(
-                  isSelected: [
-                    _currentMode == SidebarMode.classic,
-                    _currentMode == SidebarMode.tree,
-                  ],
+                  isSelected: [!_isTreeView, _isTreeView],
                   onPressed: (index) {
                     setState(() {
-                      _currentMode =
-                          index == 0 ? SidebarMode.classic : SidebarMode.tree;
+                      _isTreeView = index == 1;
+
+                      // Update domain manager if available
+                      if (widget.shellApp.domainManager != null) {
+                        widget.shellApp.domainManager!.setTreeMode(_isTreeView);
+                      }
                     });
                   },
+                  constraints:
+                      const BoxConstraints(minWidth: 40, minHeight: 32),
+                  borderRadius: BorderRadius.circular(8),
                   children: const [
-                    Tooltip(
-                      message: 'Classic View',
-                      child: Icon(Icons.view_list),
-                    ),
-                    Tooltip(
-                      message: 'Tree View',
-                      child: Icon(Icons.account_tree),
-                    ),
+                    Icon(Icons.list, size: 18),
+                    Icon(Icons.account_tree, size: 18),
                   ],
                 ),
               ],
             ),
           ),
 
-        // Sidebar content
+        // Show the appropriate sidebar based on current mode
         Expanded(
-          child: _currentMode == SidebarMode.classic
-              ? DomainSidebar(
-                  shellApp: widget.shellApp,
-                  theme: widget.theme,
-                  onItemSelected: (item) {
-                    widget.onArtifactSelected?.call(item.path);
-                  },
-                )
-              : TreeArtifactSidebar(
+          child: _isTreeView
+              ? TreeArtifactSidebar(
                   shellApp: widget.shellApp,
                   theme: widget.theme,
                   onArtifactSelected: widget.onArtifactSelected,
+                )
+              : DomainSidebar(
+                  shellApp: widget.shellApp,
+                  onItemSelected: (item) {
+                    // Convert navigation item to path and call artifact selected callback
+                    if (widget.onArtifactSelected != null) {
+                      String path = '/';
+
+                      if (item.model != null) {
+                        path = '/domain/${item.model!.code}';
+
+                        if (item.concept != null) {
+                          path = '$path/${item.concept!.code}';
+                        }
+                      }
+
+                      widget.onArtifactSelected!(path);
+                    }
+                  },
                 ),
         ),
       ],

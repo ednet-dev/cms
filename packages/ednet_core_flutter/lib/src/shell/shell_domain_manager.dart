@@ -7,7 +7,7 @@ class ShellDomainManager extends ChangeNotifier {
   Model? _selectedModel;
   Concept? _selectedConcept;
   Entity? _selectedEntity;
-  bool _isTreeMode = false;
+  bool _isTreeMode = true;
 
   // Domain change streams
   final _domainChangeController = StreamController<Domain>.broadcast();
@@ -132,14 +132,9 @@ class ShellDomainManager extends ChangeNotifier {
   }
 
   // Domain change observer methods
-  void addDomainChangeObserver(void Function(Domain) observer) {
-    _domainChangeController.stream.listen(observer);
-  }
-
-  void removeDomainChangeObserver(void Function(Domain) observer) {
-    // This is a stub implementation as StreamController doesn't directly support
-    // removing specific listeners. In a full implementation, you would need to
-    // maintain a list of subscriptions.
+  StreamSubscription<Domain> addDomainChangeObserver(
+      void Function(Domain) observer) {
+    return _domainChangeController.stream.listen(observer);
   }
 
   /// Returns the currently selected artifact based on the most specific selection
