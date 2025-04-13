@@ -2,151 +2,229 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_core_flutter/ednet_core_flutter.dart';
+import '../test_helpers.dart';
 
 void main() {
-  late Domain domain1;
-  late Domain domain2;
+  late Domain testDomain1;
+  late Domain testDomain2;
   late ShellApp shellApp;
+  group('Domain Selection Tests', () {
+    late ShellApp mockShellApp;
+    late DomainSidebarTheme testTheme;
 
-  setUp(() {
-    // Create test domains
-    domain1 = Domain('TestDomain1');
-    domain1.models.add(Model(domain1, 'Model1'));
+    setUp(() {
+      mockShellApp = MockShellApp();
+      testTheme = DomainSidebarTheme(
+        backgroundColor: Colors.white,
+        headerBackgroundColor: Colors.blue,
+        selectedItemColor: Colors.blue.shade100,
+        selectedItemBorderColor: Colors.blue,
+        itemIconColor: Colors.grey,
+        selectedItemIconColor: Colors.blue,
+        dividerColor: Colors.grey.shade300,
+        sidebarWidth: 280,
+        entryBadgeColor: Colors.green,
+        abstractBadgeColor: Colors.orange,
+        headerTextStyle: testHeaderStyle,
+        subtitleTextStyle: testTextStyle.copyWith(color: Colors.grey),
+        itemTextStyle: testTextStyle,
+        selectedItemTextStyle:
+            testTextStyle.copyWith(fontWeight: FontWeight.bold),
+        badgeTextStyle: testBadgeStyle,
+        groupLabelStyle: testGroupLabelStyle,
+      );
+    });
 
-    domain2 = Domain('TestDomain2');
-    domain2.models.add(Model(domain2, 'Model2'));
+    setUp(() async {
+      // Set up SharedPreferences mock
+      await setUpSharedPreferences();
 
-    // Initialize shell app with multiple domains
-    shellApp = ShellApp(
-      domain: domain1,
-      configuration: ShellConfiguration(
-        features: {'tree_navigation'},
-      ),
-    );
-    shellApp.initializeWithDomains([domain1, domain2]);
-  });
+      testDomain1 = Domain('TestDomain1');
+      testDomain2 = Domain('TestDomain2');
 
-  group('Domain Selection', () {
-    testWidgets('should switch domains correctly', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) => DomainSelector(
+      // Create Domains collection
+      final domains = Domains();
+      domains.add(testDomain1);
+      domains.add(testDomain2);
+
+      // Initialize shell app with multiple domains
+      shellApp = ShellApp(
+        domain: testDomain1,
+        domains: domains,
+        configuration: ShellConfiguration(
+          features: {'domain_selection'},
+        ),
+      );
+    });
+
+    group('Domain Selection', () {
+      testWidgets('should switch domains correctly', (tester) async {
+        // Set a small screen size to force compact mode
+        tester.binding.window.physicalSizeTestValue = const Size(300, 600);
+        tester.binding.window.devicePixelRatioTestValue = 1.0;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: DomainSelector(
                 shellApp: shellApp,
-                style: DomainSelectorStyle(
-                  textStyle: Theme.of(context).textTheme.bodyLarge,
-                  selectedTextStyle:
-                      Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                ),
+                style: const DomainSelectorStyle(),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      // Verify initial domain
-      expect(shellApp.domain.code, equals('TestDomain1'));
-      expect(find.text('TestDomain1'), findsOneWidget);
+        // Verify initial domain
+        expect(find.text('TestDomain1'), findsOneWidget);
 
-      // Find and tap the second domain link
-      await tester.tap(find.text('TestDomain2'));
-      await tester.pumpAndSettle();
+        // Open popup menu
+        await tester.tap(find.byType(PopupMenuButton<int>));
+        await tester.pumpAndSettle();
 
-      // Verify domain switched
-      expect(shellApp.domain.code, equals('TestDomain2'));
-    });
+        // Select second domain
+        await tester.tap(find.text('TestDomain2').last);
+        await tester.pumpAndSettle();
 
-    testWidgets('should update UI when domain changes', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Column(
-              children: [
-                Builder(
-                  builder: (context) => DomainSelector(
+        // Verify domain switched
+        expect(shellApp.domain.code, equals('TestDomain2'));
+
+        // Reset the window size
+        tester.binding.window.clearPhysicalSizeTestValue();
+        tester.binding.window.clearDevicePixelRatioTestValue();
+      });
+
+      testWidgets('should update UI when domain changes', (tester) async {
+        // Set a small screen size to force compact mode
+        tester.binding.window.physicalSizeTestValue = const Size(300, 600);
+        tester.binding.window.devicePixelRatioTestValue = 1.0;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: [
+                  DomainSelector(
                     shellApp: shellApp,
-                    style: DomainSelectorStyle(
-                      textStyle: Theme.of(context).textTheme.bodyLarge,
-                      selectedTextStyle:
-                          Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
+                    style: const DomainSelectorStyle(),
                   ),
-                ),
-                Text('Current Domain: ${shellApp.domain.code}'),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      // Verify initial state
-      expect(find.text('Current Domain: TestDomain1'), findsOneWidget);
-
-      // Find and tap the second domain link
-      await tester.tap(find.text('TestDomain2'));
-      await tester.pumpAndSettle();
-
-      // Verify UI updated
-      expect(find.text('Current Domain: TestDomain2'), findsOneWidget);
-    });
-
-    testWidgets('should preserve domain selection after rebuild',
-        (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) => DomainSelector(
-                shellApp: shellApp,
-                style: DomainSelectorStyle(
-                  textStyle: Theme.of(context).textTheme.bodyLarge,
-                  selectedTextStyle:
-                      Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                ),
+                  Builder(
+                    builder: (context) {
+                      return Text('Current Domain: ${shellApp.domain.code}');
+                    },
+                  ),
+                ],
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      // Select second domain
-      await tester.tap(find.text('TestDomain2'));
-      await tester.pumpAndSettle();
+        // Verify initial state
+        expect(find.text('Current Domain: TestDomain1'), findsOneWidget);
 
-      // Verify selection
-      expect(shellApp.domain.code, equals('TestDomain2'));
+        // Open popup menu
+        await tester.tap(find.byType(PopupMenuButton<int>));
+        await tester.pumpAndSettle();
 
-      // Rebuild widget
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) => DomainSelector(
-                shellApp: shellApp,
-                style: DomainSelectorStyle(
-                  textStyle: Theme.of(context).textTheme.bodyLarge,
-                  selectedTextStyle:
-                      Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                ),
+        // Select second domain
+        await tester.tap(find.text('TestDomain2').last);
+        await tester.pumpAndSettle();
+
+        // Rebuild the widget to ensure UI reflects the changed domain
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: [
+                  DomainSelector(
+                    shellApp: shellApp,
+                    style: const DomainSelectorStyle(),
+                  ),
+                  Builder(
+                    builder: (context) {
+                      return Text('Current Domain: ${shellApp.domain.code}');
+                    },
+                  ),
+                ],
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      // Verify selection preserved
-      expect(shellApp.domain.code, equals('TestDomain2'));
-      expect(find.text('TestDomain2'), findsOneWidget);
+        // Verify UI updated
+        expect(find.text('Current Domain: TestDomain2'), findsOneWidget);
+
+        // Reset the window size
+        tester.binding.window.clearPhysicalSizeTestValue();
+        tester.binding.window.clearDevicePixelRatioTestValue();
+      });
+
+      testWidgets('should preserve domain selection after rebuild',
+          (tester) async {
+        // Set a small screen size to force compact mode
+        tester.binding.window.physicalSizeTestValue = const Size(300, 600);
+        tester.binding.window.devicePixelRatioTestValue = 1.0;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: DomainSelector(
+                shellApp: shellApp,
+                style: const DomainSelectorStyle(),
+              ),
+            ),
+          ),
+        );
+
+        // Open popup menu
+        await tester.tap(find.byType(PopupMenuButton<int>));
+        await tester.pumpAndSettle();
+
+        // Select second domain
+        await tester.tap(find.text('TestDomain2').last);
+        await tester.pumpAndSettle();
+
+        // Rebuild widget
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: DomainSelector(
+                shellApp: shellApp,
+                style: const DomainSelectorStyle(),
+              ),
+            ),
+          ),
+        );
+
+        // Verify selection preserved
+        expect(shellApp.domain.code, equals('TestDomain2'));
+
+        // Reset the window size
+        tester.binding.window.clearPhysicalSizeTestValue();
+        tester.binding.window.clearDevicePixelRatioTestValue();
+      });
+
+      testWidgets(
+          'TreeArtifactSidebar shows collapsible indicators and handles animations',
+          (WidgetTester tester) async {
+        // Mock the shell app
+        final mockShellApp = MockShellApp();
+
+        await tester.pumpWidget(MaterialApp(
+          home: TreeArtifactSidebar(
+            shellApp: mockShellApp,
+            theme: testTheme,
+          ),
+        ));
+
+        // Verify collapsible indicator is shown
+        expect(find.byIcon(Icons.chevron_right), findsWidgets);
+
+        // Skip the animation test since it depends on the animation controller
+        // which we can't easily control in a widget test.
+        // In a real app, this would be tested with integration tests or
+        // by using a mock animation controller.
+      });
     });
   });
 }

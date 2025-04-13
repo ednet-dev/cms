@@ -38,7 +38,6 @@ class ConstraintValidatorAdapter {
   /// Add string-related validators based on type constraints
   static void _addStringValidators(
       AttributeType type, List<UXFieldValidator> validators) {
-    // String-specific validation
     validators.add((value) {
       if (value != null && value.toString().isNotEmpty) {
         // Use the validation method from the type first
@@ -64,7 +63,6 @@ class ConstraintValidatorAdapter {
   /// Add numeric validators based on type constraints
   static void _addNumericValidators(
       AttributeType type, List<UXFieldValidator> validators) {
-    // First add basic number validation
     validators.add((value) {
       if (value == null || value.toString().isEmpty) {
         return null; // Empty is handled by required validator
@@ -72,11 +70,11 @@ class ConstraintValidatorAdapter {
 
       if (type.base == 'int') {
         if (int.tryParse(value.toString()) == null) {
-          return 'Must be a valid integer';
+          return 'Please enter a valid integer';
         }
       } else {
         if (num.tryParse(value.toString()) == null) {
-          return 'Must be a valid number';
+          return 'Please enter a valid number';
         }
       }
       return null;
@@ -113,7 +111,7 @@ class ConstraintValidatorAdapter {
           r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
         );
         if (!emailRegex.hasMatch(value.toString())) {
-          return 'Must be a valid email address';
+          return 'Please enter a valid email address';
         }
       }
       return null;
@@ -127,10 +125,10 @@ class ConstraintValidatorAdapter {
         try {
           final uri = Uri.parse(value.toString());
           if (uri.scheme.isEmpty || uri.host.isEmpty) {
-            return 'Must be a valid URL';
+            return 'Please enter a valid URL';
           }
         } catch (e) {
-          return 'Must be a valid URL';
+          return 'Please enter a valid URL';
         }
       }
       return null;
@@ -183,18 +181,14 @@ class ConstraintValidatorAdapter {
     // Apply disclosure level based on attribute properties
     if (disclosureLevel != null) {
       descriptor = descriptor.withDisclosureLevel(disclosureLevel);
+    } else if (attribute.code.startsWith('internal') ||
+        attribute.code.contains('Config') ||
+        attribute.code.contains('Technical')) {
+      descriptor = descriptor.withDisclosureLevel(DisclosureLevel.advanced);
+    } else if (!attribute.required) {
+      descriptor = descriptor.withDisclosureLevel(DisclosureLevel.intermediate);
     } else {
-      // Default disclosure level logic
-      if (attribute.code.startsWith('internal') ||
-          attribute.code.contains('Config') ||
-          attribute.essential == false) {
-        descriptor = descriptor.withDisclosureLevel(DisclosureLevel.advanced);
-      } else if (!attribute.required) {
-        descriptor =
-            descriptor.withDisclosureLevel(DisclosureLevel.intermediate);
-      } else {
-        descriptor = descriptor.withDisclosureLevel(DisclosureLevel.basic);
-      }
+      descriptor = descriptor.withDisclosureLevel(DisclosureLevel.basic);
     }
 
     return descriptor;
@@ -230,7 +224,7 @@ class ConstraintValidatorAdapter {
     }
   }
 
-  /// Format a field name for display
+  /// Format display name by adding spaces before capitals and capitalizing first letter
   static String _formatDisplayName(String fieldName) {
     // Convert camelCase to Title Case with spaces
     final formatted = fieldName.replaceAllMapped(

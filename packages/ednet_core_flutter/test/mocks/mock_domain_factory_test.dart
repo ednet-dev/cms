@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'mock_domain_factory.dart';
+import '../test_domain_factory.dart';
 
 void main() {
-  group('MockDomainFactory', () {
+  group('TestDomainFactory', () {
     test('createSimpleDomain creates a valid domain', () {
       // Act
-      final domain = MockDomainFactory.createSimpleDomain();
+      final domain = TestDomainFactory.createSimpleDomain();
 
       // Assert
       expect(domain, isNotNull);
@@ -39,7 +39,7 @@ void main() {
 
     test('createComplexDomain returns a domain', () {
       // Act
-      final domain = MockDomainFactory.createComplexDomain();
+      final domain = TestDomainFactory.createComplexDomain();
 
       // Assert
       expect(domain, isNotNull);

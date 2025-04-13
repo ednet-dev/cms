@@ -90,11 +90,23 @@ class DomainMetadataInterpreter {
 
     // Map parent-child relationships
     for (final concept in _conceptsMap.values) {
-      for (final parentCode in concept.parents) {
-        final parentConcept = _conceptsMap[parentCode];
-        if (parentConcept != null) {
-          _parentConceptsMap[concept.code]?.add(parentConcept);
-          _childConceptsMap[parentCode]?.add(concept);
+      // Process parent relationships
+      for (final parent in concept.parents) {
+        if (parent is Neighbor) {
+          final destinationConcept = (parent as Neighbor).destinationConcept;
+          if (_conceptsMap.containsKey(destinationConcept.code)) {
+            _parentConceptsMap[concept.code]?.add(destinationConcept);
+          }
+        }
+      }
+
+      // Process child relationships
+      for (final child in concept.children) {
+        if (child is Neighbor) {
+          final destinationConcept = (child as Neighbor).destinationConcept;
+          if (_conceptsMap.containsKey(destinationConcept.code)) {
+            _childConceptsMap[concept.code]?.add(destinationConcept);
+          }
         }
       }
     }
