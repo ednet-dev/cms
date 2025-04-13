@@ -2,22 +2,31 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_one/generated/one_application.dart';
 import 'package:ednet_core_flutter/ednet_core_flutter.dart';
-import 'package:ednet_one/enhanced_shell.dart';
 
 /// Application entry point
 void main() async {
   // Initialize Flutter binding
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Create and initialize OneApplication
-  final oneApplication = OneApplication();
-  await oneApplication.initializeApplication();
+  // Create and initialize the application with the core functionality
+  final domain = Domain('EDNetOne');
+  domain.description = 'EDNet One - A unified platform for democratic systems';
 
-  // Create a fully-featured shell with all capabilities enabled by default
-  final shellApp = EnhancedShellFactory.createFullFeaturedShell(oneApplication);
-
-  // Run the application with the enhanced shell runner
-  runApp(EnhancedShellAppRunner(shellApp: shellApp));
+  // Run the application with the shell app from ednet_core_flutter
+  runApp(MaterialApp(
+    title: 'EDNet One',
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+      useMaterial3: true,
+    ),
+    home: ShellAppRunner(
+      shellApp: ShellApp(domain: domain),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+    ),
+  ));
 }
