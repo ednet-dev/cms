@@ -92,7 +92,7 @@ Widget buildBreadcrumbDemo(BuildContext context,
   // Add some sample breadcrumb items
   if (service.items.isEmpty) {
     service.resetToHome(
-      BreadcrumbItem(
+      const BreadcrumbItem(
         label: 'Home',
         destination: '/',
         icon: Icons.home,
@@ -100,7 +100,7 @@ Widget buildBreadcrumbDemo(BuildContext context,
     );
 
     service.add(
-      BreadcrumbItem(
+      const BreadcrumbItem(
         label: 'Domains',
         destination: '/domains',
         icon: Icons.cloud,
@@ -108,7 +108,7 @@ Widget buildBreadcrumbDemo(BuildContext context,
     );
 
     service.add(
-      BreadcrumbItem(
+      const BreadcrumbItem(
         label: 'User Management',
         destination: '/domains/user-management',
         icon: Icons.people,
@@ -116,7 +116,7 @@ Widget buildBreadcrumbDemo(BuildContext context,
     );
 
     service.add(
-      BreadcrumbItem(
+      const BreadcrumbItem(
         label: 'User Profiles',
         destination: '/domains/user-management/profiles',
         icon: Icons.person,

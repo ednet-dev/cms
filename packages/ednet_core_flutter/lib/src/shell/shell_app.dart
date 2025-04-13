@@ -84,7 +84,7 @@ class ShellApp extends ChangeNotifier {
         configuration = configuration ?? ShellConfiguration() {
     // Initialize persistence with the domain
     // Check if development mode should be enabled
-    final bool useDevelopmentMode = _shouldEnableDevelopmentMode();
+    final useDevelopmentMode = _shouldEnableDevelopmentMode();
 
     // Initialize persistence with development mode configuration
     _persistence =
@@ -373,13 +373,11 @@ class ShellApp extends ChangeNotifier {
         domainToUse = manager.getDomain(domainCode);
       } catch (e) {
         // Domain not found, use current domain
-        domainToUse = this.domain;
+        domainToUse = domain;
       }
     } else {
-      domainToUse = this.domain;
+      domainToUse = domain;
     }
-
-    if (domainToUse == null) return;
 
     if (segments.length == 1) {
       // Show domain overview
@@ -626,7 +624,7 @@ class _DomainNavigatorState extends State<DomainNavigator> {
           final modelCode = segments[1];
           final models = widget.shellApp.domain.models.toList();
 
-          for (int i = 0; i < models.length; i++) {
+          for (var i = 0; i < models.length; i++) {
             if (models[i].code == modelCode) {
               _selectedIndex = i;
               break;
@@ -869,7 +867,7 @@ class _ConceptExplorerState extends State<ConceptExplorer> {
       Map<String, TextEditingController> controllers) async {
     // Update entity values from controllers
     controllers.forEach((attributeName, controller) {
-      if (controller != null && controller.text.isNotEmpty) {
+      if (controller.text.isNotEmpty) {
         // Convert value to the appropriate type based on the original entity value type
         final originalValue = entity[attributeName];
         if (originalValue is int) {

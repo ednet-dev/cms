@@ -359,7 +359,7 @@ class _ResponsiveSemanticWrapperState extends State<ResponsiveSemanticWrapper> {
     );
 
     // If pinned or visible due to screen size, show the content
-    final bool shouldShow = _isPinned || _shouldShow(currentCategory);
+    final shouldShow = _isPinned || _shouldShow(currentCategory);
 
     // If this content shouldn't be shown at this screen size, return empty container
     if (!shouldShow) {

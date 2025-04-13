@@ -115,7 +115,7 @@ class ThemeService {
     final savedAccessibility = prefs.getString(_themeAccessibilityKey);
     if (savedAccessibility != null) {
       try {
-        final Map<String, dynamic> features =
+        final features =
             Map<String, dynamic>.from(json.decode(savedAccessibility));
 
         for (final feature in AccessibilityFeature.values) {
@@ -199,7 +199,7 @@ class ThemeService {
   Future<void> _saveAccessibilityFeatures() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final Map<String, bool> featureMap = {};
+    final featureMap = <String, bool>{};
     for (final entry in _accessibilityFeatures.entries) {
       featureMap[entry.key.name] = entry.value;
     }

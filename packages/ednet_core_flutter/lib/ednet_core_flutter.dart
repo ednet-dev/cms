@@ -15,7 +15,6 @@ import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:ednet_core/ednet_core.dart';
 import 'package:yaml/yaml.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
 
 // parts
 part 'src/shell/shell_persistence.dart';

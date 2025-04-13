@@ -39,7 +39,7 @@ class BreadcrumbService {
   /// Previous active breadcrumb will be marked as inactive.
   void add(BreadcrumbItem item) {
     // First make all existing items inactive
-    for (int i = 0; i < _items.length; i++) {
+    for (var i = 0; i < _items.length; i++) {
       if (_items[i].isActive) {
         _items[i] = _items[i].copyWith(isActive: false);
       }
@@ -68,7 +68,7 @@ class BreadcrumbService {
     }
 
     // Update active status
-    for (int i = 0; i < _items.length; i++) {
+    for (var i = 0; i < _items.length; i++) {
       if (i == index) {
         _items[i] = _items[i].copyWith(isActive: true);
       } else if (_items[i].isActive) {

@@ -89,7 +89,7 @@ extension ThemeSpacing on BuildContext {
   ///
   /// Cards have different padding based on the detail level
   EdgeInsets disclosureLevelCardPadding(DisclosureLevel level) {
-    final double padding = disclosureLevelSpacing(level);
+    final padding = disclosureLevelSpacing(level);
     return EdgeInsets.all(padding);
   }
 
@@ -99,7 +99,7 @@ extension ThemeSpacing on BuildContext {
   double semanticDisclosureSpacing(String conceptType, DisclosureLevel level,
       {String? role}) {
     // First get the base semantic spacing
-    final double baseSpacing = semanticSpacing(conceptType, role: role);
+    final baseSpacing = semanticSpacing(conceptType, role: role);
 
     // Then adjust it based on disclosure level
     switch (level) {

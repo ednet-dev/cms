@@ -29,7 +29,7 @@ class SelectionHandler {
     BuildContext context,
     Map<String, Offset> layoutPositions,
   ) {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final renderBox = context.findRenderObject() as RenderBox;
     final tapPosition = transformationController.toScene(
       renderBox.globalToLocal(details.globalPosition),
     );
@@ -37,7 +37,7 @@ class SelectionHandler {
     // Check if the tap hit any node
     String? tappedNode;
 
-    for (var entry in layoutPositions.entries) {
+    for (final entry in layoutPositions.entries) {
       final nodeRect = Rect.fromCenter(
         center: entry.value,
         width: 100 + hitTestMargin * 2, // Node width + margin

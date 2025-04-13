@@ -517,7 +517,7 @@ class _DomainListItemState extends State<DomainListItem>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.category, size: 10, color: accent),
-          SizedBox(width: 2),
+          const SizedBox(width: 2),
           Text(
             '@concept',
             style: TextStyle(
@@ -674,7 +674,7 @@ class DomainListItemAdapter<T extends Entity<T>>
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 16),
-        Text('This is a placeholder for the detail view.'),
+        const Text('This is a placeholder for the detail view.'),
       ],
     );
   }
@@ -695,7 +695,7 @@ class DomainListItemAdapter<T extends Entity<T>>
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 16),
-        Text('This is a placeholder for the form.'),
+        const Text('This is a placeholder for the form.'),
       ],
     );
   }

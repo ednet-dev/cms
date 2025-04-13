@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ednet_core/ednet_core.dart';
 import 'mock_domain_factory.dart';
 
 void main() {

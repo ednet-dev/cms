@@ -77,34 +77,34 @@ class ZoomHandler {
   void centerAndZoom(Size canvasSize, Map<String, Offset> layoutPositions) {
     if (layoutPositions.isEmpty) return;
 
-    final double minX = layoutPositions.values
+    final minX = layoutPositions.values
         .map((offset) => offset.dx)
         .reduce((a, b) => a < b ? a : b);
-    final double maxX = layoutPositions.values
+    final maxX = layoutPositions.values
         .map((offset) => offset.dx)
         .reduce((a, b) => a > b ? a : b);
-    final double minY = layoutPositions.values
+    final minY = layoutPositions.values
         .map((offset) => offset.dy)
         .reduce((a, b) => a < b ? a : b);
-    final double maxY = layoutPositions.values
+    final maxY = layoutPositions.values
         .map((offset) => offset.dy)
         .reduce((a, b) => a > b ? a : b);
 
-    final double graphWidth = maxX - minX;
-    final double graphHeight = maxY - minY;
+    final graphWidth = maxX - minX;
+    final graphHeight = maxY - minY;
 
     // Apply some padding
-    final double paddingFactor = 400;
-    final double scaleX = canvasSize.width / (graphWidth + 2 * paddingFactor);
-    final double scaleY = canvasSize.height / (graphHeight + 2 * paddingFactor);
-    final double scale = (scaleX < scaleY ? scaleX : scaleY).clamp(
+    const double paddingFactor = 400;
+    final scaleX = canvasSize.width / (graphWidth + 2 * paddingFactor);
+    final scaleY = canvasSize.height / (graphHeight + 2 * paddingFactor);
+    final scale = (scaleX < scaleY ? scaleX : scaleY).clamp(
       minZoom,
       maxZoom,
     );
 
-    final double offsetX =
+    final offsetX =
         (canvasSize.width - graphWidth * scale) / 2 - minX * scale;
-    final double offsetY =
+    final offsetY =
         (canvasSize.height - graphHeight * scale) / 2 - minY * scale;
 
     transformationController.value = Matrix4.identity()

@@ -52,7 +52,7 @@ class VisualizationSystem extends AggregateRoot<VisualizationSystem> {
 
   /// Update a node with a new version
   void updateNode(VisualNode oldNode, VisualNode newNode) {
-    int index = _nodes.indexOf(oldNode);
+    final index = _nodes.indexOf(oldNode);
     if (index >= 0) {
       recordEvent(
         'NodeUpdated',
@@ -83,7 +83,7 @@ class VisualizationSystem extends AggregateRoot<VisualizationSystem> {
   /// Find a node at the given position
   VisualNode? findNodeAt(Offset position) {
     // Check in reverse order to prioritize nodes drawn on top
-    for (int i = _nodes.length - 1; i >= 0; i--) {
+    for (var i = _nodes.length - 1; i >= 0; i--) {
       if (_nodes[i].contains(position)) {
         return _nodes[i];
       }
@@ -103,10 +103,10 @@ class VisualizationSystem extends AggregateRoot<VisualizationSystem> {
 
   /// Set the selected node
   void selectNode(String? label) {
-    final List<VisualNode> updatedNodes = [];
+    final updatedNodes = <VisualNode>[];
 
     for (final node in _nodes) {
-      final bool shouldBeSelected = node.label == label;
+      final shouldBeSelected = node.label == label;
 
       // Only create a new node if selection state changes
       if (node.isSelected != shouldBeSelected) {
@@ -133,7 +133,7 @@ class VisualizationSystem extends AggregateRoot<VisualizationSystem> {
   bool _nodesEqual(List<VisualNode> list1, List<VisualNode> list2) {
     if (list1.length != list2.length) return false;
 
-    for (int i = 0; i < list1.length; i++) {
+    for (var i = 0; i < list1.length; i++) {
       if (list1[i] != list2[i]) return false;
     }
 
@@ -142,7 +142,7 @@ class VisualizationSystem extends AggregateRoot<VisualizationSystem> {
 
   /// Apply the given event to update the system's state
   @override
-  void applyEvent(dynamic event) {
+  void applyEvent(event) {
     // This would normally update state based on event type
     // but we're directly modifying state in the command methods
   }

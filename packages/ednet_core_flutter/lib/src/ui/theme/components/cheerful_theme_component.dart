@@ -105,7 +105,7 @@ class CheerfulThemeComponent implements ThemeComponent {
   /// Build the dark cheerful theme with Material 3 design
   ThemeData _buildDarkTheme() {
     // Use dark amber as primary color for cheerful theme in dark mode
-    final ColorScheme colorScheme = ColorScheme.fromSeed(
+    final colorScheme = ColorScheme.fromSeed(
       seedColor: const Color(0xFFFFD54F),
       brightness: Brightness.dark,
       primary: const Color(0xFFFFD54F),
@@ -151,7 +151,7 @@ class CheerfulThemeComponent implements ThemeComponent {
   /// Build the light cheerful theme with Material 3 design
   ThemeData _buildLightTheme() {
     // Use amber as primary color for cheerful theme in light mode
-    final ColorScheme colorScheme = ColorScheme.fromSeed(
+    final colorScheme = ColorScheme.fromSeed(
       seedColor: const Color(0xFFFFB300), // Amber base
       brightness: Brightness.light,
       primary: const Color(0xFFFFB300),
@@ -205,7 +205,7 @@ class CheerfulThemeComponent implements ThemeComponent {
         : ThemeData.light().textTheme;
 
     // Select status bar style based on theme brightness
-    final SystemUiOverlayStyle statusBarStyle = brightness == Brightness.light
+    final statusBarStyle = brightness == Brightness.light
         ? SystemUiOverlayStyle.dark.copyWith(
             statusBarColor: Colors.transparent,
             systemNavigationBarColor: colorScheme.surface,
@@ -375,36 +375,36 @@ class CheerfulThemeComponent implements ThemeComponent {
         unselectedLabelStyle: textTheme.titleSmall,
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.disabled)) {
+        thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
             return colorScheme.onSurface.withOpacity(0.38);
           }
-          if (states.contains(MaterialState.selected)) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
           return colorScheme.outline;
         }),
-        trackColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.disabled)) {
+        trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
             return colorScheme.onSurface.withOpacity(0.12);
           }
-          if (states.contains(MaterialState.selected)) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primaryContainer;
           }
           return colorScheme.surfaceContainerHighest;
         }),
       ),
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.disabled)) {
+        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
             return colorScheme.onSurface.withOpacity(0.38);
           }
-          if (states.contains(MaterialState.selected)) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
           return Colors.transparent;
         }),
-        checkColor: MaterialStateProperty.all(colorScheme.onPrimary),
+        checkColor: WidgetStateProperty.all(colorScheme.onPrimary),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         side: BorderSide(color: colorScheme.outline, width: 1.5),
       ),

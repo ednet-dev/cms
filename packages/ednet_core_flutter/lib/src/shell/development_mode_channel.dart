@@ -80,7 +80,7 @@ class DevelopmentModeChannelAdapter {
     if (!_isDevModeActive) return;
 
     // Extract concept code from the message
-    final String? conceptCode = message.payload['conceptCode'] as String?;
+    final conceptCode = message.payload['conceptCode'] as String?;
     if (conceptCode == null) return;
 
     try {
@@ -120,7 +120,7 @@ class DevelopmentModeChannelAdapter {
     if (!_isDevModeActive) return;
 
     // Extract concept code from the message
-    final String? conceptCode = message.payload['conceptCode'] as String?;
+    final conceptCode = message.payload['conceptCode'] as String?;
     if (conceptCode == null) return;
 
     // Clear data (implementation would depend on repository details)
@@ -165,21 +165,21 @@ class DevelopmentModeChannelAdapter {
           'title': 'Implement dev mode channel',
           'status': 'completed',
           'priority': 'high',
-          'dueDate': DateTime.now().add(Duration(days: 2)).toIso8601String(),
+          'dueDate': DateTime.now().add(const Duration(days: 2)).toIso8601String(),
         },
         {
           'id': 'task-sample-2',
           'title': 'Test channel adapters',
           'status': 'in_progress',
           'priority': 'medium',
-          'dueDate': DateTime.now().add(Duration(days: 5)).toIso8601String(),
+          'dueDate': DateTime.now().add(const Duration(days: 5)).toIso8601String(),
         },
         {
           'id': 'task-sample-3',
           'title': 'Document the implementation',
           'status': 'not_started',
           'priority': 'low',
-          'dueDate': DateTime.now().add(Duration(days: 10)).toIso8601String(),
+          'dueDate': DateTime.now().add(const Duration(days: 10)).toIso8601String(),
         },
       ]);
     } else if (conceptCode == 'Project') {
@@ -189,8 +189,8 @@ class DevelopmentModeChannelAdapter {
           'name': 'Channel Adapter Implementation',
           'description': 'Implement the Channel Adapter pattern for dev mode',
           'startDate':
-              DateTime.now().subtract(Duration(days: 10)).toIso8601String(),
-          'endDate': DateTime.now().add(Duration(days: 20)).toIso8601String(),
+              DateTime.now().subtract(const Duration(days: 10)).toIso8601String(),
+          'endDate': DateTime.now().add(const Duration(days: 20)).toIso8601String(),
           'budget': 5000.0,
         },
         {
@@ -199,7 +199,7 @@ class DevelopmentModeChannelAdapter {
           'description':
               'Integrate the adapter pattern with the core libraries',
           'startDate': DateTime.now().toIso8601String(),
-          'endDate': DateTime.now().add(Duration(days: 45)).toIso8601String(),
+          'endDate': DateTime.now().add(const Duration(days: 45)).toIso8601String(),
           'budget': 12000.0,
         },
       ]);
@@ -240,8 +240,8 @@ class DevelopmentModeControlPanel extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.code, color: Colors.purple),
-                SizedBox(width: 8),
+                const Icon(Icons.code, color: Colors.purple),
+                const SizedBox(width: 8),
                 Text(
                   'Development Mode',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -249,7 +249,7 @@ class DevelopmentModeControlPanel extends StatelessWidget {
                         color: Colors.purple,
                       ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Switch(
                   value: adapter.isDevModeActive,
                   onChanged: (_) => _toggleDevMode(),
@@ -258,32 +258,32 @@ class DevelopmentModeControlPanel extends StatelessWidget {
               ],
             ),
             if (adapter.isDevModeActive) ...[
-              SizedBox(height: 16),
-              Text('Sample Data Tools'),
-              SizedBox(height: 8),
+              const SizedBox(height: 16),
+              const Text('Sample Data Tools'),
+              const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: [
                   ElevatedButton.icon(
-                    icon: Icon(Icons.add),
-                    label: Text('Load Tasks'),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Load Tasks'),
                     onPressed: () => _loadSampleData('Task'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[200],
                     ),
                   ),
                   ElevatedButton.icon(
-                    icon: Icon(Icons.add),
-                    label: Text('Load Projects'),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Load Projects'),
                     onPressed: () => _loadSampleData('Project'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[200],
                     ),
                   ),
                   ElevatedButton.icon(
-                    icon: Icon(Icons.cleaning_services),
-                    label: Text('Clear All'),
+                    icon: const Icon(Icons.cleaning_services),
+                    label: const Text('Clear All'),
                     onPressed: _clearAllSampleData,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[300],

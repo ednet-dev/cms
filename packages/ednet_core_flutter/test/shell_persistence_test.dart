@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:ednet_core/ednet_core.dart';
-import 'package:ednet_core_flutter/ednet_core_flutter.dart';
 
 /// Simple in-memory repository implementation for tests
 class TestRepository {

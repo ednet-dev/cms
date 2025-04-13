@@ -156,13 +156,13 @@ class ShellDomainManager extends ChangeNotifier {
       return false;
     }
 
-    for (var domain in _domains) {
+    for (final domain in _domains) {
       if (domain.models.isEmpty) {
         print('Warning: Domain ${domain.code} has no models');
         continue;
       }
 
-      for (var model in domain.models) {
+      for (final model in domain.models) {
         if (model.concepts.isEmpty) {
           print(
               'Warning: Model ${model.code} in domain ${domain.code} has no concepts');
@@ -182,7 +182,7 @@ class ShellDomainManager extends ChangeNotifier {
   Future<void> initializePersistence() async {
     // This is a simplified version as the actual persistence implementation
     // would depend on the specific domain model capabilities
-    for (var domain in _domains) {
+    for (final domain in _domains) {
       print('Initializing persistence for domain: ${domain.code}');
     }
   }

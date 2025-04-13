@@ -27,27 +27,27 @@ abstract class LayoutAlgorithm {
 class GridLayoutAlgorithm implements LayoutAlgorithm {
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
-    final Map<String, Offset> positions = {};
+    final positions = <String, Offset>{};
     final entities = _collectAllEntities(domains);
 
     if (entities.isEmpty) return positions;
 
     // Calculate grid dimensions
-    final int columns = math.sqrt(entities.length).ceil();
-    final int rows = (entities.length / columns).ceil();
+    final columns = math.sqrt(entities.length).ceil();
+    final rows = (entities.length / columns).ceil();
 
     // Calculate cell size
-    final double cellWidth = size.width / columns;
-    final double cellHeight = size.height / rows;
+    final cellWidth = size.width / columns;
+    final cellHeight = size.height / rows;
 
     // Position entities in grid cells
-    for (int i = 0; i < entities.length; i++) {
-      final int row = i ~/ columns;
-      final int col = i % columns;
+    for (var i = 0; i < entities.length; i++) {
+      final row = i ~/ columns;
+      final col = i % columns;
 
       // Position in the center of the cell
-      final double x = col * cellWidth + cellWidth / 2;
-      final double y = row * cellHeight + cellHeight / 2;
+      final x = col * cellWidth + cellWidth / 2;
+      final y = row * cellHeight + cellHeight / 2;
 
       positions[entities[i]] = Offset(x, y);
     }
@@ -57,7 +57,7 @@ class GridLayoutAlgorithm implements LayoutAlgorithm {
 
   /// Collect all entity codes from domains, models, concepts, etc.
   List<String> _collectAllEntities(Domains domains) {
-    final List<String> entities = [];
+    final entities = <String>[];
 
     // Add domain codes
     for (final domain in domains) {
@@ -103,25 +103,25 @@ class GridLayoutAlgorithm implements LayoutAlgorithm {
 class CircularLayoutAlgorithm implements LayoutAlgorithm {
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
-    final Map<String, Offset> positions = {};
+    final positions = <String, Offset>{};
 
     // Center of the canvas
-    final Offset center = Offset(size.width / 2, size.height / 2);
+    final center = Offset(size.width / 2, size.height / 2);
 
     // Maximum radius is the smaller of width/2 or height/2
-    final double maxRadius = math.min(size.width, size.height) / 2 * 0.8;
+    final maxRadius = math.min(size.width, size.height) / 2 * 0.8;
 
     // Position domains in a circle in the center
-    final int domainCount = domains.length;
-    double domainRadius = maxRadius * 0.2;
+    final domainCount = domains.length;
+    final domainRadius = maxRadius * 0.2;
 
     // Position domains
     _positionEntitiesInCircle(
         domains.map((d) => d.code).toList(), center, domainRadius, positions);
 
     // Position models in the next circle
-    double modelRadius = maxRadius * 0.5;
-    for (int i = 0; i < domains.length; i++) {
+    final modelRadius = maxRadius * 0.5;
+    for (var i = 0; i < domains.length; i++) {
       final domain = domains[i];
 
       // Get domain position
@@ -132,7 +132,7 @@ class CircularLayoutAlgorithm implements LayoutAlgorithm {
           domainPosition, modelRadius / domainCount, positions);
 
       // Position concepts for each model
-      double conceptRadius = maxRadius * 0.75;
+      final conceptRadius = maxRadius * 0.75;
       for (final model in domain.models) {
         // Get model position
         final modelPosition = positions[model.code] ?? center;
@@ -165,9 +165,9 @@ class CircularLayoutAlgorithm implements LayoutAlgorithm {
       double radius, Map<String, Offset> positions) {
     if (entities.isEmpty) return;
 
-    final double angleStep = 2 * math.pi / entities.length;
+    final angleStep = 2 * math.pi / entities.length;
 
-    for (int i = 0; i < entities.length; i++) {
+    for (var i = 0; i < entities.length; i++) {
       final angle = i * angleStep;
       final x = center.dx + radius * math.cos(angle);
       final y = center.dy + radius * math.sin(angle);
@@ -194,7 +194,7 @@ class CircularLayoutAlgorithm implements LayoutAlgorithm {
 class ForceDirectedLayoutAlgorithm implements LayoutAlgorithm {
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
-    final Map<String, Offset> positions = {};
+    final positions = <String, Offset>{};
 
     // First initialize with a simpler layout to avoid overlaps
     final initialLayout = GridLayoutAlgorithm().calculateLayout(domains, size);
@@ -222,24 +222,24 @@ class ForceDirectedLayoutAlgorithm implements LayoutAlgorithm {
 class RankedEmbeddingLayoutAlgorithm implements LayoutAlgorithm {
   @override
   Map<String, Offset> calculateLayout(Domains domains, Size size) {
-    final Map<String, Offset> positions = {};
+    final positions = <String, Offset>{};
     final entities = _collectAllEntities(domains);
 
     if (entities.isEmpty) return positions;
 
     // Calculate number of domains
-    final int domainCount = domains.length;
+    final domainCount = domains.length;
 
     // Calculate domain spacing
-    final double domainWidth = size.width / domainCount;
+    final domainWidth = size.width / domainCount;
 
     // Position domains
-    for (int i = 0; i < domains.length; i++) {
+    for (var i = 0; i < domains.length; i++) {
       final domain = domains[i];
 
       // Position domain at the top center of its section
-      final double x = i * domainWidth + domainWidth / 2;
-      final double y = 50.0;
+      final x = i * domainWidth + domainWidth / 2;
+      const y = 50.0;
 
       positions[domain.code] = Offset(x, y);
 
@@ -256,16 +256,16 @@ class RankedEmbeddingLayoutAlgorithm implements LayoutAlgorithm {
       double height, Map<String, Offset> positions) {
     if (domain.models.isEmpty) return;
 
-    final int modelCount = domain.models.length;
-    final double modelWidth = width / modelCount;
+    final modelCount = domain.models.length;
+    final modelWidth = width / modelCount;
 
-    for (int i = 0; i < domain.models.length; i++) {
+    for (var i = 0; i < domain.models.length; i++) {
       final model = domain.models[i];
 
       // Position model below its domain
-      final double x =
+      final x =
           domainPosition.dx - width / 2 + i * modelWidth + modelWidth / 2;
-      final double y = domainPosition.dy + 100.0;
+      final y = domainPosition.dy + 100.0;
 
       positions[model.code] = Offset(x, y);
 
@@ -279,16 +279,16 @@ class RankedEmbeddingLayoutAlgorithm implements LayoutAlgorithm {
       double height, Map<String, Offset> positions) {
     if (model.concepts.isEmpty) return;
 
-    final int conceptCount = model.concepts.length;
-    final double conceptWidth = width / conceptCount;
+    final conceptCount = model.concepts.length;
+    final conceptWidth = width / conceptCount;
 
-    for (int i = 0; i < model.concepts.length; i++) {
+    for (var i = 0; i < model.concepts.length; i++) {
       final concept = model.concepts[i];
 
       // Position concept below its model
-      final double x =
+      final x =
           modelPosition.dx - width / 2 + i * conceptWidth + conceptWidth / 2;
-      final double y = modelPosition.dy + 100.0;
+      final y = modelPosition.dy + 100.0;
 
       positions[concept.code] = Offset(x, y);
 
@@ -305,18 +305,18 @@ class RankedEmbeddingLayoutAlgorithm implements LayoutAlgorithm {
 
     if (properties.isEmpty) return;
 
-    final int propertyCount = properties.length;
-    final double propertyWidth = width / propertyCount;
+    final propertyCount = properties.length;
+    final propertyWidth = width / propertyCount;
 
-    for (int i = 0; i < properties.length; i++) {
+    for (var i = 0; i < properties.length; i++) {
       final property = properties[i];
 
       // Position property below its concept
-      final double x = conceptPosition.dx -
+      final x = conceptPosition.dx -
           width / 2 +
           i * propertyWidth +
           propertyWidth / 2;
-      final double y = conceptPosition.dy + 100.0;
+      final y = conceptPosition.dy + 100.0;
 
       positions[property.code] = Offset(x, y);
     }
@@ -324,7 +324,7 @@ class RankedEmbeddingLayoutAlgorithm implements LayoutAlgorithm {
 
   /// Collect all entity codes from domains, models, concepts, etc.
   List<String> _collectAllEntities(Domains domains) {
-    final List<String> entities = [];
+    final entities = <String>[];
 
     // Add domain codes
     for (final domain in domains) {

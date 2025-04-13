@@ -121,7 +121,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   }
 
   /// Update field value and validate if needed
-  void _updateField(String fieldName, dynamic value) {
+  void _updateField(String fieldName, value) {
     setState(() {
       _formData[fieldName] = value;
       _touchedFields.add(fieldName);
@@ -137,7 +137,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   }
 
   /// Validate a single field
-  bool _validateField(String fieldName, dynamic value) {
+  bool _validateField(String fieldName, value) {
     // Find the field descriptor
     final field = _fields.firstWhere(
       (f) => f.fieldName == fieldName,
@@ -172,7 +172,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
     }
 
     // Run any additional validation on fields
-    bool isFieldValid = true;
+    var isFieldValid = true;
     for (final field in _fields) {
       final value = _formData[field.fieldName];
 
@@ -249,7 +249,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
     }
 
     // Build indicators based on field properties
-    final List<Widget> indicators = [];
+    final indicators = <Widget>[];
 
     // Required field indicator
     if (field.required) {
@@ -380,7 +380,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   /// Build a text field
   Widget _buildTextField(
     UXFieldDescriptor field,
-    dynamic value,
+    value,
     String? errorText,
     Widget Function(String) labelBuilder,
   ) {
@@ -409,7 +409,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   /// Build a multi-line text field
   Widget _buildLongTextField(
     UXFieldDescriptor field,
-    dynamic value,
+    value,
     String? errorText,
     Widget Function(String) labelBuilder,
   ) {
@@ -439,7 +439,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   /// Build a number field
   Widget _buildNumberField(
     UXFieldDescriptor field,
-    dynamic value,
+    value,
     String? errorText,
     Widget Function(String) labelBuilder,
   ) {
@@ -485,7 +485,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   /// Build a date field
   Widget _buildDateField(
     UXFieldDescriptor field,
-    dynamic value,
+    value,
     String? errorText,
     Widget Function(String) labelBuilder,
   ) {
@@ -547,7 +547,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   }
 
   /// Build a checkbox field
-  Widget _buildCheckboxField(UXFieldDescriptor field, dynamic value) {
+  Widget _buildCheckboxField(UXFieldDescriptor field, value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: CheckboxListTile(
@@ -562,7 +562,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   /// Build a dropdown field
   Widget _buildDropdownField(
     UXFieldDescriptor field,
-    dynamic value,
+    value,
     String? errorText,
     Widget Function(String) labelBuilder,
   ) {
@@ -600,7 +600,7 @@ class _ConstraintValidatedFormState extends State<ConstraintValidatedForm> {
   /// Build a radio field
   Widget _buildRadioField(
     UXFieldDescriptor field,
-    dynamic value,
+    value,
     String? errorText,
     Widget Function(String) labelBuilder,
   ) {

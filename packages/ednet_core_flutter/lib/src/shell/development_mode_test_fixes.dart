@@ -171,7 +171,7 @@ class ShellApp {
 /// Development Mode Channel Adapter
 class DevelopmentModeChannelAdapter {
   final ShellApp shellApp;
-  bool _isDevModeActive = false;
+  final bool _isDevModeActive = false;
 
   bool get isDevModeActive => _isDevModeActive;
 
@@ -205,8 +205,8 @@ class _DevelopmentModeControlPanelState
           children: [
             Row(
               children: [
-                Icon(Icons.code, color: Colors.purple),
-                SizedBox(width: 8),
+                const Icon(Icons.code, color: Colors.purple),
+                const SizedBox(width: 8),
                 Text(
                   'Development Mode',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -214,7 +214,7 @@ class _DevelopmentModeControlPanelState
                         color: Colors.purple,
                       ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Switch(
                   value: widget.adapter.isDevModeActive || _showSampleDataTools,
                   onChanged: (value) {
@@ -229,24 +229,24 @@ class _DevelopmentModeControlPanelState
               ],
             ),
             if (widget.adapter.isDevModeActive || _showSampleDataTools) ...[
-              SizedBox(height: 16),
-              Text('Sample Data Tools'),
-              SizedBox(height: 8),
+              const SizedBox(height: 16),
+              const Text('Sample Data Tools'),
+              const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: [
                   ElevatedButton.icon(
-                    icon: Icon(Icons.add),
-                    label: Text('Load Tasks'),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Load Tasks'),
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[200],
                     ),
                   ),
                   ElevatedButton.icon(
-                    icon: Icon(Icons.add),
-                    label: Text('Load Projects'),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Load Projects'),
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[200],

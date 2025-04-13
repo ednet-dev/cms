@@ -130,7 +130,7 @@ class ThemeTextStyles {
     String? themeName,
   }) {
     final theme = Theme.of(context);
-    Color textColor = color ?? ThemeColors.getDisclosureLevelColor(level);
+    final textColor = color ?? ThemeColors.getDisclosureLevelColor(level);
     double textSize;
     FontWeight textWeight;
 
@@ -239,7 +239,7 @@ class ThemeTextStyles {
     FontWeight? fontWeight,
     String? themeName,
   }) {
-    Color color = SemanticColors.forDomainType(type);
+    final color = SemanticColors.forDomainType(type);
     return forDisclosureLevel(
       level,
       context,

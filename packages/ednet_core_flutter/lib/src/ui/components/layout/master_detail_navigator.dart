@@ -429,7 +429,7 @@ class _MasterDetailNavigatorState extends State<MasterDetailNavigator> {
   Widget _buildEntitiesColumn() {
     // This would fetch entities for the selected concept
     // For this example, we're using placeholders
-    final List<Entity> entities = []; // This would be populated from repository
+    final entities = <Entity>[]; // This would be populated from repository
 
     return SizedBox(
       width: 240,
@@ -596,7 +596,7 @@ class _MasterDetailNavigatorState extends State<MasterDetailNavigator> {
   Map<String, dynamic> _getEntityData(Entity entity) {
     // Implementation depends on the Entity class implementation
     // For now, return a simple map with the entity code
-    final Map<String, dynamic> data = {'code': entity.code};
+    final data = <String, dynamic>{'code': entity.code};
 
     // Add all attributes from the entity
     // In a real implementation, you would get these from the actual entity
@@ -615,7 +615,7 @@ class _MasterDetailNavigatorState extends State<MasterDetailNavigator> {
     }
 
     // Get parent-child relationships defined in the concept
-    final List<RelationDefinition> relationDefs =
+    final relationDefs =
         _getConceptRelations(_selectedEntity!.concept);
 
     if (relationDefs.isEmpty) {

@@ -42,7 +42,7 @@ class VisualNode extends ValueObject {
     this.isSelected = false,
     this.weight = 1.0,
     Map<String, dynamic>? data,
-  }) : this.data = data ?? {} {
+  }) : data = data ?? {} {
     validate();
   }
 
@@ -148,10 +148,8 @@ class VisualNode extends ValueObject {
   Color _getContrastColor(Color background) {
     // Calculate perceived brightness using the formula
     // (299*R + 587*G + 114*B) / 1000
-    final brightness = (299 * background.red +
-            587 * background.green +
-            114 * background.blue) /
-        1000;
+    final brightness =
+        (299 * background.r + 587 * background.g + 114 * background.b) / 1000;
 
     // Use white for dark backgrounds, black for light backgrounds
     return brightness > 125 ? Colors.black : Colors.white;
@@ -232,7 +230,7 @@ class LineNode extends VisualNode {
       isSelected: isSelected ?? this.isSelected,
       weight: weight ?? this.weight,
       data: data ?? this.data,
-    ) as LineNode;
+    );
   }
 
   @override
@@ -271,7 +269,7 @@ class LineNode extends VisualNode {
       color: Colors.white,
       fontSize: 10,
       fontWeight: FontWeight.normal,
-      backgroundColor: Colors.black.withOpacity(0.5),
+      backgroundColor: Colors.black.withValues(alpha: 128),
     );
 
     final textSpan = TextSpan(
@@ -339,20 +337,20 @@ class LineNode extends VisualNode {
   /// Draw an arrow at the end of the line
   void _drawArrow(Canvas canvas, Offset start, Offset end, Paint linePaint) {
     // Calculate direction vector
-    final double dx = end.dx - start.dx;
-    final double dy = end.dy - start.dy;
-    final double distance = math.sqrt(dx * dx + dy * dy);
+    final dx = end.dx - start.dx;
+    final dy = end.dy - start.dy;
+    final distance = math.sqrt(dx * dx + dy * dy);
 
     // Normalize direction vector
-    final double dirX = distance > 0 ? dx / distance : 0;
-    final double dirY = distance > 0 ? dy / distance : 0;
-    final direction = Offset(dirX, dirY);
+    final dirX = distance > 0 ? dx / distance : 0;
+    final dirY = distance > 0 ? dy / distance : 0;
+    final direction = Offset(dirX.toDouble(), dirY.toDouble());
 
     // Calculate perpendicular vectors
-    final perpendicular = Offset(-dirY, dirX);
+    final perpendicular = Offset(-dirY.toDouble(), dirX.toDouble());
 
     // Calculate arrow points
-    final arrowSize = 10.0;
+    const arrowSize = 10.0;
     final tip = end - direction * 5.0; // Pull back slightly from the end
     final side1 = tip - direction * arrowSize + perpendicular * arrowSize * 0.5;
     final side2 = tip - direction * arrowSize - perpendicular * arrowSize * 0.5;

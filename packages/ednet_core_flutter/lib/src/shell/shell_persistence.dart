@@ -116,7 +116,7 @@ class DevelopmentRepository {
       'title': title,
       'priority': priority,
       'status': status,
-      'dueDate': DateTime.now().add(Duration(days: 7)).toIso8601String(),
+      'dueDate': DateTime.now().add(const Duration(days: 7)).toIso8601String(),
     };
   }
 
@@ -126,7 +126,7 @@ class DevelopmentRepository {
       'name': name,
       'description': description,
       'startDate': DateTime.now().toIso8601String(),
-      'endDate': DateTime.now().add(Duration(days: 90)).toIso8601String(),
+      'endDate': DateTime.now().add(const Duration(days: 90)).toIso8601String(),
       'budget': 50000.0,
     };
   }
@@ -180,7 +180,7 @@ class RepositoryAdapterChain {
   }
 
   dynamic getRepository(String conceptCode, Concept? concept) {
-    for (var adapter in _adapters) {
+    for (final adapter in _adapters) {
       if (adapter.canHandle(conceptCode, concept)) {
         return adapter.getRepository(conceptCode, concept);
       }

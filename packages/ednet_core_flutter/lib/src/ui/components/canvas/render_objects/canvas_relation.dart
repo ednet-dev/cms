@@ -119,7 +119,7 @@ class CanvasRelation extends ValueObject {
   }
 
   /// Add metadata to this relationship
-  CanvasRelation withMetadata(String key, dynamic value) {
+  CanvasRelation withMetadata(String key, value) {
     final newMetadata = Map<String, dynamic>.from(metadata);
     newMetadata[key] = value;
     return copyWith(metadata: newMetadata);

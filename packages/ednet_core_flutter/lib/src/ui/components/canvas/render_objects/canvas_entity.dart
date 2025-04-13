@@ -71,7 +71,7 @@ class CanvasEntity extends ValueObject {
   }
 
   /// Add metadata to this entity
-  CanvasEntity withMetadata(String key, dynamic value) {
+  CanvasEntity withMetadata(String key, value) {
     final newMetadata = Map<String, dynamic>.from(metadata);
     newMetadata[key] = value;
     return copyWith(metadata: newMetadata);

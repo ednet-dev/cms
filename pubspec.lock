@@ -203,11 +203,25 @@ packages:
   ednet_core:
     dependency: "direct overridden"
     description:
-      name: ednet_core
-      sha256: "3e101f3ded715c59f7c6f24bbfea254a3edaddb8fab583b9a54569ffda4cbc96"
+      path: "packages/core"
+      relative: true
+    source: path
+    version: "1.0.0"
+  ednet_core_flutter:
+    dependency: "direct overridden"
+    description:
+      path: "packages/ednet_core_flutter"
+      relative: true
+    source: path
+    version: "0.1.0"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.7"
   expressions:
     dependency: transitive
     description:
@@ -319,6 +333,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.20.2"
   io:
     dependency: transitive
     description:

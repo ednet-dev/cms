@@ -19,7 +19,7 @@ extension ShellAppDomainExtension on ShellApp {
 
   /// Access to the domain manager
   ShellDomainManager? get domainManager =>
-      _domainManager as ShellDomainManager?;
+      _domainManager;
 
   /// Switch to a different domain by index
   void switchToDomain(int domainIndex) {
@@ -110,7 +110,7 @@ class _DomainSelectorState extends State<DomainSelector> {
     }
 
     final domains = domainManager.domains;
-    final effectiveStyle = widget.style ?? DomainSelectorStyle();
+    final effectiveStyle = widget.style ?? const DomainSelectorStyle();
 
     switch (effectiveStyle.selectorType) {
       case DomainSelectorType.dropdown:

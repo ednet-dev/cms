@@ -88,7 +88,7 @@ class MetaDomainPainter extends CustomPainter {
     visualizationSystem.clear();
 
     // Calculate max level for color gradations
-    double maxLevel = _calculateMaxLevel(domains);
+    final maxLevel = _calculateMaxLevel(domains);
 
     // Create domain model visualization
     _createDomainVisualization(domains, positions, maxLevel);
@@ -100,10 +100,10 @@ class MetaDomainPainter extends CustomPainter {
 
   /// Calculate the maximum hierarchy level in the domain model
   double _calculateMaxLevel(Domains domains) {
-    double maxLevel = 1.0;
-    for (var domain in domains) {
-      for (var model in domain.models) {
-        for (var concept in model.concepts) {
+    var maxLevel = 1.0;
+    for (final domain in domains) {
+      for (final model in domain.models) {
+        for (final concept in model.concepts) {
           maxLevel = math.max(maxLevel, _getConceptLevel(concept, 1));
         }
       }
@@ -113,8 +113,8 @@ class MetaDomainPainter extends CustomPainter {
 
   /// Get the nesting level of a concept
   double _getConceptLevel(Concept concept, double currentLevel) {
-    double maxLevel = currentLevel;
-    for (var child in concept.children) {
+    var maxLevel = currentLevel;
+    for (final child in concept.children) {
       maxLevel = math.max(maxLevel, _getChildLevel(child, currentLevel + 1));
     }
     return maxLevel;
@@ -122,7 +122,7 @@ class MetaDomainPainter extends CustomPainter {
 
   /// Get the nesting level of a child property
   double _getChildLevel(Property child, double currentLevel) {
-    double maxLevel = currentLevel;
+    var maxLevel = currentLevel;
     if (child is Child) {
       maxLevel = math.max(
         maxLevel,
@@ -140,7 +140,7 @@ class MetaDomainPainter extends CustomPainter {
   ) {
     // Create nodes for domains, models, concepts and their relationships
     // Only create visualizations appropriate for the current disclosure level
-    for (var domain in domains) {
+    for (final domain in domains) {
       final domainPosition = positions[domain.code];
       if (domainPosition == null) continue;
 
@@ -158,14 +158,14 @@ class MetaDomainPainter extends CustomPainter {
     double maxLevel,
   ) {
     // Create domain node
-    Color domainColor = _entityPainter.getColorForEntity(
+    final domainColor = _entityPainter.getColorForEntity(
       domain,
       level,
       maxLevel,
     );
 
     // Create visual node for domain
-    VisualNode domainNode = _entityPainter.createVisualNode(
+    final domainNode = _entityPainter.createVisualNode(
       domain,
       domainPosition,
       domainColor,
@@ -187,19 +187,19 @@ class MetaDomainPainter extends CustomPainter {
     int level,
     double maxLevel,
   ) {
-    for (var model in domain.models) {
+    for (final model in domain.models) {
       final modelPosition = positions[model.code];
       if (modelPosition == null) continue;
 
       // Create model node
-      Color modelColor = _entityPainter.getColorForEntity(
+      final modelColor = _entityPainter.getColorForEntity(
         model,
         level + 1,
         maxLevel,
       );
 
       // Create visual node for model
-      VisualNode modelNode = _entityPainter.createVisualNode(
+      final modelNode = _entityPainter.createVisualNode(
         model,
         modelPosition,
         modelColor,
@@ -237,19 +237,19 @@ class MetaDomainPainter extends CustomPainter {
   ) {
     // Implementation for adding concept nodes and their relationships
     // This would be expanded based on disclosure level
-    for (var concept in model.concepts) {
+    for (final concept in model.concepts) {
       final conceptPosition = positions[concept.code];
       if (conceptPosition == null) continue;
 
       // Create concept node
-      Color conceptColor = _entityPainter.getColorForEntity(
+      final conceptColor = _entityPainter.getColorForEntity(
         concept,
         level + 2,
         maxLevel,
       );
 
       // Create visual node for concept
-      VisualNode conceptNode = _entityPainter.createVisualNode(
+      final conceptNode = _entityPainter.createVisualNode(
         concept,
         conceptPosition,
         conceptColor,
@@ -272,7 +272,7 @@ class MetaDomainPainter extends CustomPainter {
 
   /// Apply all decorators to the canvas
   Canvas _applyDecorators(Canvas canvas, Size size) {
-    Canvas resultCanvas = canvas;
+    var resultCanvas = canvas;
 
     // Apply each decorator in sequence
     for (final decorator in decorators) {

@@ -167,7 +167,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     final BuildContext? currentContext = context;
     if (currentContext == null) return;
 
-    final Size size = currentContext.size ?? const Size(1000, 1000);
+    final size = currentContext.size ?? const Size(1000, 1000);
 
     _layoutPositions = _currentAlgorithm.calculateLayout(
       widget.domains,
@@ -195,7 +195,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
   /// Creates domain model nodes from the domains data
   void _createDomainModelNodes(Domains domains, Map<String, Offset> positions) {
     // Calculate the maximum depth for color gradients
-    int maxLevel = _calculateMaxDepth(domains);
+    final maxLevel = _calculateMaxDepth(domains);
 
     // Create nodes for domains
     for (final domain in domains) {
@@ -205,7 +205,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
 
   /// Calculate the maximum depth of the domain model
   int _calculateMaxDepth(Domains domains) {
-    int maxDepth = 1;
+    var maxDepth = 1;
 
     // Apply disclosure level limits
     int maxAllowedDepth;
@@ -244,7 +244,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
 
   /// Get the depth of a concept in the hierarchy
   int _getConceptDepth(Concept concept, int currentDepth) {
-    int maxDepth = currentDepth;
+    var maxDepth = currentDepth;
 
     for (final child in concept.children) {
       maxDepth = math.max(maxDepth, _getChildDepth(child, currentDepth + 1));
@@ -255,7 +255,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
 
   /// Get the depth of a child property
   int _getChildDepth(Property child, int currentDepth) {
-    int maxDepth = currentDepth;
+    var maxDepth = currentDepth;
 
     if (child is Child) {
       maxDepth = math.max(
@@ -456,7 +456,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
   /// Get size based on level and disclosure setting
   double _getSizeForLevel(int level, DisclosureLevel disclosureLevel) {
     // Base sizes for each level
-    final Map<int, double> baseSizes = {
+    final baseSizes = <int, double>{
       1: 60.0, // Domain
       2: 50.0, // Model
       3: 40.0, // Concept
@@ -465,7 +465,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     };
 
     // Default to smaller size for deeper levels
-    double baseSize = baseSizes[level] ?? 20.0;
+    final baseSize = baseSizes[level] ?? 20.0;
 
     // Adjust size based on disclosure level
     switch (disclosureLevel) {
@@ -505,11 +505,11 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     final BuildContext? currentContext = context;
     if (currentContext == null) return;
 
-    final RenderBox? renderBox =
+    final renderBox =
         currentContext.findRenderObject() as RenderBox?;
     if (renderBox == null || !renderBox.hasSize) return;
 
-    final Size canvasSize = renderBox.size;
+    final canvasSize = renderBox.size;
     if (canvasSize.isEmpty) return;
 
     _zoomHandler.centerAndZoom(canvasSize, _layoutPositions);
@@ -529,11 +529,11 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     final BuildContext? currentContext = context;
     if (currentContext == null) return;
 
-    final RenderBox? renderBox =
+    final renderBox =
         currentContext.findRenderObject() as RenderBox?;
     if (renderBox == null || !renderBox.hasSize) return;
 
-    final Size size = renderBox.size;
+    final size = renderBox.size;
     if (size.isEmpty) return;
 
     // Calculate the visible area in scene coordinates
@@ -545,7 +545,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
 
     // Update entity states for nodes in visible rect
     // (This is a simplified version that doesn't use a spatial index yet)
-    for (var entry in _layoutPositions.entries) {
+    for (final entry in _layoutPositions.entries) {
       final nodeId = entry.key;
       final position = entry.value;
       final isVisible = visibleRect.contains(position);
@@ -576,7 +576,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
   /// Get a color for a specific level in the hierarchy
   Color _getColorForLevel(int level, int maxLevel) {
     // Use a hue-based gradient for different levels
-    final double hue = (level / (maxLevel + 1)) * 360;
+    final hue = (level / (maxLevel + 1)) * 360;
     return HSVColor.fromAHSV(
       1.0,
       hue,
@@ -595,7 +595,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     final BuildContext? currentContext = context;
     if (currentContext == null) return;
 
-    final RenderBox? renderBox =
+    final renderBox =
         currentContext.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
 
@@ -608,7 +608,7 @@ class UnifiedVisualizationCanvasState extends State<UnifiedVisualizationCanvas>
     final scenePoint = _transformationController.toScene(localPosition);
 
     // Find which node contains this point (if any)
-    for (var entry in _layoutPositions.entries) {
+    for (final entry in _layoutPositions.entries) {
       final nodeId = entry.key;
       final nodePos = entry.value;
 

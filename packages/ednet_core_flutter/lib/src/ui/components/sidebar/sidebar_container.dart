@@ -95,7 +95,7 @@ class _SidebarContainerState extends State<SidebarContainer> {
                   onItemSelected: (item) {
                     // Convert navigation item to path and call artifact selected callback
                     if (widget.onArtifactSelected != null) {
-                      String path = '/';
+                      var path = '/';
 
                       if (item.model != null) {
                         path = '/domain/${item.model!.code}';

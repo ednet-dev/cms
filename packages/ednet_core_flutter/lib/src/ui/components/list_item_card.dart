@@ -87,7 +87,7 @@ class ListItemCard extends StatelessWidget {
     Map<String, dynamic>? additionalProperties,
   }) {
     // Select appropriate icon based on entity type if not specified
-    IconData entityIcon = icon ?? _getIconForEntityType(entityType);
+    final entityIcon = icon ?? _getIconForEntityType(entityType);
 
     return ListItemCard(
       title: title,
@@ -125,7 +125,7 @@ class ListItemCard extends StatelessWidget {
 
     // Get theme-appropriate colors
     final theme = Theme.of(context);
-    final Color? iconColor =
+    final iconColor =
         theme.extension<SemanticColorsExtension>()?.getColorForType(entityType);
 
     return ListItemCard.forEntityType(

@@ -34,7 +34,7 @@ class ShellTheme {
     final themes = isDarkMode ? _darkThemes : _lightThemes;
 
     // Create base theme
-    ThemeData baseTheme = themes[effectiveStyle] ??
+    var baseTheme = themes[effectiveStyle] ??
         (isDarkMode ? _minimalisticDarkTheme : _minimalisticLightTheme);
 
     // Apply custom colors from configuration if available
@@ -51,7 +51,7 @@ class ShellTheme {
     Map<String, dynamic> customColors,
   ) {
     // Create a new colorScheme with custom colors
-    ColorScheme colorScheme = theme.colorScheme;
+    var colorScheme = theme.colorScheme;
 
     if (customColors.containsKey('primary')) {
       final primaryColor = Color(customColors['primary']);
@@ -134,24 +134,22 @@ class ShellTheme {
 
 /// Dark CLI theme with terminal-like appearance
 final ThemeData _cliDarkTheme = ThemeData(
-  colorScheme: ColorScheme.dark(
+  colorScheme: const ColorScheme.dark(
     primary: ThemeColors.darkPrimary,
     secondary: ThemeColors.darkSecondary,
     surface: ThemeColors.darkSurface,
-    background: ThemeColors.darkBackground,
     onSurface: ThemeColors.darkOnSurface,
-    onBackground: ThemeColors.darkOnBackground,
     error: ThemeColors.darkError,
     onError: ThemeColors.darkOnError,
   ),
   scaffoldBackgroundColor: ThemeColors.darkBackground,
-  appBarTheme: AppBarTheme(
+  appBarTheme: const AppBarTheme(
     backgroundColor: ThemeColors.darkBackground,
     foregroundColor: ThemeColors.darkPrimary,
     elevation: 0,
   ),
   textTheme: _buildCliTextTheme(ThemeColors.darkPrimary),
-  inputDecorationTheme: InputDecorationTheme(
+  inputDecorationTheme: const InputDecorationTheme(
     border: InputBorder.none,
     enabledBorder: InputBorder.none,
     focusedBorder: InputBorder.none,
@@ -161,35 +159,33 @@ final ThemeData _cliDarkTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: ThemeColors.darkPrimary,
       foregroundColor: ThemeColors.darkBackground,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       elevation: 0,
     ),
   ),
-  iconTheme: IconThemeData(color: ThemeColors.darkPrimary),
+  iconTheme: const IconThemeData(color: ThemeColors.darkPrimary),
   visualDensity: VisualDensity.compact,
   useMaterial3: true,
 );
 
 /// Light CLI theme with clean, minimal appearance
 final ThemeData _cliLightTheme = ThemeData(
-  colorScheme: ColorScheme.light(
+  colorScheme: const ColorScheme.light(
     primary: ThemeColors.lightPrimary,
     secondary: ThemeColors.lightSecondary,
     surface: ThemeColors.lightSurface,
-    background: ThemeColors.lightBackground,
     onSurface: ThemeColors.lightOnSurface,
-    onBackground: ThemeColors.lightOnBackground,
     error: ThemeColors.lightError,
     onError: ThemeColors.lightOnError,
   ),
   scaffoldBackgroundColor: ThemeColors.lightBackground,
-  appBarTheme: AppBarTheme(
+  appBarTheme: const AppBarTheme(
     backgroundColor: ThemeColors.lightBackground,
     foregroundColor: ThemeColors.lightPrimary,
     elevation: 0,
   ),
   textTheme: _buildCliTextTheme(ThemeColors.lightPrimary),
-  inputDecorationTheme: InputDecorationTheme(
+  inputDecorationTheme: const InputDecorationTheme(
     border: InputBorder.none,
     enabledBorder: InputBorder.none,
     focusedBorder: InputBorder.none,
@@ -199,11 +195,11 @@ final ThemeData _cliLightTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: ThemeColors.lightPrimary,
       foregroundColor: ThemeColors.lightBackground,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       elevation: 0,
     ),
   ),
-  iconTheme: IconThemeData(color: ThemeColors.lightPrimary),
+  iconTheme: const IconThemeData(color: ThemeColors.lightPrimary),
   visualDensity: VisualDensity.compact,
   useMaterial3: true,
 );
@@ -218,9 +214,7 @@ final ThemeData _cheerfulDarkTheme = ThemeData(
     primary: Colors.yellow,
     secondary: ThemeColors.cheerfulDarkAccent,
     surface: ThemeColors.cheerfulDarkBackground,
-    background: ThemeColors.cheerfulDarkBackground,
     onSurface: Colors.white,
-    onBackground: Colors.white,
   ),
   scaffoldBackgroundColor: ThemeColors.cheerfulDarkBackground,
   appBarTheme: AppBarTheme(
@@ -230,7 +224,7 @@ final ThemeData _cheerfulDarkTheme = ThemeData(
   ),
   textTheme: _buildStandardTextTheme(Colors.white),
   inputDecorationTheme: InputDecorationTheme(
-    border: OutlineInputBorder(),
+    border: const OutlineInputBorder(),
     enabledBorder: OutlineInputBorder(
       borderSide: BorderSide(color: ThemeColors.cheerfulDarkAccent),
     ),
@@ -248,9 +242,7 @@ final ThemeData _cheerfulLightTheme = ThemeData(
     primary: Colors.blue,
     secondary: ThemeColors.cheerfulLightAccent,
     surface: ThemeColors.lightSurface,
-    background: ThemeColors.lightBackground,
     onSurface: Colors.black,
-    onBackground: Colors.black,
   ),
   scaffoldBackgroundColor: ThemeColors.lightBackground,
   appBarTheme: AppBarTheme(
@@ -260,14 +252,14 @@ final ThemeData _cheerfulLightTheme = ThemeData(
   ),
   textTheme: _buildStandardTextTheme(Colors.black),
   inputDecorationTheme: InputDecorationTheme(
-    border: OutlineInputBorder(),
-    enabledBorder: OutlineInputBorder(
+    border: const OutlineInputBorder(),
+    enabledBorder: const OutlineInputBorder(
       borderSide: BorderSide(color: Colors.blue),
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: BorderSide(color: Colors.blue[700]!),
     ),
-    labelStyle: TextStyle(color: Colors.blue),
+    labelStyle: const TextStyle(color: Colors.blue),
   ),
   useMaterial3: true,
 );
@@ -278,22 +270,20 @@ final ThemeData _cheerfulLightTheme = ThemeData(
 
 /// Minimalistic dark theme with clean design
 final ThemeData _minimalisticDarkTheme = ThemeData(
-  colorScheme: ColorScheme.dark(
+  colorScheme: const ColorScheme.dark(
     primary: ThemeColors.darkPrimary,
     secondary: ThemeColors.darkSecondary,
     surface: ThemeColors.darkSurface,
-    background: ThemeColors.darkBackground,
     onSurface: ThemeColors.darkOnSurface,
-    onBackground: ThemeColors.darkOnBackground,
   ),
   scaffoldBackgroundColor: ThemeColors.darkBackground,
-  appBarTheme: AppBarTheme(
+  appBarTheme: const AppBarTheme(
     backgroundColor: ThemeColors.darkBackground,
     foregroundColor: ThemeColors.darkPrimary,
     elevation: 0,
   ),
   textTheme: _buildMinimalisticTextTheme(ThemeColors.darkPrimary),
-  inputDecorationTheme: InputDecorationTheme(
+  inputDecorationTheme: const InputDecorationTheme(
     border: OutlineInputBorder(),
     enabledBorder: OutlineInputBorder(
       borderSide: BorderSide(color: ThemeColors.darkPrimary),
@@ -308,22 +298,20 @@ final ThemeData _minimalisticDarkTheme = ThemeData(
 
 /// Minimalistic light theme with clean design
 final ThemeData _minimalisticLightTheme = ThemeData(
-  colorScheme: ColorScheme.light(
+  colorScheme: const ColorScheme.light(
     primary: ThemeColors.lightPrimary,
     secondary: ThemeColors.lightSecondary,
     surface: ThemeColors.lightSurface,
-    background: ThemeColors.lightBackground,
     onSurface: ThemeColors.lightOnSurface,
-    onBackground: ThemeColors.lightOnBackground,
   ),
   scaffoldBackgroundColor: ThemeColors.lightBackground,
-  appBarTheme: AppBarTheme(
+  appBarTheme: const AppBarTheme(
     backgroundColor: ThemeColors.lightBackground,
     foregroundColor: ThemeColors.lightPrimary,
     elevation: 0,
   ),
   textTheme: _buildMinimalisticTextTheme(ThemeColors.lightPrimary),
-  inputDecorationTheme: InputDecorationTheme(
+  inputDecorationTheme: const InputDecorationTheme(
     border: OutlineInputBorder(),
     enabledBorder: OutlineInputBorder(
       borderSide: BorderSide(color: ThemeColors.lightPrimary),
@@ -342,13 +330,11 @@ final ThemeData _minimalisticLightTheme = ThemeData(
 
 /// Corporate dark theme for professional applications
 final ThemeData _corporateDarkTheme = ThemeData(
-  colorScheme: ColorScheme.dark(
-    primary: const Color(0xFF2196F3),
-    secondary: const Color(0xFF64B5F6),
-    surface: const Color(0xFF212121),
-    background: const Color(0xFF121212),
+  colorScheme: const ColorScheme.dark(
+    primary: Color(0xFF2196F3),
+    secondary: Color(0xFF64B5F6),
+    surface: Color(0xFF212121),
     onSurface: Colors.white,
-    onBackground: Colors.white,
   ),
   scaffoldBackgroundColor: const Color(0xFF121212),
   appBarTheme: const AppBarTheme(
@@ -372,13 +358,11 @@ final ThemeData _corporateDarkTheme = ThemeData(
 
 /// Corporate light theme for professional applications
 final ThemeData _corporateLightTheme = ThemeData(
-  colorScheme: ColorScheme.light(
-    primary: const Color(0xFF2196F3),
-    secondary: const Color(0xFF64B5F6),
+  colorScheme: const ColorScheme.light(
+    primary: Color(0xFF2196F3),
+    secondary: Color(0xFF64B5F6),
     surface: Colors.white,
-    background: const Color(0xFFF5F5F5),
     onSurface: Colors.black,
-    onBackground: Colors.black,
   ),
   scaffoldBackgroundColor: const Color(0xFFF5F5F5),
   appBarTheme: const AppBarTheme(
@@ -406,13 +390,11 @@ final ThemeData _corporateLightTheme = ThemeData(
 
 /// Creative dark theme for designers and creative applications
 final ThemeData _creativeDarkTheme = ThemeData(
-  colorScheme: ColorScheme.dark(
-    primary: const Color(0xFFFF4081),
-    secondary: const Color(0xFFFF80AB),
-    surface: const Color(0xFF212121),
-    background: const Color(0xFF121212),
+  colorScheme: const ColorScheme.dark(
+    primary: Color(0xFFFF4081),
+    secondary: Color(0xFFFF80AB),
+    surface: Color(0xFF212121),
     onSurface: Colors.white,
-    onBackground: Colors.white,
   ),
   scaffoldBackgroundColor: const Color(0xFF121212),
   appBarTheme: const AppBarTheme(
@@ -440,13 +422,11 @@ final ThemeData _creativeDarkTheme = ThemeData(
 
 /// Creative light theme for designers and creative applications
 final ThemeData _creativeLightTheme = ThemeData(
-  colorScheme: ColorScheme.light(
-    primary: const Color(0xFFFF4081),
-    secondary: const Color(0xFFFF80AB),
+  colorScheme: const ColorScheme.light(
+    primary: Color(0xFFFF4081),
+    secondary: Color(0xFFFF80AB),
     surface: Colors.white,
-    background: const Color(0xFFFAFAFA),
     onSurface: Colors.black,
-    onBackground: Colors.black,
   ),
   scaffoldBackgroundColor: const Color(0xFFFAFAFA),
   appBarTheme: const AppBarTheme(
@@ -771,12 +751,6 @@ extension ThemeAccessibility on ThemeData {
       onPrimary: colorScheme.primary.computeLuminance() > 0.5
           ? Colors.white
           : Colors.black,
-      background: colorScheme.background.computeLuminance() > 0.5
-          ? Colors.black
-          : Colors.white,
-      onBackground: colorScheme.background.computeLuminance() > 0.5
-          ? Colors.white
-          : Colors.black,
       surface: colorScheme.surface.computeLuminance() > 0.5
           ? Colors.black
           : Colors.white,
@@ -788,8 +762,8 @@ extension ThemeAccessibility on ThemeData {
     return copyWith(
       colorScheme: highContrastColorScheme,
       textTheme: textTheme.apply(
-        bodyColor: highContrastColorScheme.onBackground,
-        displayColor: highContrastColorScheme.onBackground,
+        bodyColor: highContrastColorScheme.onSurface,
+        displayColor: highContrastColorScheme.onSurface,
       ),
     );
   }

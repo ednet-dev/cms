@@ -4,7 +4,7 @@ part of ednet_core_flutter;
 class ConstraintValidatorAdapter {
   /// Generates a list of field validators based on the attribute and its type
   static List<UXFieldValidator> generateValidators(Attribute attribute) {
-    final List<UXFieldValidator> validators = [];
+    final validators = <UXFieldValidator>[];
     final attributeType = attribute.type;
 
     if (attributeType == null) {
@@ -146,7 +146,7 @@ class ConstraintValidatorAdapter {
     String? help,
   }) {
     // Get field type from attribute type
-    final UXFieldType fieldType = _determineFieldType(attribute);
+    final fieldType = _determineFieldType(attribute);
 
     // Generate validators
     final validators = generateValidators(attribute);

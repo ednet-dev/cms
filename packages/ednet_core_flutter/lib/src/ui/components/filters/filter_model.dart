@@ -150,8 +150,8 @@ class FilterCriteria with ProgressiveDisclosure {
     String? field,
     FilterOperator? operator,
     FilterValueType? valueType,
-    dynamic value,
-    dynamic secondaryValue,
+    value,
+    secondaryValue,
     bool? isActive,
     DisclosureLevel? disclosureLevel,
   }) {
@@ -174,7 +174,7 @@ class FilterCriteria with ProgressiveDisclosure {
 
   /// Get a human-readable representation of the filter
   String get displayText {
-    String valueText = '';
+    var valueText = '';
 
     if (operator == FilterOperator.between && secondaryValue != null) {
       valueText = '$value and $secondaryValue';
@@ -247,7 +247,7 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Compare values for equality
-  bool _compareEquals(dynamic a, dynamic b) {
+  bool _compareEquals(a, b) {
     if (a == null || b == null) return a == b;
 
     // Handle special cases
@@ -263,7 +263,7 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Check if a value contains another
-  bool _compareContains(dynamic a, dynamic b) {
+  bool _compareContains(a, b) {
     if (a == null || b == null) return false;
 
     if (a is String && b is String) {
@@ -276,7 +276,7 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Check if a string starts with another
-  bool _compareStartsWith(dynamic a, dynamic b) {
+  bool _compareStartsWith(a, b) {
     if (a == null || b == null) return false;
     if (a is String && b is String) {
       return a.toLowerCase().startsWith(b.toLowerCase());
@@ -285,7 +285,7 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Check if a string ends with another
-  bool _compareEndsWith(dynamic a, dynamic b) {
+  bool _compareEndsWith(a, b) {
     if (a == null || b == null) return false;
     if (a is String && b is String) {
       return a.toLowerCase().endsWith(b.toLowerCase());
@@ -294,7 +294,7 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Compare if a is greater than b
-  bool _compareGreaterThan(dynamic a, dynamic b) {
+  bool _compareGreaterThan(a, b) {
     if (a == null || b == null) return false;
 
     if (a is num && b is num) {
@@ -309,7 +309,7 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Compare if a is less than b
-  bool _compareLessThan(dynamic a, dynamic b) {
+  bool _compareLessThan(a, b) {
     if (a == null || b == null) return false;
 
     if (a is num && b is num) {
@@ -324,17 +324,17 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Compare if a is greater than or equal to b
-  bool _compareGreaterThanOrEquals(dynamic a, dynamic b) {
+  bool _compareGreaterThanOrEquals(a, b) {
     return _compareEquals(a, b) || _compareGreaterThan(a, b);
   }
 
   /// Compare if a is less than or equal to b
-  bool _compareLessThanOrEquals(dynamic a, dynamic b) {
+  bool _compareLessThanOrEquals(a, b) {
     return _compareEquals(a, b) || _compareLessThan(a, b);
   }
 
   /// Compare if a is between b and c
-  bool _compareBetween(dynamic a, dynamic b, dynamic c) {
+  bool _compareBetween(a, b, c) {
     if (a == null || b == null || c == null) return false;
 
     if (a is num && b is num && c is num) {
@@ -350,7 +350,7 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Check if a value is in a list
-  bool _compareIsIn(dynamic a, dynamic b) {
+  bool _compareIsIn(a, b) {
     if (a == null || b == null) return false;
     if (b is! List) return false;
 
@@ -372,7 +372,7 @@ class FilterCriteria with ProgressiveDisclosure {
   }
 
   /// Serialize a filter value to JSON
-  dynamic _serializeValue(dynamic value) {
+  dynamic _serializeValue(value) {
     if (value == null) return null;
 
     if (value is DateTime) {
@@ -387,7 +387,7 @@ class FilterCriteria with ProgressiveDisclosure {
   /// Create a filter criterion from JSON
   factory FilterCriteria.fromJson(Map<String, dynamic> json) {
     // Create a helper to deserialize values
-    dynamic deserializeValue(dynamic value, FilterValueType type) {
+    dynamic deserializeValue(value, FilterValueType type) {
       if (value == null) return null;
 
       switch (type) {

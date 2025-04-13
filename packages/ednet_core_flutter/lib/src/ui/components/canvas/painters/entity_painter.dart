@@ -87,8 +87,8 @@ class EntityPainter {
   /// and semantic meaning
   Color getColorForEntity(Entity entity, int level, double maxLevel) {
     // Base color calculation from hierarchy position
-    double baseSaturation = 0.7;
-    double baseBrightness = (0.9 - (level / maxLevel) * 0.3).clamp(0.0, 1.0);
+    var baseSaturation = 0.7;
+    var baseBrightness = (0.9 - (level / maxLevel) * 0.3).clamp(0.0, 1.0);
 
     // Calculate hue based on entity type
     double hue;
@@ -230,18 +230,18 @@ class EntityPainter {
       Canvas canvas, Offset center, double radius, int sides, Paint paint,
       {double startAngle = 0.0}) {
     final path = Path();
-    final double angle = (math.pi * 2) / sides;
+    final angle = (math.pi * 2) / sides;
 
-    final double radian = startAngle * math.pi / 180.0;
+    final radian = startAngle * math.pi / 180.0;
 
     path.moveTo(
       center.dx + radius * math.cos(radian),
       center.dy + radius * math.sin(radian),
     );
 
-    for (int i = 1; i < sides; i++) {
-      final double x = center.dx + radius * math.cos(radian + angle * i);
-      final double y = center.dy + radius * math.sin(radian + angle * i);
+    for (var i = 1; i < sides; i++) {
+      final x = center.dx + radius * math.cos(radian + angle * i);
+      final y = center.dy + radius * math.sin(radian + angle * i);
       path.lineTo(x, y);
     }
 

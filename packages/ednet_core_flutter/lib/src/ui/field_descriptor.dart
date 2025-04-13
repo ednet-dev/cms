@@ -454,7 +454,7 @@ class UXFieldBuilder {
       }
     }
 
-    final UXFieldType fieldType = _determineFieldType(attribute);
+    final fieldType = _determineFieldType(attribute);
 
     return UXFieldDescriptor(
       fieldName: attribute.code,

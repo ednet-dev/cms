@@ -256,11 +256,11 @@ extension ThemeContextExtensions on BuildContext {
       case DisclosureLevel.detailed:
       case DisclosureLevel.complete:
         // Enhanced decoration for detailed view
-        final List<BoxShadow> shadows = decoration.boxShadow ?? [];
+        final shadows = decoration.boxShadow ?? [];
         if (shadows.isNotEmpty) {
           decoration = decoration.copyWith(
             boxShadow: [
-              for (var shadow in shadows) shadow.scale(1.5),
+              for (final shadow in shadows) shadow.scale(1.5),
             ],
           );
         } else {

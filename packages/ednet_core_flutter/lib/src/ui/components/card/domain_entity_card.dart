@@ -236,12 +236,12 @@ class _DomainEntityCardState extends State<DomainEntityCard>
   Widget build(BuildContext context) {
     // Determine colors based on theme and props
     final theme = Theme.of(context);
-    final Color baseColor = theme.colorScheme.surface;
+    final baseColor = theme.colorScheme.surface;
     final borderRadius =
         _getBorderRadiusForDisclosureLevel(widget.disclosureLevel);
 
     // Get appropriate accent color
-    Color accent = widget.accentColor ?? _getSemanticColor(context);
+    final accent = widget.accentColor ?? _getSemanticColor(context);
 
     // Adjust opacity based on importance and hover state
     final borderOpacity = _isHovering ? 0.8 : (0.3 + (widget.importance * 0.5));
@@ -402,7 +402,7 @@ class _DomainEntityCardState extends State<DomainEntityCard>
 
   Widget _buildHeader(BuildContext context, Color accentColor) {
     // Special styles for aggregate roots and concepts
-    final bool isSpecial = widget.isAggregateRoot || widget.isConcept;
+    final isSpecial = widget.isAggregateRoot || widget.isConcept;
 
     return Container(
       decoration: BoxDecoration(
@@ -442,7 +442,7 @@ class _DomainEntityCardState extends State<DomainEntityCard>
   }
 
   Widget _buildSpecialIndicator(BuildContext context, Color accentColor) {
-    final String label =
+    final label =
         widget.isAggregateRoot ? '@aggregate-root' : '@concept';
 
     // Only show the indicator if disclosure level is detailed or higher
@@ -468,7 +468,7 @@ class _DomainEntityCardState extends State<DomainEntityCard>
             size: 12,
             color: accentColor,
           ),
-          SizedBox(width: 4),
+          const SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(
@@ -774,7 +774,7 @@ class DomainEntityCardAdapter<T extends Entity<T>>
   }
 
   /// Format a field value for display
-  String _formatFieldValue(dynamic value, UXFieldType type) {
+  String _formatFieldValue(value, UXFieldType type) {
     if (value == null) return '-';
 
     switch (type) {

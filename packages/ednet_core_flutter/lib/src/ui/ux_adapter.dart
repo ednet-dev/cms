@@ -125,7 +125,7 @@ class UXAdapterRegistry {
     Entity entity, {
     DisclosureLevel? disclosureLevel,
   }) {
-    String conceptCode = entity.concept.code;
+    final conceptCode = entity.concept.code;
     UXAdapterFactory? factory;
 
     // Check for disclosure level-specific factory for this concept code
@@ -148,7 +148,7 @@ class UXAdapterRegistry {
     }
 
     // Try each entry in the registry until we find a matching type
-    for (var type in _adapterFactories.keys) {
+    for (final type in _adapterFactories.keys) {
       if (entity.runtimeType == type) {
         factory = _adapterFactories[type];
         break;
@@ -161,7 +161,7 @@ class UXAdapterRegistry {
     }
 
     // Try to find a factory by matching the concept code pattern
-    for (var code in _conceptAdapterFactories.keys) {
+    for (final code in _conceptAdapterFactories.keys) {
       if (conceptCode.contains(code)) {
         factory = _conceptAdapterFactories[code];
         break;
@@ -238,11 +238,11 @@ abstract class ProgressiveUXAdapter<T extends Entity<T>> implements UXAdapter {
   @override
   List<String> getAttributesToDisplay({DisclosureLevel? disclosureLevel}) {
     final level = disclosureLevel ?? DisclosureLevel.standard;
-    List<String> attributes = [];
+    final attributes = <String>[];
 
     // Get all attributes
-    for (var attr in entity.concept.attributes.whereType<Attribute>()) {
-      bool include = false;
+    for (final attr in entity.concept.attributes.whereType<Attribute>()) {
+      var include = false;
 
       // Apply progressive disclosure logic
       switch (level) {
@@ -290,11 +290,11 @@ abstract class ProgressiveUXAdapter<T extends Entity<T>> implements UXAdapter {
   @override
   List<String> getRelationshipsToDisplay({DisclosureLevel? disclosureLevel}) {
     final level = disclosureLevel ?? DisclosureLevel.standard;
-    List<String> relationships = [];
+    final relationships = <String>[];
 
     // Process parent relationships
-    for (var parent in entity.concept.parents.whereType<Parent>()) {
-      bool include = false;
+    for (final parent in entity.concept.parents.whereType<Parent>()) {
+      var include = false;
 
       // Apply progressive disclosure logic
       switch (level) {
@@ -333,8 +333,8 @@ abstract class ProgressiveUXAdapter<T extends Entity<T>> implements UXAdapter {
     }
 
     // Process child relationships
-    for (var child in entity.concept.children.whereType<Child>()) {
-      bool include = false;
+    for (final child in entity.concept.children.whereType<Child>()) {
+      var include = false;
 
       // Apply progressive disclosure logic
       switch (level) {
@@ -618,7 +618,7 @@ class DefaultUXAdapter<T extends Entity<T>> extends ProgressiveUXAdapter<T> {
   }
 
   Widget _buildAttributeRow(BuildContext context, String attributeCode) {
-    var value = entity.getAttribute(attributeCode)?.toString() ?? 'N/A';
+    final value = entity.getAttribute(attributeCode)?.toString() ?? 'N/A';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0),
@@ -808,7 +808,7 @@ class BaseDefaultUXAdapter implements UXAdapter {
 
   @override
   List<String> getRelationshipsToDisplay({DisclosureLevel? disclosureLevel}) {
-    var relationships = <String>[];
+    final relationships = <String>[];
 
     // Add parents
     relationships.addAll(

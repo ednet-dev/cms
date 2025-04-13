@@ -131,7 +131,7 @@ class Breadcrumb extends StatelessWidget with ProgressiveDisclosure {
     final effectiveSeparator =
         separator ?? _getDefaultSeparator(context, style);
 
-    for (int i = 0; i < displayItems.length; i++) {
+    for (var i = 0; i < displayItems.length; i++) {
       final item = displayItems[i];
 
       // Add the item

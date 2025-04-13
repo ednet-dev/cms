@@ -20,7 +20,7 @@ abstract class ThemeComponent {
 
   /// Get theme data based on dark mode flag and disclosure level
   ThemeData getThemeForDisclosureLevel(bool isDarkMode, DisclosureLevel level) {
-    ThemeData baseTheme = getTheme(isDarkMode);
+    final baseTheme = getTheme(isDarkMode);
     return ShellTheme.withDisclosureLevel(baseTheme, level);
   }
 

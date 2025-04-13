@@ -218,20 +218,20 @@ class SemanticLayoutRequirements {
       case 'concept':
         backgroundColor = theme.colorScheme.surface;
         elevation = 1.0;
-        borderColor = theme.colorScheme.onBackground.withOpacity(0.2);
+        borderColor = theme.colorScheme.onSurface.withOpacity(0.2);
         break;
 
       case 'attribute':
       case 'property':
         backgroundColor = theme.colorScheme.surface;
         elevation = 0.5;
-        borderColor = theme.colorScheme.onBackground.withOpacity(0.1);
+        borderColor = theme.colorScheme.onSurface.withOpacity(0.1);
         break;
 
       default:
         backgroundColor = theme.colorScheme.surface;
         elevation = 1.0;
-        borderColor = theme.colorScheme.onBackground.withOpacity(0.2);
+        borderColor = theme.colorScheme.onSurface.withOpacity(0.2);
     }
 
     // Container width/height based on fill settings

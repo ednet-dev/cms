@@ -126,8 +126,8 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
 
   /// Centers and zooms the visualization
   void _centerAndZoom() {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final Size canvasSize = renderBox.size;
+    final renderBox = context.findRenderObject() as RenderBox;
+    final canvasSize = renderBox.size;
     final layoutPositions = _currentAlgorithm.calculateLayout(
       widget.domains,
       canvasSize,
@@ -138,7 +138,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
 
   /// Handles tap interactions
   void _handleTap(TapUpDetails details) {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final renderBox = context.findRenderObject() as RenderBox;
     final layoutPositions = _currentAlgorithm.calculateLayout(
       widget.domains,
       renderBox.size,
@@ -153,10 +153,9 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
     _visualizationSystem.clear();
 
     // Get layout positions
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    if (renderBox == null) return;
+    final renderBox = context.findRenderObject() as RenderBox;
 
-    final Size canvasSize = renderBox.size;
+    final canvasSize = renderBox.size;
     final layoutPositions = _currentAlgorithm.calculateLayout(
       widget.domains,
       canvasSize,
@@ -174,7 +173,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
   /// Creates visual nodes for the domain model
   void _createDomainModelNodes(Domains domains, Map<String, Offset> positions) {
     // Calculate the maximum depth for color gradients
-    int maxLevel = _calculateMaxDepth(domains);
+    final maxLevel = _calculateMaxDepth(domains);
 
     // Create nodes for each domain element
     for (final domain in domains) {
@@ -184,7 +183,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
 
   /// Calculate the maximum nesting depth in the domain model
   int _calculateMaxDepth(Domains domains) {
-    int maxDepth = 1;
+    var maxDepth = 1;
 
     for (final domain in domains) {
       for (final model in domain.models) {
@@ -199,7 +198,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
 
   /// Get the depth of a concept in the model
   int _getConceptDepth(Concept concept, int currentDepth) {
-    int maxDepth = currentDepth;
+    var maxDepth = currentDepth;
 
     for (final child in concept.children) {
       maxDepth = math.max(maxDepth, _getChildDepth(child, currentDepth + 1));
@@ -210,7 +209,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
 
   /// Get the depth of a child property
   int _getChildDepth(Property child, int currentDepth) {
-    int maxDepth = currentDepth;
+    var maxDepth = currentDepth;
 
     if (child is Child) {
       maxDepth = math.max(
@@ -347,7 +346,7 @@ class MetaDomainCanvasState extends State<MetaDomainCanvas> {
   /// Get a color for a specific level in the hierarchy
   Color _getColorForLevel(int level, int maxLevel) {
     // Use a hue-based gradient for different levels
-    final double hue = (level / (maxLevel + 1)) * 360;
+    final hue = (level / (maxLevel + 1)) * 360;
     return HSVColor.fromAHSV(
       1.0,
       hue,

@@ -48,11 +48,11 @@ class RelationPainter {
     final relationColor = color ?? _getRelationshipColor(source, target);
 
     // Determine if this is an inheritance relationship
-    final bool isInheritance = source is Parent && target is Child;
+    final isInheritance = source is Parent && target is Child;
 
     // Set appropriate labels based on relationship type
-    String sourceToTargetLabel = source.code;
-    String targetToSourceLabel = target.code;
+    var sourceToTargetLabel = source.code;
+    var targetToSourceLabel = target.code;
 
     // Custom labels for specific relationship types
     if (isInheritance) {
@@ -215,7 +215,7 @@ class RelationPainter {
     if (label.isEmpty) return;
 
     // Only show abbreviated labels at lower disclosure levels
-    final String displayLabel = _getLabelForDisclosureLevel(label);
+    final displayLabel = _getLabelForDisclosureLevel(label);
 
     // Create text painter
     final textStyle = TextStyle(

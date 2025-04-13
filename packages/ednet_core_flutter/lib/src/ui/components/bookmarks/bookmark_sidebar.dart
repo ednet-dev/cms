@@ -116,7 +116,7 @@ class _BookmarkSidebarState extends State<BookmarkSidebar> {
         final allBookmarks = snapshot.data ?? [];
 
         // Group bookmarks by category
-        final Map<BookmarkCategory, List<Bookmark>> categorizedBookmarks = {};
+        final categorizedBookmarks = <BookmarkCategory, List<Bookmark>>{};
         for (final category in BookmarkCategory.values) {
           categorizedBookmarks[category] = [];
         }

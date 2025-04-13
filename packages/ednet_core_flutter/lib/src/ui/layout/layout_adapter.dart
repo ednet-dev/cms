@@ -206,8 +206,8 @@ class ConceptLayoutAdapter extends LayoutAdapter<Concept> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (entity.entry) Chip(label: Text('Entry')),
-          if (entity.abstract) Chip(label: Text('Abstract')),
+          if (entity.entry) const Chip(label: Text('Entry')),
+          if (entity.abstract) const Chip(label: Text('Abstract')),
         ],
       ),
     );

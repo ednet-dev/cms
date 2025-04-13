@@ -151,7 +151,7 @@ class MinimalisticThemeComponent implements ThemeComponent {
     Brightness brightness,
   ) {
     // Select status bar style based on theme brightness
-    final SystemUiOverlayStyle statusBarStyle = brightness == Brightness.light
+    final statusBarStyle = brightness == Brightness.light
         ? SystemUiOverlayStyle.dark.copyWith(
             statusBarColor: Colors.transparent,
             systemNavigationBarColor: colorScheme.surface,
@@ -206,49 +206,49 @@ class MinimalisticThemeComponent implements ThemeComponent {
 
     // Create text styles for disclosure levels
     final textStyles = <DisclosureLevel, TextStyle>{
-      DisclosureLevel.minimal: TextStyle(
+      DisclosureLevel.minimal: const TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w300,
         letterSpacing: 0.5,
         height: 1.2,
       ),
-      DisclosureLevel.basic: TextStyle(
+      DisclosureLevel.basic: const TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w300,
         letterSpacing: 0.5,
         height: 1.2,
       ),
-      DisclosureLevel.standard: TextStyle(
+      DisclosureLevel.standard: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.5,
         height: 1.2,
       ),
-      DisclosureLevel.intermediate: TextStyle(
+      DisclosureLevel.intermediate: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.5,
         height: 1.2,
       ),
-      DisclosureLevel.advanced: TextStyle(
+      DisclosureLevel.advanced: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.5,
         height: 1.2,
       ),
-      DisclosureLevel.detailed: TextStyle(
+      DisclosureLevel.detailed: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.5,
         height: 1.2,
       ),
-      DisclosureLevel.complete: TextStyle(
+      DisclosureLevel.complete: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.5,
         height: 1.2,
       ),
-      DisclosureLevel.debug: TextStyle(
+      DisclosureLevel.debug: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.5,

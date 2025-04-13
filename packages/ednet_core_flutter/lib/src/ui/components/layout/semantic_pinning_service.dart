@@ -37,7 +37,7 @@ class SemanticPinningService {
   void _loadPinnedArtifacts() {
     if (_prefs == null) return;
 
-    final String? storedData = _prefs!.getString(_storageKey);
+    final storedData = _prefs!.getString(_storageKey);
     if (storedData == null || storedData.isEmpty) return;
 
     try {
@@ -58,13 +58,13 @@ class SemanticPinningService {
   Future<void> _savePinnedArtifacts() async {
     if (_prefs == null) return;
 
-    final Map<String, List<String>> dataToStore = {};
+    final dataToStore = <String, List<String>>{};
 
     _pinnedArtifacts.forEach((modelCode, artifacts) {
       dataToStore[modelCode] = artifacts.toList();
     });
 
-    final String jsonData = jsonEncode(dataToStore);
+    final jsonData = jsonEncode(dataToStore);
     await _prefs!.setString(_storageKey, jsonData);
   }
 
