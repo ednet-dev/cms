@@ -4,7 +4,7 @@ version: 0.0.1+1
 publish_to: "none"
 
 environment:
-  sdk: ">=2.18.6 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -13,13 +13,13 @@ dependencies:
     path: ../../packages/core
   ednet_core_flutter:
     path: ../../packages/ednet_core_flutter
-  charts_flutter: ^0.12.0
+  fl_chart: ^0.66.2
   cupertino_icons: ^1.0.8
   flutter_bloc: ^8.1.1
   flutter_slidable: ^2.0.0
   google_fonts: ^3.0.1
   http: ^0.13.5
-  intl: ^0.17.0
+  intl: ^0.20.2
   json_annotation: ^4.8.0
   provider: ^6.0.5
   shared_preferences: ^2.0.15
