@@ -5,7 +5,7 @@ part of 'package:ednet_core_flutter/ednet_core_flutter.dart';
 /// This service integrates with the Configuration Injector pattern
 /// to provide theme management capabilities that respect the Shell Architecture's
 /// separation of concerns and progressive disclosure principles.
-class ThemeService {
+class ThemeService extends ChangeNotifier {
   static const String _themeKey = 'shell_theme_mode';
   static const String _themeStyleKey = 'shell_theme_style';
   static const String _themeLightValue = 'light';
@@ -36,6 +36,21 @@ class ThemeService {
   /// Configuration Injector reference
   ConfigurationInjector? _injector;
 
+  /// Light theme data
+  final ThemeData lightTheme;
+
+  /// Dark theme data
+  final ThemeData darkTheme;
+
+  /// Constructor
+  ThemeService({
+    required this.lightTheme,
+    required this.darkTheme,
+    ThemeMode initialThemeMode = ThemeMode.system,
+  }) : _currentThemeMode = initialThemeMode {
+    _loadSavedThemeMode();
+  }
+
   /// Get the current theme mode
   ThemeMode get currentThemeMode => _currentThemeMode;
 
@@ -44,16 +59,6 @@ class ThemeService {
 
   /// Get the current disclosure level
   DisclosureLevel get disclosureLevel => _disclosureLevel;
-
-  /// Get the light theme data for the current style
-  ThemeData get lightTheme => _getThemeWithAccessibility(
-        ShellTheme.getLightTheme(style: _currentThemeStyle),
-      );
-
-  /// Get the dark theme data for the current style
-  ThemeData get darkTheme => _getThemeWithAccessibility(
-        ShellTheme.getDarkTheme(style: _currentThemeStyle),
-      );
 
   /// Get the current theme with accessibility features and disclosure level applied
   ThemeData getCurrentTheme(BuildContext context) {
@@ -152,7 +157,7 @@ class ThemeService {
     if (_currentThemeMode == mode) return;
 
     _currentThemeMode = mode;
-    _notifyListeners();
+    notifyListeners();
 
     final prefs = await SharedPreferences.getInstance();
     if (mode == ThemeMode.light) {
@@ -172,7 +177,7 @@ class ThemeService {
 
     if (ShellTheme._lightThemes.containsKey(styleName)) {
       _currentThemeStyle = styleName;
-      _notifyListeners();
+      notifyListeners();
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_themeStyleKey, styleName);
@@ -189,7 +194,7 @@ class ThemeService {
     if (_accessibilityFeatures[feature] == enabled) return;
 
     _accessibilityFeatures[feature] = enabled;
-    _notifyListeners();
+    notifyListeners();
 
     await _saveAccessibilityFeatures();
     _applyThemeConfiguration();
@@ -212,7 +217,7 @@ class ThemeService {
     if (_disclosureLevel == level) return;
 
     _disclosureLevel = level;
-    _notifyListeners();
+    notifyListeners();
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_themeDisclosureLevelKey, level.name);
@@ -301,6 +306,104 @@ class ThemeService {
           : (_currentThemeMode == ThemeMode.light
               ? ThemeModes.light
               : ThemeModes.system),
+    );
+  }
+
+  /// Load saved theme mode from preferences
+  Future<void> _loadSavedThemeMode() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedMode = prefs.getString(_themeKey);
+      if (savedMode != null) {
+        if (savedMode == 'light') {
+          _currentThemeMode = ThemeMode.light;
+        } else if (savedMode == 'dark') {
+          _currentThemeMode = ThemeMode.dark;
+        } else {
+          _currentThemeMode = ThemeMode.system;
+        }
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error loading theme mode: $e');
+    }
+  }
+
+  /// Save theme mode to preferences
+  Future<void> _saveThemeMode() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String modeValue;
+      switch (_currentThemeMode) {
+        case ThemeMode.light:
+          modeValue = 'light';
+          break;
+        case ThemeMode.dark:
+          modeValue = 'dark';
+          break;
+        case ThemeMode.system:
+          modeValue = 'system';
+          break;
+      }
+      await prefs.setString(_themeKey, modeValue);
+    } catch (e) {
+      debugPrint('Error saving theme mode: $e');
+    }
+  }
+
+  /// Get current theme as a string
+  String get themeModeString {
+    switch (_currentThemeMode) {
+      case ThemeMode.light:
+        return 'Light';
+      case ThemeMode.dark:
+        return 'Dark';
+      case ThemeMode.system:
+        return 'System';
+    }
+  }
+
+  /// Create default themes
+  static ThemeService createDefault() {
+    return ThemeService(
+      lightTheme: _buildLightTheme(),
+      darkTheme: _buildDarkTheme(),
+    );
+  }
+
+  /// Build light theme
+  static ThemeData _buildLightTheme() {
+    final baseTheme = ThemeData.light();
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFF2C62EE),
+      brightness: Brightness.light,
+    );
+
+    return baseTheme.copyWith(
+      colorScheme: colorScheme,
+      useMaterial3: true,
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+      ),
+    );
+  }
+
+  /// Build dark theme
+  static ThemeData _buildDarkTheme() {
+    final baseTheme = ThemeData.dark();
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFF2C62EE),
+      brightness: Brightness.dark,
+    );
+
+    return baseTheme.copyWith(
+      colorScheme: colorScheme,
+      useMaterial3: true,
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
+      ),
     );
   }
 }

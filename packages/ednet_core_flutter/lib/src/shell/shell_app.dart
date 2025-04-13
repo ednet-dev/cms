@@ -77,8 +77,14 @@ class ShellApp extends ChangeNotifier {
   /// Domain model persistence manager for handling diffs/changes
   late final MetaModelPersistenceManager _metaModelPersistenceManager;
 
+  /// Enhanced theme service for theme management
+  late final EnhancedThemeService _themeService;
+
   /// Check if this shell supports multiple domains
   bool get isMultiDomain => _domainManager != null;
+
+  /// Get the theme service
+  EnhancedThemeService get themeService => _themeService;
 
   /// Constructor
   ShellApp({
@@ -138,6 +144,9 @@ class ShellApp extends ChangeNotifier {
     _navigationService =
         ShellNavigationService(domain: _domain, shellApp: this);
     _navigationService.initialize();
+
+    // Initialize the theme service
+    _themeService = EnhancedThemeService.createDefault();
 
     // Register default adapters for core entity types
     _registerDefaultAdapters();
@@ -278,30 +287,157 @@ class ShellApp extends ChangeNotifier {
     String conceptCode,
     List<T> entities, {
     DisclosureLevel? disclosureLevel,
+    Function(Entity)? onEntitySelected,
+    Function(Entity)? onEntityBookmarked,
+    int Function(T a, T b)? sortComparator,
+    bool Function(T entity)? filter,
+    String Function(T entity)? groupBy,
+    EntityViewMode viewMode = EntityViewMode.list,
+    bool allowViewModeChange = true,
+    bool useGridOnLargeScreens = true,
   }) {
     final effectiveDisclosureLevel = disclosureLevel ?? currentDisclosureLevel;
 
-    return ListView.builder(
-      itemCount: entities.length,
-      itemBuilder: (context, index) {
-        final entity = entities[index];
-        final adapter = _adapterRegistry.getAdapter<T>(
-          disclosureLevel: effectiveDisclosureLevel,
-        );
+    // Use SemanticEntityCollectionView for a richer entity list experience
+    return SemanticEntityCollectionView(
+      entities: entities,
+      onEntitySelected: onEntitySelected,
+      onEntityBookmarked: onEntityBookmarked,
+      sortComparator: sortComparator as int Function(Entity, Entity)?,
+      filter: filter as bool Function(Entity)?,
+      groupBy: groupBy as String Function(Entity)?,
+      initialViewMode: viewMode,
+      allowViewModeChange: allowViewModeChange,
+      useGridOnLargeScreens: useGridOnLargeScreens,
+      disclosureLevel: effectiveDisclosureLevel,
+      showAttributes:
+          effectiveDisclosureLevel.index >= DisclosureLevel.basic.index,
+      maxAttributesInPreview:
+          _getAttributeCountForDisclosureLevel(effectiveDisclosureLevel),
+    );
+  }
 
-        if (adapter == null) {
-          return ListTile(
-            title: Text(entity.code),
-            subtitle: Text('No adapter found for ${entity.concept.code}'),
-          );
-        }
+  /// Get the appropriate number of attributes to show based on disclosure level
+  int _getAttributeCountForDisclosureLevel(DisclosureLevel level) {
+    switch (level) {
+      case DisclosureLevel.minimal:
+        return 0;
+      case DisclosureLevel.basic:
+        return 1;
+      case DisclosureLevel.standard:
+        return 3;
+      case DisclosureLevel.intermediate:
+        return 5;
+      case DisclosureLevel.advanced:
+        return 7;
+      case DisclosureLevel.detailed:
+      case DisclosureLevel.complete:
+      case DisclosureLevel.debug:
+        return 10;
+    }
+  }
 
-        return adapter.buildListItem(
-          context,
-          entity,
-          disclosureLevel: effectiveDisclosureLevel,
-        );
-      },
+  /// Toggle between light, dark, and system theme modes
+  Future<void> toggleThemeMode() async {
+    await _themeService.toggleThemeMode();
+    notifyListeners();
+  }
+
+  /// Set a specific theme mode
+  Future<void> setThemeMode(ThemeMode mode) async {
+    await _themeService.setThemeMode(mode);
+    notifyListeners();
+  }
+
+  /// Get the current theme mode
+  ThemeMode get themeMode => _themeService.themeMode;
+
+  /// Get the current theme data based on context
+  ThemeData getCurrentTheme(BuildContext context) {
+    return _themeService.getCurrentTheme(context);
+  }
+
+  /// Customize additional theme properties
+  void customizeTheme({
+    Color? primaryColor,
+    Color? secondaryColor,
+    bool highContrast = false,
+    bool largeText = false,
+  }) {
+    // Set accessibility features
+    _themeService.setAccessibilityFeature('highContrast', highContrast);
+    _themeService.setAccessibilityFeature('largeText', largeText);
+
+    // Custom theme changes would be implemented here
+    notifyListeners();
+  }
+
+  /// Show a theme selection dialog
+  void showThemeSelector(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Theme Settings'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Choose theme mode:'),
+            const SizedBox(height: 16),
+            ListTile(
+              title: const Text('Light'),
+              leading: const Icon(Icons.light_mode),
+              selected: _themeService.themeMode == ThemeMode.light,
+              onTap: () {
+                _themeService.setThemeMode(ThemeMode.light);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Dark'),
+              leading: const Icon(Icons.dark_mode),
+              selected: _themeService.themeMode == ThemeMode.dark,
+              onTap: () {
+                _themeService.setThemeMode(ThemeMode.dark);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('System'),
+              leading: const Icon(Icons.settings_brightness),
+              selected: _themeService.themeMode == ThemeMode.system,
+              onTap: () {
+                _themeService.setThemeMode(ThemeMode.system);
+                Navigator.pop(context);
+              },
+            ),
+            const Divider(),
+            const Text('Accessibility:'),
+            const SizedBox(height: 8),
+            SwitchListTile(
+              title: const Text('High Contrast'),
+              value:
+                  _themeService.accessibilityFeatures['highContrast'] ?? false,
+              onChanged: (value) {
+                _themeService.setAccessibilityFeature('highContrast', value);
+              },
+            ),
+            SwitchListTile(
+              title: const Text('Large Text'),
+              value: _themeService.accessibilityFeatures['largeText'] ?? false,
+              onChanged: (value) {
+                _themeService.setAccessibilityFeature('largeText', value);
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -616,8 +752,7 @@ class ShellApp extends ChangeNotifier {
     }
 
     final code = domainCode ?? domain.code;
-    return await _metaModelPersistenceManager.importDiffFromJson(
-        code, jsonDiff);
+    return _metaModelPersistenceManager.importDiffFromJson(code, jsonDiff);
   }
 
   /// Save the current domain model diff to a file
@@ -629,14 +764,14 @@ class ShellApp extends ChangeNotifier {
     }
 
     final code = domainCode ?? domain.code;
-    return await _metaModelPersistenceManager.saveDiffToFile(code, filePath);
+    return _metaModelPersistenceManager.saveDiffToFile(code, filePath);
   }
 
   /// Get the entire history of domain model diffs for a domain
   Future<List<Map<String, dynamic>>> getDomainModelDiffHistory(
       String? domainCode) async {
     final code = domainCode ?? domain.code;
-    return await _persistence.getDomainModelDiffHistory(code);
+    return _persistence.getDomainModelDiffHistory(code);
   }
 
   /// Automatically persist the current domain model diff
@@ -652,7 +787,7 @@ class ShellApp extends ChangeNotifier {
       return false; // No changes to persist
     }
 
-    return await _persistence.saveDomainModelDiff(code, diff);
+    return _persistence.saveDomainModelDiff(code, diff);
   }
 
   /// Load domain model diff from a file and apply changes
@@ -670,8 +805,7 @@ class ShellApp extends ChangeNotifier {
       return false;
     }
 
-    return await _metaModelPersistenceManager.importDiffFromJson(
-        code, diffJson);
+    return _metaModelPersistenceManager.importDiffFromJson(code, diffJson);
   }
 
   /// Load the latest persisted domain model diff and apply it
@@ -688,7 +822,7 @@ class ShellApp extends ChangeNotifier {
       return false;
     }
 
-    return await importDomainModelDiff(code, diffJson);
+    return importDomainModelDiff(code, diffJson);
   }
 
   /// Save the current domain model state as the new baseline
@@ -731,7 +865,7 @@ class ShellApp extends ChangeNotifier {
     final dialogHeight =
         fullScreen ? screenSize.height * 0.95 : screenSize.height * 0.8;
 
-    return await showDialog<bool>(
+    return showDialog<bool>(
       context: context,
       builder: (context) => Dialog(
         child: Container(
@@ -785,7 +919,7 @@ class ShellApp extends ChangeNotifier {
     final dialogHeight =
         fullScreen ? screenSize.height * 0.95 : screenSize.height * 0.8;
 
-    return await showDialog<bool>(
+    return showDialog<bool>(
       context: context,
       builder: (context) => Dialog(
         child: Container(
@@ -806,6 +940,47 @@ class ShellApp extends ChangeNotifier {
         ),
       ),
     );
+  }
+
+  /// Show entity creation dialog and handle the result
+  Future<bool> createEntity(
+    BuildContext context,
+    String conceptCode, {
+    Map<String, dynamic>? initialData,
+    DisclosureLevel? disclosureLevel,
+    VoidCallback? onSuccess,
+  }) async {
+    // Find the concept from the domain
+    final concept = _findConcept(conceptCode);
+    if (concept == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Concept $conceptCode not found')),
+      );
+      return false;
+    }
+
+    // Show the create form dialog
+    final result = await showEntityCreateForm(
+      context,
+      concept,
+      initialData: initialData,
+      disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+      onSaved: (data) async {
+        // Save the entity to the persistence layer
+        final success = await saveEntity(conceptCode, data);
+
+        if (success && onSuccess != null) {
+          // Call the onSuccess callback
+          onSuccess();
+        }
+
+        // Close the dialog
+        Navigator.of(context).pop(success);
+      },
+      title: 'Create ${concept.code}',
+    );
+
+    return result ?? false;
   }
 
   /// Build an entity edit form as a widget (not in a dialog)
@@ -859,6 +1034,41 @@ class ShellApp extends ChangeNotifier {
       onCancel: onCancel,
       isEditMode: false,
       customFields: customFields,
+    );
+  }
+
+  /// Navigate to entity manager view for a concept
+  void showEntityManager(
+    BuildContext context,
+    String conceptCode, {
+    String? title,
+    EntityViewMode initialViewMode = EntityViewMode.list,
+    bool allowViewModeChange = true,
+    bool showCreateFab = true,
+    DisclosureLevel? disclosureLevel,
+  }) {
+    // Check if the EntityManagerView and entity editing features are available
+    if (!hasFeature('entity_editing') || !hasFeature('entity_creation')) {
+      debugPrint('Entity editing or creation features are not enabled');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Entity management is not enabled')),
+      );
+      return;
+    }
+
+    // Navigate to EntityManagerView
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => EntityManagerView(
+          shellApp: this,
+          conceptCode: conceptCode,
+          appBarTitle: title ?? 'Manage $conceptCode',
+          initialViewMode: initialViewMode,
+          allowViewModeChange: allowViewModeChange,
+          showCreateFab: showCreateFab,
+          disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+        ),
+      ),
     );
   }
 }
@@ -940,6 +1150,10 @@ class _DomainNavigatorState extends State<DomainNavigator> {
     final models = domain.models.toList();
     final sidebarMode = widget.shellApp.configuration.sidebarMode;
 
+    // Determine if theme toggle should be shown
+    final showThemeToggle =
+        widget.shellApp.configuration.showThemeToggleInAppBar;
+
     // Create a navigation drawer for the domain
     return Scaffold(
       appBar: AppBar(
@@ -965,26 +1179,22 @@ class _DomainNavigatorState extends State<DomainNavigator> {
           ],
         ),
         actions: [
+          // Theme toggle button
+          if (showThemeToggle)
+            IconButton(
+              icon: Icon(_getThemeIcon()),
+              tooltip: 'Toggle Theme',
+              onPressed: () => widget.shellApp.toggleThemeMode(),
+            ),
+
+          // Settings button
           IconButton(
             icon: const Icon(Icons.settings),
             tooltip: 'Settings',
             color: Theme.of(context).colorScheme.onPrimary,
             onPressed: () {
-              // Show settings dialog
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Settings'),
-                  content:
-                      const Text('Settings dialog will be implemented here.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-              );
+              // Show settings dialog that includes theme options
+              widget.shellApp.showThemeSelector(context);
             },
           ),
         ],
@@ -1039,6 +1249,18 @@ class _DomainNavigatorState extends State<DomainNavigator> {
         ],
       ),
     );
+  }
+
+  // Helper to get the appropriate theme icon based on current theme mode
+  IconData _getThemeIcon() {
+    switch (widget.shellApp.themeMode) {
+      case ThemeMode.light:
+        return Icons.dark_mode; // Show dark mode icon when in light mode
+      case ThemeMode.dark:
+        return Icons.light_mode; // Show light mode icon when in dark mode
+      case ThemeMode.system:
+        return Icons.brightness_auto; // Show auto icon when in system mode
+    }
   }
 
   /// Build a view for a specific model

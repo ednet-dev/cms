@@ -42,7 +42,19 @@ class ThemeProvider {
   }
 
   /// The theme service instance
-  final ThemeService _themeService = ThemeService();
+  final ThemeService _themeService = ThemeService(
+    lightTheme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2C62EE)),
+      useMaterial3: true,
+    ),
+    darkTheme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF2C62EE),
+        brightness: Brightness.dark,
+      ),
+      useMaterial3: true,
+    ),
+  );
 
   /// The UX channel for theme messages
   late final UXChannel _themeChannel;
