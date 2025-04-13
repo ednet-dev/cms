@@ -129,12 +129,21 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
       appBar: AppBar(
         title: Row(
           children: [
-            const Text('EDNet Shell'),
+            const Text('EDNet Shell One'),
             if (widget.shellApp.isMultiDomain) ...[
               const SizedBox(width: 16),
               DomainSelector(
                 shellApp: widget.shellApp,
-                style: widget.domainSelectorStyle,
+                style: DomainSelectorStyle(
+                  textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                  selectedTextStyle:
+                      Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                ),
                 domainItemBuilder: widget.domainItemBuilder,
               ),
             ],

@@ -666,10 +666,36 @@ class _DomainNavigatorState extends State<DomainNavigator> {
             ],
           ],
         ),
-        // Back button that uses the navigation service
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Settings',
+            color: Theme.of(context).colorScheme.onPrimary,
+            onPressed: () {
+              // Show settings dialog
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Settings'),
+                  content:
+                      const Text('Settings dialog will be implemented here.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Close'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
         leading: widget.shellApp.navigationService.isInHistory(_currentPath)
             ? IconButton(
-                icon: const Icon(Icons.arrow_back),
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
                 onPressed: () => widget.shellApp.navigateBack(),
               )
             : null,

@@ -74,7 +74,7 @@ class DomainSelector extends StatelessWidget {
     final currentIndex = domainManager.currentDomainIndex;
 
     // Use default style if none provided
-    final effectiveStyle = style ?? DomainSelectorStyle();
+    final effectiveStyle = style ?? const DomainSelectorStyle();
 
     // Wrap in a ResponsiveSemanticWrapper for responsive behavior
     return ResponsiveSemanticWrapper.basic(
