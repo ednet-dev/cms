@@ -24,11 +24,13 @@ extension ShellAppDomainExtension on ShellApp {
   /// Switch to a different domain by index
   void switchToDomain(int domainIndex) {
     domainManager?.switchToDomain(domainIndex);
+    notifyListeners(); // Notify listeners of the change
   }
 
   /// Switch to a different domain by code
   void switchToDomainByCode(String domainCode) {
     domainManager?.switchToDomainByCode(domainCode);
+    notifyListeners(); // Notify listeners of the change
   }
 
   /// Get all available domains
@@ -43,7 +45,7 @@ extension ShellAppDomainExtension on ShellApp {
 }
 
 /// UI component for domain navigation in a multi-domain shell
-class DomainSelector extends StatelessWidget {
+class DomainSelector extends StatefulWidget {
   /// The shell app
   final ShellApp shellApp;
 
@@ -62,53 +64,88 @@ class DomainSelector extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<DomainSelector> createState() => _DomainSelectorState();
+}
+
+class _DomainSelectorState extends State<DomainSelector> {
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.shellApp.currentDomainIndex;
+    widget.shellApp.addListener(_onShellAppChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.shellApp.removeListener(_onShellAppChanged);
+    super.dispose();
+  }
+
+  void _onShellAppChanged() {
+    if (mounted) {
+      setState(() {
+        _currentIndex = widget.shellApp.currentDomainIndex;
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(DomainSelector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.shellApp != widget.shellApp) {
+      oldWidget.shellApp.removeListener(_onShellAppChanged);
+      widget.shellApp.addListener(_onShellAppChanged);
+      _currentIndex = widget.shellApp.currentDomainIndex;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final domainManager = shellApp.domainManager;
+    final domainManager = widget.shellApp.domainManager;
 
     if (domainManager == null || domainManager.domains.length <= 1) {
       return const SizedBox.shrink();
     }
 
     final domains = domainManager.domains;
-    final currentIndex = domainManager.currentDomainIndex;
-
-    // Use default style if none provided
-    final effectiveStyle = style ?? DomainSelectorStyle();
+    final effectiveStyle = widget.style ?? DomainSelectorStyle();
 
     switch (effectiveStyle.selectorType) {
       case DomainSelectorType.dropdown:
-        return _buildDropdown(context, domains, currentIndex, effectiveStyle);
+        return _buildDropdown(context, domains, effectiveStyle);
       case DomainSelectorType.tabs:
-        return _buildTabs(context, domains, currentIndex, effectiveStyle);
+        return _buildTabs(context, domains, effectiveStyle);
       case DomainSelectorType.chips:
-        return _buildChips(context, domains, currentIndex, effectiveStyle);
+        return _buildChips(context, domains, effectiveStyle);
       default:
-        return _buildDropdown(context, domains, currentIndex, effectiveStyle);
+        return _buildDropdown(context, domains, effectiveStyle);
     }
   }
 
   Widget _buildDropdown(
     BuildContext context,
     List<Domain> domains,
-    int currentIndex,
     DomainSelectorStyle style,
   ) {
     return DropdownButton<int>(
-      value: currentIndex,
+      value: _currentIndex,
       underline: style.hideDropdownUnderline ? const SizedBox() : null,
       icon: style.dropdownIcon ?? const Icon(Icons.arrow_drop_down),
       items: List.generate(domains.length, (index) {
         final domain = domains[index];
         return DropdownMenuItem<int>(
           value: index,
-          child: domainItemBuilder != null
-              ? domainItemBuilder!(context, domain, index == currentIndex)
+          child: widget.domainItemBuilder != null
+              ? widget.domainItemBuilder!(
+                  context, domain, index == _currentIndex)
               : Text(domain.code),
         );
       }),
       onChanged: (index) {
         if (index != null) {
-          shellApp.switchToDomain(index);
+          widget.shellApp.switchToDomain(index);
         }
       },
     );
@@ -117,24 +154,24 @@ class DomainSelector extends StatelessWidget {
   Widget _buildTabs(
     BuildContext context,
     List<Domain> domains,
-    int currentIndex,
     DomainSelectorStyle style,
   ) {
     return DefaultTabController(
       length: domains.length,
-      initialIndex: currentIndex,
+      initialIndex: _currentIndex,
       child: TabBar(
         isScrollable: true,
         tabs: List.generate(domains.length, (index) {
           final domain = domains[index];
           return Tab(
-            child: domainItemBuilder != null
-                ? domainItemBuilder!(context, domain, index == currentIndex)
+            child: widget.domainItemBuilder != null
+                ? widget.domainItemBuilder!(
+                    context, domain, index == _currentIndex)
                 : Text(domain.code),
           );
         }),
         onTap: (index) {
-          shellApp.switchToDomain(index);
+          widget.shellApp.switchToDomain(index);
         },
       ),
     );
@@ -143,7 +180,6 @@ class DomainSelector extends StatelessWidget {
   Widget _buildChips(
     BuildContext context,
     List<Domain> domains,
-    int currentIndex,
     DomainSelectorStyle style,
   ) {
     return SingleChildScrollView(
@@ -151,18 +187,18 @@ class DomainSelector extends StatelessWidget {
       child: Row(
         children: List.generate(domains.length, (index) {
           final domain = domains[index];
-          final isSelected = index == currentIndex;
+          final isSelected = index == _currentIndex;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: ChoiceChip(
-              label: domainItemBuilder != null
-                  ? domainItemBuilder!(context, domain, isSelected)
+              label: widget.domainItemBuilder != null
+                  ? widget.domainItemBuilder!(context, domain, isSelected)
                   : Text(domain.code),
               selected: isSelected,
               onSelected: (selected) {
                 if (selected) {
-                  shellApp.switchToDomain(index);
+                  widget.shellApp.switchToDomain(index);
                 }
               },
             ),

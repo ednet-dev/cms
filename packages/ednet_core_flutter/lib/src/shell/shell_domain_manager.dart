@@ -9,16 +9,20 @@ class ShellDomainManager extends ChangeNotifier {
   Entity? _selectedEntity;
   bool _isTreeMode = true;
 
-  // Domain change streams
+  // Domain change stream controller
   final _domainChangeController = StreamController<Domain>.broadcast();
+  Stream<Domain> get onDomainChanged => _domainChangeController.stream;
 
   // Current domain index for multi-domain support
   int _currentDomainIndex = 0;
 
   ShellDomainManager(this._domains) {
+    if (_domains.isEmpty) {
+      throw ArgumentError('Domains list cannot be empty');
+    }
+    _currentDomainIndex = 0;
     if (_domains.isNotEmpty) {
       _selectedDomain = _domains.first;
-      _currentDomainIndex = 0;
     }
   }
 
@@ -100,35 +104,35 @@ class ShellDomainManager extends ChangeNotifier {
     }
   }
 
-  // Multi-domain support methods
-  void switchToDomain(int domainIndex) {
-    if (domainIndex < 0 || domainIndex >= _domains.length) {
-      throw ArgumentError(
-          'Domain index $domainIndex out of range (0-${_domains.length - 1})');
+  /// Switch to a domain by index
+  void switchToDomain(int index) {
+    if (index < 0 || index >= _domains.length) {
+      throw ArgumentError('Domain index out of range: $index');
     }
 
-    if (domainIndex != _currentDomainIndex) {
-      _currentDomainIndex = domainIndex;
-
-      // Notify domain change observers
+    if (_currentDomainIndex != index) {
+      _currentDomainIndex = index;
       _domainChangeController.add(currentDomain);
       notifyListeners();
     }
   }
 
-  void switchToDomainByCode(String domainCode) {
-    final index = _domains.indexWhere((domain) => domain.code == domainCode);
-
-    if (index >= 0) {
-      switchToDomain(index);
-    } else {
-      throw ArgumentError('Domain with code $domainCode not found');
+  /// Switch to a domain by code
+  void switchToDomainByCode(String code) {
+    final index = _domains.indexWhere((d) => d.code == code);
+    if (index == -1) {
+      throw ArgumentError('Domain with code $code not found');
     }
+    switchToDomain(index);
   }
 
-  Domain? getDomain(String code) {
-    return _domains.firstWhere((domain) => domain.code == code,
-        orElse: () => throw ArgumentError('Domain with code $code not found'));
+  /// Get a domain by code
+  Domain getDomain(String code) {
+    final domain = _domains.firstWhere(
+      (d) => d.code == code,
+      orElse: () => throw ArgumentError('Domain with code $code not found'),
+    );
+    return domain;
   }
 
   // Domain change observer methods

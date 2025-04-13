@@ -30,7 +30,7 @@ part of ednet_core_flutter;
 /// // Launch the UI
 /// runApp(ShellAppRunner(shellApp: shell));
 /// ```
-class ShellApp {
+class ShellApp extends ChangeNotifier {
   /// The domain model being interpreted
   Domain get domain {
     if (_domainManager != null) {
@@ -455,6 +455,20 @@ class ShellApp {
   /// Load entities from the repository
   Future<List<Map<String, dynamic>>> loadEntities(String conceptCode) {
     return _persistence.loadEntities(conceptCode);
+  }
+
+  /// Initialize the shell
+  void initialize() {
+    // Implement in subclasses
+  }
+
+  /// Get the current domain manager
+  ShellDomainManager? get domainManager => _domainManager;
+
+  /// Set the domain manager
+  set domainManager(ShellDomainManager? manager) {
+    _domainManager = manager;
+    notifyListeners();
   }
 }
 
