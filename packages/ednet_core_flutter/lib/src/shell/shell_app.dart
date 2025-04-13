@@ -82,7 +82,17 @@ class ShellApp {
   })  : _domain = domain,
         configuration = configuration ?? ShellConfiguration() {
     // Initialize persistence with the domain
-    _persistence = ShellPersistence(domain);
+    // Check if development mode should be enabled
+    final bool useDevelopmentMode = _shouldEnableDevelopmentMode();
+
+    // Initialize persistence with development mode configuration
+    _persistence =
+        ShellPersistence(domain, useDevelopmentMode: useDevelopmentMode);
+
+    if (useDevelopmentMode) {
+      debugPrint(
+          '⚠️ DEVELOPMENT MODE ENABLED - using sample data repositories');
+    }
 
     _initializeShell();
 
@@ -90,6 +100,22 @@ class ShellApp {
     if (domains != null) {
       initializeWithDomains(domains, initialDomainIndex: initialDomainIndex);
     }
+  }
+
+  /// Determine if development mode should be enabled based on configuration
+  bool _shouldEnableDevelopmentMode() {
+    // First check if it's explicitly enabled in the features
+    if (configuration.features.contains('development_mode')) {
+      return true;
+    }
+
+    // Then check if it's enabled via environment variable
+    if (const bool.fromEnvironment('EDNET_DEV_MODE', defaultValue: false)) {
+      return true;
+    }
+
+    // Default to false - explicitly enable through features or env vars
+    return false;
   }
 
   /// Initialize the shell's core components

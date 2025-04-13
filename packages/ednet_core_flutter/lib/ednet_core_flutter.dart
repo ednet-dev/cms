@@ -11,7 +11,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:ednet_core/ednet_core.dart';
 import 'package:yaml/yaml.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +46,7 @@ part 'src/shell/domain_navigator_multi.dart';
 part 'src/shell/configuration_injector.dart';
 part 'src/shell/navigation/shell_navigation_service.dart';
 part 'src/shell/example/shell_app_with_master_detail.dart';
+part 'src/shell/development_mode_channel.dart';
 part 'src/ui/default_form_builder.dart';
 part 'src/ui/ux_component_filter.dart';
 part 'src/ui/domain_model_visualizer.dart';
