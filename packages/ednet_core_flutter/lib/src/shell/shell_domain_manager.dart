@@ -187,6 +187,54 @@ class ShellDomainManager extends ChangeNotifier {
     }
   }
 
+  /// Get domains that have model changes based on diff detection
+  Future<List<Domain>> getDomainsWithChanges(ShellApp shellApp) async {
+    final domainsWithChanges = <Domain>[];
+
+    for (final domain in _domains) {
+      final diff = shellApp.exportDomainModelDiff(domain.code);
+      if (diff != '{}') {
+        domainsWithChanges.add(domain);
+      }
+    }
+
+    return domainsWithChanges;
+  }
+
+  /// Persist diffs for all domains that have changes
+  Future<Map<String, bool>> persistAllDomainModelDiffs(
+      ShellApp shellApp) async {
+    final results = <String, bool>{};
+
+    for (final domain in _domains) {
+      final result = await shellApp.persistCurrentDomainModelDiff(domain.code);
+      results[domain.code] = result;
+    }
+
+    return results;
+  }
+
+  /// Load and apply the latest persisted diffs for all domains
+  Future<Map<String, bool>> loadAndApplyAllDomainModelDiffs(
+      ShellApp shellApp) async {
+    final results = <String, bool>{};
+
+    for (final domain in _domains) {
+      final result =
+          await shellApp.loadAndApplyLatestDomainModelDiff(domain.code);
+      results[domain.code] = result;
+    }
+
+    return results;
+  }
+
+  /// Reset all domains to their baseline state
+  Future<void> resetAllDomainsToBaseline(ShellApp shellApp) async {
+    for (final domain in _domains) {
+      await shellApp.saveModelStateAsBaseline(domain.code);
+    }
+  }
+
   @override
   void dispose() {
     _domainChangeController.close();

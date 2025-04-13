@@ -267,6 +267,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                     Icons.arrow_upward,
                     theme,
                     path,
+                    concept,
                   ),
 
                 // Children
@@ -277,6 +278,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                     Icons.arrow_downward,
                     theme,
                     path,
+                    concept,
                   ),
               ],
             ),
@@ -306,6 +308,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
     IconData icon,
     DomainSidebarTheme theme,
     String parentPath,
+    Concept concept,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,7 +327,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
               isExpanded: false,
               isSelected: false,
               onTap: () {
-                _notifyArtifactSelected('$parentPath/$item');
+                _safeNavigateToRelationship(parentPath, item, concept);
               },
               dense: true,
             )),
@@ -416,5 +419,78 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
   void _notifyArtifactSelected(String path) {
     widget.onArtifactSelected?.call(path);
     widget.shellApp.navigateTo(path);
+  }
+
+  /// Safely navigate to a relationship with exception handling
+  void _safeNavigateToRelationship(
+      String parentPath, String relationshipCode, Concept concept) {
+    try {
+      // Check if meta-model editing is enabled
+      final hasMetaModelEditing = widget.shellApp
+          .hasFeature(ShellConfiguration.metaModelEditingFeature);
+
+      // Try to access the relationship safely
+      final relationship = hasMetaModelEditing
+          ? concept.getRelationship(relationshipCode)
+          : null;
+
+      if (relationship != null || !hasMetaModelEditing) {
+        // Navigate normally if relationship exists or meta-model editing is not enabled
+        _notifyArtifactSelected('$parentPath/$relationshipCode');
+      } else {
+        // Show dialog to create relationship if meta-model editing is enabled
+        _showDefineMissingRelationshipDialog(concept, relationshipCode);
+      }
+    } catch (e) {
+      if (e is ConceptException &&
+          widget.shellApp
+              .hasFeature(ShellConfiguration.metaModelEditingFeature)) {
+        // Show dialog to create relationship if meta-model editing is enabled
+        _showDefineMissingRelationshipDialog(concept, relationshipCode);
+      } else {
+        // Fallback behavior
+        debugPrint('Error navigating to relationship: $e');
+        _showErrorSnackbar(
+            'Could not navigate to relationship: $relationshipCode');
+      }
+    }
+  }
+
+  /// Show dialog to define a missing relationship
+  void _showDefineMissingRelationshipDialog(
+      Concept concept, String relationshipCode) {
+    final context = GlobalNavigatorKey.currentContext;
+    if (context != null) {
+      showDialog(
+        context: context,
+        builder: (context) => RelationshipDefinitionDialog(
+          shellApp: widget.shellApp,
+          concept: concept,
+          relationshipCode: relationshipCode,
+        ),
+      );
+    } else {
+      // Fallback if GlobalNavigatorKey is not available
+      showDialog(
+        context: this.context,
+        builder: (context) => RelationshipDefinitionDialog(
+          shellApp: widget.shellApp,
+          concept: concept,
+          relationshipCode: relationshipCode,
+        ),
+      );
+    }
+  }
+
+  /// Show error message in a snackbar
+  void _showErrorSnackbar(String message) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade800,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 }

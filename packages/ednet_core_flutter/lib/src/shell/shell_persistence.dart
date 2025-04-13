@@ -204,9 +204,15 @@ class ShellPersistence {
   /// Repository adapter chain
   late final RepositoryAdapterChain _adapterChain;
 
+  /// Special repository for model diff persistence
+  late final MemoryRepository _modelDiffRepository;
+
   /// Constructor
   ShellPersistence(this.domain, {bool useDevelopmentMode = false}) {
     _adapterChain = RepositoryAdapterChain();
+
+    // Initialize model diff repository
+    _modelDiffRepository = MemoryRepository('EDNetModelDiff');
 
     // Configure adapter chain based on mode
     if (useDevelopmentMode) {
@@ -312,6 +318,74 @@ class ShellPersistence {
       return await repository.findAll();
     } catch (e) {
       debugPrint('Error loading entities: $e');
+      return [];
+    }
+  }
+
+  /// Save a domain model diff to the repository
+  Future<bool> saveDomainModelDiff(String domainCode, String diffJson) async {
+    try {
+      final diffId =
+          'diff_${domainCode}_${DateTime.now().millisecondsSinceEpoch}';
+
+      return await _modelDiffRepository.save(diffId, {
+        'id': diffId,
+        'domainCode': domainCode,
+        'timestamp': DateTime.now().toIso8601String(),
+        'diffJson': diffJson,
+      });
+    } catch (e) {
+      debugPrint('Error saving domain model diff: $e');
+      return false;
+    }
+  }
+
+  /// Load the latest domain model diff from the repository
+  Future<String?> loadLatestDomainModelDiff(String domainCode) async {
+    try {
+      final allDiffs = await _modelDiffRepository.findAll();
+
+      // Filter diffs for this domain
+      final domainDiffs =
+          allDiffs.where((diff) => diff['domainCode'] == domainCode).toList();
+
+      if (domainDiffs.isEmpty) {
+        return null;
+      }
+
+      // Sort by timestamp (newest first)
+      domainDiffs.sort((a, b) {
+        final aTime = DateTime.parse(a['timestamp']);
+        final bTime = DateTime.parse(b['timestamp']);
+        return bTime.compareTo(aTime);
+      });
+
+      // Return the most recent diff
+      return domainDiffs.first['diffJson'];
+    } catch (e) {
+      debugPrint('Error loading domain model diff: $e');
+      return null;
+    }
+  }
+
+  /// Get all diffs for a specific domain
+  Future<List<Map<String, dynamic>>> getDomainModelDiffHistory(
+      String domainCode) async {
+    try {
+      final allDiffs = await _modelDiffRepository.findAll();
+
+      // Filter diffs for this domain and sort by timestamp
+      final domainDiffs =
+          allDiffs.where((diff) => diff['domainCode'] == domainCode).toList()
+            ..sort((a, b) {
+              final aTime = DateTime.parse(a['timestamp']);
+              final bTime = DateTime.parse(b['timestamp']);
+              return bTime.compareTo(aTime);
+            });
+
+      return domainDiffs;
+    } catch (e) {
+      debugPrint('Error loading domain model diff history: $e');
       return [];
     }
   }

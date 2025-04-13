@@ -71,6 +71,12 @@ class ShellApp extends ChangeNotifier {
   /// The domain manager for multi-domain support
   ShellDomainManager? _domainManager;
 
+  /// Domain model manager for meta-model editing
+  late final MetaModelManager _metaModelManager;
+
+  /// Domain model persistence manager for handling diffs/changes
+  late final MetaModelPersistenceManager _metaModelPersistenceManager;
+
   /// Check if this shell supports multiple domains
   bool get isMultiDomain => _domainManager != null;
 
@@ -94,6 +100,12 @@ class ShellApp extends ChangeNotifier {
       debugPrint(
           '⚠️ DEVELOPMENT MODE ENABLED - using sample data repositories');
     }
+
+    // Initialize the meta-model manager
+    _metaModelManager = MetaModelManager(this);
+
+    // Initialize the meta-model persistence manager
+    _metaModelPersistenceManager = MetaModelPersistenceManager(this);
 
     _initializeShell();
 
@@ -356,7 +368,40 @@ class ShellApp extends ChangeNotifier {
     }
   }
 
-  /// Load content for a specific artifact path
+  /// Safely get a relationship without throwing exceptions
+  Object? safeGetRelationship(Entity entity, String relationshipName) {
+    try {
+      return entity.getRelationship(relationshipName);
+    } catch (e) {
+      if (e is ConceptException) {
+        // Handle case where concept is not defined
+        if (hasFeature('meta_model_editing')) {
+          _handleMissingRelationship(entity, relationshipName);
+        }
+      }
+      return null;
+    }
+  }
+
+  /// Handle missing relationship by prompting for definition
+  void _handleMissingRelationship(Entity entity, String relationshipName) {
+    // This will be called from UI context, so we can show dialogs
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = GlobalNavigatorKey.currentContext;
+      if (context != null) {
+        showDialog(
+          context: context,
+          builder: (context) => MetaModelDefinitionDialog(
+            shellApp: this,
+            entity: entity,
+            relationshipName: relationshipName,
+          ),
+        );
+      }
+    });
+  }
+
+  /// Safe method to load artifact content without throwing exceptions for missing concepts
   void _loadArtifactContent(String path) {
     final segments = path.split('/').where((s) => s.isNotEmpty).toList();
 
@@ -389,7 +434,12 @@ class ShellApp extends ChangeNotifier {
     final modelCode = segments[1];
     final model = domainToUse.getModel(modelCode);
 
-    if (model == null) return;
+    if (model == null) {
+      if (hasFeature('meta_model_editing')) {
+        _handleMissingModel(domainToUse, modelCode);
+      }
+      return;
+    }
 
     if (segments.length == 2) {
       // Show model overview
@@ -401,7 +451,12 @@ class ShellApp extends ChangeNotifier {
     final conceptCode = segments[2];
     final concept = model.getConcept(conceptCode);
 
-    if (concept == null) return;
+    if (concept == null) {
+      if (hasFeature('meta_model_editing')) {
+        _handleMissingConcept(model, conceptCode);
+      }
+      return;
+    }
 
     if (segments.length == 3) {
       // Show concept overview
@@ -411,12 +466,72 @@ class ShellApp extends ChangeNotifier {
 
     // Handle relationship level
     final relationshipCode = segments[3];
-    final relationship = concept.getRelationship(relationshipCode);
+    try {
+      final relationship = concept.getRelationship(relationshipCode);
 
-    if (relationship != null) {
-      // Show relationship details
-      _navigationService.showRelationshipDetails(concept, relationshipCode);
+      if (relationship != null) {
+        // Show relationship details
+        _navigationService.showRelationshipDetails(concept, relationshipCode);
+      } else if (hasFeature('meta_model_editing')) {
+        _handleMissingRelationshipDefinition(concept, relationshipCode);
+      }
+    } catch (e) {
+      if (hasFeature('meta_model_editing')) {
+        _handleMissingRelationshipDefinition(concept, relationshipCode);
+      }
     }
+  }
+
+  /// Handle missing model by prompting for creation
+  void _handleMissingModel(Domain domain, String modelCode) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = GlobalNavigatorKey.currentContext;
+      if (context != null) {
+        showDialog(
+          context: context,
+          builder: (context) => ModelDefinitionDialog(
+            shellApp: this,
+            domain: domain,
+            modelCode: modelCode,
+          ),
+        );
+      }
+    });
+  }
+
+  /// Handle missing concept by prompting for creation
+  void _handleMissingConcept(Model model, String conceptCode) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = GlobalNavigatorKey.currentContext;
+      if (context != null) {
+        showDialog(
+          context: context,
+          builder: (context) => ConceptDefinitionDialog(
+            shellApp: this,
+            model: model,
+            conceptCode: conceptCode,
+          ),
+        );
+      }
+    });
+  }
+
+  /// Handle missing relationship definition by prompting for creation
+  void _handleMissingRelationshipDefinition(
+      Concept concept, String relationshipCode) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = GlobalNavigatorKey.currentContext;
+      if (context != null) {
+        showDialog(
+          context: context,
+          builder: (context) => RelationshipDefinitionDialog(
+            shellApp: this,
+            concept: concept,
+            relationshipCode: relationshipCode,
+          ),
+        );
+      }
+    });
   }
 
   /// Navigate to a specific entity
@@ -467,6 +582,126 @@ class ShellApp extends ChangeNotifier {
   set domainManager(ShellDomainManager? manager) {
     _domainManager = manager;
     notifyListeners();
+  }
+
+  /// Get the meta-model manager
+  MetaModelManager get metaModelManager => _metaModelManager;
+
+  /// Get the meta-model persistence manager
+  MetaModelPersistenceManager get metaModelPersistenceManager =>
+      _metaModelPersistenceManager;
+
+  /// Export the current domain model diff as a JSON string
+  ///
+  /// This captures the differences between the original domain model and any runtime changes
+  /// that have been made to it.
+  String exportDomainModelDiff(String? domainCode) {
+    if (!hasFeature('domain_model_diffing')) {
+      debugPrint('Domain model diffing feature is not enabled');
+      return '{}';
+    }
+
+    final code = domainCode ?? domain.code;
+    return _metaModelPersistenceManager.exportDiffToJson(code);
+  }
+
+  /// Import domain model changes from a JSON diff string
+  ///
+  /// Applies the differences to the current domain model
+  Future<bool> importDomainModelDiff(
+      String? domainCode, String jsonDiff) async {
+    if (!hasFeature('domain_model_diffing')) {
+      debugPrint('Domain model diffing feature is not enabled');
+      return false;
+    }
+
+    final code = domainCode ?? domain.code;
+    return await _metaModelPersistenceManager.importDiffFromJson(
+        code, jsonDiff);
+  }
+
+  /// Save the current domain model diff to a file
+  Future<bool> saveDomainModelDiffToFile(
+      String? domainCode, String filePath) async {
+    if (!hasFeature('domain_model_diffing')) {
+      debugPrint('Domain model diffing feature is not enabled');
+      return false;
+    }
+
+    final code = domainCode ?? domain.code;
+    return await _metaModelPersistenceManager.saveDiffToFile(code, filePath);
+  }
+
+  /// Get the entire history of domain model diffs for a domain
+  Future<List<Map<String, dynamic>>> getDomainModelDiffHistory(
+      String? domainCode) async {
+    final code = domainCode ?? domain.code;
+    return await _persistence.getDomainModelDiffHistory(code);
+  }
+
+  /// Automatically persist the current domain model diff
+  Future<bool> persistCurrentDomainModelDiff(String? domainCode) async {
+    if (!hasFeature('domain_model_diffing')) {
+      debugPrint('Domain model diffing feature is not enabled');
+      return false;
+    }
+
+    final code = domainCode ?? domain.code;
+    final diff = exportDomainModelDiff(code);
+    if (diff == '{}') {
+      return false; // No changes to persist
+    }
+
+    return await _persistence.saveDomainModelDiff(code, diff);
+  }
+
+  /// Load domain model diff from a file and apply changes
+  Future<bool> loadDomainModelDiffFromFile(
+      String? domainCode, String filePath) async {
+    if (!hasFeature('domain_model_diffing')) {
+      debugPrint('Domain model diffing feature is not enabled');
+      return false;
+    }
+
+    final code = domainCode ?? domain.code;
+    final diffJson =
+        await _metaModelPersistenceManager.loadDiffFromFile(filePath);
+    if (diffJson.isEmpty) {
+      return false;
+    }
+
+    return await _metaModelPersistenceManager.importDiffFromJson(
+        code, diffJson);
+  }
+
+  /// Load the latest persisted domain model diff and apply it
+  Future<bool> loadAndApplyLatestDomainModelDiff(String? domainCode) async {
+    if (!hasFeature('domain_model_diffing')) {
+      debugPrint('Domain model diffing feature is not enabled');
+      return false;
+    }
+
+    final code = domainCode ?? domain.code;
+    final diffJson = await _persistence.loadLatestDomainModelDiff(code);
+
+    if (diffJson == null || diffJson.isEmpty) {
+      return false;
+    }
+
+    return await importDomainModelDiff(code, diffJson);
+  }
+
+  /// Save the current domain model state as the new baseline
+  ///
+  /// This resets the diff tracking, treating the current state as the original
+  Future<void> saveModelStateAsBaseline(String? domainCode) async {
+    if (!hasFeature('domain_model_diffing')) {
+      debugPrint('Domain model diffing feature is not enabled');
+      return;
+    }
+
+    final code = domainCode ?? domain.code;
+    await _metaModelPersistenceManager.saveAsBaseline(code);
   }
 }
 

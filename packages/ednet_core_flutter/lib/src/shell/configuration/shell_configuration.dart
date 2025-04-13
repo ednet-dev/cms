@@ -17,6 +17,51 @@ class ShellConfiguration {
   /// Sidebar mode configuration
   final SidebarMode sidebarMode;
 
+  /// Meta-model editing features
+  static const String metaModelEditingFeature = 'meta_model_editing';
+  static const String conceptManagementFeature = 'concept_management';
+  static const String relationshipManagementFeature = 'relationship_management';
+  static const String attributeManagementFeature = 'attribute_management';
+  static const String domainModelDiffingFeature = 'domain_model_diffing';
+
+  /// Common feature sets as named presets
+  static final Map<String, Set<String>> featurePresets = {
+    'minimal': {
+      'basic_visualization',
+    },
+    'standard': {
+      'basic_visualization',
+      'entity_creation',
+      'entity_editing',
+      'filtering',
+      'sorting',
+      'persistence',
+      'breadcrumbs',
+      'tree_navigation',
+      domainModelDiffingFeature,
+    },
+    'developer': {
+      'basic_visualization',
+      'rich_visualization',
+      'entity_creation',
+      'entity_editing',
+      'advanced_navigation',
+      'breadcrumbs',
+      'filtering',
+      'sorting',
+      'domain_analytics',
+      'export_features',
+      'persistence',
+      'development_mode',
+      'tree_navigation',
+      metaModelEditingFeature,
+      conceptManagementFeature,
+      relationshipManagementFeature,
+      attributeManagementFeature,
+      domainModelDiffingFeature,
+    },
+  };
+
   /// Constructor
   ShellConfiguration({
     this.defaultDisclosureLevel,
@@ -26,6 +71,31 @@ class ShellConfiguration {
     this.sidebarMode = SidebarMode.both,
   })  : customAdapters = customAdapters ?? {},
         features = features ?? <String>{};
+
+  /// Create a configuration from a preset
+  factory ShellConfiguration.fromPreset(
+    String preset, {
+    DisclosureLevel? defaultDisclosureLevel,
+    Map<Type, LayoutAdapter>? customAdapters,
+    Set<String>? additionalFeatures,
+    ThemeData? theme,
+    SidebarMode? sidebarMode,
+  }) {
+    final presetFeatures = featurePresets[preset] ?? <String>{};
+    final features = Set<String>.from(presetFeatures);
+
+    if (additionalFeatures != null) {
+      features.addAll(additionalFeatures);
+    }
+
+    return ShellConfiguration(
+      defaultDisclosureLevel: defaultDisclosureLevel,
+      customAdapters: customAdapters,
+      features: features,
+      theme: theme,
+      sidebarMode: sidebarMode ?? SidebarMode.both,
+    );
+  }
 
   /// Create a copy with modified values
   ShellConfiguration copyWith({

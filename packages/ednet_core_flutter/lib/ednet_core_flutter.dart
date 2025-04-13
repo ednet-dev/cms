@@ -111,3 +111,6 @@ part 'src/ui/components/filters/filter_model.dart';
 part 'src/ui/components/filters/filter_service.dart';
 part 'src/ui/components/filters/filter_button.dart';
 part 'src/ui/components/layout/semantic_pinning_service.dart';
+part 'src/shell/meta_model_manager.dart';
+part 'src/ui/components/meta_model/meta_model_dialogs.dart';
+part 'src/shell/meta_model_persistence_manager.dart';
