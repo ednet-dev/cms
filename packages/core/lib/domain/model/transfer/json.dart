@@ -3,7 +3,6 @@ part of ednet_core;
 Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
   Iterable jsonConcepts = [];
   Iterable relations = [];
-  Map? schemaExtensions;
 
   if (yaml == null || yaml.isEmpty) {
     if (json.trim() == '') {
@@ -12,14 +11,10 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, Map? yaml) {
     var boardMap = jsonDecode(json);
     jsonConcepts = boardMap["concepts"];
     relations = boardMap["relations"];
-    schemaExtensions = boardMap["schemaExtensions"];
   } else {
     jsonConcepts = yaml["concepts"] as Iterable;
     if (yaml.containsKey("relations")) {
       relations = yaml["relations"] as Iterable;
-    }
-    if (yaml.containsKey("schemaExtensions")) {
-      schemaExtensions = yaml["schemaExtensions"] as Map;
     }
   }
 

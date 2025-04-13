@@ -703,6 +703,164 @@ class ShellApp extends ChangeNotifier {
     final code = domainCode ?? domain.code;
     await _metaModelPersistenceManager.saveAsBaseline(code);
   }
+
+  /// Show a dialog with a generic form to edit an entity
+  Future<bool?> showEntityEditForm(
+    BuildContext context,
+    Entity entity, {
+    Map<String, dynamic>? initialData,
+    DisclosureLevel? disclosureLevel,
+    void Function(Map<String, dynamic> data)? onSaved,
+    List<UXFieldDescriptor>? customFields,
+    String? title,
+    bool fullScreen = false,
+  }) async {
+    if (!hasFeature('entity_editing') ||
+        !hasFeature(ShellConfiguration.genericEntityFormFeature)) {
+      debugPrint('Entity editing or generic form feature is not enabled');
+      return false;
+    }
+
+    // Determine dialog size based on screen size
+    final screenSize = MediaQuery.of(context).size;
+    final dialogWidth = fullScreen
+        ? screenSize.width * 0.95
+        : screenSize.width < 600
+            ? screenSize.width * 0.9
+            : screenSize.width * 0.6;
+    final dialogHeight =
+        fullScreen ? screenSize.height * 0.95 : screenSize.height * 0.8;
+
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          width: dialogWidth,
+          height: dialogHeight,
+          padding: const EdgeInsets.all(24.0),
+          child: SingleChildScrollView(
+            child: GenericEntityForm(
+              entity: entity,
+              shellApp: this,
+              initialData: initialData,
+              disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+              onSaved: onSaved,
+              isEditMode: true,
+              customFields: customFields,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Show a dialog with a generic form to create a new entity
+  Future<bool?> showEntityCreateForm(
+    BuildContext context,
+    Concept concept, {
+    Map<String, dynamic>? initialData,
+    DisclosureLevel? disclosureLevel,
+    void Function(Map<String, dynamic> data)? onSaved,
+    List<UXFieldDescriptor>? customFields,
+    String? title,
+    bool fullScreen = false,
+  }) async {
+    if (!hasFeature('entity_creation') ||
+        !hasFeature(ShellConfiguration.genericEntityFormFeature)) {
+      debugPrint('Entity creation or generic form feature is not enabled');
+      return false;
+    }
+
+    // Create a temporary entity for the form
+    final entity =
+        EntityFactory.createEntityFromData(concept, initialData ?? {});
+
+    // Determine dialog size based on screen size
+    final screenSize = MediaQuery.of(context).size;
+    final dialogWidth = fullScreen
+        ? screenSize.width * 0.95
+        : screenSize.width < 600
+            ? screenSize.width * 0.9
+            : screenSize.width * 0.6;
+    final dialogHeight =
+        fullScreen ? screenSize.height * 0.95 : screenSize.height * 0.8;
+
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          width: dialogWidth,
+          height: dialogHeight,
+          padding: const EdgeInsets.all(24.0),
+          child: SingleChildScrollView(
+            child: GenericEntityForm(
+              entity: entity,
+              shellApp: this,
+              initialData: initialData,
+              disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+              onSaved: onSaved,
+              isEditMode: false,
+              customFields: customFields,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Build an entity edit form as a widget (not in a dialog)
+  Widget buildEntityEditForm(
+    Entity entity, {
+    Map<String, dynamic>? initialData,
+    DisclosureLevel? disclosureLevel,
+    void Function(Map<String, dynamic> data)? onSaved,
+    VoidCallback? onCancel,
+    List<UXFieldDescriptor>? customFields,
+  }) {
+    if (!hasFeature(ShellConfiguration.genericEntityFormFeature)) {
+      return const Text('Generic entity form feature is not enabled');
+    }
+
+    return GenericEntityForm(
+      entity: entity,
+      shellApp: this,
+      initialData: initialData,
+      disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+      onSaved: onSaved,
+      onCancel: onCancel,
+      isEditMode: true,
+      customFields: customFields,
+    );
+  }
+
+  /// Build an entity create form as a widget (not in a dialog)
+  Widget buildEntityCreateForm(
+    Concept concept, {
+    Map<String, dynamic>? initialData,
+    DisclosureLevel? disclosureLevel,
+    void Function(Map<String, dynamic> data)? onSaved,
+    VoidCallback? onCancel,
+    List<UXFieldDescriptor>? customFields,
+  }) {
+    if (!hasFeature(ShellConfiguration.genericEntityFormFeature)) {
+      return const Text('Generic entity form feature is not enabled');
+    }
+
+    // Create a temporary entity for the form
+    final entity =
+        EntityFactory.createEntityFromData(concept, initialData ?? {});
+
+    return GenericEntityForm(
+      entity: entity,
+      shellApp: this,
+      initialData: initialData,
+      disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+      onSaved: onSaved,
+      onCancel: onCancel,
+      isEditMode: false,
+      customFields: customFields,
+    );
+  }
 }
 
 /// A widget that provides navigation through the domain model

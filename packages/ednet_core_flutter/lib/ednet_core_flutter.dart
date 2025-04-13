@@ -114,3 +114,4 @@ part 'src/ui/components/layout/semantic_pinning_service.dart';
 part 'src/shell/meta_model_manager.dart';
 part 'src/ui/components/meta_model/meta_model_dialogs.dart';
 part 'src/shell/meta_model_persistence_manager.dart';
+part 'src/ui/components/entity/generic_entity_form.dart';

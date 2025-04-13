@@ -23,6 +23,7 @@ class ShellConfiguration {
   static const String relationshipManagementFeature = 'relationship_management';
   static const String attributeManagementFeature = 'attribute_management';
   static const String domainModelDiffingFeature = 'domain_model_diffing';
+  static const String genericEntityFormFeature = 'generic_entity_form';
 
   /// Common feature sets as named presets
   static final Map<String, Set<String>> featurePresets = {
@@ -39,6 +40,7 @@ class ShellConfiguration {
       'breadcrumbs',
       'tree_navigation',
       domainModelDiffingFeature,
+      genericEntityFormFeature,
     },
     'developer': {
       'basic_visualization',
@@ -59,6 +61,7 @@ class ShellConfiguration {
       relationshipManagementFeature,
       attributeManagementFeature,
       domainModelDiffingFeature,
+      genericEntityFormFeature,
     },
   };
 
