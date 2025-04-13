@@ -5,6 +5,8 @@ library test_core_flutter;
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import '../../ednet_core_flutter.dart';
+
 /// Basic entity
 class Entity<T> {
   String? _code;
@@ -75,23 +77,6 @@ class Concepts {
 }
 
 /// Shell app configuration
-class ShellConfiguration {
-  /// Features enabled in the shell
-  final Set<String> features;
-
-  /// Disclosure level for entity visualization
-  final String defaultDisclosureLevel;
-
-  /// Theme data
-  final ThemeData? theme;
-
-  /// Constructor
-  ShellConfiguration({
-    this.features = const {},
-    this.defaultDisclosureLevel = 'standard',
-    this.theme,
-  });
-}
 
 /// Development Mode Channel message types
 class DevModeMessageTypes {
