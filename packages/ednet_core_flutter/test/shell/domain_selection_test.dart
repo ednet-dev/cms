@@ -31,10 +31,16 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: DomainSelector(
-              shellApp: shellApp,
-              style: const DomainSelectorStyle(
-                selectorType: DomainSelectorType.dropdown,
+            body: Builder(
+              builder: (context) => DomainSelector(
+                shellApp: shellApp,
+                style: DomainSelectorStyle(
+                  textStyle: Theme.of(context).textTheme.bodyLarge,
+                  selectedTextStyle:
+                      Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                ),
               ),
             ),
           ),
@@ -45,12 +51,8 @@ void main() {
       expect(shellApp.domain.code, equals('TestDomain1'));
       expect(find.text('TestDomain1'), findsOneWidget);
 
-      // Open dropdown
-      await tester.tap(find.byType(DropdownButton<int>));
-      await tester.pumpAndSettle();
-
-      // Select second domain
-      await tester.tap(find.text('TestDomain2').last);
+      // Find and tap the second domain link
+      await tester.tap(find.text('TestDomain2'));
       await tester.pumpAndSettle();
 
       // Verify domain switched
@@ -63,10 +65,16 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                DomainSelector(
-                  shellApp: shellApp,
-                  style: const DomainSelectorStyle(
-                    selectorType: DomainSelectorType.dropdown,
+                Builder(
+                  builder: (context) => DomainSelector(
+                    shellApp: shellApp,
+                    style: DomainSelectorStyle(
+                      textStyle: Theme.of(context).textTheme.bodyLarge,
+                      selectedTextStyle:
+                          Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
                   ),
                 ),
                 Text('Current Domain: ${shellApp.domain.code}'),
@@ -79,12 +87,8 @@ void main() {
       // Verify initial state
       expect(find.text('Current Domain: TestDomain1'), findsOneWidget);
 
-      // Open dropdown
-      await tester.tap(find.byType(DropdownButton<int>));
-      await tester.pumpAndSettle();
-
-      // Select second domain
-      await tester.tap(find.text('TestDomain2').last);
+      // Find and tap the second domain link
+      await tester.tap(find.text('TestDomain2'));
       await tester.pumpAndSettle();
 
       // Verify UI updated
@@ -96,37 +100,51 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: DomainSelector(
-              shellApp: shellApp,
-              style: const DomainSelectorStyle(
-                selectorType: DomainSelectorType.dropdown,
+            body: Builder(
+              builder: (context) => DomainSelector(
+                shellApp: shellApp,
+                style: DomainSelectorStyle(
+                  textStyle: Theme.of(context).textTheme.bodyLarge,
+                  selectedTextStyle:
+                      Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                ),
               ),
             ),
           ),
         ),
       );
 
-      // Switch to second domain
-      await tester.tap(find.byType(DropdownButton<int>));
+      // Select second domain
+      await tester.tap(find.text('TestDomain2'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('TestDomain2').last);
-      await tester.pumpAndSettle();
+
+      // Verify selection
+      expect(shellApp.domain.code, equals('TestDomain2'));
 
       // Rebuild widget
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: DomainSelector(
-              shellApp: shellApp,
-              style: const DomainSelectorStyle(
-                selectorType: DomainSelectorType.dropdown,
+            body: Builder(
+              builder: (context) => DomainSelector(
+                shellApp: shellApp,
+                style: DomainSelectorStyle(
+                  textStyle: Theme.of(context).textTheme.bodyLarge,
+                  selectedTextStyle:
+                      Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                ),
               ),
             ),
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
-      // Verify domain selection persisted
+      // Verify selection preserved
       expect(shellApp.domain.code, equals('TestDomain2'));
       expect(find.text('TestDomain2'), findsOneWidget);
     });

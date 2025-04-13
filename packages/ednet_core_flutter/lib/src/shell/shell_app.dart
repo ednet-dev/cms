@@ -652,9 +652,15 @@ class _DomainNavigatorState extends State<DomainNavigator> {
               const SizedBox(width: 16),
               DomainSelector(
                 shellApp: widget.shellApp,
-                style: const DomainSelectorStyle(
-                  selectorType: DomainSelectorType.dropdown,
-                  hideDropdownUnderline: true,
+                style: DomainSelectorStyle(
+                  textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                  selectedTextStyle:
+                      Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
                 ),
               ),
             ],

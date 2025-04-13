@@ -134,11 +134,7 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
               const SizedBox(width: 16),
               DomainSelector(
                 shellApp: widget.shellApp,
-                style: widget.domainSelectorStyle ??
-                    const DomainSelectorStyle(
-                      selectorType: DomainSelectorType.dropdown,
-                      hideDropdownUnderline: true,
-                    ),
+                style: widget.domainSelectorStyle,
                 domainItemBuilder: widget.domainItemBuilder,
               ),
             ],
@@ -205,9 +201,26 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
-            child: const Text(
-              'Domain Navigation',
-              style: TextStyle(color: Colors.white, fontSize: 24),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 36,
+                  child: DomainSelector(
+                    shellApp: widget.shellApp,
+                    style: DomainSelectorStyle(
+                      textStyle:
+                          Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.white70,
+                              ),
+                      selectedTextStyle:
+                          Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           // Generate menu items for each domain and its models

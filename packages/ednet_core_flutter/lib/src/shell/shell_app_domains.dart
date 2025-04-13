@@ -18,8 +18,7 @@ extension ShellAppDomainExtension on ShellApp {
   }
 
   /// Access to the domain manager
-  ShellDomainManager? get domainManager =>
-      _domainManager;
+  ShellDomainManager? get domainManager => _domainManager;
 
   /// Switch to a different domain by index
   void switchToDomain(int domainIndex) {
@@ -45,7 +44,7 @@ extension ShellAppDomainExtension on ShellApp {
 }
 
 /// UI component for domain navigation in a multi-domain shell
-class DomainSelector extends StatefulWidget {
+class DomainSelector extends StatelessWidget {
   /// The shell app
   final ShellApp shellApp;
 
@@ -64,146 +63,157 @@ class DomainSelector extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DomainSelector> createState() => _DomainSelectorState();
-}
-
-class _DomainSelectorState extends State<DomainSelector> {
-  late int _currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = widget.shellApp.currentDomainIndex;
-    widget.shellApp.addListener(_onShellAppChanged);
-  }
-
-  @override
-  void dispose() {
-    widget.shellApp.removeListener(_onShellAppChanged);
-    super.dispose();
-  }
-
-  void _onShellAppChanged() {
-    if (mounted) {
-      setState(() {
-        _currentIndex = widget.shellApp.currentDomainIndex;
-      });
-    }
-  }
-
-  @override
-  void didUpdateWidget(DomainSelector oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.shellApp != widget.shellApp) {
-      oldWidget.shellApp.removeListener(_onShellAppChanged);
-      widget.shellApp.addListener(_onShellAppChanged);
-      _currentIndex = widget.shellApp.currentDomainIndex;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final domainManager = widget.shellApp.domainManager;
+    final domainManager = shellApp.domainManager;
 
     if (domainManager == null || domainManager.domains.length <= 1) {
       return const SizedBox.shrink();
     }
 
-    final domains = domainManager.domains;
-    final effectiveStyle = widget.style ?? const DomainSelectorStyle();
+    final domains = domainManager.domains.toList();
+    final currentIndex = domainManager.currentDomainIndex;
 
-    switch (effectiveStyle.selectorType) {
-      case DomainSelectorType.dropdown:
-        return _buildDropdown(context, domains, effectiveStyle);
-      case DomainSelectorType.tabs:
-        return _buildTabs(context, domains, effectiveStyle);
-      case DomainSelectorType.chips:
-        return _buildChips(context, domains, effectiveStyle);
-      default:
-        return _buildDropdown(context, domains, effectiveStyle);
-    }
+    // Use default style if none provided
+    final effectiveStyle = style ?? DomainSelectorStyle();
+
+    // Wrap in a ResponsiveSemanticWrapper for responsive behavior
+    return ResponsiveSemanticWrapper.basic(
+      artifactId: 'domain_selector',
+      child:
+          _buildResponsiveLinks(context, domains, currentIndex, effectiveStyle),
+    );
   }
 
-  Widget _buildDropdown(
+  Widget _buildResponsiveLinks(
     BuildContext context,
     List<Domain> domains,
+    int currentIndex,
     DomainSelectorStyle style,
   ) {
-    return DropdownButton<int>(
-      value: _currentIndex,
-      underline: style.hideDropdownUnderline ? const SizedBox() : null,
-      icon: style.dropdownIcon ?? const Icon(Icons.arrow_drop_down),
-      items: List.generate(domains.length, (index) {
-        final domain = domains[index];
-        return DropdownMenuItem<int>(
-          value: index,
-          child: widget.domainItemBuilder != null
-              ? widget.domainItemBuilder!(
-                  context, domain, index == _currentIndex)
-              : Text(domain.code),
-        );
-      }),
-      onChanged: (index) {
-        if (index != null) {
-          widget.shellApp.switchToDomain(index);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Get screen category to determine layout
+        final screenCategory =
+            ResponsiveSemanticWrapper.getScreenCategory(context);
+        final isSmallScreen = screenCategory == ScreenSizeCategory.mobile;
+
+        // For small screens, use a more compact layout
+        if (isSmallScreen) {
+          return _buildCompactLinks(context, domains, currentIndex, style);
         }
+
+        // For larger screens, use a row of links
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: _buildDomainLinks(context, domains, currentIndex, style),
+          ),
+        );
       },
     );
   }
 
-  Widget _buildTabs(
+  Widget _buildCompactLinks(
     BuildContext context,
     List<Domain> domains,
+    int currentIndex,
     DomainSelectorStyle style,
   ) {
-    return DefaultTabController(
-      length: domains.length,
-      initialIndex: _currentIndex,
-      child: TabBar(
-        isScrollable: true,
-        tabs: List.generate(domains.length, (index) {
+    return PopupMenuButton<int>(
+      initialValue: currentIndex,
+      onSelected: (index) => shellApp.switchToDomain(index),
+      itemBuilder: (context) {
+        return List.generate(domains.length, (index) {
           final domain = domains[index];
-          return Tab(
-            child: widget.domainItemBuilder != null
-                ? widget.domainItemBuilder!(
-                    context, domain, index == _currentIndex)
-                : Text(domain.code),
+          final isSelected = index == currentIndex;
+
+          return PopupMenuItem<int>(
+            value: index,
+            child: _buildDomainLink(context, domain, isSelected, style, false),
           );
-        }),
-        onTap: (index) {
-          widget.shellApp.switchToDomain(index);
-        },
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildDomainLink(
+              context,
+              domains[currentIndex],
+              true,
+              style,
+              true,
+            ),
+            const Icon(Icons.arrow_drop_down),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildChips(
+  List<Widget> _buildDomainLinks(
     BuildContext context,
     List<Domain> domains,
+    int currentIndex,
     DomainSelectorStyle style,
   ) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: List.generate(domains.length, (index) {
-          final domain = domains[index];
-          final isSelected = index == _currentIndex;
+    return List.generate(domains.length, (index) {
+      final domain = domains[index];
+      final isSelected = index == currentIndex;
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ChoiceChip(
-              label: widget.domainItemBuilder != null
-                  ? widget.domainItemBuilder!(context, domain, isSelected)
-                  : Text(domain.code),
-              selected: isSelected,
-              onSelected: (selected) {
-                if (selected) {
-                  widget.shellApp.switchToDomain(index);
-                }
-              },
-            ),
-          );
-        }),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: InkWell(
+          onTap: () => shellApp.switchToDomain(index),
+          child: _buildDomainLink(context, domain, isSelected, style, false),
+        ),
+      );
+    });
+  }
+
+  Widget _buildDomainLink(
+    BuildContext context,
+    Domain domain,
+    bool isSelected,
+    DomainSelectorStyle style,
+    bool isCompact,
+  ) {
+    final theme = Theme.of(context);
+
+    // Use custom builder if provided
+    if (domainItemBuilder != null) {
+      return domainItemBuilder!(context, domain, isSelected);
+    }
+
+    // Default link styling
+    final textStyle = isSelected
+        ? (style.selectedTextStyle ??
+            theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ))
+        : (style.textStyle ?? theme.textTheme.bodyLarge);
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: 8.0,
+        horizontal: isCompact ? 4.0 : 12.0,
+      ),
+      decoration: isSelected
+          ? BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: theme.colorScheme.primary,
+                  width: 2.0,
+                ),
+              ),
+            )
+          : null,
+      child: Text(
+        domain.code,
+        style: textStyle,
       ),
     );
   }
@@ -211,15 +221,6 @@ class _DomainSelectorState extends State<DomainSelector> {
 
 /// Style options for the domain selector
 class DomainSelectorStyle {
-  /// Type of selector to use
-  final DomainSelectorType selectorType;
-
-  /// Whether to hide the underline in dropdown type
-  final bool hideDropdownUnderline;
-
-  /// Custom icon for dropdown type
-  final Icon? dropdownIcon;
-
   /// Custom styling for text items
   final TextStyle? textStyle;
 
@@ -228,9 +229,6 @@ class DomainSelectorStyle {
 
   /// Constructor
   const DomainSelectorStyle({
-    this.selectorType = DomainSelectorType.dropdown,
-    this.hideDropdownUnderline = false,
-    this.dropdownIcon,
     this.textStyle,
     this.selectedTextStyle,
   });
