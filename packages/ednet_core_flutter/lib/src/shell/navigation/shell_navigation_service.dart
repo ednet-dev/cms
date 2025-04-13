@@ -5,7 +5,7 @@ part of 'package:ednet_core_flutter/ednet_core_flutter.dart';
 /// This service manages the navigation state, breadcrumbs, and routing throughout
 /// the application, providing a unified navigation experience that's connected to
 /// the domain model.
-class ShellNavigationService {
+class ShellNavigationService extends ChangeNotifier {
   /// The breadcrumb service for managing navigation path
   final BreadcrumbService _breadcrumbService = BreadcrumbService();
 
@@ -34,7 +34,7 @@ class ShellNavigationService {
   final int _maxHistoryEntries = 50;
 
   /// Navigation state change listeners
-  final List<void Function(String)> _navigationListeners = [];
+  final List<void Function()> _navigationListeners = [];
 
   /// Static singleton instance
   static final ShellNavigationService _instance =
@@ -59,7 +59,7 @@ class ShellNavigationService {
   UXChannel get navigationChannel => _navigationChannel;
 
   /// Get the current location
-  String get currentLocation => _currentLocation;
+  String get currentPath => _currentLocation;
 
   /// Get the current parameters
   Map<String, dynamic> get currentParameters =>
@@ -158,7 +158,7 @@ class ShellNavigationService {
     _sendNavigationMessage(destination, parameters);
 
     // Notify listeners
-    _notifyListeners(destination);
+    notifyListeners();
   }
 
   /// Navigate to a domain entity
@@ -266,26 +266,9 @@ class ShellNavigationService {
     _sendNavigationMessage(previousLocation, null);
 
     // Notify listeners
-    _notifyListeners(previousLocation);
+    notifyListeners();
 
     return true;
-  }
-
-  /// Add a navigation listener
-  void addListener(void Function(String) listener) {
-    _navigationListeners.add(listener);
-  }
-
-  /// Remove a navigation listener
-  void removeListener(void Function(String) listener) {
-    _navigationListeners.remove(listener);
-  }
-
-  /// Notify all listeners of a navigation change
-  void _notifyListeners(String destination) {
-    for (final listener in _navigationListeners) {
-      listener(destination);
-    }
   }
 
   /// Send a navigation message on the channel
@@ -351,6 +334,34 @@ class ShellNavigationService {
     _sendNavigationMessage('/', null);
 
     // Notify listeners
-    _notifyListeners('/');
+    notifyListeners();
+  }
+
+  /// Show domain overview
+  void showDomainOverview(Domain domain) {
+    navigateTo('/domain/${domain.code}',
+        label: domain.code, icon: Icons.domain);
+  }
+
+  /// Show model overview
+  void showModelOverview(Model model) {
+    navigateTo('/domain/${model.domain.code}/${model.code}',
+        label: model.code, icon: Icons.data_object);
+  }
+
+  /// Show concept overview
+  void showConceptOverview(Concept concept) {
+    navigateTo(
+        '/domain/${concept.model.domain.code}/${concept.model.code}/${concept.code}',
+        label: concept.code,
+        icon: concept.entry ? Icons.class_ : Icons.schema);
+  }
+
+  /// Show relationship details
+  void showRelationshipDetails(Concept concept, String relationshipCode) {
+    navigateTo(
+        '/domain/${concept.model.domain.code}/${concept.model.code}/${concept.code}/$relationshipCode',
+        label: relationshipCode,
+        icon: Icons.account_tree);
   }
 }

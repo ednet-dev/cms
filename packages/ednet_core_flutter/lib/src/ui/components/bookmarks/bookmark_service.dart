@@ -260,8 +260,8 @@ class BookmarkService extends ChangeNotifier {
   }) async {
     if (_navigationService == null) return null;
 
-    final location = _navigationService!.currentLocation;
-    // Get the current parameters but not using them directly in this implementation
+    // Get the current path from navigation service
+    final location = _navigationService!.currentPath;
 
     // Get active breadcrumb for title if not provided
     final activeItem = _navigationService!.breadcrumbService.activeBreadcrumb;

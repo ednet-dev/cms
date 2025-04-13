@@ -27,29 +27,60 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
   int _selectedModelIndex = 0;
   String _currentPath = '/';
 
+  // Stream subscriptions
+  StreamSubscription<String>? _navigationSubscription;
+  StreamSubscription<Domain>? _domainChangeSubscription;
+
   @override
   void initState() {
     super.initState();
-    // Listen for navigation changes
-    widget.shellApp.navigationService.addListener(_onNavigationChanged);
+
+    // Set up navigation service listener
+    _navigationSubscription = _setupNavigationListener();
 
     // Listen for domain changes if multi-domain is enabled
     if (widget.shellApp.isMultiDomain) {
-      widget.shellApp.domainManager?.addDomainChangeObserver(_onDomainChanged);
+      _domainChangeSubscription = _setupDomainChangeListener();
     }
   }
 
   @override
   void dispose() {
-    // Remove listeners
-    widget.shellApp.navigationService.removeListener(_onNavigationChanged);
-
-    if (widget.shellApp.isMultiDomain) {
-      widget.shellApp.domainManager
-          ?.removeDomainChangeObserver(_onDomainChanged);
-    }
+    // Cancel subscriptions
+    _navigationSubscription?.cancel();
+    _domainChangeSubscription?.cancel();
 
     super.dispose();
+  }
+
+  // Create a stream subscription for navigation changes
+  StreamSubscription<String> _setupNavigationListener() {
+    // Create a stream controller
+    final controller = StreamController<String>.broadcast();
+
+    // Add callback to navigation service
+    widget.shellApp.navigationService.addListener(() {
+      controller.add(widget.shellApp.navigationService.currentPath);
+    });
+
+    // Subscribe to events
+    return controller.stream.listen(_onNavigationChanged);
+  }
+
+  // Create a stream subscription for domain changes
+  StreamSubscription<Domain>? _setupDomainChangeListener() {
+    if (widget.shellApp.domainManager == null) return null;
+
+    // Create a stream controller
+    final controller = StreamController<Domain>.broadcast();
+
+    // Set up domain change observer
+    widget.shellApp.domainManager!.addDomainChangeObserver((domain) {
+      controller.add(domain);
+    });
+
+    // Subscribe to events
+    return controller.stream.listen(_onDomainChanged);
   }
 
   void _onNavigationChanged(String path) {

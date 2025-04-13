@@ -1,180 +1,57 @@
 part of ednet_core_flutter;
 
-/// Types of navigation items in the domain hierarchy
-enum NavigationItemType {
-  domain,
-  model,
-  concept,
-  relationship,
-}
-
-/// Represents a selected item in the domain navigation
-class DomainNavigationItem {
-  final NavigationItemType type;
-  final String path;
-  final String title;
-  final Domain? domain;
-  final Model? model;
-  final Concept? concept;
-
-  DomainNavigationItem({
-    required this.type,
-    required this.path,
-    required this.title,
-    this.domain,
-    this.model,
-    this.concept,
-  });
-}
-
-/// Theme configuration for the domain sidebar
-class DomainSidebarTheme {
-  final double sidebarWidth;
-  final Color backgroundColor;
-  final Color headerBackgroundColor;
-  final Color dividerColor;
-  final Color selectedItemColor;
-  final Color selectedItemBorderColor;
-  final Color itemIconColor;
-  final Color selectedItemIconColor;
-  final Color entryBadgeColor;
-  final Color abstractBadgeColor;
-
-  final TextStyle headerTextStyle;
-  final TextStyle subtitleTextStyle;
-  final TextStyle itemTextStyle;
-  final TextStyle selectedItemTextStyle;
-  final TextStyle badgeTextStyle;
-  final TextStyle groupLabelStyle;
-
-  const DomainSidebarTheme({
-    required this.sidebarWidth,
-    required this.backgroundColor,
-    required this.headerBackgroundColor,
-    required this.dividerColor,
-    required this.selectedItemColor,
-    required this.selectedItemBorderColor,
-    required this.itemIconColor,
-    required this.selectedItemIconColor,
-    required this.entryBadgeColor,
-    required this.abstractBadgeColor,
-    required this.headerTextStyle,
-    required this.subtitleTextStyle,
-    required this.itemTextStyle,
-    required this.selectedItemTextStyle,
-    required this.badgeTextStyle,
-    required this.groupLabelStyle,
-  });
-
-  /// Create a theme instance from the current context
-  factory DomainSidebarTheme.fromContext(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return DomainSidebarTheme(
-      sidebarWidth: 280,
-      backgroundColor: colorScheme.surface,
-      headerBackgroundColor: colorScheme.primaryContainer.withValues(alpha: .1),
-      dividerColor: colorScheme.outline.withValues(alpha: .2),
-      selectedItemColor: colorScheme.primaryContainer.withValues(alpha: .3),
-      selectedItemBorderColor: colorScheme.primary,
-      itemIconColor: colorScheme.onSurface.withValues(alpha: .7),
-      selectedItemIconColor: colorScheme.primary,
-      entryBadgeColor: colorScheme.primary.withValues(alpha: .2),
-      abstractBadgeColor: colorScheme.secondary.withValues(alpha: .2),
-      headerTextStyle: theme.textTheme.titleLarge!.copyWith(
-        color: colorScheme.primary,
-        fontWeight: FontWeight.bold,
-      ),
-      subtitleTextStyle: theme.textTheme.bodySmall!.copyWith(
-        color: colorScheme.onSurface.withValues(alpha: .6),
-      ),
-      itemTextStyle: theme.textTheme.bodyMedium!,
-      selectedItemTextStyle: theme.textTheme.bodyMedium!.copyWith(
-        color: colorScheme.primary,
-        fontWeight: FontWeight.bold,
-      ),
-      badgeTextStyle: theme.textTheme.labelSmall!.copyWith(
-        color: colorScheme.onSurface,
-      ),
-      groupLabelStyle: theme.textTheme.labelSmall!.copyWith(
-        color: colorScheme.onSurface.withValues(alpha: .6),
-        fontWeight: FontWeight.w500,
-      ),
-    );
-  }
-}
-
-/// A hierarchical sidebar component for navigating domain models.
-///
-/// This component provides a rich navigation experience through the EDNet domain model
-/// hierarchy, supporting multiple domains, models, and concepts with progressive disclosure.
-class DomainSidebar extends StatefulWidget {
+/// A specialized sidebar that displays the domain model hierarchy as a tree
+/// with support for artifacts like domains, models, concepts, and their relationships.
+class TreeArtifactSidebar extends StatefulWidget {
   /// The shell app instance providing domain and navigation context
   final ShellApp shellApp;
 
   /// Optional custom theme for the sidebar
   final DomainSidebarTheme? theme;
 
-  /// Callback when an item is selected
-  final Function(DomainNavigationItem)? onItemSelected;
+  /// Callback when an artifact is selected
+  final Function(String path)? onArtifactSelected;
 
-  const DomainSidebar({
+  const TreeArtifactSidebar({
     super.key,
     required this.shellApp,
     this.theme,
-    this.onItemSelected,
+    this.onArtifactSelected,
   });
 
   @override
-  State<DomainSidebar> createState() => _DomainSidebarState();
+  State<TreeArtifactSidebar> createState() => _TreeArtifactSidebarState();
 }
 
-class _DomainSidebarState extends State<DomainSidebar> {
+class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
   /// Track expanded state of tree nodes
   final Map<String, bool> _expandedNodes = {};
 
-  /// Currently selected item path
+  /// Currently selected path
   String? _selectedPath;
 
-  // Stream subscription for navigation changes
-  StreamSubscription<String>? _navigationSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Set up navigation service listener using a stream
-    _setupNavigationListener();
-  }
-
-  @override
-  void dispose() {
-    // Cancel subscription
-    _navigationSubscription?.cancel();
-    super.dispose();
-  }
-
-  // Create a stream subscription for navigation changes
-  void _setupNavigationListener() {
-    // Create a stream controller
-    final controller = StreamController<String>.broadcast();
-
-    // Add callback to navigation service
-    widget.shellApp.navigationService.addListener(() {
-      controller.add(widget.shellApp.navigationService.currentPath);
-    });
-
-    // Subscribe to events
-    _navigationSubscription = controller.stream.listen(_onNavigationChanged);
-  }
-
-  void _onNavigationChanged(String path) {
+  void _navigationListener() {
+    final path = widget.shellApp.navigationService.currentPath;
     setState(() {
       _selectedPath = path;
       // Auto-expand parent nodes of selected item
       _expandParentNodes(path);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen for navigation changes
+    widget.shellApp.navigationService.addListener(_navigationListener);
+    // Initialize with current path
+    _navigationListener();
+  }
+
+  @override
+  void dispose() {
+    widget.shellApp.navigationService.removeListener(_navigationListener);
+    super.dispose();
   }
 
   void _expandParentNodes(String path) {
@@ -273,13 +150,9 @@ class _DomainSidebarState extends State<DomainSidebar> {
             setState(() {
               _expandedNodes[path] = !isExpanded;
             });
-            _notifyItemSelected(DomainNavigationItem(
-              type: NavigationItemType.domain,
-              path: path,
-              title: domain.code,
-              domain: domain,
-            ));
+            _notifyArtifactSelected(path);
           },
+          subtitle: domain.description,
         ),
 
         // Models under this domain
@@ -317,13 +190,9 @@ class _DomainSidebarState extends State<DomainSidebar> {
             setState(() {
               _expandedNodes[path] = !isExpanded;
             });
-            _notifyItemSelected(DomainNavigationItem(
-              type: NavigationItemType.model,
-              path: path,
-              title: model.code,
-              model: model,
-            ));
+            _notifyArtifactSelected(path);
           },
+          subtitle: model.description,
         ),
 
         // Concepts under this model
@@ -354,6 +223,15 @@ class _DomainSidebarState extends State<DomainSidebar> {
             ? Icons.architecture
             : Icons.schema;
 
+    // Build concept badges
+    final badges = <Widget>[];
+    if (concept.entry) {
+      badges.add(_buildBadge('Entry', theme.entryBadgeColor, theme));
+    }
+    if (concept.abstract) {
+      badges.add(_buildBadge('Abstract', theme.abstractBadgeColor, theme));
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -368,15 +246,10 @@ class _DomainSidebarState extends State<DomainSidebar> {
             setState(() {
               _expandedNodes[path] = !isExpanded;
             });
-            _notifyItemSelected(DomainNavigationItem(
-              type: NavigationItemType.concept,
-              path: path,
-              title: concept.code,
-              concept: concept,
-            ));
+            _notifyArtifactSelected(path);
           },
           subtitle: concept.description,
-          badges: _buildConceptBadges(concept, theme),
+          badges: badges,
         ),
 
         // Show relationships if expanded
@@ -390,7 +263,7 @@ class _DomainSidebarState extends State<DomainSidebar> {
                 if (concept.parents.isNotEmpty)
                   _buildRelationshipGroup(
                     'Parents',
-                    concept.parents.map((p) => p.code).toList(),
+                    concept.parents.map((parent) => parent.code).toList(),
                     Icons.arrow_upward,
                     theme,
                     path,
@@ -400,7 +273,7 @@ class _DomainSidebarState extends State<DomainSidebar> {
                 if (concept.children.isNotEmpty)
                   _buildRelationshipGroup(
                     'Children',
-                    concept.children.map((c) => c.code).toList(),
+                    concept.children.map((child) => child.code).toList(),
                     Icons.arrow_downward,
                     theme,
                     path,
@@ -410,19 +283,6 @@ class _DomainSidebarState extends State<DomainSidebar> {
           ),
       ],
     );
-  }
-
-  List<Widget> _buildConceptBadges(Concept concept, DomainSidebarTheme theme) {
-    final badges = <Widget>[];
-
-    if (concept.entry) {
-      badges.add(_buildBadge('Entry', theme.entryBadgeColor, theme));
-    }
-    if (concept.abstract) {
-      badges.add(_buildBadge('Abstract', theme.abstractBadgeColor, theme));
-    }
-
-    return badges;
   }
 
   Widget _buildBadge(String text, Color color, DomainSidebarTheme theme) {
@@ -464,11 +324,7 @@ class _DomainSidebarState extends State<DomainSidebar> {
               isExpanded: false,
               isSelected: false,
               onTap: () {
-                _notifyItemSelected(DomainNavigationItem(
-                  type: NavigationItemType.relationship,
-                  path: '$parentPath/$item',
-                  title: item,
-                ));
+                _notifyArtifactSelected('$parentPath/$item');
               },
               dense: true,
             )),
@@ -545,7 +401,7 @@ class _DomainSidebarState extends State<DomainSidebar> {
                 ],
               ),
             ),
-            if (isExpanded)
+            if (!dense)
               Icon(
                 isExpanded ? Icons.expand_less : Icons.expand_more,
                 size: dense ? 16 : 20,
@@ -557,8 +413,8 @@ class _DomainSidebarState extends State<DomainSidebar> {
     );
   }
 
-  void _notifyItemSelected(DomainNavigationItem item) {
-    widget.onItemSelected?.call(item);
-    widget.shellApp.navigateTo(item.path);
+  void _notifyArtifactSelected(String path) {
+    widget.onArtifactSelected?.call(path);
+    widget.shellApp.navigateTo(path);
   }
 }

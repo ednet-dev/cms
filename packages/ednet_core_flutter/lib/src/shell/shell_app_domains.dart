@@ -3,13 +3,17 @@ part of ednet_core_flutter;
 /// Extends ShellApp to support multiple domains
 extension ShellAppDomainExtension on ShellApp {
   /// Initializes the shell with multiple domains
-  void initializeWithDomains(Domains domains, {int initialDomainIndex = 0}) {
+  void initializeWithDomains(List<Domain> domains,
+      {int initialDomainIndex = 0}) {
     if (_domainManager == null) {
-      _domainManager = ShellDomainManager(
-        domains: domains,
-        initialDomainIndex: initialDomainIndex,
-        shellApp: this,
-      );
+      // Create a domain manager with the provided domains
+      _domainManager = ShellDomainManager(domains);
+
+      // Set initial domain index
+      if (initialDomainIndex >= 0 && initialDomainIndex < domains.length) {
+        (_domainManager as ShellDomainManager)
+            .switchToDomain(initialDomainIndex);
+      }
     }
   }
 
@@ -28,7 +32,7 @@ extension ShellAppDomainExtension on ShellApp {
   }
 
   /// Get all available domains
-  Domains? get availableDomains => domainManager?.domains;
+  List<Domain>? get availableDomains => domainManager?.domains;
 
   /// Get the currently selected domain index
   int get currentDomainIndex => domainManager?.currentDomainIndex ?? 0;
@@ -36,77 +40,6 @@ extension ShellAppDomainExtension on ShellApp {
   /// Check if this ShellApp manages multiple domains
   bool get isMultiDomain =>
       domainManager != null && domainManager!.domains.length > 1;
-}
-
-/// Manages multiple domains for a ShellApp
-class ShellDomainManager {
-  /// All available domains
-  final Domains domains;
-
-  /// Index of the currently selected domain
-  int currentDomainIndex;
-
-  /// Reference to the shell app
-  final ShellApp shellApp;
-
-  /// Observers for domain change events
-  final List<void Function(Domain)> _domainChangeObservers = [];
-
-  /// Constructor
-  ShellDomainManager({
-    required this.domains,
-    required int initialDomainIndex,
-    required this.shellApp,
-  }) : currentDomainIndex = initialDomainIndex.clamp(0, domains.length - 1);
-
-  /// Get the current domain
-  Domain get currentDomain => domains[currentDomainIndex];
-
-  /// Switch to a domain by index
-  void switchToDomain(int domainIndex) {
-    if (domainIndex < 0 || domainIndex >= domains.length) {
-      throw ArgumentError(
-          'Domain index $domainIndex out of range (0-${domains.length - 1})');
-    }
-
-    if (domainIndex != currentDomainIndex) {
-      currentDomainIndex = domainIndex;
-
-      // Notify observers
-      for (final observer in _domainChangeObservers) {
-        observer(currentDomain);
-      }
-    }
-  }
-
-  /// Switch to a domain by code
-  void switchToDomainByCode(String domainCode) {
-    final domainsList = domains.toList();
-    int index = -1;
-
-    for (int i = 0; i < domainsList.length; i++) {
-      if (domainsList[i].code == domainCode) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index >= 0) {
-      switchToDomain(index);
-    } else {
-      throw ArgumentError('Domain with code $domainCode not found');
-    }
-  }
-
-  /// Add an observer for domain changes
-  void addDomainChangeObserver(void Function(Domain) observer) {
-    _domainChangeObservers.add(observer);
-  }
-
-  /// Remove an observer
-  void removeDomainChangeObserver(void Function(Domain) observer) {
-    _domainChangeObservers.remove(observer);
-  }
 }
 
 /// UI component for domain navigation in a multi-domain shell
@@ -136,7 +69,7 @@ class DomainSelector extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final domains = domainManager.domains.toList();
+    final domains = domainManager.domains;
     final currentIndex = domainManager.currentDomainIndex;
 
     // Use default style if none provided

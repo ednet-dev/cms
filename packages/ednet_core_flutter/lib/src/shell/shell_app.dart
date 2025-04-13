@@ -35,7 +35,8 @@ class ShellApp {
   Domain get domain {
     if (_domainManager != null) {
       // If multi-domain, return the current domain
-      return _domainManager!.currentDomain;
+      final domainManager = _domainManager as ShellDomainManager;
+      return domainManager.currentDomain;
     }
     return _domain;
   }
@@ -98,7 +99,8 @@ class ShellApp {
 
     // Initialize multi-domain support if domains are provided
     if (domains != null) {
-      initializeWithDomains(domains, initialDomainIndex: initialDomainIndex);
+      initializeWithDomains(domains.toList(),
+          initialDomainIndex: initialDomainIndex);
     }
   }
 
@@ -347,6 +349,76 @@ class ShellApp {
       {Map<String, dynamic>? parameters, String? label, IconData? icon}) {
     _navigationService.navigateTo(path,
         parameters: parameters, label: label, icon: icon);
+
+    // If tree navigation is enabled, handle artifact loading
+    if (hasFeature('tree_navigation')) {
+      _loadArtifactContent(path);
+    }
+  }
+
+  /// Load content for a specific artifact path
+  void _loadArtifactContent(String path) {
+    final segments = path.split('/').where((s) => s.isNotEmpty).toList();
+
+    if (segments.isEmpty) return;
+
+    // Handle domain level
+    final domainCode = segments[0];
+    Domain? domainToUse;
+
+    if (isMultiDomain && _domainManager != null) {
+      // Try to find domain by code
+      final manager = _domainManager as ShellDomainManager;
+      try {
+        domainToUse = manager.getDomain(domainCode);
+      } catch (e) {
+        // Domain not found, use current domain
+        domainToUse = this.domain;
+      }
+    } else {
+      domainToUse = this.domain;
+    }
+
+    if (domainToUse == null) return;
+
+    if (segments.length == 1) {
+      // Show domain overview
+      _navigationService.showDomainOverview(domainToUse);
+      return;
+    }
+
+    // Handle model level
+    final modelCode = segments[1];
+    final model = domainToUse.getModel(modelCode);
+
+    if (model == null) return;
+
+    if (segments.length == 2) {
+      // Show model overview
+      _navigationService.showModelOverview(model);
+      return;
+    }
+
+    // Handle concept level
+    final conceptCode = segments[2];
+    final concept = model.getConcept(conceptCode);
+
+    if (concept == null) return;
+
+    if (segments.length == 3) {
+      // Show concept overview
+      _navigationService.showConceptOverview(concept);
+      return;
+    }
+
+    // Handle relationship level
+    final relationshipCode = segments[3];
+    final relationship = concept.getRelationship(relationshipCode);
+
+    if (relationship != null) {
+      // Show relationship details
+      _navigationService.showRelationshipDetails(concept, relationshipCode);
+    }
   }
 
   /// Navigate to a specific entity
@@ -400,12 +472,16 @@ class ShellConfiguration {
   /// Custom theme for the shell
   final ThemeData? theme;
 
+  /// Sidebar mode configuration
+  final SidebarMode sidebarMode;
+
   /// Constructor
   ShellConfiguration({
     this.defaultDisclosureLevel,
     Map<Type, LayoutAdapter>? customAdapters,
     Set<String>? features,
     this.theme,
+    this.sidebarMode = SidebarMode.classic,
   })  : customAdapters = customAdapters ?? {},
         features = features ?? <String>{};
 
@@ -415,6 +491,7 @@ class ShellConfiguration {
     Map<Type, LayoutAdapter>? customAdapters,
     Set<String>? features,
     ThemeData? theme,
+    SidebarMode? sidebarMode,
   }) {
     return ShellConfiguration(
       defaultDisclosureLevel:
@@ -422,8 +499,21 @@ class ShellConfiguration {
       customAdapters: customAdapters ?? Map.from(this.customAdapters),
       features: features ?? Set.from(this.features),
       theme: theme ?? this.theme,
+      sidebarMode: sidebarMode ?? this.sidebarMode,
     );
   }
+}
+
+/// Sidebar mode options
+enum SidebarMode {
+  /// Classic domain sidebar with expandable sections
+  classic,
+
+  /// Tree-based artifact sidebar with full domain hierarchy
+  tree,
+
+  /// Both sidebars available with toggle
+  both
 }
 
 /// A Flutter app that wraps the Shell
@@ -473,18 +563,36 @@ class _DomainNavigatorState extends State<DomainNavigator> {
   int _selectedIndex = 0;
   String _currentPath = '/';
 
+  // Stream subscription for navigation changes
+  StreamSubscription<String>? _navigationSubscription;
+
   @override
   void initState() {
     super.initState();
-    // Listen for navigation changes
-    widget.shellApp.navigationService.addListener(_onNavigationChanged);
+
+    // Set up navigation service listener using a stream
+    _setupNavigationListener();
   }
 
   @override
   void dispose() {
-    // Remove the navigation listener
-    widget.shellApp.navigationService.removeListener(_onNavigationChanged);
+    // Cancel subscription
+    _navigationSubscription?.cancel();
     super.dispose();
+  }
+
+  // Create a stream subscription for navigation changes
+  void _setupNavigationListener() {
+    // Create a stream controller
+    final controller = StreamController<String>.broadcast();
+
+    // Add callback to navigation service
+    widget.shellApp.navigationService.addListener(() {
+      controller.add(widget.shellApp.navigationService.currentPath);
+    });
+
+    // Subscribe to events
+    _navigationSubscription = controller.stream.listen(_onNavigationChanged);
   }
 
   void _onNavigationChanged(String path) {

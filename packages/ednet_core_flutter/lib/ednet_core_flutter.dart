@@ -3,11 +3,11 @@ library ednet_core_flutter;
 
 // Imports
 import 'dart:async';
+import 'dart:math';
 import 'dart:math' as math;
 import 'dart:io';
 import 'dart:convert';
 import 'dart:ui';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,12 +17,16 @@ import 'package:yaml/yaml.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
-// Export components - exports MUST come before any part directives
-part 'src/shell/shell_persistence.dart';
-part 'src/domain/domain_session_extension.dart';
-
 // parts
+part 'src/shell/shell_persistence.dart';
+part 'src/shell/shell_domain_manager.dart';
+part 'src/shell/shell_app.dart';
+part 'src/shell/shell_app_domains.dart';
+part 'src/shell/domain_navigator_multi.dart';
+part 'src/domain/domain_session_extension.dart';
 part 'src/ui/components/domain_sidebar.dart';
+part 'src/ui/components/tree_artifact_sidebar.dart';
+part 'src/ui/components/sidebar/sidebar_container.dart';
 part 'src/ui/theme/extensions/domain_sidebar_theme_extension.dart';
 part 'src/ui/layout/layout_adapter.dart';
 part 'src/ui/components/layout/responsive_semantic_wrapper.dart';
@@ -40,9 +44,6 @@ part 'src/ui/factory/entity_factory.dart';
 part 'src/ui/messages/ux_message.dart';
 part 'src/ui/messages/ux_channel.dart';
 part 'src/ui/extensions/entity_ux_extension.dart';
-part 'src/shell/shell_app.dart';
-part 'src/shell/shell_app_domains.dart';
-part 'src/shell/domain_navigator_multi.dart';
 part 'src/shell/configuration_injector.dart';
 part 'src/shell/navigation/shell_navigation_service.dart';
 part 'src/shell/example/shell_app_with_master_detail.dart';
