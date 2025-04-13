@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
 
-/// A base component for rendering domain model elements in a game context.
-///
-/// This component serves as the foundation for visualizing domain models
-/// in an interactive, game-like environment. It provides common properties
-/// and behaviors that all domain visualization components share.
+
+
 abstract class DomainComponent extends Component {
   /// The unique identifier for this component.
   final String id;
@@ -74,7 +71,6 @@ abstract class DomainComponent extends Component {
   }
 }
 
-/// A component that represents an entity in the domain model.
 class GameEntityComponent extends DomainComponent {
   /// The attributes of this entity.
   final List<AttributeComponent> attributes;
@@ -142,7 +138,6 @@ class GameEntityComponent extends DomainComponent {
   }
 }
 
-/// A component that represents an attribute of an entity.
 class AttributeComponent extends DomainComponent {
   /// The type of this attribute (String, int, etc.).
   final String type;

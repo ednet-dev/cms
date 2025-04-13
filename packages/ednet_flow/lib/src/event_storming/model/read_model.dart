@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Represents a read model in an Event Storming session.
-///
-/// In Event Storming, read models represent views or projections of the domain
-/// that are used for querying data. They are typically represented by
-/// green sticky notes on the event storming board.
+
+
 class EventStormingReadModel extends EventStormingElement {
   /// IDs of domain events that update this read model.
   final List<String> updatedByEventIds;

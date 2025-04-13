@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Represents an external system in an Event Storming session.
-///
-/// In Event Storming, external systems represent third-party systems or services
-/// that interact with the domain. They are typically represented by
-/// pink sticky notes on the event storming board.
+
+
 class EventStormingExternalSystem extends EventStormingElement {
   /// IDs of domain events that this external system might receive.
   final List<String> receivedEventIds;

@@ -1,24 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
 
-/// A layout algorithm that positions nodes using network flow principles.
-///
-/// This algorithm:
-/// - Treats the graph as a network with source and sink nodes
-/// - Computes flow directions through the network
-/// - Positions nodes based on their role in the network flow
-/// - Creates a visual representation of data flow through a system
-///
-/// Example usage:
-/// ```dart
-/// final layout = NetworkFlowLayoutAlgorithm();
-/// layout.layout(nodes, edges, Size(800, 600));
-/// ```
+
+
 class NetworkFlowLayoutAlgorithm extends LayoutAlgorithm {
   /// Creates a new network flow layout algorithm.
   ///

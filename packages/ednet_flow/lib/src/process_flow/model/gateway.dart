@@ -1,11 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
-/// Defines the type of gateway in a process flow.
+
+
 enum GatewayType {
   /// Exclusive gateway (XOR) - only one outgoing path will be taken
   exclusive,
@@ -23,10 +24,6 @@ enum GatewayType {
   complex,
 }
 
-/// Represents a gateway (decision point) in a process flow.
-///
-/// Gateways control the flow of a process by splitting or merging execution paths.
-/// They determine which sequence flows should be followed based on conditions or events.
 class Gateway {
   /// The unique identifier for this gateway.
   final String id;
@@ -107,7 +104,6 @@ class Gateway {
   }
 }
 
-/// Represents the position of a gateway in a visual process diagram.
 class GatewayPosition {
   /// The x-coordinate.
   final double x;

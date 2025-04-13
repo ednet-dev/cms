@@ -1,24 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
 
-/// A layout algorithm that positions nodes using a ranked embedding approach.
-///
-/// This algorithm:
-/// - Assigns ranks to nodes based on their connections
-/// - Uses force-directed techniques within each rank
-/// - Minimizes edge crossings between ranks
-/// - Creates a hierarchical structure with clearly defined levels
-///
-/// Example usage:
-/// ```dart
-/// final layout = RankedEmbeddingLayoutAlgorithm();
-/// layout.layout(nodes, edges, Size(800, 600));
-/// ```
+
+
 class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
   /// Creates a new ranked embedding layout algorithm.
   ///
@@ -365,7 +354,6 @@ class RankedEmbeddingLayoutAlgorithm extends LayoutAlgorithm {
   }
 }
 
-/// Helper class for storing a node and its median position.
 class _NodeWithMedian {
   final TreeNode node;
   final double median;

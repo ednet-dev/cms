@@ -1,15 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
-/// A component that represents a relationship between entities.
-///
-/// This component visualizes the connections and relationships between
-/// entities in a domain model, providing a dynamic and interactive
-/// way to understand how different parts of a domain relate to each other.
+
+
 class RelationComponent {
   /// The unique identifier for this relation.
   final String id;
@@ -121,7 +118,6 @@ class RelationComponent {
   }
 }
 
-/// Defines the type of relationship between entities.
 enum RelationType {
   /// Association relationship - entities are related but independent
   association,

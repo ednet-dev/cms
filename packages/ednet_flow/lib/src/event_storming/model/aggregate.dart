@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Represents an aggregate in an Event Storming session.
-///
-/// In Event Storming, aggregates are clusters of domain events and commands
-/// that belong together. They represent consistency boundaries in the domain.
-/// Aggregates are typically represented by yellow sticky notes on the event storming board.
+
+
 class EventStormingAggregate extends EventStormingElement {
   /// IDs of domain events that belong to this aggregate.
   final List<String> domainEventIds;

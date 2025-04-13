@@ -1,20 +1,16 @@
 // This file is part of the EDNetFlow library.
 // File updated with proper imports by update_imports.dart script.
 
-import 'package:ednet_flow/ednet_flow.dart';
-
-// This file is part of the EDNetFlow library.
-// Restored imports for source file organization.
+part of ednet_flow;
 
 
 
 
-/// Stub implementations of Flutter types for Dart-only environments.
-/// This file allows the package to be used in Dart-only applications
-/// by providing minimal implementations of the Flutter types used.
 
 
-/// Stub implementation of [Offset] for pure Dart environments.
+
+
+
 class Offset {
   final double dx;
   final double dy;
@@ -43,7 +39,6 @@ class Offset {
   Offset operator /(double operand) => Offset(dx / operand, dy / operand);
 }
 
-/// Stub implementation of [Size] for pure Dart environments.
 class Size {
   final double width;
   final double height;
@@ -51,7 +46,6 @@ class Size {
   const Size(this.width, this.height);
 }
 
-/// Stub implementation of [Color] for pure Dart environments.
 class Color {
   final int value;
 
@@ -63,7 +57,6 @@ class Color {
   Color withOpacity(double opacity) => this;
 }
 
-/// Stub implementation of [Colors] for pure Dart environments.
 class Colors {
   static const Color black = Color(0xFF000000);
   static const Color white = Color(0xFFFFFFFF);
@@ -82,7 +75,6 @@ class Colors {
   static ColorSwatch<int> get amber => _makeColorSwatch(0xFFFFC107);
 }
 
-/// Stub implementation of [ColorSwatch] for pure Dart environments.
 class ColorSwatch<T extends num> extends Color {
   const ColorSwatch(super.value);
 
@@ -92,22 +84,18 @@ class ColorSwatch<T extends num> extends Color {
   Color get shade200 => Color(value - 0x10000000);
 }
 
-/// Creates a color swatch with dummy shade values.
 ColorSwatch<int> _makeColorSwatch(int primary) {
   return ColorSwatch<int>(primary);
 }
 
-/// Stub implementation of paint-related classes for pure Dart environments.
 enum PaintingStyle { fill, stroke }
 
-/// Stub implementation of [Paint] for pure Dart environments.
 class Paint {
   Color color = const Color(0xFF000000);
   PaintingStyle style = PaintingStyle.fill;
   double strokeWidth = 1.0;
 }
 
-/// Stub implementation of [Canvas] for pure Dart environments.
 class Canvas {
   void drawLine(Offset p1, Offset p2, Paint paint) {}
   void drawRect(Rect rect, Paint paint) {}
@@ -123,14 +111,12 @@ class Canvas {
   void scale(double sx, [double? sy]) {}
 }
 
-/// Stub implementation of [Path] for pure Dart environments.
 class Path {
   void moveTo(double x, double y) {}
   void lineTo(double x, double y) {}
   void close() {}
 }
 
-/// Stub implementation of [Rect] for pure Dart environments.
 class Rect {
   final double left;
   final double top;
@@ -153,7 +139,6 @@ class Rect {
   }
 }
 
-/// Stub implementation of [RRect] for pure Dart environments.
 class RRect {
   const RRect._();
 
@@ -162,7 +147,6 @@ class RRect {
   }
 }
 
-/// Stub implementation of [Radius] for pure Dart environments.
 class Radius {
   final double x;
   final double y;
@@ -170,7 +154,6 @@ class Radius {
   const Radius.circular(double radius) : x = radius, y = radius;
 }
 
-/// Stub implementation of [TextStyle] for pure Dart environments.
 class TextStyle {
   final Color? color;
   final double? fontSize;
@@ -189,7 +172,6 @@ class TextStyle {
   });
 }
 
-/// Stub implementation of [FontWeight] for pure Dart environments.
 class FontWeight {
   final int value;
 
@@ -201,10 +183,8 @@ class FontWeight {
   static const FontWeight w500 = FontWeight(500);
 }
 
-/// Stub implementation of [FontStyle] for pure Dart environments.
 enum FontStyle { normal, italic }
 
-/// Stub implementation of [TextDecoration] for pure Dart environments.
 class TextDecoration {
   final int value;
 
@@ -214,16 +194,12 @@ class TextDecoration {
   static const TextDecoration underline = TextDecoration(1);
 }
 
-/// Stub implementation of [TextAlign] for pure Dart environments.
 enum TextAlign { left, right, center, justify }
 
-/// Stub implementation of [TextDirection] for pure Dart environments.
 enum TextDirection { ltr, rtl }
 
-/// Stub implementation of [TextOverflow] for pure Dart environments.
 enum TextOverflow { clip, ellipsis, fade, visible }
 
-/// Stub implementation of [EdgeInsets] for pure Dart environments.
 class EdgeInsets {
   final double left;
   final double top;

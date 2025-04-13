@@ -1,14 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
-/// The main game controller for domain model visualization.
-///
-/// This class provides a game-based approach to domain model visualization,
-/// enabling interactive, dynamic exploration of domain models.
+
+
 class VisualizationGame {
   /// The domain model being visualized.
   final DomainModel domainModel;
@@ -168,7 +166,6 @@ class VisualizationGame {
   }
 }
 
-/// A component that represents an entity in the domain model.
 class EntityComponent {
   /// The unique identifier for this entity.
   final String id;

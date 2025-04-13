@@ -1,14 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
-/// Defines the direction of an edge in a domain model graph.
-///
-/// Edge directions specify how relationships flow between nodes, which is
-/// crucial for understanding the domain model structure and navigability.
+
+
 enum EdgeDirection {
   /// Edge flows from left to right.
   leftToRight,

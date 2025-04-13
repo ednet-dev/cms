@@ -1,15 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Base class for all Event Storming elements.
-///
-/// This class provides common properties and behaviors for all
-/// elements that can be placed on an Event Storming board.
+
+
 abstract class EventStormingElement {
   /// The unique identifier for this element.
   final String id;
@@ -69,7 +67,6 @@ abstract class EventStormingElement {
   String get elementType;
 }
 
-/// Represents a connection between Event Storming elements.
 class ElementConnection {
   /// Source element ID of the connection.
   final String sourceId;
@@ -109,7 +106,6 @@ class ElementConnection {
   }
 }
 
-/// Defines the type of connection between Event Storming elements.
 enum ConnectionType {
   /// A command triggers an event
   TRIGGERS,

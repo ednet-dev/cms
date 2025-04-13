@@ -1,21 +1,15 @@
 // This file is part of the EDNetFlow library.
 // File updated with proper imports by update_imports.dart script.
 
-import 'package:ednet_flow/ednet_flow.dart';
-import 'package:ednet_flow/src/event_storming/model/element.dart';
-
-// This file is part of the EDNetFlow library.
-// Restored imports for source file organization.
+part of ednet_flow;
 
 
 
 
 
-/// Represents the event storming board where all elements are placed.
-///
-/// The board is the central object in an event storming session,
-/// containing all the elements (events, commands, aggregates, etc.)
-/// and their relationships.
+
+
+
 class EventStormingBoard {
   /// The unique identifier for this board.
   final String id;

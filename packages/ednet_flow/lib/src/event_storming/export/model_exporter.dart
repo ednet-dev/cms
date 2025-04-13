@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Exports an Event Storming board to various formats.
-///
-/// The model exporter transforms an event storming board into different formats
-/// such as EDNet Core models, JSON, or other representations that can be used
-/// for implementation or documentation.
+
+
 abstract class ModelExporter {
   /// Exports the board to a specific format.
   ///
@@ -25,11 +22,6 @@ abstract class ModelExporter {
   dynamic export(EventStormingBoard board, {Map<String, dynamic> options = const {}});
 }
 
-/// Exports an Event Storming board to an EDNet Core domain model.
-///
-/// This exporter creates a complete EDNet Core domain model from
-/// the event storming board, including concepts, attributes, events,
-/// commands, and policies.
 class EDNetCoreExporter implements ModelExporter {
   @override
   ednet_core.model.Model export(EventStormingBoard board, {Map<String, dynamic> options = const {}}) {
@@ -92,11 +84,6 @@ class EDNetCoreExporter implements ModelExporter {
   }
 }
 
-/// Exports an Event Storming board to JSON format.
-///
-/// This exporter creates a structured JSON representation of the
-/// event storming board that can be used for documentation or
-/// further processing.
 class JsonExporter implements ModelExporter {
   @override
   Map<String, dynamic> export(EventStormingBoard board, {Map<String, dynamic> options = const {}}) {
@@ -195,10 +182,6 @@ class JsonExporter implements ModelExporter {
   }
 }
 
-/// Factory for creating model exporters.
-///
-/// This factory provides a convenient way to create the appropriate
-/// exporter based on the desired output format.
 class ModelExporterFactory {
   /// Creates an exporter for the specified format.
   ///

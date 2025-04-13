@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Represents a command in an Event Storming session.
-///
-/// In Event Storming, commands represent the intent to perform an action
-/// that might result in a domain event. They are typically represented
-/// by blue sticky notes on the event storming board.
+
+
 class EventStormingCommand extends EventStormingElement {
   /// The aggregate that this command targets (may be null during initial discovery).
   String? aggregateId;

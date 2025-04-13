@@ -1,21 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
-/// Represents a node in a domain model graph.
-///
-/// A Node represents a vertex in the graph with:
-/// - A unique identifier
-/// - A specific type defining its role in the domain model
-/// - A position in the visualization space
-/// - Visual properties for rendering
-/// - Optional connection to EDNet Core domain model elements
-///
-/// Nodes are the fundamental building blocks of domain model visualizations,
-/// representing entities, value objects, events, and other domain concepts.
+
+
 class Node {
   /// The unique identifier for this node.
   final String id;

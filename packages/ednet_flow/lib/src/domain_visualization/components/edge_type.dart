@@ -1,14 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
-/// Defines the type of edge in a domain model graph.
-///
-/// Edge types represent the different kinds of relationships between nodes
-/// in a domain model, such as associations, compositions, and inheritances.
+
+
 enum EdgeType {
   /// A basic association between entities.
   association,

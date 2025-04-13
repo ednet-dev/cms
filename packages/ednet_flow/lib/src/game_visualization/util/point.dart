@@ -1,13 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
-/// Represents a simple 2D point.
-///
-/// This class is used for positioning elements in the visualization.
+
+
 class Point {
   /// The x-coordinate.
   final double x;

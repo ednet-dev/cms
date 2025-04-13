@@ -1,22 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
-/// Represents an edge in a domain model graph.
-///
-/// An Edge represents a relationship between two nodes in the graph:
-/// - A [source] node where the edge originates
-/// - A [target] node where the edge terminates
-/// - A [type] defining the edge's characteristics (e.g., association, composition)
-/// - A [direction] specifying the edge's orientation
-/// - Various visual properties for rendering
-///
-/// Edges are essential for expressing the relationships between domain concepts,
-/// allowing visualizations to show how entities and other domain elements relate to
-/// each other.
+
+
 class Edge {
   /// The unique identifier for this edge.
   final String id;

@@ -1,12 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
 
-/// Type of node in the visual graph.
+
+
 enum VisualNodeType {
   /// Entity node (represents a domain entity)
   entity,
@@ -33,7 +34,6 @@ enum VisualNodeType {
   other,
 }
 
-/// A node in a visual graph representing a domain model.
 class VisualNode {
   /// The unique identifier for this node.
   final String id;
@@ -66,16 +66,6 @@ class VisualNode {
   int get hashCode => id.hashCode;
 }
 
-/// A node in a tree visualization of a domain model.
-///
-/// TreeNode extends the basic functionality of a node by adding:
-/// - Position information for layout algorithms
-/// - Size information for rendering
-/// - Parent-child relationships for hierarchical layouts
-/// - Visual style properties
-///
-/// This class is used by layout algorithms to position nodes in a
-/// domain visualization.
 class TreeNode {
   /// The unique identifier for this node.
   final String id;

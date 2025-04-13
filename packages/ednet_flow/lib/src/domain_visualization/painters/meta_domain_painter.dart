@@ -1,16 +1,8 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
-
-
-
-/// A custom painter for rendering domain model graphs.
-///
-/// This class handles the rendering of nodes and edges in a domain model graph
-/// using Flutter's CustomPainter API. It can be used in a CustomPaint widget
-/// to visualize domain models.
 class MetaDomainPainter extends CustomPainter {
   /// The list of nodes to render.
   final List<VisualNode> nodes;
@@ -100,7 +92,7 @@ class MetaDomainPainter extends CustomPainter {
     final borderPaint =
         Paint()
           ..style = PaintingStyle.stroke
-          ..color = Colors.black54
+          ..color = Colors.black.withValues(alpha: 138)
           ..strokeWidth = 1.0 * scale;
 
     canvas.drawRRect(
@@ -112,7 +104,7 @@ class MetaDomainPainter extends CustomPainter {
     final textSpan = TextSpan(
       text: node.label,
       style: TextStyle(
-        color: Colors.black87,
+        color: Colors.black.withValues(alpha: 222),
         fontSize: 12.0 * scale,
         fontWeight: FontWeight.w500,
       ),
@@ -144,7 +136,7 @@ class MetaDomainPainter extends CustomPainter {
     // Edge styling
     final linePaint =
         Paint()
-          ..color = Colors.black45
+          ..color = Colors.black.withValues(alpha: 115)
           ..strokeWidth = 1.0 * scale
           ..style = PaintingStyle.stroke;
 
@@ -180,10 +172,10 @@ class MetaDomainPainter extends CustomPainter {
       final textSpan = TextSpan(
         text: edge.label,
         style: TextStyle(
-          color: Colors.black54,
+          color: Colors.black.withValues(alpha: 138),
           fontSize: 10.0 * scale,
           fontWeight: FontWeight.w300,
-          backgroundColor: Colors.white70,
+          backgroundColor: Colors.white.withValues(alpha: 179),
         ),
       );
 
@@ -213,7 +205,6 @@ class MetaDomainPainter extends CustomPainter {
   }
 }
 
-/// Extension on Offset for vector operations.
 extension OffsetExtension on Offset {
   /// Returns a normalized vector (length of 1).
   Offset normalized() {

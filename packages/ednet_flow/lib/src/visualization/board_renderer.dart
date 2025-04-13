@@ -1,15 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
 
-/// Interface for rendering an Event Storming board.
-///
-/// This interface defines the contract for classes that render
-/// an event storming board in various formats (SVG, HTML, etc.).
+
+
 abstract class BoardRenderer {
   /// Renders the board in a specific format.
   ///
@@ -27,10 +25,6 @@ abstract class BoardRenderer {
   });
 }
 
-/// Renders an Event Storming board as SVG.
-///
-/// This implementation produces an SVG representation of the board
-/// that can be displayed in a browser or saved to a file.
 class SvgBoardRenderer implements BoardRenderer {
   @override
   String render(
@@ -191,10 +185,6 @@ class SvgBoardRenderer implements BoardRenderer {
   }
 }
 
-/// Renders an Event Storming board as HTML.
-///
-/// This implementation produces an HTML representation of the board
-/// that can be displayed in a web application.
 class HtmlBoardRenderer implements BoardRenderer {
   @override
   String render(
@@ -286,10 +276,6 @@ class HtmlBoardRenderer implements BoardRenderer {
   }
 }
 
-/// Factory for creating board renderers.
-///
-/// This factory provides a convenient way to create the appropriate
-/// renderer based on the desired output format.
 class BoardRendererFactory {
   /// Creates a renderer for the specified format.
   ///

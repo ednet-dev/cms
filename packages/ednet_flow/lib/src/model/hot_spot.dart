@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Represents a hot spot in an Event Storming session.
-///
-/// In Event Storming, hot spots identify areas of confusion, disagreement,
-/// or complexity in the domain. They are typically represented by
-/// red sticky notes on the event storming board.
+
+
 class EventStormingHotSpot extends EventStormingElement {
   /// The title of this hot spot (e.g., "Unclear Payment Process").
   final String title;

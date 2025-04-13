@@ -1,14 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
-/// Defines the type of node in a domain model graph.
-///
-/// Node types represent the different kinds of elements in a domain model,
-/// such as entities, value objects, aggregates, etc.
+
+
 enum NodeType {
   /// A fundamental domain entity.
   entity,

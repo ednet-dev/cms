@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Represents a policy in an Event Storming session.
-///
-/// In Event Storming, policies represent business rules that react to
-/// domain events and might trigger new commands. They are typically
-/// represented by purple or lilac sticky notes on the event storming board.
+
+
 class EventStormingPolicy extends EventStormingElement {
   /// IDs of domain events that trigger this policy.
   final List<String> triggeringEventIds;

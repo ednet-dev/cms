@@ -1,15 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
-/// Represents a sequence flow (connection) between activities and gateways.
-///
-/// Sequence flows define the order of execution in a process by connecting
-/// activities and gateways. They can have conditions that determine whether
-/// the flow is followed.
+
+
 class SequenceFlow {
   /// The unique identifier for this sequence flow.
   final String id;
@@ -80,7 +77,6 @@ class SequenceFlow {
   }
 }
 
-/// Represents a waypoint (bend point) in a sequence flow.
 class FlowWaypoint {
   /// The x-coordinate.
   final double x;

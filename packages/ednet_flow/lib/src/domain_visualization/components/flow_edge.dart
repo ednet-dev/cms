@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
+part of ednet_flow;
 
 
 
 
-/// A visual edge connecting nodes in a flow visualization.
-///
-/// FlowEdge represents a connection between two TreeNode objects in a visualization,
-/// with properties for controlling its appearance and behavior. It is specifically
-/// designed to work with the layout algorithms in the domain visualization system.
+
+
 class FlowEdge {
   /// The unique identifier for this edge.
   final String id;
@@ -176,11 +173,6 @@ class FlowEdge {
   }
 }
 
-/// A visual edge connecting nodes in a visualization.
-///
-/// This is a simplified edge representation designed to work with VisualNode
-/// in the domain model graph. It provides essential properties for connecting
-/// nodes in visualization while keeping the implementation lightweight.
 class VisualEdge {
   /// The source node where this edge originates.
   final VisualNode source;

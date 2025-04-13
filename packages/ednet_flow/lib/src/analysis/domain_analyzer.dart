@@ -1,20 +1,8 @@
 // This file is part of the EDNetFlow library.
 // File updated with proper imports by update_imports.dart script.
 
-import 'package:ednet_flow/ednet_flow.dart';
+part of ednet_flow;
 
-// This file is part of the EDNetFlow library.
-// Restored imports for source file organization.
-
-
-
-
-
-/// Analyzes an Event Storming board to identify patterns, issues, and insights.
-///
-/// The domain analyzer examines the relationships between elements on the board
-/// and provides insights about the domain structure, potential issues, and
-/// recommendations for improvement.
 class DomainAnalyzer {
   /// Analyzes the board and returns a comprehensive analysis report.
   ///
@@ -314,7 +302,6 @@ class DomainAnalyzer {
   }
 }
 
-/// Represents a pattern identified in the domain model.
 class DomainPattern {
   /// The name of the pattern.
   final String name;
@@ -337,7 +324,6 @@ class DomainPattern {
   });
 }
 
-/// Contains insights about aggregates in the domain model.
 class AggregateInsights {
   /// Total number of aggregates.
   final int totalCount;
@@ -364,7 +350,6 @@ class AggregateInsights {
   });
 }
 
-/// Contains insights about events in the domain model.
 class EventInsights {
   /// Total number of events.
   final int totalCount;
@@ -391,7 +376,6 @@ class EventInsights {
   });
 }
 
-/// Contains insights about commands in the domain model.
 class CommandInsights {
   /// Total number of commands.
   final int totalCount;
@@ -418,7 +402,6 @@ class CommandInsights {
   });
 }
 
-/// Contains insights about policies in the domain model.
 class PolicyInsights {
   /// Total number of policies.
   final int totalCount;
@@ -445,7 +428,6 @@ class PolicyInsights {
   });
 }
 
-/// Contains insights about hot spots in the domain model.
 class HotSpotInsights {
   /// Total number of hot spots.
   final int totalCount;
@@ -472,7 +454,6 @@ class HotSpotInsights {
   });
 }
 
-/// Comprehensive report from analyzing a domain model.
 class DomainAnalysisReport {
   /// Insights about aggregates.
   final AggregateInsights aggregateInsights;

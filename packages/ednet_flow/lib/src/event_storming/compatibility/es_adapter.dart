@@ -1,15 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Adapter for compatibility between EDNetFlow EventStorming and EDNet Core EventStorming.
-///
-/// This adapter provides methods to convert between EDNetFlow EventStorming models
-/// and EDNet Core EventStorming models, enabling a smooth migration path.
+
+
 class ESAdapter {
   /// Converts from EDNetFlow models to EDNet Core models.
   ///

@@ -1,12 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
-/// Type of node in the visual graph.
+
+
 enum VisualNodeType {
   /// Entity node (represents a domain entity)
   entity,
@@ -33,7 +33,6 @@ enum VisualNodeType {
   other,
 }
 
-/// A node in a visual graph representing a domain model.
 class VisualNode {
   /// The unique identifier for this node.
   final String id;
@@ -66,11 +65,6 @@ class VisualNode {
   int get hashCode => id.hashCode;
 }
 
-/// A visual edge connecting nodes in a visualization.
-///
-/// This is a simplified edge representation designed to work with VisualNode
-/// in the domain model graph. It provides essential properties for connecting
-/// nodes in visualization while keeping the implementation lightweight.
 class VisualEdge {
   /// The source node where this edge originates.
   final VisualNode source;
@@ -105,16 +99,6 @@ class VisualEdge {
   int get hashCode => Object.hash(source, target, label);
 }
 
-/// A specialized graph representation of a domain model.
-///
-/// This class creates a visual representation of a domain model
-/// where:
-/// - Nodes represent entities and their fields
-/// - Edges represent relationships between entities and their fields
-/// - The graph structure reflects the domain model's hierarchy
-///
-/// The graph is automatically built from the domain model's entities and their
-/// relationships during construction.
 class DomainModelGraph {
   /// Creates a new domain model graph.
   ///

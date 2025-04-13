@@ -1,11 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
-/// Defines the type of activity in a process flow.
+
+
 enum ActivityType {
   /// Start event - beginning of a process
   start,
@@ -20,11 +21,6 @@ enum ActivityType {
   subprocess,
 }
 
-/// Represents an activity (task, event, etc.) in a process flow.
-///
-/// Activities are the building blocks of process flows, representing
-/// individual steps in a process that either perform work (tasks),
-/// mark significant points (events), or contain sub-processes.
 class Activity {
   /// The unique identifier for this activity.
   final String id;
@@ -96,7 +92,6 @@ class Activity {
   }
 }
 
-/// Represents the position of an activity in a visual process diagram.
 class ActivityPosition {
   /// The x-coordinate.
   final double x;

@@ -1,16 +1,13 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
 
-/// Represents a domain event in an Event Storming session.
-///
-/// In Event Storming, domain events are the core elements that represent
-/// something that happened in the domain. They are typically represented
-/// by orange sticky notes on the event storming board.
+
+
 class EventStormingDomainEvent extends EventStormingElement {
   /// The aggregate that this event belongs to (may be null during initial discovery).
   String? aggregateId;
@@ -126,7 +123,6 @@ class EventStormingDomainEvent extends EventStormingElement {
   String get elementType => 'event';
 }
 
-/// Represents a position on the event storming board.
 class Position {
   /// X coordinate (horizontal position).
   final double x;

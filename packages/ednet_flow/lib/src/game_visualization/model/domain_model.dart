@@ -1,15 +1,12 @@
 // This file is part of the EDNetFlow library.
 // Restored imports for source file organization.
 
-import 'package:flutter/material.dart';
-import 'package:ednet_core/ednet_core.dart';
+part of ednet_flow;
 
 
 
-/// A domain model representing the domain entities and their relationships.
-///
-/// This class serves as a container for domain entities and provides
-/// methods for manipulating and querying the domain model structure.
+
+
 class DomainModel {
   /// The entities in this domain model.
   final List<Entity> entities;
@@ -46,7 +43,6 @@ class DomainModel {
   }
 }
 
-/// An entity in the domain model.
 class Entity {
   /// The name of this entity.
   final String name;
@@ -101,7 +97,6 @@ class Entity {
   }
 }
 
-/// A concept in the domain model.
 class Concept {
   /// Whether this concept is an entry point (aggregate root).
   final bool entry;
@@ -120,7 +115,6 @@ class Concept {
   }
 }
 
-/// A relation between entities in the domain model.
 class Relation {
   /// The name of this relation.
   final String name;

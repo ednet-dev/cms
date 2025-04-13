@@ -1,19 +1,15 @@
 // This file is part of the EDNetFlow library.
 // File updated with proper imports by update_imports.dart script.
 
-import 'package:ednet_flow/ednet_flow.dart';
-
-// This file is part of the EDNetFlow library.
-// Restored imports for source file organization.
+part of ednet_flow;
 
 
 
 
 
-/// Represents an Event Storming session.
-///
-/// A session encompasses the entire collaborative event storming process,
-/// including the board, participants, and metadata about the session.
+
+
+
 class StormingSession {
   /// The unique identifier for this session.
   final String id;
