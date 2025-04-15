@@ -518,3 +518,60 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for deta
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Underutilized Features
+
+The following features are implemented in the package but may not be fully utilized in client applications:
+
+1. **Domain Model Diffing**: Track, export, and import changes to domain models at runtime with `exportDomainModelDiff`, `importDomainModelDiff`, and `saveDomainModelDiffToFile`.
+
+2. **Enhanced Theme Management**: Advanced theme capabilities including accessibility features (high contrast, large text, reduced motion) and custom theme styles.
+
+3. **Filtering System**: Comprehensive filter service for entities with dynamic criteria.
+
+4. **Bookmarking System**: Save and restore navigation states with the `BookmarkService` and `BookmarkSidebar`.
+
+5. **Semantic Pinning**: Pin important views and entities for quick access with `SemanticPinningService`.
+
+6. **Meta Model Editing**: Runtime modification of domain models using `MetaModelManager` and `MetaModelPersistenceManager`.
+
+7. **Advanced Canvas Visualization**: Rich visual representation of domain relationships with custom layout algorithms.
+
+8. **Deep Linking**: Navigate directly to specific application parts from external sources.
+
+9. **Entity Relationship Management**: UI-based definition and modification of entity relationships.
+
+10. **Application Service Abstraction**: Higher-order abstractions connecting domain models to business workflows.
+
+11. **Policy-Based UI**: Permission-based UI customization for different user roles.
+
+12. **Integration Services**: Connect with external services and APIs.
+
+13. **Multiple Sidebar Modes**: Various sidebar display options including classic, tree, compact, and hidden modes.
+
+14. **Progressive Disclosure**: Adjust UI complexity based on user needs with customizable disclosure levels.
+
+To enable these features, add the appropriate feature flags in your `ShellConfiguration`:
+
+```dart
+final shellApp = ShellApp(
+  domain: domain,
+  configuration: ShellConfiguration(
+    features: {
+      'domain_model_diffing',
+      'meta_model_editing',
+      'enhanced_theme',
+      'bookmarking',
+      'filtering',
+      'deep_linking',
+      'tree_navigation',
+      ShellConfiguration.genericEntityFormFeature,
+      ShellConfiguration.themeSwitchingFeature,
+      ShellConfiguration.enhancedEntityCollectionFeature,
+      ShellConfiguration.metaModelEditingFeature,
+    },
+    sidebarMode: SidebarMode.both,
+    defaultDisclosureLevel: DisclosureLevel.advanced,
+  ),
+);
+```

@@ -56,19 +56,19 @@ class ShellConfiguration {
   /// Static constant for the meta model editing feature key
   static const String metaModelEditingFeature = 'meta_model_editing';
 
+  /// Static constant for automatic feature initialization
+  static const String automaticFeatureInitializationFeature =
+      'automatic_feature_initialization';
+
   /// Generate a default full-featured configuration
   static ShellConfiguration defaultConfiguration() {
     return ShellConfiguration(
       features: {
-        'entity_editing',
-        'entity_creation',
-        'domain_model_diffing',
-        'tree_navigation',
-        'meta_model_editing',
-        'development_mode',
-        genericEntityFormFeature,
-        themeSwitchingFeature,
-        enhancedEntityCollectionFeature,
+        // Automatically initialize all advanced features
+        automaticFeatureInitializationFeature,
+
+        // Include all available advanced features by default
+        ...AdvancedFeatures.allAvailableFeatures,
       },
       defaultDisclosureLevel: DisclosureLevel.standard,
       sidebarMode: SidebarMode.both,
@@ -101,6 +101,19 @@ class ShellConfiguration {
       showThemeToggleInAppBar:
           showThemeToggleInAppBar ?? this.showThemeToggleInAppBar,
       useMaterial3: useMaterial3 ?? this.useMaterial3,
+    );
+  }
+
+  /// Creates a minimal configuration with only essential features
+  static ShellConfiguration minimalConfiguration() {
+    return ShellConfiguration(
+      features: {
+        'entity_editing',
+        'entity_creation',
+        ShellConfiguration.genericEntityFormFeature,
+      },
+      defaultDisclosureLevel: DisclosureLevel.basic,
+      sidebarMode: SidebarMode.classic,
     );
   }
 }

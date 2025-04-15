@@ -86,6 +86,21 @@ class ShellApp extends ChangeNotifier {
   /// Get the theme service
   EnhancedThemeService get themeService => _themeService;
 
+  /// All domains currently available in the shell
+  List<Domain> _domains = [];
+
+  /// Gets all domains available in the shell
+  List<Domain> get domains => List.unmodifiable(_domains);
+
+  /// Service registry for advanced features
+  final Map<String, dynamic> _serviceRegistry = {};
+
+  /// Current disclosure level for UI components
+  DisclosureLevel _currentDisclosureLevel = DisclosureLevel.standard;
+
+  /// Gets the current disclosure level
+  DisclosureLevel get currentDisclosureLevel => _currentDisclosureLevel;
+
   /// Constructor
   ShellApp({
     required Domain domain,
@@ -93,7 +108,8 @@ class ShellApp extends ChangeNotifier {
     Domains? domains,
     int initialDomainIndex = 0,
   })  : _domain = domain,
-        configuration = configuration ?? ShellConfiguration() {
+        configuration =
+            configuration ?? ShellConfiguration.defaultConfiguration() {
     // Initialize persistence with the domain
     // Check if development mode should be enabled
     final useDevelopmentMode = _shouldEnableDevelopmentMode();
@@ -119,6 +135,11 @@ class ShellApp extends ChangeNotifier {
     if (domains != null) {
       initializeWithDomains(domains.toList(),
           initialDomainIndex: initialDomainIndex);
+    }
+
+    // Initialize advanced features if available
+    if (hasFeature('automatic_feature_initialization')) {
+      initializeAdvancedFeatures();
     }
   }
 
@@ -221,11 +242,6 @@ class ShellApp extends ChangeNotifier {
   /// Set the current user role
   set currentUserRole(String role) {
     _currentUserRole = role;
-  }
-
-  /// Get the current disclosure level based on user role
-  DisclosureLevel get currentDisclosureLevel {
-    return _disclosureLevelsByRole[_currentUserRole] ?? DisclosureLevel.basic;
   }
 
   /// Get the adapter registry
@@ -706,6 +722,12 @@ class ShellApp extends ChangeNotifier {
     return _persistence.loadEntities(conceptCode);
   }
 
+  /// Delete an entity from the repository
+  Future<bool> deleteEntity(
+      String conceptCode, Map<String, dynamic> entityData) {
+    return _persistence.deleteEntity(conceptCode, entityData);
+  }
+
   /// Initialize the shell
   void initialize() {
     // Implement in subclasses
@@ -1067,6 +1089,95 @@ class ShellApp extends ChangeNotifier {
           allowViewModeChange: allowViewModeChange,
           showCreateFab: showCreateFab,
           disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+        ),
+      ),
+    );
+  }
+
+  /// Initialize with multiple domains
+  void initializeWithDomains(List<Domain> domains,
+      {int initialDomainIndex = 0}) {
+    if (domains.isEmpty) {
+      throw ArgumentError('Domains cannot be empty');
+    }
+
+    if (initialDomainIndex < 0 || initialDomainIndex >= domains.length) {
+      throw RangeError('Initial domain index out of range');
+    }
+
+    _domains = List.from(domains);
+    // If the initial domain is not the first one, set it as active
+    if (initialDomainIndex > 0) {
+      _setActiveDomain(initialDomainIndex);
+    }
+  }
+
+  /// Sets the active domain by index
+  void _setActiveDomain(int index) {
+    // TO DO: Implement domain switching logic
+  }
+
+  /// Sets the disclosure level for UI components
+  void setDisclosureLevel(DisclosureLevel level) {
+    if (_currentDisclosureLevel != level) {
+      _currentDisclosureLevel = level;
+      notifyListeners();
+    }
+  }
+
+  /// Sets a service in the shell app
+  void setService(String name, dynamic service) {
+    _serviceRegistry[name] = service;
+  }
+
+  /// Gets a service from the shell app
+  T? getService<T>(String name) {
+    final service = _serviceRegistry[name];
+    if (service != null && service is T) {
+      return service as T;
+    }
+    return null;
+  }
+
+  /// Initializes all advanced features
+  void initializeAdvancedFeatures() {
+    AdvancedFeatures.initializeAllFeatures(this);
+  }
+
+  /// Gets the enhanced theme service
+  EnhancedThemeService? get enhancedThemeService =>
+      getService<EnhancedThemeService>('themeService');
+
+  /// Gets the filter service
+  FilterService? get filterService =>
+      getService<FilterService>('filterService');
+
+  /// Gets the bookmark service
+  BookmarkService? get bookmarkService =>
+      getService<BookmarkService>('bookmarkService');
+
+  /// Gets the semantic pinning service
+  SemanticPinningService? get semanticPinningService =>
+      getService<SemanticPinningService>('semanticPinningService');
+
+  /// Shows the meta model editor dialog
+  void showMetaModelEditor(BuildContext context, {Concept? concept}) {
+    if (!hasFeature(ShellConfiguration.metaModelEditingFeature)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Meta model editing is not enabled')),
+      );
+      return;
+    }
+
+    // Navigate to the meta model editor instead of showing a dialog
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MetaModelEditor(
+          shellApp: this,
+          domain: domain,
+          concept: concept,
+          initialViewMode: EntityViewMode.cards, // Use card mode by default
+          enableLiveEditing: true,
         ),
       ),
     );

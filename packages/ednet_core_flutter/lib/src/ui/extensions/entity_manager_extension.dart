@@ -36,4 +36,84 @@ extension EntityManagerExtension on ShellApp {
       ),
     );
   }
+
+  /// Navigate to entity editor view for creating a new entity
+  Future<bool?> showEntityCreator(
+    BuildContext context,
+    String conceptCode, {
+    DisclosureLevel? disclosureLevel,
+  }) {
+    // Verify concept exists
+    final concept = findConcept(conceptCode);
+    if (concept == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Concept "$conceptCode" not found')),
+      );
+      return Future.value(false);
+    }
+
+    // Create a new entity from the concept
+    final entity = EntityFactory.createEntityFromData(concept, {});
+
+    // Show editor in a scaffold
+    return Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text('Create $conceptCode'),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: GenericEntityForm(
+              entity: entity,
+              shellApp: this,
+              disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+              isEditMode: false,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Navigate to entity editor view for editing an existing entity
+  Future<bool?> showEntityEditor(
+    BuildContext context,
+    String conceptCode,
+    Map<String, dynamic> entityData, {
+    DisclosureLevel? disclosureLevel,
+  }) {
+    // Verify concept exists
+    final concept = findConcept(conceptCode);
+    if (concept == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Concept "$conceptCode" not found')),
+      );
+      return Future.value(false);
+    }
+
+    // Create entity from data
+    final entity = EntityFactory.createEntityFromData(concept, entityData);
+
+    // Show editor in a scaffold
+    return Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text('Edit $conceptCode'),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: GenericEntityForm(
+              entity: entity,
+              shellApp: this,
+              initialData: entityData,
+              disclosureLevel: disclosureLevel ?? currentDisclosureLevel,
+              isEditMode: true,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
