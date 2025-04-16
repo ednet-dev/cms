@@ -31,6 +31,8 @@ String randomUri() => randomListElement(uriList);
 
 String randomEmail() => randomListElement(emailList);
 
+String randomQuote() => randomListElement(quotes);
+
 randomListElement(List list) => list[randomInt(list.length - 1)];
 
 var wordList = [
@@ -279,7 +281,7 @@ var wordList = [
   'executive',
   'secretary',
   'end',
-  'now'
+  'now',
 ];
 
 var uriList = [
@@ -1138,7 +1140,7 @@ var emailList = [
   'tony@sanchez.com',
   'karen@wang.com',
   'monica@lopez.com',
-  'lisa@reyes.com',
+  'lisa@rossi.com',
   'james@torres.com',
   'tom@james.com',
   'william@patel.com',
@@ -1538,5 +1540,829 @@ var emailList = [
   'kim@collins.com',
   'ben@fernandez.com',
   'dan@hernandez.com',
-  'jean@williams.com'
+  'jean@williams.com',
+];
+
+class Quote {
+  final String text;
+  final String author;
+  
+  const Quote({
+    required this.text,
+    required this.author,
+  });
+}
+
+final quotes = [
+  Quote(
+    text: 'You must have chaos within you to give birth to a dancing star.',
+    author: 'Friedrich Nietzsche'
+  ),
+  Quote(
+    text: 'The only way to do great work is to love what you do.',
+    author: 'Steve Jobs'
+  ),
+  Quote(
+    text: 'The best way to predict the future is to invent it.',
+    author: 'Alan Kay'
+  ),
+  // Project completion quotes
+  Quote(
+    text: 'Have no fear of perfection — you\'ll never reach it.',
+    author: 'Salvador Dali'
+  ),
+  Quote(
+    text: 'Perfect is the enemy of done.',
+    author: 'Catherine Carrigan'
+  ),
+  Quote(
+    text: 'The ultimate inspiration is the deadline.',
+    author: 'Nolan Bushnell'
+  ),
+  Quote(
+    text: 'Do not seek praise, seek criticism.',
+    author: 'Paul Arden'
+  ),
+  Quote(
+    text: 'Make it simple, but significant.',
+    author: 'Don Draper'
+  ),
+  Quote(
+    text: 'Success is stumbling from failure to failure with no loss of enthusiasm.',
+    author: 'Winston Churchill'
+  ),
+  Quote(
+    text: 'The best way out is always through.',
+    author: 'Robert Frost'
+  ),
+  Quote(
+    text: 'Creativity takes courage.',
+    author: 'Henri Matisse'
+  ),
+  Quote(
+    text: 'Creativity is a habit, and the best creativity is the result of good work habits.',
+    author: 'Twyla Tharp'
+  ),
+  Quote(
+    text: 'Everything you ever wanted is on the other side of fear.',
+    author: 'George Addair'
+  ),
+  Quote(
+    text: 'Creativity requires the courage to let go of certainties.',
+    author: 'Erich Fromm'
+  ),
+  Quote(
+    text: 'You can\'t wait for inspiration, you have to go after it with a club.',
+    author: 'Jack London'
+  ),
+  Quote(
+    text: 'The three great essentials to achieve anything worthwhile are, first, hard work; second, stick-to-itiveness; third, common sense.',
+    author: 'Thomas A. Edison'
+  ),
+  Quote(
+    text: 'Many of life\'s failures are people who did not realize how close they were to success when they gave up.',
+    author: 'Thomas Edison'
+  ),
+  Quote(
+    text: 'Perseverance is failing 19 times and succeeding the 20th.',
+    author: 'Julie Andrews'
+  ),
+  Quote(
+    text: 'Energy and persistence conquer all things.',
+    author: 'Benjamin Franklin'
+  ),
+  Quote(
+    text: 'I find that the harder I work, the more luck I seem to have.',
+    author: 'Thomas Jefferson'
+  ),
+  Quote(
+    text: 'I would rather die of passion than of boredom.',
+    author: 'Vincent van Gogh'
+  ),
+  Quote(
+    text: 'Whenever you find yourself doubting how far you can go, just remember how far you have come.',
+    author: 'Unknown'
+  ),
+  Quote(
+    text: 'Don\'t let the fear of the time it will take to accomplish something stand in the way of your doing it.',
+    author: 'Earl Nightingale'
+  ),
+  Quote(
+    text: 'Creativity is always a leap of faith. You\'re faced with a blank page, blank easel, or an empty stage.',
+    author: 'Julia Cameron'
+  ),
+  Quote(
+    text: 'I live a creative life, and you can\'t be creative without being vulnerable.',
+    author: 'Elizabeth Gilbert'
+  ),
+  Quote(
+    text: 'Courage is the most important of all the virtues because without courage, you can\'t practice any other virtue consistently.',
+    author: 'Maya Angelou'
+  ),
+  Quote(
+    text: 'Done is better than perfect.',
+    author: 'Sheryl Sandberg'
+  ),
+  Quote(
+    text: 'The first rule of management is delegation. Don\'t try and do everything yourself because you can\'t.',
+    author: 'Anthea Turner'
+  ),
+  Quote(
+    text: 'To do two things at once is to do neither.',
+    author: 'Publilius Syrus'
+  ),
+  Quote(
+    text: 'Trying to manage a project without project management is like trying to play a football game without a game plan.',
+    author: 'Karen Tate'
+  ),
+  Quote(
+    text: 'The smaller the function, the greater the management.',
+    author: 'C. Northcote Parkinson'
+  ),
+  Quote(
+    text: 'Be ready to revise any system, scrap any method, abandon any theory, if the success of the job requires it.',
+    author: 'Henry Ford'
+  ),
+  Quote(
+    text: 'One of the true tests of leadership is the ability to recognize a problem before it becomes an emergency.',
+    author: 'Arnold Glasow'
+  ),
+  Quote(
+    text: 'A goal without a timeline is just a dream.',
+    author: 'Robert Herjavec'
+  ),
+  Quote(
+    text: 'A goal without a plan is just a wish.',
+    author: 'Antoine de Saint-Exupéry'
+  ),
+  Quote(
+    text: 'There are no unrealistic goals, only unrealistic deadlines.',
+    author: 'Brian Tracy'
+  ),
+  Quote(
+    text: 'The P in PM is as much about \'people management\' as it is about \'project management\'.',
+    author: 'Cornelius Fichtner'
+  ),
+  Quote(
+    text: 'Operations keeps the lights on, strategy provides a light at the end of the tunnel, but project management is the train engine that moves the organization forward.',
+    author: 'Joy Gumz'
+  ),
+  Quote(
+    text: 'The goal you set must be challenging. At the same time, it should be realistic and attainable, not impossible to reach.',
+    author: 'Rick Hansen'
+  ),
+  Quote(
+    text: 'Ten years from now, make sure you can say that you chose your life, you didn\'t settle for it.',
+    author: 'Unknown'
+  ),
+];
+
+const citati = [
+  Quote(
+    text: 'Kad bi Bog kažnjavao za svako učinjeno zlo, ne bi na zemlji ostalo ni jedno živo biće.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Bolje je biti častan čovek nego ministar države.',
+    author: 'Milovan Đilas'
+  ),
+  Quote(
+    text: 'Jednom davno postojao je svet u kojem smo različite jezike zvali "našima".',
+    author: 'Semezdin Mehmedinović'
+  ),
+  Quote(
+    text: 'Ja sam borac. Jer život je borba, a ne predaja.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Strah je najgori čovekov neprijatelj.',
+    author: 'Dobrica Ćosić'
+  ),
+  Quote(
+    text: 'Nije čovek ono što misli, nego ono što čini.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Čovek je kao reka, ide kuda može, a ne kuda hoće.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Ljubav je jača i od smrti i od straha od smrti.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Narod koji ima kulturu ne treba se plašiti za svoju budućnost.',
+    author: 'Miroslav Krleža'
+  ),
+  Quote(
+    text: 'Jedan jezik je dovoljan životu, a dva jezika su dovoljna svetu.',
+    author: 'Danilo Kiš'
+  ),
+  Quote(
+    text: 'Reči su nekada teže od najtežeg oružja.',
+    author: 'Branko Ćopić'
+  ),
+  Quote(
+    text: 'Ljudi koji ne vole ni sebe ni druge uvek imaju najviše moralnih pridika.',
+    author: 'Mesa Selimović'
+  ),
+  Quote(
+    text: 'Život je neprekidno čuđenje. Ko to ne zna, taj je mrtav.',
+    author: 'Miloš Crnjanski'
+  ),
+  Quote(
+    text: 'Jedna ista istina se različito prima u različita vremena.',
+    author: 'Dobrica Ćosić'
+  ),
+  Quote(
+    text: 'Vreme je najbolji sudija.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Lako je biti star, teško je biti mudar.',
+    author: 'Desanka Maksimović'
+  ),
+  Quote(
+    text: 'Ima ljudi čija je sudbina da budu poraženi.',
+    author: 'Mesa Selimović'
+  ),
+  Quote(
+    text: 'Jedino knjige ne poznaju smrt.',
+    author: 'Dobrica Ćosić'
+  ),
+  Quote(
+    text: 'Domovina se brani lepotom.',
+    author: 'Miroslav Antić'
+  ),
+  Quote(
+    text: 'Ko pronađe dobro u sebi, naći će ga svuda.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Svet je podeljen na proganjane i one koji ih proganjaju.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Jezik je dijalekat s vojskom iza sebe.',
+    author: 'Dubravka Ugrešić'
+  ),
+  Quote(
+    text: 'Život je dar, ali ne garantuje sreću.',
+    author: 'Danilo Kiš'
+  ),
+  Quote(
+    text: 'Život nije ono što smo preživeli, već ono što smo zapamtili i kako smo to zapamtili.',
+    author: 'Aleksandar Tišma'
+  ),
+  Quote(
+    text: 'Budućnost pripada onima koji veruju u lepotu svojih snova.',
+    author: 'Miloš Crnjanski'
+  ),
+  // More Ivo Andrić quotes
+  Quote(
+    text: 'Svako od nas ima za drugoga neku svoju reč, i samo za njega.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Sreća je kad se ljudi dobro slažu.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Svi smo mi mrtvi, samo se redom sahranjujemo.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Čovjek nije nikad sam, nego na jedan način kad se smije, a na drugi kad plače.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Nije jezik ono što čita, nego ono što se razume.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'U životu ne dobivamo uvijek ono što želimo, nego ono što nam je suđeno.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Bogat nije onaj ko mnogo ima, nego onaj ko mnogo daje.',
+    author: 'Ivo Andrić'
+  ),
+  Quote(
+    text: 'Tamo gdje prestaje razum, počinje ludost i mrak.',
+    author: 'Ivo Andrić'
+  ),
+  
+  // More Meša Selimović quotes
+  Quote(
+    text: 'Život je nerazumljiva pojava, jer uvijek ostaje tajna zašto se mora izgubiti.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Svako je, bar jedanput u životu, pobjednik. Ali samo hrabri znaju da je to uzaludno.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Teško je znati šta je čovjek, a najteže onaj koji smo mi sami.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Svi smo braća, samo smo na različitim stranama.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Ako ne možeš pametnija, možeš pamtljivija.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Čovek je uvek na gubitku ako ne ume da voli.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Sreća ne zavisi od drugih ljudi, nego od nas samih.',
+    author: 'Meša Selimović'
+  ),
+  
+  // More Miloš Crnjanski quotes
+  Quote(
+    text: 'Uvek idemo tamo gde nas ne čekaju.',
+    author: 'Miloš Crnjanski'
+  ),
+  Quote(
+    text: 'Ljubav, to je skok u provaliju, po svojoj volji, mada bismo se spasiti mogli.',
+    author: 'Miloš Crnjanski'
+  ),
+  Quote(
+    text: 'Da je srce ljudsko stanište vedrine, ne bi bilo toliko samoubistava.',
+    author: 'Miloš Crnjanski'
+  ),
+  Quote(
+    text: 'Mi smo svi, na ovom svetu, samo prolaznici.',
+    author: 'Miloš Crnjanski'
+  ),
+  
+  // More Miroslav Krleža quotes
+  Quote(
+    text: 'Knjige ne pišu da bi se u njih vjerovalo, nego da bi se o njima raspravljalo.',
+    author: 'Miroslav Krleža'
+  ),
+  Quote(
+    text: 'U laži su kratke noge, ali dugački rukavi.',
+    author: 'Miroslav Krleža'
+  ),
+  Quote(
+    text: 'Veliki uspjesi uvijek imaju duboke korijene.',
+    author: 'Miroslav Krleža'
+  ),
+  Quote(
+    text: 'Tko se nije nasmijao u suzama, taj ne zna ništa o životu.',
+    author: 'Miroslav Krleža'
+  ),
+  Quote(
+    text: 'Ako želiš dobro upoznati jedan narod, prouči kako se kod njega umire.',
+    author: 'Miroslav Krleža'
+  ),
+  
+  // Tin Ujević (Croatian)
+  Quote(
+    text: 'Čovjek se uvijek vraća sebi, svojim mukama.',
+    author: 'Tin Ujević'
+  ),
+  Quote(
+    text: 'Neka bude svjetlost, makar ona dolazila kroz moje kosti.',
+    author: 'Tin Ujević'
+  ),
+  Quote(
+    text: 'Tek jedno: biti svoj! I to je dosta.',
+    author: 'Tin Ujević'
+  ),
+  Quote(
+    text: 'Ljudska bol je jedna velika tajna.',
+    author: 'Tin Ujević'
+  ),
+  Quote(
+    text: 'Ima više istine u jednoj pesmi nego u svim novinama ovoga sveta.',
+    author: 'Tin Ujević'
+  ),
+  
+  // Branislav Nušić (Serbian)
+  Quote(
+    text: 'Od svega što sam u životu izgubio, najviše mi nedostaje moja pamet.',
+    author: 'Branislav Nušić'
+  ),
+  Quote(
+    text: 'Poštenje je retko kod nas, ali je zato skupo.',
+    author: 'Branislav Nušić'
+  ),
+  Quote(
+    text: 'Čovek se uči dok je živ, a umire neuk.',
+    author: 'Branislav Nušić'
+  ),
+  Quote(
+    text: 'Iskrenost je vrlina koja se sve ređe praktikuje.',
+    author: 'Branislav Nušić'
+  ),
+  
+  // Jovan Dučić (Serbian)
+  Quote(
+    text: 'Žene opraštaju onima koji čine brze i hrabre greške.',
+    author: 'Jovan Dučić'
+  ),
+  Quote(
+    text: 'Reči koje ne prate delo odlaze sa vetrom.',
+    author: 'Jovan Dučić'
+  ),
+  Quote(
+    text: 'Ljubaznost je zlato koje ne košta ništa.',
+    author: 'Jovan Dučić'
+  ),
+  Quote(
+    text: 'Prazninu u duši ne može ispuniti nijedna druga punina.',
+    author: 'Jovan Dučić'
+  ),
+  
+  // Vladislav Petković Dis (Serbian)
+  Quote(
+    text: 'Sutra je nova laž koja nam svima prija.',
+    author: 'Vladislav Petković Dis'
+  ),
+  Quote(
+    text: 'Ponekad su i snovi bolji od jave.',
+    author: 'Vladislav Petković Dis'
+  ),
+  
+  // August Šenoa (Croatian)
+  Quote(
+    text: 'Gdje nema slobode, nema ni života.',
+    author: 'August Šenoa'
+  ),
+  Quote(
+    text: 'Prošlost je ogledalo budućnosti.',
+    author: 'August Šenoa'
+  ),
+  Quote(
+    text: 'Ljubav nije samo slijepa, već često i gluhonijema.',
+    author: 'August Šenoa'
+  ),
+  
+  // Antun Gustav Matoš (Croatian)
+  Quote(
+    text: 'Bez oduševljenja se ne može ništa veliko učiniti.',
+    author: 'Antun Gustav Matoš'
+  ),
+  Quote(
+    text: 'Ljubav djevojci više puta slomi srce, ali mladost joj ga brzo zaliječi.',
+    author: 'Antun Gustav Matoš'
+  ),
+  Quote(
+    text: 'Umjetnost riječi je najteža i najljepša umjetnost.',
+    author: 'Antun Gustav Matoš'
+  ),
+  
+  // Branko Miljković (Serbian)
+  Quote(
+    text: 'Ubi me prejaka reč.',
+    author: 'Branko Miljković'
+  ),
+  Quote(
+    text: 'Pesnik je uvek na gubitku.',
+    author: 'Branko Miljković'
+  ),
+  Quote(
+    text: 'Hoće li sloboda umeti da peva kao što su sužnji pevali o njoj?',
+    author: 'Branko Miljković'
+  ),
+  
+  // Vasko Popa (Serbian)
+  Quote(
+    text: 'Između dva zla birati ne treba.',
+    author: 'Vasko Popa'
+  ),
+  Quote(
+    text: 'U snu sam ono što na javi želim da budem.',
+    author: 'Vasko Popa'
+  ),
+  
+  // Mak Dizdar (Bosnian)
+  Quote(
+    text: 'Pitaš me o putu, a put je pred nama.',
+    author: 'Mak Dizdar'
+  ),
+  Quote(
+    text: 'I nema smrti, postoji samo seoba.',
+    author: 'Mak Dizdar'
+  ),
+  Quote(
+    text: 'Zapisano je i pečatom potvrđeno da si prah. A nije zapisano da si samo prah.',
+    author: 'Mak Dizdar'
+  ),
+  
+  // Bora Đorđević (Serbian)
+  Quote(
+    text: 'Sreća je tamo gde je nema.',
+    author: 'Bora Đorđević'
+  ),
+  Quote(
+    text: 'Istina je negde drugde.',
+    author: 'Bora Đorđević'
+  ),
+  
+  // Dragan Velikić (Serbian)
+  Quote(
+    text: 'Ničeg goreg od zagubljenog sna.',
+    author: 'Dragan Velikić'
+  ),
+  Quote(
+    text: 'Život je samo mala stanica na putu između dva ništavila.',
+    author: 'Dragan Velikić'
+  ),
+  
+  // Jovan Sterija Popović (Serbian)
+  Quote(
+    text: 'Laž često pobedi, ali nikad ne pobeđuje.',
+    author: 'Jovan Sterija Popović'
+  ),
+  Quote(
+    text: 'Dobrom čoveku ne treba mnogo.',
+    author: 'Jovan Sterija Popović'
+  ),
+  
+  // Ranko Marinković (Croatian)
+  Quote(
+    text: 'Ljubav je smisao i opravdanje svega.',
+    author: 'Ranko Marinković'
+  ),
+  Quote(
+    text: 'Nitko nema monopol na patnju.',
+    author: 'Ranko Marinković'
+  ),
+  
+  // Marko Marulić (Croatian)
+  Quote(
+    text: 'Tko se Boga ne boji, taj se ni ljudi ne stidi.',
+    author: 'Marko Marulić'
+  ),
+  Quote(
+    text: 'Čovjek je rođen za rad, kao ptica za let.',
+    author: 'Marko Marulić'
+  ),
+  
+  // Isidora Sekulić (Serbian)
+  Quote(
+    text: 'Tišina je muzika duše.',
+    author: 'Isidora Sekulić'
+  ),
+  Quote(
+    text: 'Ljubav i istina uvek kasne, ali uvek stignu.',
+    author: 'Isidora Sekulić'
+  ),
+  Quote(
+    text: 'Snaga leži u različitosti, ne u sličnosti.',
+    author: 'Isidora Sekulić'
+  ),
+  
+  // Vesna Parun (Croatian)
+  Quote(
+    text: 'Sreća nije u tome što imaš, već u tome što jesi.',
+    author: 'Vesna Parun'
+  ),
+  Quote(
+    text: 'Suze su kapi čišćenja.',
+    author: 'Vesna Parun'
+  ),
+  
+  // Matija Bećković (Montenegrin/Serbian)
+  Quote(
+    text: 'Istorija je sve ono što se nije dalo ispraviti.',
+    author: 'Matija Bećković'
+  ),
+  Quote(
+    text: 'Ko nije verovao u Boga, poverovao je u čoveka, a ko je verovao u čoveka, prevario se.',
+    author: 'Matija Bećković'
+  ),
+  Quote(
+    text: 'Mi se davimo u peskovitim olujama svoje istorije.',
+    author: 'Matija Bećković'
+  ),
+  
+  // Miroslav Mika Antić (Serbian)
+  Quote(
+    text: 'Ko ne voli, taj ne razume ni sebe ni druge.',
+    author: 'Miroslav Antić'
+  ),
+  Quote(
+    text: 'Svi smo stvoreni za ljubav.',
+    author: 'Miroslav Antić'
+  ),
+  Quote(
+    text: 'Nema loših đaka, samo ima loših učitelja.',
+    author: 'Miroslav Antić'
+  ),
+  
+  // Petar Petrović Njegoš (Montenegrin)
+  Quote(
+    text: 'Ko ne želi umreti u borbi, taj će umreti u sramoti.',
+    author: 'Petar Petrović Njegoš'
+  ),
+  Quote(
+    text: 'Teško nogama pod ludom glavom.',
+    author: 'Petar Petrović Njegoš'
+  ),
+  Quote(
+    text: 'Bez muke se pjesna ne ispoja.',
+    author: 'Petar Petrović Njegoš'
+  ),
+  Quote(
+    text: 'Kome zakon leži u topuzu, tragovi mu smrde nečovještvom.',
+    author: 'Petar Petrović Njegoš'
+  ),
+  
+  // Laza Kostić (Serbian)
+  Quote(
+    text: 'Među javom i med snom.',
+    author: 'Laza Kostić'
+  ),
+  Quote(
+    text: 'Ljubav je nebo, zemlja i sve između.',
+    author: 'Laza Kostić'
+  ),
+  
+  // Aleksa Šantić (Bosnian/Serbian)
+  Quote(
+    text: 'Samo onaj koji stoji uspravno vidi daleko.',
+    author: 'Aleksa Šantić'
+  ),
+  Quote(
+    text: 'Domovinu voli svako, ali otadžbinu samo slobodan čovjek.',
+    author: 'Aleksa Šantić'
+  ),
+  
+  // Jovan Jovanović Zmaj (Serbian)
+  Quote(
+    text: 'Ko iskren je taj je i hrabar.',
+    author: 'Jovan Jovanović Zmaj'
+  ),
+  Quote(
+    text: 'Tuga je duboka kao more, a radost plitka kao potok.',
+    author: 'Jovan Jovanović Zmaj'
+  ),
+  
+  // Duško Radović (Serbian)
+  Quote(
+    text: 'Beograde, dobro jutro.',
+    author: 'Duško Radović'
+  ),
+  Quote(
+    text: 'Deca su ukras sveta.',
+    author: 'Duško Radović'
+  ),
+  Quote(
+    text: 'Život je uvek na pravoj strani.',
+    author: 'Duško Radović'
+  ),
+  Quote(
+    text: 'Ko rano rani, ne stigne ništa da uradi jer je pospan ceo dan.',
+    author: 'Duško Radović'
+  ),
+  Quote(
+    text: 'Ljudi koji mnogo očekuju od života - mnogo i dobiju, ali ne ono što su očekivali.',
+    author: 'Duško Radović'
+  ),
+  
+  // Borislav Pekić (Serbian)
+  Quote(
+    text: 'Srećan je onaj koji ima sve što želi, a mudar onaj koji ne želi ono što nema.',
+    author: 'Borislav Pekić'
+  ),
+  Quote(
+    text: 'Ništa se ne dešava onima koji ništa ne čine.',
+    author: 'Borislav Pekić'
+  ),
+  
+  // Emir Kusturica (Bosnian/Serbian)
+  Quote(
+    text: 'Život je nepravičan, a najnepravičniji je prema najpravičnijima.',
+    author: 'Emir Kusturica'
+  ),
+  Quote(
+    text: 'Smrt je samo još jedna laž.',
+    author: 'Emir Kusturica'
+  ),
+  
+  // Meša Selimović additional quotes
+  Quote(
+    text: 'Pisac piše ono što oseća i što ne može da sakrije.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Čovek je zato što misli.',
+    author: 'Meša Selimović'
+  ),
+  Quote(
+    text: 'Ne kaže se uzalud da je ćutanje zlato.',
+    author: 'Meša Selimović'
+  ),
+  
+  // Blaže Koneski (Macedonian)
+  Quote(
+    text: 'Svet nije ni lep ni ružan, već takav kakvim ga vidimo.',
+    author: 'Blaže Koneski'
+  ),
+  Quote(
+    text: 'Reči su most između ljudi.',
+    author: 'Blaže Koneski'
+  ),
+  
+  // Koča Popović (Serbian)
+  Quote(
+    text: 'Kad su vremena teška, treba biti jak.',
+    author: 'Koča Popović'
+  ),
+  Quote(
+    text: 'Ljudi koji znaju malo se bune mnogo, ljudi koji znaju mnogo se bune malo.',
+    author: 'Koča Popović'
+  ),
+  
+  // Slavko Janevski (Macedonian)
+  Quote(
+    text: 'Smej se i svet će se smejati s tobom.',
+    author: 'Slavko Janevski'
+  ),
+  Quote(
+    text: 'Teške reči ostavljaju duboke ožiljke.',
+    author: 'Slavko Janevski'
+  ),
+  
+  // Ivan Cankar (Slovenian)
+  Quote(
+    text: 'Domovina je ena nam samo dana.',
+    author: 'Ivan Cankar'
+  ),
+  Quote(
+    text: 'Čovjek koji ima srce, ima i dom.',
+    author: 'Ivan Cankar'
+  ),
+  
+  // Stevan Sremac (Serbian)
+  Quote(
+    text: 'Gde su dvoje, treći je suvišan.',
+    author: 'Stevan Sremac'
+  ),
+  Quote(
+    text: 'Onaj koji ne zna da ćuti, ne zna ni da govori.',
+    author: 'Stevan Sremac'
+  ),
+  
+  // Jovan Cvijić (Serbian)
+  Quote(
+    text: 'Narod koji zaboravlja svoju prošlost nema budućnost.',
+    author: 'Jovan Cvijić'
+  ),
+  Quote(
+    text: 'Čovek je pre svega dužan prema svom narodu.',
+    author: 'Jovan Cvijić'
+  ),
+  
+  // Dušan Radović (additional quotes)
+  Quote(
+    text: 'Budite dobri prema deci, da bi deca bila dobra prema vama kad porastete.',
+    author: 'Duško Radović'
+  ),
+  Quote(
+    text: 'Lepota nije u licu. Lepota je svetlost u srcu.',
+    author: 'Duško Radović'
+  ),
+  Quote(
+    text: 'Ne dozvolite da vam život prođe u čekanju da život počne.',
+    author: 'Duško Radović'
+  ),
+  
+  // Skender Kulenović (Bosnian)
+  Quote(
+    text: 'Nema bola koji vreme ne leči.',
+    author: 'Skender Kulenović'
+  ),
+  Quote(
+    text: 'U životu treba birati jednu od dve stvari: ili patiti ili biti dosadan.',
+    author: 'Skender Kulenović'
+  ),
+  
+  // Slavenka Drakulić (Croatian)
+  Quote(
+    text: 'Granice postoje samo u našim glavama.',
+    author: 'Slavenka Drakulić'
+  ),
+  Quote(
+    text: 'Prošlost ne možemo promijeniti, ali budućnost je u našim rukama.',
+    author: 'Slavenka Drakulić'
+  ),
+  
+  // Vladan Desnica (Croatian/Serbian)
+  Quote(
+    text: 'Vrijeme je vjetar koji, kako prolazi kroz nas, raznosi nas u sitne komadiće.',
+    author: 'Vladan Desnica'
+  ),
+  Quote(
+    text: 'Prolaznost je bolest od koje svi bolujemo.',
+    author: 'Vladan Desnica'
+  ),
 ];
