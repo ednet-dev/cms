@@ -1,0 +1,103 @@
+---
+description: When commiting changes
+globs: 
+alwaysApply: false
+---
+# Commit Conventions Rule
+
+## Overview
+When committing changes in the monorepo, follow these conventions to ensure proper versioning and changelog generation through Melos.
+
+## Conventional Commits Structure
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+- `feat`: New feature (triggers MINOR version bump)
+- `fix`: Bug fix (triggers PATCH version bump)
+- `docs`: Documentation changes only
+- `style`: Changes that don't affect code meaning
+- `refactor`: Code changes that neither fix a bug nor add a feature
+- `perf`: Performance improvements
+- `test`: Adding or correcting tests
+- `build`: Changes affecting build system or external dependencies
+- `ci`: Changes to CI configuration files and scripts
+- `chore`: Other changes that don't modify src or test files
+
+### Scopes
+- Use package names as scopes (e.g., `core`, `cms`, `code_generation`)
+- Use `deps` for dependency updates
+- Use `release` for version bumps and release commits
+
+### Breaking Changes
+- Add `BREAKING CHANGE:` in the commit body or footer
+- Or append `!` after type/scope (e.g., `feat(core)!: remove deprecated API`)
+- Triggers MAJOR version bump
+
+## Commit Organization Strategy
+
+### 1. Group Related Changes
+Group files into separate commits based on:
+- Package scope
+- Change type
+- Breaking vs non-breaking changes
+
+### 2. Commit Order
+1. Breaking changes first
+2. Features and fixes
+3. Documentation and style changes
+4. Build and dependency updates
+
+### 3. Memory File Usage
+For complex changes affecting multiple packages:
+1. Create a Subject.Memory file
+2. List planned commits with their type, scope, and files
+3. Track commit progress
+4. Remove memory file after completion
+
+## Examples
+
+```bash
+# Feature in core package
+feat(core): add new domain model validator
+
+# Bug fix in CMS with breaking change
+fix(cms)!: correct event handling in state machine
+BREAKING CHANGE: State machine API now requires explicit initialization
+
+# Documentation update for multiple packages
+docs: update README files across packages
+
+# Dependency update
+chore(deps): upgrade flutter dependencies
+```
+
+## Integration with Melos
+
+### Version Bumping
+- Melos uses these commits to determine version bumps
+- MAJOR: Breaking changes
+- MINOR: New features
+- PATCH: Bug fixes
+
+### Changelog Generation
+- Melos automatically generates changelogs based on commits
+- Groups changes by type and package
+- Links to commits if enabled in melos.yaml
+
+### Publishing Workflow
+1. Ensure all changes are properly committed following conventions
+2. Run `melos version` to update versions based on commits
+3. Run `melos publish` to publish updated packages
+
+## Validation
+Before committing, ensure:
+1. Commit message follows conventional format
+2. Scope matches affected package(s)
+3. Breaking changes are properly marked
+4. Related changes are grouped logically 
