@@ -21,6 +21,7 @@ part 'src/shell/shell_persistence.dart';
 part 'src/shell/shell_domain_manager.dart';
 part 'src/shell/shell_app.dart';
 part 'src/shell/shell_app_domains.dart';
+part 'src/shell/shell_app_features.dart';
 part 'src/shell/domain_navigator_multi.dart';
 part 'src/shell/runner/shell_app_runner.dart';
 part 'src/shell/commands/entity_update_command.dart';
