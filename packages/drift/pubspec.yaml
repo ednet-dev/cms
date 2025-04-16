@@ -7,8 +7,7 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  ednet_core:
-    path: ../core
+  ednet_core: ^1.0.0
   drift: ^2.5.0
   sqlite3_flutter_libs: ^0.5.12
   path: ^1.8.3

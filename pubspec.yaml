@@ -11,8 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  ednet_cms:
-    path: ../cms/packages/cms
+  ednet_cms: ^0.0.1
   json_serializable: ^6.7.0
   yaml: ^3.1.2
   build_runner: ^2.4.0

@@ -9,10 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  ednet_core:
-    path: ../../packages/core
-  ednet_core_flutter:
-    path: ../../packages/ednet_core_flutter
+  ednet_core: ^0.0.1
+  ednet_core_flutter: ^0.0.1
   fl_chart: ^0.66.2
   cupertino_icons: ^1.0.8
   flutter_bloc: ^8.1.1

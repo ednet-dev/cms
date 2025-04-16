@@ -188,18 +188,19 @@ packages:
   ednet_cms:
     dependency: "direct main"
     description:
-      path: "packages/cms"
-      relative: true
-    source: path
-    version: "1.0.0"
+      name: ednet_cms
+      sha256: c9dc03b742b784357d201d678d3bd168a143325bbc4ca90396558264211ece50
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   ednet_code_generation:
     dependency: transitive
     description:
       name: ednet_code_generation
-      sha256: "1c1429add92cc626f237aa2a28f044bb7870da85d7af4534bef03faa4ae46db3"
+      sha256: eb2c515799cf5a9b9dfa42be693e0d6409003b1730ce7f8d51f850efa9386094
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "0.0.4"
   ednet_core:
     dependency: "direct overridden"
     description:
@@ -844,4 +845,4 @@ packages:
     version: "3.1.3"
 sdks:
   dart: ">=3.7.0 <4.0.0"
-  flutter: ">=3.29.0"
+  flutter: ">=3.27.0"
