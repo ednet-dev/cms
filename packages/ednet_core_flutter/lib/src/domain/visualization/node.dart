@@ -1,5 +1,15 @@
 part of ednet_core_flutter;
 
+/// Extension to add toJson functionality to Offset
+extension OffsetJson on Offset {
+  Map<String, dynamic> toJson() => {'dx': dx, 'dy': dy};
+}
+
+/// Extension to add toJson functionality to Color
+extension ColorJson on Color {
+  Map<String, dynamic> toJson() => {'value': value};
+}
+
 /// A visual node in the domain visualization system.
 ///
 /// Nodes are the basic visual elements that can be rendered on the canvas.
@@ -153,6 +163,17 @@ class VisualNode extends ValueObject {
 
     // Use white for dark backgrounds, black for light backgrounds
     return brightness > 125 ? Colors.black : Colors.white;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'position': position.toJson(),
+      'color': color.toJson(),
+      'type': type,
+      'label': label,
+      'size': size,
+    };
   }
 }
 
