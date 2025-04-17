@@ -1,7 +1,7 @@
 part of ednet_core_flutter;
 
 /// Extension to Domain class to provide session access
-extension DomainSessionExtension on Domain {
+extension DomainSessidonExtension on Domain {
   /// Get the domain session for this domain
   DomainSession? get session {
     // Access metadata via entity if available

@@ -1,29 +1,60 @@
 name: EDNetDev
+repository: https://github.com/ednet-dev/cms 
 
+# Package definitions in dependency order
 packages:
-  - "apps/*"
-  - "packages/core"
-  - "packages/core_patterns"
-  - "packages/code_generation"
-  - "packages/cms"
-  - "packages/content"
-  - "packages/types"
-  - "packages/ednet_flow"
-  - "packages/ednet_core_flutter"
+  - "packages/core" # Base package
+  - "packages/code_generation" # First level
+  - "packages/types" # First level
+  - "packages/ednet_flow" # First level
+  - "packages/openapi" # First level
+  - "packages/cms" # Second level
+  - "packages/ednet_core_flutter" # Second level
+  - "packages/drift" # Second level
+  - "packages/content" # Apps
+  - "apps/*" # Other apps
 
-# Recommended option for projects with Dart 2.17.0 or greater.
+# Publishing order documentation
+# 1. Core Package (Base):
+#    - ednet_core (must be published first as others depend on it)
 #
-# This enables a new mechanism for linking local packages, which integrates
-# better with other tooling (e.g. dart tool, flutter tool, IDE plugins) than the
-# mechanism currently being used by default. Please read the documentation for
-# usePubspecOverrides before enabling this feature.
+# 2. First Level Packages:
+#    - ednet_code_generation (depends on core)
+#    - ednet_core_types (depends on core)
+#    - ednet_flow (depends on core)
+#    - ednet_openapi (depends on core)
 #
-# See https://melos.invertase.dev/getting-started#setup
+# 3. Second Level Packages:
+#    - ednet_cms (depends on core, code_generation)
+#    - ednet_core_flutter (depends on core)
+#    - ednet_drift (depends on core)
+#
+# 4. Apps and Content:
+#    - content package
+#    - other apps
+
+command:
+  version:
+    # Generate commit links in changelogs
+    linkToCommits: true
+    # Only allow versioning on main branch
+    branch: main
+    # Create workspace changelog
+    workspaceChangelog: true
+  bootstrap:
+    runPubGetInParallel: true
+    enforceLockfile: true
+    environment:
+      sdk: ">=3.0.0 <4.0.0"
+
+ide:
+  intellij:
+    enabled: true
 
 scripts:
   analyze:
     run: melos exec -- "flutter analyze"
-    description: Run `flutter analyze` in all packages
+    description: Run flutter analyze in all packages
 
   analyze:core:
     run: melos exec --scope="core" -- "dart analyze"
@@ -31,7 +62,7 @@ scripts:
 
   format:
     run: melos exec -- "flutter format . --set-exit-if-changed"
-    description: Run `flutter format .` in all packages
+    description: Format all code
 
   format:core:
     run: melos exec --scope="core" -- "dart format . --set-exit-if-changed"
@@ -61,10 +92,6 @@ scripts:
     run: melos publish --scope="core" --dry-run
     description: Dry run of publishing core to pub.dev.
 
-  #  publish:core:
-  #    run: melos publish --scope="core" --no-dry-run
-  #    description: Publish core to pub.dev.
-
   test:filter:
     run: melos exec --dir-exists="test" --scope="*$SCOPE*" -- "flutter test --no-pub --coverage"
     description: Run tests in packages matching the SCOPE filter
@@ -80,6 +107,28 @@ scripts:
   clean:
     run: melos exec -- "flutter clean"
     description: Clean build artifacts in all packages
+
+  # Publishing workflow scripts
+  publish:all:
+    description: "Publish all packages in the correct order"
+    run: |
+      echo "Publishing packages in order..."
+      echo "1. Publishing core package..."
+      melos run publish:core
+      echo "2. Publishing first level dependencies..."
+      melos run publish:code_generation
+      melos run publish:core_types
+      melos run publish:flow
+      echo "3. Publishing second level dependencies..."
+      melos run publish:cms
+
+  publish:check:
+    description: "Check package versions and dependencies"
+    run: |
+      echo "Checking package versions..."
+      melos list
+      echo "Checking for outdated dependencies..."
+      melos run outdated
 
   # Publish ednet_core
   publish:core:

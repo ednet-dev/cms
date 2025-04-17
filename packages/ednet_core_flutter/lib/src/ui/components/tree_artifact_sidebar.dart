@@ -30,6 +30,10 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
   /// Currently selected path
   String? _selectedPath;
 
+  /// Animation duration for expand/collapse
+  static const _animationDuration = Duration(milliseconds: 200);
+  static const _animationCurve = Curves.easeInOut;
+
   void _navigationListener() {
     final path = widget.shellApp.navigationService.currentPath;
     setState(() {
@@ -67,53 +71,58 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
   Widget build(BuildContext context) {
     final theme = widget.theme ?? DomainSidebarTheme.fromContext(context);
 
-    return Container(
-      width: theme.sidebarWidth,
-      color: theme.backgroundColor,
-      child: Column(
-        children: [
-          // Domain Header
-          _buildDomainHeader(theme),
+    return Material(
+      child: Container(
+        width: theme.sidebarWidth,
+        color: theme.backgroundColor,
+        child: Column(
+          children: [
+            // Domain Header
+            _buildDomainHeader(theme),
 
-          // Navigation Tree
-          Expanded(
-            child: SingleChildScrollView(
-              child: _buildNavigationTree(theme),
+            // Navigation Tree
+            Expanded(
+              child: SingleChildScrollView(
+                child: _buildNavigationTree(theme),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildDomainHeader(DomainSidebarTheme theme) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.headerBackgroundColor,
-        border: Border(
-          bottom: BorderSide(
-            color: theme.dividerColor,
-            width: 1,
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: theme.headerBackgroundColor,
+          border: Border(
+            bottom: BorderSide(
+              color: theme.dividerColor,
+              width: 1,
+            ),
           ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.shellApp.domain.code,
-            style: theme.headerTextStyle,
-          ),
-          if (widget.shellApp.domain.description.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                widget.shellApp.domain.description,
-                style: theme.subtitleTextStyle,
-              ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.shellApp.domain.code,
+              style: theme.headerTextStyle,
             ),
-        ],
+            if (widget.shellApp.domain.description.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  widget.shellApp.domain.description,
+                  style: theme.subtitleTextStyle,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -139,25 +148,19 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Domain node
         _buildTreeItem(
           title: domain.code,
           icon: Icons.domain,
           theme: theme,
           isExpanded: isExpanded,
           isSelected: _selectedPath == path,
-          onTap: () {
-            setState(() {
-              _expandedNodes[path] = !isExpanded;
-            });
-            _notifyArtifactSelected(path);
-          },
+          onTap: () => _notifyArtifactSelected(path),
           subtitle: domain.description,
+          uniqueId: domain.oid.toString(),
         ),
-
-        // Models under this domain
-        if (isExpanded)
-          Padding(
+        _buildExpandableSection(
+          isExpanded: isExpanded,
+          child: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,6 +170,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                   .toList(),
             ),
           ),
+        ),
       ],
     );
   }
@@ -179,25 +183,19 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Model node
         _buildTreeItem(
           title: model.code,
           icon: Icons.data_object,
           theme: theme,
           isExpanded: isExpanded,
           isSelected: _selectedPath == path,
-          onTap: () {
-            setState(() {
-              _expandedNodes[path] = !isExpanded;
-            });
-            _notifyArtifactSelected(path);
-          },
+          onTap: () => _notifyArtifactSelected(path),
           subtitle: model.description,
+          uniqueId: model.oid.toString(),
         ),
-
-        // Concepts under this model
-        if (isExpanded)
-          Padding(
+        _buildExpandableSection(
+          isExpanded: isExpanded,
+          child: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,6 +205,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                   .toList(),
             ),
           ),
+        ),
       ],
     );
   }
@@ -235,31 +234,24 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Concept node
         _buildTreeItem(
           title: concept.code,
           icon: conceptIcon,
           theme: theme,
           isExpanded: isExpanded,
           isSelected: _selectedPath == path,
-          onTap: () {
-            setState(() {
-              _expandedNodes[path] = !isExpanded;
-            });
-            _notifyArtifactSelected(path);
-          },
+          onTap: () => _notifyArtifactSelected(path),
           subtitle: concept.description,
           badges: badges,
+          uniqueId: concept.oid.toString(),
         ),
-
-        // Show relationships if expanded
-        if (isExpanded)
-          Padding(
+        _buildExpandableSection(
+          isExpanded: isExpanded,
+          child: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Parents
                 if (concept.parents.isNotEmpty)
                   _buildRelationshipGroup(
                     'Parents',
@@ -269,8 +261,6 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                     path,
                     concept,
                   ),
-
-                // Children
                 if (concept.children.isNotEmpty)
                   _buildRelationshipGroup(
                     'Children',
@@ -283,6 +273,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
               ],
             ),
           ),
+        ),
       ],
     );
   }
@@ -330,6 +321,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                 _safeNavigateToRelationship(parentPath, item, concept);
               },
               dense: true,
+              uniqueId: '$title-$item',
             )),
       ],
     );
@@ -345,9 +337,15 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
     String? subtitle,
     List<Widget> badges = const [],
     bool dense = false,
+    String? uniqueId,
   }) {
+    // Create a guaranteed unique key using both title and uniqueId if available
+    final keyString =
+        uniqueId != null ? 'tree_item_${title}_$uniqueId' : 'tree_item_$title';
+
     return InkWell(
-      onTap: onTap,
+      key: ValueKey(keyString),
+      onTap: () => onTap(),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: 16,
@@ -366,6 +364,28 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
         ),
         child: Row(
           children: [
+            // Collapsible indicator button
+            if (!dense)
+              IconButton(
+                icon: AnimatedRotation(
+                  duration: _animationDuration,
+                  turns: isExpanded ? 0.25 : 0,
+                  child: const Icon(Icons.chevron_right),
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(
+                  minWidth: 24,
+                  minHeight: 24,
+                ),
+                iconSize: 20,
+                splashRadius: 20,
+                color: theme.itemIconColor,
+                onPressed: () {
+                  setState(() {
+                    _expandedNodes[title] = !isExpanded;
+                  });
+                },
+              ),
             Icon(
               icon,
               size: dense ? 16 : 20,
@@ -376,6 +396,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
             const SizedBox(width: 8),
             Expanded(
               child: Column(
+                key: ValueKey('tree_item_content_$title'),
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -383,6 +404,8 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                       Expanded(
                         child: Text(
                           title,
+                          key: ValueKey(
+                              'tree_item_text_$title${isExpanded ? '_expanded' : ''}'),
                           style: (isSelected
                                   ? theme.selectedItemTextStyle
                                   : theme.itemTextStyle)
@@ -395,6 +418,7 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                   if (subtitle != null)
                     Text(
                       subtitle,
+                      key: ValueKey('tree_item_subtitle_$title'),
                       style: theme.subtitleTextStyle.copyWith(
                         fontSize: dense ? 10 : 12,
                       ),
@@ -404,15 +428,25 @@ class _TreeArtifactSidebarState extends State<TreeArtifactSidebar> {
                 ],
               ),
             ),
-            if (!dense)
-              Icon(
-                isExpanded ? Icons.expand_less : Icons.expand_more,
-                size: dense ? 16 : 20,
-                color: theme.itemIconColor,
-              ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildExpandableSection({
+    required bool isExpanded,
+    required Widget child,
+  }) {
+    return AnimatedCrossFade(
+      firstChild: Container(),
+      secondChild: child,
+      crossFadeState:
+          isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+      duration: _animationDuration,
+      sizeCurve: _animationCurve,
+      firstCurve: _animationCurve,
+      secondCurve: _animationCurve,
     );
   }
 

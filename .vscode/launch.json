@@ -2,25 +2,44 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Flutter (lib/main.dart)",
+      "name": "Flutter macOS (lib/main.dart)",
       "type": "dart",
       "request": "launch",
       "cwd": "apps/one",
-      "program": "lib/main.dart"
+      "program": "lib/main.dart",
+      "deviceId": "macos",
+      "args": [
+        "--dart-define=FLUTTER_WEB_DEBUG=true"
+      ],
+      "toolArgs": [
+        "--verbose"
+      ]
     },
     {
-      "name": "one (profile mode)",
-      "cwd": "apps/one",
-      "request": "launch",
+      "name": "Flutter Mobile (lib/main.dart)",
       "type": "dart",
-      "flutterMode": "profile"
+      "request": "launch",
+      "cwd": "apps/one",
+      "program": "lib/main.dart",
+      "toolArgs": [
+        "--verbose"
+      ]
     },
     {
-      "name": "one (release mode)",
+      "name": "one macOS (profile mode)",
       "cwd": "apps/one",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "release"
+      "flutterMode": "profile",
+      "deviceId": "macos"
+    },
+    {
+      "name": "one macOS (release mode)",
+      "cwd": "apps/one",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "deviceId": "macos"
     },
     {
       "name": "Attach to Flutter Web",
@@ -35,19 +54,22 @@
       "name": "core",
       "cwd": "packages/core",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
+      "program": "test/ednet_core_test.dart"
     },
     {
       "name": "ednet_cms",
       "cwd": "packages/ednet_cms",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
+      "program": "lib/main.dart"
     },
     {
       "name": "ednet_code_generation",
       "cwd": "packages/ednet_code_generation",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
+      "program": "lib/main.dart"
     }
   ]
 }

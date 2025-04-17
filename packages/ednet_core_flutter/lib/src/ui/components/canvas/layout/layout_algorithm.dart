@@ -1,5 +1,65 @@
 part of ednet_core_flutter;
 
+/// Extension for Domains to allow indexing by code or position.
+extension DomainsIndexExtension on Domains {
+  Domain operator [](dynamic key) {
+    if (key is String) {
+      final domain = singleWhereCode(key);
+      if (domain == null) {
+        throw Exception('Domain with code "$key" not found');
+      }
+      return domain;
+    } else if (key is int) {
+      if (key < 0 || key >= length) {
+        throw Exception('Domain index out of range: $key');
+      }
+      return elementAt(key);
+    } else {
+      throw Exception('Invalid key type: ${key.runtimeType}');
+    }
+  }
+}
+
+/// Extension for Models to allow indexing by code or position.
+extension ModelsIndexExtension on Models {
+  Model operator [](dynamic key) {
+    if (key is String) {
+      final model = singleWhereCode(key);
+      if (model == null) {
+        throw Exception('Model with code "$key" not found');
+      }
+      return model;
+    } else if (key is int) {
+      if (key < 0 || key >= length) {
+        throw Exception('Model index out of range: $key');
+      }
+      return elementAt(key);
+    } else {
+      throw Exception('Invalid key type: ${key.runtimeType}');
+    }
+  }
+}
+
+/// Extension for Concepts to allow indexing by code or position.
+extension ConceptsIndexExtension on Concepts {
+  Concept operator [](dynamic key) {
+    if (key is String) {
+      final concept = singleWhereCode(key);
+      if (concept == null) {
+        throw Exception('Concept with code "$key" not found');
+      }
+      return concept;
+    } else if (key is int) {
+      if (key < 0 || key >= length) {
+        throw Exception('Concept index out of range: $key');
+      }
+      return elementAt(key);
+    } else {
+      throw Exception('Invalid key type: ${key.runtimeType}');
+    }
+  }
+}
+
 /// An algorithm for calculating layout positions for domain model entities.
 ///
 /// This is part of the EDNet Shell Architecture's visualization system,

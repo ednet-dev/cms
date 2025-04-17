@@ -2,34 +2,34 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ednet_core/ednet_core.dart';
 import 'package:ednet_core_flutter/src/shell/interpreter/domain_metadata_interpreter.dart';
 
-import '../mocks/mock_domain_factory.dart';
+import '../test_domain_factory.dart';
 
 void main() {
   group('DomainMetadataInterpreter', () {
     late DomainMetadataInterpreter interpreter;
-    late Domain mockDomain;
+    late Domain testDomain;
 
     setUp(() {
       interpreter = DomainMetadataInterpreter();
-      mockDomain = MockDomainFactory.createSimpleDomain();
+      testDomain = TestDomainFactory.createSimpleDomain();
     });
 
     test('should load domain metadata correctly', () {
       // Act
-      interpreter.loadDomainModel(mockDomain);
+      interpreter.loadDomainModel(testDomain);
 
       // Assert
       expect(interpreter.hasLoadedDomain(), true);
-      expect(interpreter.getDomainCode(), equals(mockDomain.code));
+      expect(interpreter.getDomainCode(), equals(testDomain.code));
     });
 
     test('should register all concepts from domain', () {
       // Arrange
-      final expectedConceptCount = mockDomain.models
+      final expectedConceptCount = testDomain.models
           .fold<int>(0, (count, model) => count + model.concepts.length);
 
       // Act
-      interpreter.loadDomainModel(mockDomain);
+      interpreter.loadDomainModel(testDomain);
 
       // Assert
       expect(interpreter.getConceptCount(), equals(expectedConceptCount));
@@ -37,11 +37,11 @@ void main() {
 
     test('should retrieve concept by code', () {
       // Arrange
-      final targetConcept = mockDomain.models.first.concepts.first;
+      final targetConcept = testDomain.models.first.concepts.first;
       final conceptCode = targetConcept.code;
 
       // Act
-      interpreter.loadDomainModel(mockDomain);
+      interpreter.loadDomainModel(testDomain);
       final retrievedConcept = interpreter.getConceptByCode(conceptCode);
 
       // Assert
@@ -51,10 +51,10 @@ void main() {
 
     test('should extract attributes from concept', () {
       // Arrange
-      final targetConcept = mockDomain.models.first.concepts.first;
+      final targetConcept = testDomain.models.first.concepts.first;
 
       // Act
-      interpreter.loadDomainModel(mockDomain);
+      interpreter.loadDomainModel(testDomain);
       final attributes = interpreter.getConceptAttributes(targetConcept.code);
 
       // Assert
@@ -64,13 +64,13 @@ void main() {
 
     test('should detect entry concepts', () {
       // Arrange
-      final entryConcepts = mockDomain.models
+      final entryConcepts = testDomain.models
           .expand((model) => model.concepts)
           .where((concept) => concept.entry)
           .toList();
 
       // Act
-      interpreter.loadDomainModel(mockDomain);
+      interpreter.loadDomainModel(testDomain);
       final detectedEntryConcepts = interpreter.getEntryConcepts();
 
       // Assert
@@ -82,19 +82,27 @@ void main() {
     });
 
     test('should map parent-child relationships', () {
+      // This test won't work with the simple domain as it has no relationships
+      // For relationship testing, we need the complex domain
       // Arrange
-      // Find a concept with parent references for testing
-      final childConcept = mockDomain.models
-          .expand((model) => model.concepts)
-          .firstWhere((concept) => concept.parents.isNotEmpty,
-              orElse: () => mockDomain.models.first.concepts.first);
+      final complexDomain = TestDomainFactory.createComplexDomain();
+      interpreter.loadDomainModel(complexDomain);
+
+      // Find concepts with parent references for testing
+      final concepts =
+          complexDomain.models.expand((model) => model.concepts).toList();
+
+      // Find a concept with parents
+      final conceptWithParents = concepts.firstWhere(
+          (concept) => concept.parents.isNotEmpty,
+          orElse: () => concepts.first);
 
       // Act
-      interpreter.loadDomainModel(mockDomain);
-      final parentConcepts = interpreter.getParentConcepts(childConcept.code);
+      final parentConcepts =
+          interpreter.getParentConcepts(conceptWithParents.code);
 
       // Assert
-      expect(parentConcepts.length, equals(childConcept.parents.length));
+      expect(parentConcepts.length, equals(conceptWithParents.parents.length));
     });
   });
 }

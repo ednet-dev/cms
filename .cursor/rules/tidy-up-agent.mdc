@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- never implement mocks aside of in test suite, always refactor/extend production code for the sake of ednet dev ecosystem ritchnes
+- when it is needed to produce feature in libraries first check if something similar exists in  [ednet_core.dart](mdc:cms/cms/cms/packages/core/lib/ednet_core.dart) [ednet_core_flutter.dart](mdc:cms/cms/cms/packages/ednet_core_flutter/lib/ednet_core_flutter.dart) [ednet_code_generation.dart](mdc:cms/cms/cms/packages/code_generation/lib/ednet_code_generation.dart) or if needs to be migrated from @archive
+- always idiomatically integrate code aligned with ednet core meta domain modeling style utilizing facilties of [entity.dart](mdc:cms/cms/cms/packages/core/lib/domain/model/entity/entity.dart) [entities.dart](mdc:cms/cms/cms/packages/core/lib/domain/model/entity/entities.dart) and [concept.dart](mdc:cms/cms/cms/packages/core/lib/meta/concept.dart) @meta ecosystem
+- always ensure happynes of dart analyzer
+- always use TDD
+- always use one consolidated mock of the main model for test suite of given app/lib that is semantically appropriate to our business use case (ednet) in the centralised way for the test suit and shared among tet cases demonstrating semantic coherency on all sides to the level of simulation

@@ -1,4 +1,8 @@
 import 'package:ednet_core/ednet_core.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
+import 'package:ednet_core_flutter/ednet_core_flutter.dart';
 
 /// Extensions for testing attribute constraints
 extension AttributeTypeTestExtensions on AttributeType {
@@ -94,3 +98,44 @@ extension AttributeTypeTestExtensions on AttributeType {
     }
   }
 }
+
+/// Sets up mock SharedPreferences for testing
+Future<void> setUpSharedPreferences() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
+  await SharedPreferences.getInstance();
+}
+
+class MockShellApp extends ShellApp {
+  MockShellApp()
+      : super(
+          domain: Domain('MockDomain')
+            ..description = 'A mock domain for testing',
+          domains: Domains()..add(Domain('MockDomain')),
+          configuration: ShellConfiguration(
+            features: {'domain_selection'},
+          ),
+        );
+}
+
+final testTextStyle = const TextStyle(
+  fontSize: 14,
+  color: Colors.black87,
+);
+
+final testHeaderStyle = const TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.bold,
+  color: Colors.white,
+);
+
+final testBadgeStyle = const TextStyle(
+  fontSize: 10,
+  color: Colors.white,
+);
+
+final testGroupLabelStyle = const TextStyle(
+  fontSize: 12,
+  color: Colors.grey,
+  fontWeight: FontWeight.w500,
+);

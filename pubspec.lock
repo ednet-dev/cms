@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.3.0"
+  ansi_styles:
+    dependency: transitive
+    description:
+      name: ansi_styles
+      sha256: "9c656cc12b3c27b17dd982b2cc5c0cfdfbdabd7bc8f3ae5e8542d9867b47ce8a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2+1"
   args:
     dependency: transitive
     description:
@@ -113,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  charcode:
+    dependency: transitive
+    description:
+      name: charcode
+      sha256: fb0f1107cac15a5ea6ef0a6ef71a807b9e4267c713bb93e00e92d737cc8dbd8a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   checked_yaml:
     dependency: transitive
     description:
@@ -121,6 +137,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  cli_launcher:
+    dependency: transitive
+    description:
+      name: cli_launcher
+      sha256: "5e7e0282b79e8642edd6510ee468ae2976d847a0a29b3916e85f5fa1bfe24005"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
+  cli_util:
+    dependency: transitive
+    description:
+      name: cli_util
+      sha256: ff6785f7e9e3c38ac98b2fb035701789de90154024a75b6cb926445e83197d1c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2"
   clock:
     dependency: transitive
     description:
@@ -145,6 +177,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
+  conventional_commit:
+    dependency: transitive
+    description:
+      name: conventional_commit
+      sha256: fad254feb6fb8eace2be18855176b0a4b97e0d50e416ff0fe590d5ba83735d34
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
   convert:
     dependency: transitive
     description:
@@ -188,18 +228,19 @@ packages:
   ednet_cms:
     dependency: "direct main"
     description:
-      path: "packages/cms"
-      relative: true
-    source: path
-    version: "1.0.0"
+      name: ednet_cms
+      sha256: c9dc03b742b784357d201d678d3bd168a143325bbc4ca90396558264211ece50
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   ednet_code_generation:
     dependency: transitive
     description:
       name: ednet_code_generation
-      sha256: "1c1429add92cc626f237aa2a28f044bb7870da85d7af4534bef03faa4ae46db3"
+      sha256: eb2c515799cf5a9b9dfa42be693e0d6409003b1730ce7f8d51f850efa9386094
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "0.0.4"
   ednet_core:
     dependency: "direct overridden"
     description:
@@ -250,10 +291,10 @@ packages:
     dependency: transitive
     description:
       name: file
-      sha256: "1b92bec4fc2a72f59a8e15af5f52cd441e4a7860b49499d69dfa817af20e925d"
+      sha256: a3b4f84adafef897088c160faf7dfffb7696046cb13ae90b508c2cbc95d3b8d4
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.4"
+    version: "7.0.1"
   fixnum:
     dependency: transitive
     description:
@@ -429,6 +470,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
+  melos:
+    dependency: "direct main"
+    description:
+      name: melos
+      sha256: f9a6fc4f4842b7edfca2e00ab3b5b06928584f24bdc3d776ab0b30be7d599450
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.0"
   meta:
     dependency: transitive
     description:
@@ -442,6 +491,14 @@ packages:
     description:
       name: mime
       sha256: "41a20518f0cb1256669420fdba0cd90d21561e560ac240f26ef8322e45bb7ed6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  mustache_template:
+    dependency: transitive
+    description:
+      name: mustache_template
+      sha256: a46e26f91445bfb0b60519be280555b06792460b27b19e2b19ad5b9740df5d1c
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
@@ -525,6 +582,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
+  process:
+    dependency: transitive
+    description:
+      name: process
+      sha256: "107d8be718f120bbba9dcd1e95e3bd325b1b4a4f07db64154635ba03f2567a0d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
+  prompts:
+    dependency: transitive
+    description:
+      name: prompts
+      sha256: "3773b845e85a849f01e793c4fc18a45d52d7783b4cb6c0569fad19f9d0a774a1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   pub_semver:
     dependency: transitive
     description:
@@ -533,6 +606,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  pub_updater:
+    dependency: transitive
+    description:
+      name: pub_updater
+      sha256: "54e8dc865349059ebe7f163d6acce7c89eb958b8047e6d6e80ce93b13d7c9e60"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
+  pubspec:
+    dependency: transitive
+    description:
+      name: pubspec
+      sha256: f534a50a2b4d48dc3bc0ec147c8bd7c304280fff23b153f3f11803c4d49d927e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   pubspec_parse:
     dependency: transitive
     description:
@@ -770,6 +859,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  uri:
+    dependency: transitive
+    description:
+      name: uri
+      sha256: "889eea21e953187c6099802b7b4cf5219ba8f3518f604a1033064d45b1b8268a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   vector_math:
     dependency: transitive
     description:
@@ -842,6 +939,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.3"
+  yaml_edit:
+    dependency: transitive
+    description:
+      name: yaml_edit
+      sha256: fb38626579fb345ad00e674e2af3a5c9b0cc4b9bfb8fd7f7ff322c7c9e62aef5
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.2"
 sdks:
   dart: ">=3.7.0 <4.0.0"
-  flutter: ">=3.29.0"
+  flutter: ">=3.27.0"

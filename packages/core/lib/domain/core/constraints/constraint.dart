@@ -64,10 +64,10 @@ class NumericConstraint extends Constraint<num> {
 
   @override
   bool validate(num value) {
-    if (_min != null && value < _min) {
+    if (_min != null && value < _min!) {
       return false;
     }
-    if (_max != null && value > _max) {
+    if (_max != null && value > _max!) {
       return false;
     }
     return true;
@@ -145,10 +145,10 @@ class StringConstraint extends Constraint<String> {
     if (_minLength != null && value.length < _minLength!) {
       return false;
     }
-    if (_maxLength != null && value.length > _maxLength) {
+    if (_maxLength != null && value.length > _maxLength!) {
       return false;
     }
-    if (_regex != null && !_regex.hasMatch(value)) {
+    if (_regex != null && !_regex!.hasMatch(value)) {
       return false;
     }
     return true;

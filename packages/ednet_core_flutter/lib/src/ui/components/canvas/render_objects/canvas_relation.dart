@@ -225,4 +225,23 @@ class CanvasRelation extends ValueObject {
         return label.length <= 10 ? label : '${label.substring(0, 10)}...';
     }
   }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'sourceId': sourceId,
+      'targetId': targetId,
+      'sourcePosition': {'dx': sourcePosition.dx, 'dy': sourcePosition.dy},
+      'targetPosition': {'dx': targetPosition.dx, 'dy': targetPosition.dy},
+      'sourceToTargetLabel': sourceToTargetLabel,
+      'targetToSourceLabel': targetToSourceLabel,
+      'color': color.value,
+      'thickness': thickness,
+      'isSelected': isSelected,
+      'showArrows': showArrows,
+      'disclosureLevel': disclosureLevel.toString(),
+      'metadata': metadata,
+    };
+  }
 }

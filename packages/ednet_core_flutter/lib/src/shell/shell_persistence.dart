@@ -389,6 +389,32 @@ class ShellPersistence {
       return [];
     }
   }
+
+  /// Delete an entity from the repository
+  Future<bool> deleteEntity(
+      String conceptCode, Map<String, dynamic> entityData) async {
+    try {
+      // Verify we have ID
+      final id = entityData['id'];
+      if (id == null) {
+        debugPrint('Cannot delete entity: missing ID');
+        return false;
+      }
+
+      // Find the concept
+      final concept = findConcept(conceptCode);
+
+      // Get repository
+      final repository = _adapterChain.getRepository(conceptCode, concept);
+      if (repository == null) return false;
+
+      // Delete entity
+      return await repository.delete(id.toString());
+    } catch (e) {
+      debugPrint('Error deleting entity: $e');
+      return false;
+    }
+  }
 }
 
 /// In-memory repository implementation
@@ -409,5 +435,14 @@ class MemoryRepository {
 
   Future<List<Map<String, dynamic>>> findAll() async {
     return _entities.values.map((e) => Map<String, dynamic>.from(e)).toList();
+  }
+
+  /// Delete an entity by ID
+  Future<bool> delete(String id) async {
+    if (_entities.containsKey(id)) {
+      _entities.remove(id);
+      return true;
+    }
+    return false;
   }
 }

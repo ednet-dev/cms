@@ -1,129 +1,137 @@
 part of ednet_core_flutter;
 
-/// Configuration for the Shell App
+/// Configuration for the Shell app that allows customizing appearance, features, and behavior
 class ShellConfiguration {
-  /// Default disclosure level for the shell
-  final DisclosureLevel? defaultDisclosureLevel;
-
-  /// Custom adapters for entity types
-  final Map<Type, LayoutAdapter> customAdapters;
-
-  /// Enabled features
+  /// Features enabled in the shell app
   final Set<String> features;
 
-  /// Custom theme for the shell
-  final ThemeData? theme;
+  /// Default theme mode for the app
+  final ThemeMode? defaultThemeMode;
 
-  /// Sidebar mode configuration
+  /// The default disclosure level
+  final DisclosureLevel? defaultDisclosureLevel;
+
+  /// The sidebar mode
   final SidebarMode sidebarMode;
 
-  /// Meta-model editing features
-  static const String metaModelEditingFeature = 'meta_model_editing';
-  static const String conceptManagementFeature = 'concept_management';
-  static const String relationshipManagementFeature = 'relationship_management';
-  static const String attributeManagementFeature = 'attribute_management';
-  static const String domainModelDiffingFeature = 'domain_model_diffing';
+  /// Custom adapters for specific entity types
+  final Map<Type, LayoutAdapter> customAdapters;
 
-  /// Common feature sets as named presets
-  static final Map<String, Set<String>> featurePresets = {
-    'minimal': {
-      'basic_visualization',
-    },
-    'standard': {
-      'basic_visualization',
-      'entity_creation',
-      'entity_editing',
-      'filtering',
-      'sorting',
-      'persistence',
-      'breadcrumbs',
-      'tree_navigation',
-      domainModelDiffingFeature,
-    },
-    'developer': {
-      'basic_visualization',
-      'rich_visualization',
-      'entity_creation',
-      'entity_editing',
-      'advanced_navigation',
-      'breadcrumbs',
-      'filtering',
-      'sorting',
-      'domain_analytics',
-      'export_features',
-      'persistence',
-      'development_mode',
-      'tree_navigation',
-      metaModelEditingFeature,
-      conceptManagementFeature,
-      relationshipManagementFeature,
-      attributeManagementFeature,
-      domainModelDiffingFeature,
-    },
-  };
+  /// Theme data for the app
+  final ThemeData? theme;
 
-  /// Constructor
+  /// Dark theme data for the app
+  final ThemeData? darkTheme;
+
+  /// Whether to show a theme toggle in AppBar
+  final bool showThemeToggleInAppBar;
+
+  /// Whether to use Material 3 design
+  final bool useMaterial3;
+
+  /// Constructor for ShellConfiguration
   ShellConfiguration({
-    this.defaultDisclosureLevel,
-    Map<Type, LayoutAdapter>? customAdapters,
     Set<String>? features,
-    this.theme,
-    this.sidebarMode = SidebarMode.both,
-  })  : customAdapters = customAdapters ?? {},
-        features = features ?? <String>{};
-
-  /// Create a configuration from a preset
-  factory ShellConfiguration.fromPreset(
-    String preset, {
-    DisclosureLevel? defaultDisclosureLevel,
+    this.defaultThemeMode,
+    this.defaultDisclosureLevel,
+    this.sidebarMode = SidebarMode.classic,
     Map<Type, LayoutAdapter>? customAdapters,
-    Set<String>? additionalFeatures,
-    ThemeData? theme,
-    SidebarMode? sidebarMode,
-  }) {
-    final presetFeatures = featurePresets[preset] ?? <String>{};
-    final features = Set<String>.from(presetFeatures);
+    this.theme,
+    this.darkTheme,
+    this.showThemeToggleInAppBar = true,
+    this.useMaterial3 = true,
+  })  : features = features ?? <String>{},
+        customAdapters = customAdapters ?? <Type, LayoutAdapter>{};
 
-    if (additionalFeatures != null) {
-      features.addAll(additionalFeatures);
-    }
+  /// Static constant for the entity form feature key
+  static const String genericEntityFormFeature = 'generic_entity_form';
 
+  /// Static constant for the theme switching feature key
+  static const String themeSwitchingFeature = 'theme_switching';
+
+  /// Static constant for the entity collection view feature key
+  static const String enhancedEntityCollectionFeature =
+      'enhanced_entity_collection';
+
+  /// Static constant for the meta model editing feature key
+  static const String metaModelEditingFeature = 'meta_model_editing';
+
+  /// Static constant for automatic feature initialization
+  static const String automaticFeatureInitializationFeature =
+      'automatic_feature_initialization';
+
+  /// Generate a default full-featured configuration
+  static ShellConfiguration defaultConfiguration() {
     return ShellConfiguration(
-      defaultDisclosureLevel: defaultDisclosureLevel,
-      customAdapters: customAdapters,
-      features: features,
-      theme: theme,
-      sidebarMode: sidebarMode ?? SidebarMode.both,
+      features: {
+        // Automatically initialize all advanced features
+        automaticFeatureInitializationFeature,
+
+        // Include all available advanced features by default
+        ...AdvancedFeatures.allAvailableFeatures,
+      },
+      defaultDisclosureLevel: DisclosureLevel.standard,
+      sidebarMode: SidebarMode.both,
+      showThemeToggleInAppBar: true,
+      useMaterial3: true,
     );
   }
 
-  /// Create a copy with modified values
+  /// Creates a copy of this configuration with the given changes
   ShellConfiguration copyWith({
-    DisclosureLevel? defaultDisclosureLevel,
-    Map<Type, LayoutAdapter>? customAdapters,
     Set<String>? features,
-    ThemeData? theme,
+    ThemeMode? defaultThemeMode,
+    DisclosureLevel? defaultDisclosureLevel,
     SidebarMode? sidebarMode,
+    Map<Type, LayoutAdapter>? customAdapters,
+    ThemeData? theme,
+    ThemeData? darkTheme,
+    bool? showThemeToggleInAppBar,
+    bool? useMaterial3,
   }) {
     return ShellConfiguration(
+      features: features ?? this.features,
+      defaultThemeMode: defaultThemeMode ?? this.defaultThemeMode,
       defaultDisclosureLevel:
           defaultDisclosureLevel ?? this.defaultDisclosureLevel,
-      customAdapters: customAdapters ?? Map.from(this.customAdapters),
-      features: features ?? Set.from(this.features),
-      theme: theme ?? this.theme,
       sidebarMode: sidebarMode ?? this.sidebarMode,
+      customAdapters: customAdapters ?? this.customAdapters,
+      theme: theme ?? this.theme,
+      darkTheme: darkTheme ?? this.darkTheme,
+      showThemeToggleInAppBar:
+          showThemeToggleInAppBar ?? this.showThemeToggleInAppBar,
+      useMaterial3: useMaterial3 ?? this.useMaterial3,
+    );
+  }
+
+  /// Creates a minimal configuration with only essential features
+  static ShellConfiguration minimalConfiguration() {
+    return ShellConfiguration(
+      features: {
+        'entity_editing',
+        'entity_creation',
+        ShellConfiguration.genericEntityFormFeature,
+      },
+      defaultDisclosureLevel: DisclosureLevel.basic,
+      sidebarMode: SidebarMode.classic,
     );
   }
 }
 
-/// Sidebar mode options
+/// Sidebar mode for domain navigation
 enum SidebarMode {
-  /// Classic domain sidebar with expandable sections
+  /// Classic sidebar with domain structure
   classic,
 
-  /// Tree-based artifact sidebar with full domain hierarchy
+  /// Tree-based sidebar
   tree,
 
-  /// Both sidebars available with toggle
-  both
+  /// Both sidebar types available with toggle
+  both,
+
+  /// Compact mode
+  compact,
+
+  /// Hidden (no sidebar)
+  hidden,
 }

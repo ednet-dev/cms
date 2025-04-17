@@ -138,6 +138,21 @@ class CanvasEntity extends ValueObject {
       data: metadata,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'label': label,
+      'position': {'dx': position.dx, 'dy': position.dy},
+      'color': color.value,
+      'isSelected': isSelected,
+      'type': type.name,
+      'metadata': metadata,
+      'width': width,
+      'height': height,
+    };
+  }
 }
 
 /// The type of entity being rendered

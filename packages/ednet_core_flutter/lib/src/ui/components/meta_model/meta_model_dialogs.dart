@@ -778,3 +778,420 @@ class _RelationshipDefinitionDialogState
     }
   }
 }
+
+/// Shows a dialog to edit a concept's basic properties
+Future<bool?> showConceptEditorDialog(
+  BuildContext context,
+  Concept concept, {
+  bool isNew = false,
+}) {
+  final codeController = TextEditingController(text: concept.code);
+  final descriptionController =
+      TextEditingController(text: concept.description);
+  bool isEntry = concept.entry;
+  bool isAbstract = concept.abstract;
+
+  return showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(isNew ? 'New Concept' : 'Edit Concept'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Code field (disabled if not new)
+            TextField(
+              controller: codeController,
+              decoration: const InputDecoration(
+                labelText: 'Code',
+                hintText: 'Enter concept code',
+              ),
+              enabled: isNew,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Description field
+            TextField(
+              controller: descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Description',
+                hintText: 'Enter concept description',
+              ),
+              maxLines: 2,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Entry checkbox
+            StatefulBuilder(
+              builder: (context, setState) => CheckboxListTile(
+                title: const Text('Entry Concept'),
+                subtitle: const Text('Is this a root aggregate?'),
+                value: isEntry,
+                onChanged: (value) {
+                  setState(() {
+                    isEntry = value ?? false;
+                  });
+                },
+              ),
+            ),
+
+            // Abstract checkbox
+            StatefulBuilder(
+              builder: (context, setState) => CheckboxListTile(
+                title: const Text('Abstract Concept'),
+                subtitle: const Text('Is this an abstract type?'),
+                value: isAbstract,
+                onChanged: (value) {
+                  setState(() {
+                    isAbstract = value ?? false;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // Update concept properties
+            if (!isNew) {
+              concept.description = descriptionController.text;
+              concept.entry = isEntry;
+              concept.abstract = isAbstract;
+            }
+
+            Navigator.of(context).pop(true);
+          },
+          child: Text(isNew ? 'Create' : 'Save'),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Shows a dialog to edit an attribute's properties
+Future<bool?> showAttributeEditorDialog(
+  BuildContext context,
+  Attribute attribute, {
+  bool isNew = false,
+  required Concept concept,
+}) {
+  final codeController = TextEditingController(text: attribute.code);
+  final typeController =
+      TextEditingController(text: attribute.type?.code ?? 'String');
+  bool isRequired = attribute.required;
+  bool isIdentifier = attribute.identifier;
+  bool isEssential = attribute.essential;
+
+  return showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(isNew ? 'New Attribute' : 'Edit Attribute'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Code field (disabled if not new)
+            TextField(
+              controller: codeController,
+              decoration: const InputDecoration(
+                labelText: 'Code',
+                hintText: 'Enter attribute code',
+              ),
+              enabled: isNew,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Type field with dropdown
+            DropdownButtonFormField<String>(
+              value: typeController.text,
+              decoration: const InputDecoration(
+                labelText: 'Type',
+              ),
+              items: [
+                'String',
+                'int',
+                'double',
+                'bool',
+                'DateTime',
+                'Uri',
+              ]
+                  .map((type) => DropdownMenuItem(
+                        value: type,
+                        child: Text(type),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  typeController.text = value;
+                }
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Required checkbox
+            StatefulBuilder(
+              builder: (context, setState) => CheckboxListTile(
+                title: const Text('Required'),
+                subtitle: const Text('Is this attribute required?'),
+                value: isRequired,
+                onChanged: (value) {
+                  setState(() {
+                    isRequired = value ?? false;
+                  });
+                },
+              ),
+            ),
+
+            // Identifier checkbox
+            StatefulBuilder(
+              builder: (context, setState) => CheckboxListTile(
+                title: const Text('Identifier'),
+                subtitle: const Text('Is this an identity attribute?'),
+                value: isIdentifier,
+                onChanged: (value) {
+                  setState(() {
+                    isIdentifier = value ?? false;
+                  });
+                },
+              ),
+            ),
+
+            // Essential checkbox
+            StatefulBuilder(
+              builder: (context, setState) => CheckboxListTile(
+                title: const Text('Essential'),
+                subtitle: const Text('Is this an essential attribute?'),
+                value: isEssential,
+                onChanged: (value) {
+                  setState(() {
+                    isEssential = value ?? false;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // Update attribute properties
+            if (!isNew) {
+              // Find attribute type in domain
+              final attributeType = concept.model.domain.types.firstWhere(
+                (t) => t.code == typeController.text,
+                orElse: () => concept.model.domain.types.first,
+              );
+
+              // Update attribute properties
+              attribute.type = attributeType;
+              attribute.required = isRequired;
+              attribute.identifier = isIdentifier;
+              attribute.essential = isEssential;
+            }
+
+            Navigator.of(context).pop(true);
+          },
+          child: Text(isNew ? 'Create' : 'Save'),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Dialog for adding a relationship between concepts
+class AddRelationshipDialog extends StatefulWidget {
+  final Concept sourceConcept;
+  final Model model;
+
+  const AddRelationshipDialog({
+    Key? key,
+    required this.sourceConcept,
+    required this.model,
+  }) : super(key: key);
+
+  @override
+  _AddRelationshipDialogState createState() => _AddRelationshipDialogState();
+}
+
+class _AddRelationshipDialogState extends State<AddRelationshipDialog> {
+  final _codeController = TextEditingController();
+  String _destinationConceptCode = '';
+  bool _isParent = true;
+  bool _isRequired = false;
+  bool _isExternal = false;
+  bool _isIdentifier = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // Get destination concept options
+    final availableConcepts = widget.model.concepts
+        .where((c) => c.code != widget.sourceConcept.code)
+        .map((c) => c.code)
+        .toList();
+
+    if (availableConcepts.isEmpty) {
+      _destinationConceptCode = '';
+    } else if (_destinationConceptCode.isEmpty &&
+        availableConcepts.isNotEmpty) {
+      _destinationConceptCode = availableConcepts.first;
+    }
+
+    return AlertDialog(
+      title: const Text('Add Relationship'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Relationship type
+            const Text('Relationship Type:',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+
+            // Parent or Child radio buttons
+            Row(
+              children: [
+                Expanded(
+                  child: RadioListTile<bool>(
+                    title: const Text('Parent'),
+                    value: true,
+                    groupValue: _isParent,
+                    onChanged: (value) {
+                      setState(() {
+                        _isParent = value ?? true;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: RadioListTile<bool>(
+                    title: const Text('Child'),
+                    value: false,
+                    groupValue: _isParent,
+                    onChanged: (value) {
+                      setState(() {
+                        _isParent = value == false;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Code field
+            TextField(
+              controller: _codeController,
+              decoration: InputDecoration(
+                labelText: _isParent ? 'Parent Code' : 'Child Code',
+                hintText: 'Enter relationship code',
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Destination concept dropdown
+            if (availableConcepts.isNotEmpty)
+              DropdownButtonFormField<String>(
+                value: _destinationConceptCode,
+                decoration: const InputDecoration(
+                  labelText: 'Destination Concept',
+                ),
+                items: availableConcepts
+                    .map((code) => DropdownMenuItem(
+                          value: code,
+                          child: Text(code),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _destinationConceptCode = value;
+                    });
+                  }
+                },
+              )
+            else
+              const Text('No other concepts available in this model'),
+
+            const SizedBox(height: 16),
+
+            // Properties checkboxes
+            CheckboxListTile(
+              title: const Text('Required'),
+              subtitle: const Text('Is this relationship required?'),
+              value: _isRequired,
+              onChanged: (value) {
+                setState(() {
+                  _isRequired = value ?? false;
+                });
+              },
+            ),
+
+            CheckboxListTile(
+              title: const Text('External'),
+              subtitle: const Text('Is this an external relationship?'),
+              value: _isExternal,
+              onChanged: (value) {
+                setState(() {
+                  _isExternal = value ?? false;
+                });
+              },
+            ),
+
+            if (_isParent)
+              CheckboxListTile(
+                title: const Text('Identifier'),
+                subtitle: const Text('Is this parent an identifier?'),
+                value: _isIdentifier,
+                onChanged: (value) {
+                  setState(() {
+                    _isIdentifier = value ?? false;
+                  });
+                },
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: availableConcepts.isEmpty || _codeController.text.isEmpty
+              ? null
+              : () {
+                  // Return the relationship configuration
+                  Navigator.of(context).pop({
+                    'code': _codeController.text,
+                    'destinationCode': _destinationConceptCode,
+                    'isParent': _isParent,
+                    'isRequired': _isRequired,
+                    'isExternal': _isExternal,
+                    'isIdentifier': _isIdentifier,
+                  });
+                },
+          child: const Text('Add'),
+        ),
+      ],
+    );
+  }
+}

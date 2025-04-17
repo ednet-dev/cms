@@ -364,4 +364,135 @@ class ShellNavigationService extends ChangeNotifier {
         label: relationshipCode,
         icon: Icons.account_tree);
   }
+
+  /// Show concept entities using the EntityManagerView
+  void showConceptEntities(BuildContext context, Concept concept) {
+    // First handle navigation state
+    navigateToConcept(concept);
+
+    // Then ensure the shell app has the required extension method
+    if (_shellApp != null) {
+      // Use the extension method to show the entity manager view
+      // This ensures proper integration with the UI and respects disclosure levels
+      _shellApp!.showEntityManager(
+        context,
+        concept.code,
+        title: concept.code,
+        initialViewMode: EntityViewMode.list,
+      );
+    }
+  }
+
+  /// Handle deep link navigation from a URI
+  ///
+  /// This method allows external apps to deep link into specific parts
+  /// of the application. The URI format follows the pattern:
+  /// ednet://<domain>/<model>/<concept>/<entityId>?<parameters>
+  ///
+  /// Example: ednet://projectmgmt/core/Task/task-123?view=details
+  void handleDeepLink(Uri uri, [BuildContext? context]) {
+    // Verify that the URI scheme is supported
+    if (uri.scheme != 'ednet') {
+      print('Unsupported deep link scheme: ${uri.scheme}');
+      return;
+    }
+
+    // Extract path components
+    final pathSegments = uri.pathSegments;
+    if (pathSegments.isEmpty) {
+      // Just navigate to home if no path is provided
+      navigateTo('/');
+      return;
+    }
+
+    // Build the internal app path
+    String internalPath = '';
+    Map<String, dynamic> parameters = {};
+
+    // Convert query parameters
+    uri.queryParameters.forEach((key, value) {
+      parameters[key] = value;
+    });
+
+    // Handle different path depths
+    if (pathSegments.length >= 1) {
+      final domainCode = pathSegments[0];
+      internalPath = '/domain/$domainCode';
+
+      if (pathSegments.length >= 2) {
+        final modelCode = pathSegments[1];
+        internalPath += '/$modelCode';
+
+        if (pathSegments.length >= 3) {
+          final conceptCode = pathSegments[2];
+          internalPath += '/$conceptCode';
+
+          // If there's an entity ID, add it to the path
+          if (pathSegments.length >= 4) {
+            final entityId = pathSegments[3];
+            internalPath += '/$entityId';
+          }
+          // If there's a concept but no entity ID and we have a context,
+          // we might want to show the entity manager view
+          else if (context != null && _shellApp != null) {
+            // First navigate to the concept path
+            navigateTo(internalPath, parameters: parameters);
+
+            // Find the concept in the domain model
+            try {
+              final domain = _shellApp!.domain;
+              for (final model in domain.models) {
+                if (model.code == pathSegments[1]) {
+                  for (final concept in model.concepts) {
+                    if (concept.code == conceptCode) {
+                      // Show entity manager for this concept
+                      _shellApp!.showEntityManager(
+                        context,
+                        conceptCode,
+                        title: concept.code,
+                        initialViewMode: parameters['viewMode'] == 'cards'
+                            ? EntityViewMode.cards
+                            : EntityViewMode.list,
+                      );
+                      return; // Exit early as we've handled this navigation
+                    }
+                  }
+                }
+              }
+            } catch (e) {
+              print('Error finding concept for deep link: $e');
+            }
+          }
+        }
+      }
+    }
+
+    // Navigate to the constructed internal path with parameters
+    navigateTo(internalPath, parameters: parameters);
+  }
+
+  /// Generate a deep link URI for the current location
+  ///
+  /// This creates a shareable URI that can be used to deep link
+  /// back to the current location in the application.
+  Uri generateDeepLink() {
+    // Extract path components from current location
+    final path = _currentLocation
+        .split('/')
+        .where((segment) => segment.isNotEmpty)
+        .toList();
+
+    // Skip the 'domain' prefix if present
+    final segments =
+        path.isNotEmpty && path[0] == 'domain' ? path.sublist(1) : path;
+
+    // Build the deep link URI
+    return Uri(
+      scheme: 'ednet',
+      pathSegments: segments,
+      queryParameters: _currentParameters.map(
+        (key, value) => MapEntry(key, value.toString()),
+      ),
+    );
+  }
 }

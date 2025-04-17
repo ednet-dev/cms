@@ -310,14 +310,13 @@ class _MultiDomainNavigatorState extends State<MultiDomainNavigator> {
 
     // Then handle UI navigation if the widget is still mounted
     if (mounted) {
-      Navigator.push(
+      // Use the EntityManagerView extension method for proper integration with named parameters
+      widget.shellApp.showEntityManager(
         context,
-        MaterialPageRoute(
-          builder: (context) => ConceptExplorer(
-            shellApp: widget.shellApp,
-            concept: concept,
-          ),
-        ),
+        concept.code,
+        title: 'Manage ${concept.code}',
+        initialViewMode: EntityViewMode.list,
+        disclosureLevel: widget.shellApp.currentDisclosureLevel,
       );
     }
   }

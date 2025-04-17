@@ -16,6 +16,9 @@ enum ScreenSizeCategory {
 
   /// 4K and larger displays (3840px+)
   ultraWide,
+
+  /// 4K and larger displays (3840px+)
+  ultraHigh,
 }
 
 /// Widget that wraps content with semantic prioritization and responsive behavior

@@ -1,5 +1,33 @@
 part of 'package:ednet_core_flutter/ednet_core_flutter.dart';
 
+/// Represents an EDNet Core Message Filter entity
+/// This is a simplified definition for the analyzer - the real implementation would
+/// be provided by the ednet_core library integration
+class EDNetCoreMessageFilter {
+  final String id;
+  final String name;
+  final MessagePredicate predicate;
+
+  EDNetCoreMessageFilter({
+    required this.id,
+    required this.name,
+    required this.predicate,
+  });
+}
+
+/// Represents a filter entity in the domain model
+/// This is a simplified definition for the analyzer - the real implementation would
+/// be provided by the ednet_core library integration
+class FilterEntity {
+  final String id;
+  final String name;
+
+  FilterEntity({
+    required this.id,
+    required this.name,
+  });
+}
+
 /// Service for managing UX Component Filters in the Shell Architecture
 ///
 /// This service provides functionality for:

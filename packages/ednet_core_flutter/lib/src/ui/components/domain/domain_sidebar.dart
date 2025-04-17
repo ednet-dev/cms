@@ -368,12 +368,9 @@ class _DomainSidebarState extends State<DomainSidebar> {
             setState(() {
               _expandedNodes[path] = !isExpanded;
             });
-            _notifyItemSelected(DomainNavigationItem(
-              type: NavigationItemType.concept,
-              path: path,
-              title: concept.code,
-              concept: concept,
-            ));
+
+            // Use the concept for navigation and entity management
+            _navigateToConceptEntities(concept, path);
           },
           subtitle: concept.description,
           badges: _buildConceptBadges(concept, theme),
@@ -560,5 +557,32 @@ class _DomainSidebarState extends State<DomainSidebar> {
   void _notifyItemSelected(DomainNavigationItem item) {
     widget.onItemSelected?.call(item);
     widget.shellApp.navigateTo(item.path);
+  }
+
+  /// Navigate to concept and show its entities
+  void _navigateToConceptEntities(Concept concept, String path) {
+    // Notify item selected as before (for backwards compatibility)
+    widget.onItemSelected?.call(DomainNavigationItem(
+      type: NavigationItemType.concept,
+      path: path,
+      title: concept.code,
+      concept: concept,
+    ));
+
+    // Update navigation state and show entity manager view
+    if (widget.shellApp.hasFeature('entity_creation') &&
+        widget.shellApp.hasFeature('entity_editing')) {
+      // If features are available, use the enhanced entity management view
+      widget.shellApp.showEntityManager(
+        context,
+        concept.code,
+        title: concept.code,
+        initialViewMode: EntityViewMode.list,
+        disclosureLevel: widget.shellApp.currentDisclosureLevel,
+      );
+    } else {
+      // Fallback to regular navigation if features aren't available
+      widget.shellApp.navigateTo(path);
+    }
   }
 }
