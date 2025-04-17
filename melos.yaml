@@ -1,4 +1,5 @@
 name: EDNetDev
+repository: https://github.com/ednet-dev/cms 
 
 # Package definitions in dependency order
 packages:

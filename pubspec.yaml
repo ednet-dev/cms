@@ -15,6 +15,7 @@ dependencies:
   json_serializable: ^6.7.0
   yaml: ^3.1.2
   build_runner: ^2.4.0
+  melos: ^6.0.0
 
 dev_dependencies:
   flutter_test:
