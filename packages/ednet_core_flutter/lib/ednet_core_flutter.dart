@@ -47,7 +47,6 @@ part 'src/ui/adapter_registry.dart';
 part 'src/ui/progressive_disclosure.dart';
 part 'src/ui/constraint_validator_adapter.dart';
 part 'src/ui/messages/message.dart';
-part 'src/ui/factory/entity_factory.dart';
 part 'src/ui/messages/ux_message.dart';
 part 'src/ui/messages/ux_channel.dart';
 part 'src/ui/extensions/entity_ux_extension.dart';
@@ -121,3 +120,6 @@ part 'src/shell/meta_model_persistence_manager.dart';
 part 'src/ui/components/entity/generic_entity_form.dart';
 part 'src/ui/components/entity/semantic_entity_collection_view.dart';
 part 'src/ui/components/entity/entity_manager_view.dart';
+
+// examples
+part 'src/ui/example/attribute_constraints_example.dart';

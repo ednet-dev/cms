@@ -928,8 +928,7 @@ class ShellApp extends ChangeNotifier {
     }
 
     // Create a temporary entity for the form
-    final entity =
-        EntityFactory.createEntityFromData(concept, initialData ?? {});
+    final entity = concept.newEntity();
 
     // Determine dialog size based on screen size
     final screenSize = MediaQuery.of(context).size;
@@ -1044,8 +1043,7 @@ class ShellApp extends ChangeNotifier {
     }
 
     // Create a temporary entity for the form
-    final entity =
-        EntityFactory.createEntityFromData(concept, initialData ?? {});
+    final entity = concept.newEntity();
 
     return GenericEntityForm(
       entity: entity,
@@ -1134,7 +1132,7 @@ class ShellApp extends ChangeNotifier {
   T? getService<T>(String name) {
     final service = _serviceRegistry[name];
     if (service != null && service is T) {
-      return service as T;
+      return service;
     }
     return null;
   }
@@ -1176,7 +1174,8 @@ class ShellApp extends ChangeNotifier {
           shellApp: this,
           domain: domain,
           concept: concept,
-          initialViewMode: EntityViewMode.cards, // Use card mode by default
+          initialViewMode: EntityViewMode.cards,
+          // Use card mode by default
           enableLiveEditing: true,
         ),
       ),
