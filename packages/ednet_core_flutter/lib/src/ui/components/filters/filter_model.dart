@@ -1,5 +1,10 @@
 part of 'package:ednet_core_flutter/ednet_core_flutter.dart';
 
+/// Type definition for Message Predicate functions
+/// A MessagePredicate is a function that takes a Message and returns a boolean
+/// indicating whether the message matches certain criteria
+typedef MessagePredicate = bool Function(Message message);
+
 /// Operator types for filter conditions in the UI
 enum FilterOperator {
   equals('equals'),

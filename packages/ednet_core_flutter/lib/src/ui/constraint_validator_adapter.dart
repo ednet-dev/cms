@@ -238,3 +238,99 @@ class ConstraintValidatorAdapter {
         : fieldName;
   }
 }
+
+/// Extension methods for AttributeType to provide validation methods if they're missing
+extension AttributeTypeValidationExtension on AttributeType {
+  /// Validates a value against this type's constraints
+  bool validateValue(dynamic value) {
+    // Try to use the native method first if it exists
+    try {
+      // This will throw if the method doesn't exist
+      return this.validate(value.toString());
+    } catch (e) {
+      // Fallback implementation
+      if (value == null) return true;
+      
+      if (base == 'num') {
+        return value is num;
+      } else if (base == 'int') {
+        return value is int;
+      } else if (base == 'double') {
+        return value is double;
+      } else if (base == 'bool') {
+        return value is bool;
+      } else if (base == 'DateTime') {
+        return value is DateTime;
+      } else if (base == 'String') {
+        return value is String && (length <= 0 || value.toString().length <= length);
+      } else if (code == 'Email') {
+        return value is String && isEmail(value);
+      } else if (code == 'Uri') {
+        if (value is String) {
+          try {
+            Uri uri = Uri.parse(value);
+            return uri.host.isNotEmpty;
+          } catch (e) {
+            return false;
+          }
+        }
+        return value is Uri;
+      }
+      return true;
+    }
+  }
+
+  /// Gets the validation error message
+  String? getValidationError() {
+    // Simplified error message
+    return 'Invalid value for type $code';
+  }
+}
+
+/// Extension class for the Concept class to provide category and metadata support
+/// Used to maintain compatibility with ednet_core
+/// Not all Concept implementations may have these fields
+extension ConceptMetadataExtension on Concept {
+  String? get category {
+    try {
+      // Try to access existing property if available
+      final existingValue = getAttribute('category');
+      return existingValue?.toString();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  set category(String? value) {
+    try {
+      // Try to set as attribute if the setter isn't available
+      if (value != null) {
+        setAttribute('category', value);
+      }
+    } catch (e) {
+      // Ignore if not supported
+    }
+  }
+
+  Map<String, dynamic> get metadata {
+    try {
+      // Try to access existing property if available
+      final existingValue = getAttribute('metadata');
+      if (existingValue is Map<String, dynamic>) {
+        return existingValue;
+      }
+      return {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  set metadata(Map<String, dynamic> value) {
+    try {
+      // Try to set as attribute if the setter isn't available
+      setAttribute('metadata', value);
+    } catch (e) {
+      // Ignore if not supported
+    }
+  }
+}

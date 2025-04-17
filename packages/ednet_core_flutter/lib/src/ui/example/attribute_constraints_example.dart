@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:ednet_core/ednet_core.dart';
-import '../../../ednet_core_flutter.dart';
+part of ednet_core_flutter;
 
 /// Example usage of the constraint-validated form with enhanced TypeConstraintValidator
 class AttributeConstraintsExample extends StatefulWidget {

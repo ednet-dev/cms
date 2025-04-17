@@ -52,9 +52,9 @@ extension EntityManagerExtension on ShellApp {
       return Future.value(false);
     }
 
-    // Create a new entity from the concept
-    final entity = EntityFactory.createEntityFromData(concept, {});
-
+    // Create a new entity from the concept, find in model entry, extend with helper methods if needed
+    final entity = concept.newEntity();
+    
     // Show editor in a scaffold
     return Navigator.of(context).push<bool>(
       MaterialPageRoute(
@@ -92,8 +92,13 @@ extension EntityManagerExtension on ShellApp {
       return Future.value(false);
     }
 
-    // Create entity from data
-    final entity = EntityFactory.createEntityFromData(concept, entityData);
+    // Create entity from data, find in model entry, extend with helper methods if needed
+    final entity = concept.newEntity();
+    
+    // Initialize entity with data
+    for (final entry in entityData.entries) {
+      entity.setAttribute(entry.key, entry.value);
+    }
 
     // Show editor in a scaffold
     return Navigator.of(context).push<bool>(
